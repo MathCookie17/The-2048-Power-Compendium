@@ -1,0 +1,1 @@
+# The-2048-Power-Compendium
