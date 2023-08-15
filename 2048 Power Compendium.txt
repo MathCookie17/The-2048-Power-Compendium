@@ -1,0 +1,521 @@
+2048:
+let width = 4; let height = 4;
+let TileNumAmount = 1;
+let TileTypes = [[[0], "1", "#ffffff", "#776e65"], [[1], "2", "#f9eee3", "#776e65"], [[2], "4", "#ede0c8", "#776e65"], [[3], "8", "#f2b179", "#f9f6f2"],
+[[4], "16", "#f59563", "#f9f6f2"], [[5], "32", "#f67c5f", "#f9f6f2"], [[6], "64", "#f65e3b", "#f9f6f2"], [[7], "128", "#edcf72", "#f9f6f2"],
+[[8], "256", "#edcc61", "#f9f6f2"], [[9], "512", "#edc850", "#f9f6f2"], [[10], "1024", "#edc53f", "#f9f6f2"], [[11], "2048", "#edc22e", "#f9f6f2"],
+[[12], "4096", "#f29eff", "#f9f6f2"], [[13], "8192", "#eb75fd", "#f9f6f2"], [[14], "16384", "#e53bff", "#f9f6f2"], [[15], "32768", "#bd00db", "#f9f6f2"],
+[[16], "65536", "#770089", "#f9f6f2"], [[17], "131072", "#534de8", "#f9f6f2"], [[18], "262144", "#2922e1", "#f9f6f2"], [[19], "524288", "#0a05b6", "#f9f6f2"],
+[true, [2, "^", "@This 0"], ["HSLA", [-15, "*", "@This 0", "+", 520], 100, [0.9, "^", ["@This 0", "-", 20], "*", 36], 1], "#f9f6f2"]];
+let MergeRules = [[2, ["@Next 1 0", "=", "@This 0"], true, [[["@This 0", "+", 1]]], [2, "^", ["@This 0", "+", 1]], [false, true]]];
+let TileSpawns = [[[0], 85], [[1], 12], [[2], 3]];
+let winConditions = [[11]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#fff5da");
+document.documentElement.style.setProperty("--grid-color", "#c7bea7");
+document.documentElement.style.setProperty("--tile-color", "#ece0c2");
+document.documentElement.style.setProperty("--text-color", "#524c46");
+displayRules("rules_text", ["h2", "Powers of 2"], ["h1", "2048"], ["p", "Merges occur between two tiles of the same number. Get to the 2048 tile to win!"],
+["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
+
+2187:
+let width = 4; let height = 4;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#584153"], [[0, 2], "2", "#999999", "#f6ebf4"], [[1, 1], "3", "#ffffa2", "#584153"], [[1, 2], "6", "#e6e600", "#f6ebf4"],
+[[2, 1], "9", "#ff8181", "#584153"], [[2, 2], "18", "#ff0000", "#f6ebf4"], [[3, 1], "27", "#ffb96f", "#584153"], [[3, 2], "54", "#ff8400", "#f6ebf4"],
+[[4, 1], "81", "#6d62ff", "#584153"], [[4, 2], "162", "#0f00e4", "#f6ebf4"], [[5, 1], "243", "#96ff69", "#584153"], [[5, 2], "486", "#42dd00", "#f6ebf4"],
+[[6, 1], "729", "#e07bff", "#584153"], [[6, 2], "1458", "#bf00fa", "#f6ebf4"], [[7, 1], "2187", "#ff5ae6", "#584153"], [[7, 2], "4374", "#d600b6", "#f6ebf4"],
+[[8, 1], "6561", "#ffda69", "#584153"], [[8, 2], "13122", "#ffbf00", "#f6ebf4"], [[9, 1], "19683", "#e5ff7c", "#584153"], [[9, 2], "39366", "#ccff00", "#f6ebf4"],
+[[10, 1], "59049", "#78fdff", "#584153"], [[10, 2], "118098", "#00d7da", "#f6ebf4"], [[11, 1], "177147", "#ff896e", "#584153"], [[11, 2], "354294", "#e55000", "#f6ebf4"],
+[[12, 1], "531441", "#6baeff", "#584153"], [[12, 2], "1062882", "#0073ff", "#f6ebf4"],
+[["@This 1", "=", 1], [3, "^", "@This 0"], ["HSLA", [97, "*", "@This 0", "-", 1111], [0.9, "^", ["@This 0", "-", 12], "*", 100], 70, 1], "#584153"],
+[["@This 1", "=", 2], [3, "^", "@This 0", "*", 2], ["HSLA", [97, "*", "@This 0", "-", 1111], [0.9, "^", ["@This 0", "-", 12], "*", 100], 35, 1], "#f6ebf4"]];
+let MergeRules = [
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], true, [["@This 0", 2]], [3, "^", "@This 0", "*", 2], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1]], false, [[["@This 0", "+", 1], 1]], [3, "^", ["@This 0", "+", 1]], [false, true]]];
+let TileSpawns = [[[0, 1], 85], [[0, 2], 10], [[1, 1], 5]];
+let winConditions = [[7, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#ffdaf9");
+document.documentElement.style.setProperty("--grid-color", "#c7a7c4");
+document.documentElement.style.setProperty("--tile-color", "#ecc2e6");
+document.documentElement.style.setProperty("--text-color", "#3c2237");
+displayRules("rules_text", ["h2", "Powers of 3"], ["h1", "2187"], ["p","Merges occur between two tiles that are both the same number and a power of 3, and between one tile that is a power of three and one tile that is double that power of three. Get to the 2187 tile to win!"],
+["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+
+1024:
+let width = 5; let height = 5;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#564040"], [[0, 3], "3", "#777777", "#f4ecec"], [[1, 1], "4", "#00ff00", "#564040"], [[1, 3], "12", "#008a00", "#f4ecec"],
+[[2, 1], "16", "#bbff00", "#564040"], [[2, 3], "48", "#78a400", "#f4ecec"], [[3, 1], "64", "#ffc800", "#564040"], [[3, 3], "192", "#997800", "#f4ecec"],
+[[4, 1], "256", "#ff7300", "#564040"], [[4, 3], "768", "#924200", "#f4ecec"], [[5, 1], "1024", "#ff0000", "#564040"], [[5, 3], "3072", "#950000", "#f4ecec"],
+[[6, 1], "4096", "#ff009d", "#564040"], [[6, 3], "12288", "#870053", "#f4ecec"], [[7, 1], "16384", "#f900fe", "#564040"], [[7, 3], "49152", "#88008a", "#f4ecec"],
+[[8, 1], "65536", "#6f00ff", "#564040"], [[8, 3], "196608", "#3c008a", "#f4ecec"], [[9, 1], "262144", "#004cff", "#564040"], [[9, 3], "786432", "#002886", "#f4ecec"],
+[[10, 1], "1048576", "#01d0ff", "#564040"], [[10, 3], "3145728", "#00748e", "#f4ecec"], [[11, 1], "4194304", "#00ffae", "#564040"],
+[[11, 3], "12582912", "#009969", "#f4ecec"],
+[["@This 1", "=", 1], [4, "^", "@This 0"], ["HSLA", [-31, "*", "@This 0", "+", 491], [0.95, "^", ["@This 0", "-", 12], "*", 75], 70, 1], "#564040"],
+[["@This 1", "=", 3], [4, "^", "@This 0", "*", 3], ["HSLA", [-31, "*", "@This 0", "+", 491], [0.95, "^", ["@This 0", "-", 12], "*", 75], 35, 1], "#f4ecec"]];
+let MergeRules = [
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 1", "=", 1]], true, [["@This 0", 3]], [4, "^", "@This 0", "*", 3], [false, true, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 1]], false, [[["@This 0", "+", 1], 1]], [4, "^", ["@This 0", "+", 1]], [false, true]]];
+let TileSpawns = [[[0, 1], 85], [[0, 3], 10], [[1, 1], 5]];
+let winConditions = [[5, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#ffdada");
+document.documentElement.style.setProperty("--grid-color", "#c7a7a7");
+document.documentElement.style.setProperty("--tile-color", "#ecc2c2");
+document.documentElement.style.setProperty("--text-color", "#564040");
+displayRules("rules_text", ["h2", "Powers of 4"], ["h1", "1024"], ["p","Merges occur between three tiles that are both the same number and a power of 4, and between one tile that is a power of four and one tile that is triple that power of four. Get to the 1024 tile to win!"],
+["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+
+3125:
+let width = 4; let height = 4;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#505246"], [[0, 2], "2", "#c6c6c6", "#505246"], [[0, 3], "3", "#898989", "#f4f7e9"], [[0, 4], "4", "#5f5f5f", "#f4f7e9"],
+[[1, 1], "5", "#ff9f9f", "#505246"], [[1, 2], "10", "#ff7272", "#505246"], [[1, 3], "15", "#ff3a3a", "#f4f7e9"], [[1, 4], "20", "#d50000", "#f4f7e9"],
+[[2, 1], "25", "#9fa2ff", "#505246"], [[2, 2], "50", "#5e64ff", "#505246"], [[2, 3], "75", "#0d15ff", "#f4f7e9"], [[2, 4], "100", "#0006be", "#f4f7e9"],
+[[3, 1], "125", "#fffa9f", "#505246"], [[3, 2], "250", "#fff53f", "#505246"], [[3, 3], "375", "#ebdf00", "#f4f7e9"], [[3, 4], "500", "#b3aa00", "#f4f7e9"],
+[[4, 1], "625", "#df9fff", "#505246"], [[4, 2], "1250", "#cf6fff", "#505246"], [[4, 3], "1875", "#bc35ff", "#f4f7e9"], [[4, 4], "2500", "#9900e5", "#f4f7e9"],
+[[5, 1], "3125", "#e9ff9f", "#505246"], [[5, 2], "6250", "#dafe65", "#505246"], [[5, 3], "9375", "#c9ff16", "#f4f7e9"], [[5, 4], "12500", "#abe000", "#f4f7e9"],
+[[6, 1], "15625", "#ff9fda", "#505246"], [[6, 2], "31250", "#ff69c5", "#505246"], [[6, 3], "46875", "#ff23ab", "#f4f7e9"], [[6, 4], "62500", "#eb0091", "#f4f7e9"],
+[[7, 1], "78125", "#9fffbf", "#505246"], [[7, 2], "152650", "#5aff91", "#505246"], [[7, 3], "234375", "#0aff5c", "#f4f7e9"], [[7, 4], "312500", "#00d547", "#f4f7e9"],
+[[8, 1], "390625", "#ffc19f", "#505246"], [[8, 2], "781250", "#ff9a63", "#505246"], [[8, 3], "1171875", "#ff772e", "#f4f7e9"], [[8, 4], "1562500", "#ff5900", "#f4f7e9"],
+[[9, 1], "1953125", "#9ff4ff", "#505246"], [[9, 2], "3906250", "#63edff", "#505246"], [[9, 3], "5859375", "#00e1ff", "#f4f7e9"], [[9, 4], "7812500", "#00c7e1", "#f4f7e9"],
+[[10, 1], "9765625", "#ffe79f", "#505246"], [[10, 2], "19531250", "#ffd65d", "#505246"], [[10, 3], "29296875", "#ffcd36", "#f4f7e9"], [[10, 4], "39062500", "#ebb000", "#f4f7e9"],
+[[11, 1], "48828125", "#9fc2ff", "#505246"], [[11, 2], "97656250", "#659eff", "#505246"], [[11, 3], "146484375", "#1e71ff", "#f4f7e9"], [[11, 4], "195312500", "#0058ef", "#f4f7e9"],
+[["@This 1", "=", 1], [5, "^", "@This 0"], ["HSLA", [23.5, "*", "@This 0", "-", 212, "+", ["@This 0", "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 12], "*", 75], 70, 1], "#505246"],
+[["@This 1", "=", 2], [5, "^", "@This 0", "*", 2], ["HSLA", [23.5, "*", "@This 0", "-", 212, "+", ["@This 0", "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 12], "*", 75], 60, 1], "#505246"],
+[["@This 1", "=", 3], [5, "^", "@This 0", "*", 3], ["HSLA", [23.5, "*", "@This 0", "-", 212, "+", ["@This 0", "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 12], "*", 75], 50, 1], "#f4f7e9"],
+[["@This 1", "=", 4], [5, "^", "@This 0", "*", 4], ["HSLA", [23.5, "*", "@This 0", "-", 212, "+", ["@This 0", "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 12], "*", 75], 40, 1], "#f4f7e9"]];
+let MergeRules = [
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "+", "@This 1", "<", 5]], true, [["@This 0", ["@Next 1 1", "+", "@This 1"]]], [5, "^", "@This 0", "*", ["@Next 1 1", "+", "@This 1"]], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "+", "@This 1", "=", 5]], true, [[["@This 0", "+", 1], 1]], [5, "^", ["@This 0", "+", 1]], [false, true]]
+]
+let TileSpawns = [[[0, 1], 80], [[0, 2], 8], [[0, 3], 6], [[0, 4], 4], [[1, 1], 2]];
+let winConditions = [[5, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#f6ffda");
+document.documentElement.style.setProperty("--grid-color", "#c1c7a7");
+document.documentElement.style.setProperty("--tile-color", "#e4ecc2");
+document.documentElement.style.setProperty("--text-color", "#505246");
+displayRules("rules_text", ["h2", "Powers of 5"], ["h1", "3125"], ["p","Merges occur between any two tiles that add to a power of five, double a power of five, triple a power of five, or quadruple a power of five. Get to the 3125 tile to win!"],
+["p", "Spawning tiles: 1 (80%), 2 (8%), 3 (6%), 4 (4%), 5 (2%)"]);
+
+1296:
+let width = 5; let height = 5;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#464d52"], [[0, 2], "2", "#ffc4c4", "#464d52"], [[0, 3], "3", "#fffec4", "#464d52"],
+[[1, 1], "6", "#c300ff", "#464d52"], [[1, 2], "12", "#8000ff", "#464d52"], [[1, 3], "18", "#f200ff", "#464d52"],
+[[2, 1], "36", "#00ff00", "#464d52"], [[2, 2], "72", "#99ff00", "#464d52"], [[2, 3], "108", "#00ff88", "#464d52"],
+[[3, 1], "216", "#ff9d00", "#464d52"], [[3, 2], "432", "#ff5100", "#464d52"], [[3, 3], "648", "#ffc800", "#464d52"],
+[[4, 1], "1296", "#00a6ff", "#464d52"], [[4, 2], "2592", "#00eaff", "#464d52"], [[4, 3], "3888", "#0033ff", "#464d52"],
+[[5, 1], "7776", "#ff00bf", "#464d52"], [[5, 2], "15552", "#ff00fb", "#464d52"], [[5, 3], "23328", "#ff0062", "#464d52"],
+[[6, 1], "46656", "#ffff00", "#464d52"], [[6, 2], "93312", "#ffd900", "#464d52"], [[6, 3], "139968", "#c3ff00", "#464d52"],
+[["@This 1", "=", 1], [6, "^", "@This 0"], ["HSLA", [109, "*", "@This 0", "-", 623], 100, [0.9, "^", ["@This 0", "-", 7], "*", 40], 1], "#e2ebf1"],
+[["@This 1", "=", 2], [6, "^", "@This 0", "*", 2], ["HSLA", [109, "*", "@This 0", "-", 653], 100, [0.9, "^", ["@This 0", "-", 7], "*", 40], 1], "#e2ebf1"],
+[["@This 1", "=", 3], [6, "^", "@This 0", "*", 3], ["HSLA", [109, "*", "@This 0", "-", 593], 100, [0.9, "^", ["@This 0", "-", 7], "*", 40], 1], "#e2ebf1"]];
+let MergeRules = [
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 3]], [6, "^", "@This 0", "*", 3], [false, true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [[["@This 0", "+", 1], 1]], [6, "^", "@This 0", "*", 6], [false, true, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 2]], [6, "^", "@This 0", "*", 2], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 3]], true, [[["@This 0", "+", 1], 1]], [6, "^", "@This 0", "*", 6], [false, true]]
+]
+let TileSpawns = [[[0, 1], 80], [[0, 2], 12], [[0, 3], 6], [[1, 1], 2]];
+let winConditions = [[4, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#daedff");
+document.documentElement.style.setProperty("--grid-color", "#a7b6c7");
+document.documentElement.style.setProperty("--tile-color", "#c2d9ec");
+document.documentElement.style.setProperty("--text-color", "#464d52");
+displayRules("rules_text", ["h2", "Powers of 6"], ["h1", "1296"], ["p","Merges occur between two or three of the same tile: two-tile merges occur between tiles that are a power of six or triple a power of six, and three-tile merges occur between tiles that are a power of six or double a power of six. Get to the 1296 tile to win!"],
+["p", "Spawning tiles: 1 (80%), 2 (12%), 3 (6%), 6 (2%)"]);
+
+2401:
+let width = 5; let height = 5;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#d7d7d7", "#524b46"], [[0, 2], "2", "#afafaf", "#f1ebe7"], [[0, 3], "3", "#ffffff", "#6d6a67"], [[0, 4], "4", "#787878", "#f1ebe7"],
+[[1, 1], "7", "#00ff73", "#524b46"], [[1, 2], "14", "#00be55", "#f1ebe7"], [[1, 3], "21", "#78ffb5", "#6d6a67"], [[1, 4], "28", "#00893e", "#f1ebe7"],
+[[2, 1], "49", "#6fff00", "#524b46"], [[2, 2], "98", "#59ce00", "#f1ebe7"], [[2, 3], "149", "#a5ff60", "#6d6a67"], [[2, 4], "196", "#449c00", "#f1ebe7"],
+[[3, 1], "343", "#ffff00", "#524b46"], [[3, 2], "686", "#d2d200", "#f1ebe7"], [[3, 3], "1029", "#ffff7c", "#6d6a67"], [[3, 4], "1372", "#a0a000", "#f1ebe7"],
+[[4, 1], "2401", "#ff9d00", "#524b46"], [[4, 2], "4802", "#d58300", "#f1ebe7"], [[4, 3], "7203", "#ffc972", "#6d6a67"], [[4, 4], "9604", "#a26400", "#f1ebe7"],
+[[5, 1], "16807", "#ff2600", "#524b46"], [[5, 2], "33614", "#cb1e00", "#f1ebe7"], [[5, 3], "50421", "#ff6e54", "#6d6a67"], [[5, 4], "67228", "#901600", "#f1ebe7"],
+[[6, 1], "117649", "#fc01df", "#524b46"], [[6, 2], "235298", "#cb00b4", "#f1ebe7"], [[6, 3], "352947", "#ff6eee", "#6d6a67"], [[6, 4], "470596", "#9a0088", "#f1ebe7"],
+[[7, 1], "823543", "#6f00ff", "#524b46"], [[7, 2], "1647086", "#5100bb", "#f1ebe7"], [[7, 3], "2470629", "#ac6dff", "#6d6a67"], [[7, 4], "3294172", "#340078", "#f1ebe7"],
+[[8, 1], "5764801", "#0066ff", "#524b46"], [[8, 2], "11529602", "#0050c9", "#f1ebe7"], [[8, 3], "17294403", "#5e9eff", "#6d6a67"], [[8, 4], "23059204", "#003c95", "#f1ebe7"],
+[[9, 1], "40353607", "#00eaff", "#524b46"], [[9, 2], "80707214", "#00c6d7", "#f1ebe7"], [[9, 3], "121060821", "#6df3ff", "#6d6a67"], [[9, 4], "161414428", "#0097a5", "#f1ebe7"],
+[["@This 1", "=", 1], [7, "^", "@This 0"], ["HSLA", [-37, "*", "@This 0", "-", 210], [0.95, "^", ["@This 0", "-", 10], "*", 75], 50, 1], "#524b46"],
+[["@This 1", "=", 2], [7, "^", "@This 0", "*", 2], ["HSLA", [-37, "*", "@This 0", "-", 210], [0.95, "^", ["@This 0", "-", 10], "*", 75], 37.5, 1], "#f1ebe7"],
+[["@This 1", "=", 3], [7, "^", "@This 0", "*", 3], ["HSLA", [-37, "*", "@This 0", "-", 210], [0.95, "^", ["@This 0", "-", 10], "*", 75], 70, 1], "#6d6a67"],
+[["@This 1", "=", 1], [7, "^", "@This 0", "*", 4], ["HSLA", [-37, "*", "@This 0", "-", 210], [0.95, "^", ["@This 0", "-", 10], "*", 75], 25, 1], "#f1ebe7"],];
+let MergeRules = [
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 3]], [7, "^", "@This 0", "*", 3], [false, true, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 2]], [7, "^", "@This 0", "*", 2], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [["@This 0", 4]], [7, "^", "@This 0", "*", 4], [false, true]]
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 4]], false, [[["@This 0", "+", 1], 1]], [7, "^", "@This 0", "*", 7], [false, true]]
+]
+let TileSpawns = [[[0, 1], 80], [[0, 2], 10], [[0, 3], 5], [[0, 4], 5]];
+let winConditions = [[4, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#ffedda");
+document.documentElement.style.setProperty("--grid-color", "#c7b6a7");
+document.documentElement.style.setProperty("--tile-color", "#ecd8c2");
+document.documentElement.style.setProperty("--text-color", "#524b46");
+displayRules("rules_text", ["h2", "Powers of 7"], ["h1", "2401"], ["p","Merges occur between two or three tiles that are the same power of seven, two tiles that are double the same power of seven, or one tile that is triple a power of seven and one tile that is quadruple that power of seven. Get to the 2401 tile to win!"],
+["p", "Spawning tiles: 1 (80%), 2 (10%), 3 (5%), 4 (5%)"]);
+
+4096:
+let width = 4; let height = 4;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#484652"], [[0, 2], "2", "#c6c6c6", "#484652"], [[0, 3], "3", "#898989", "#e8e6f3"], [[0, 5], "5", "#5f5f5f", "#e8e6f3"],
+[[1, 1], "8", "#ff4646", "#484652"], [[1, 2], "16", "#ff0a0a", "#484652"], [[1, 3], "24", "#c50000", "#e8e6f3"], [[1, 5], "40", "#860000", "#e8e6f3"],
+[[2, 1], "64", "#ff66ed", "#484652"], [[2, 2], "128", "#ff00e1", "#484652"], [[2, 3], "192", "#c100aa", "#e8e6f3"], [[2, 5], "320", "#7b006d", "#e8e6f3"],
+[[3, 1], "512", "#d562ff", "#484652"], [[3, 2], "1024", "#bb00ff", "#484652"], [[3, 3], "1536", "#8800ba", "#e8e6f3"], [[3, 5], "2560", "#580078", "#e8e6f3"],
+[[4, 1], "4096", "#6b5aff", "#484652"], [[4, 2], "8192", "#1900ff", "#484652"], [[4, 3], "12288", "#1300be", "#e8e6f3"], [[4, 5], "20480", "#0c007a", "#e8e6f3"],
+[[5, 1], "32768", "#6dccff", "#484652"], [[5, 2], "65536", "#00a6ff", "#484652"], [[5, 3], "98304", "#0081c7", "#e8e6f3"], [[5, 5], "163840", "#006094", "#e8e6f3"],
+[[6, 1], "262144", "#75ffcf", "#484652"], [[6, 2], "524288", "#00ffa6", "#484652"], [[6, 3], "786432", "#00d289", "#e8e6f3"], [[6, 5], "1310720", "#00a26a", "#e8e6f3"],
+[["@This 1", "=", 1], [8, "^", "@This 0"], ["HSLA", [-34.5, "*", "@This 0", "+", 331.5], [0.95, "^", ["@This 0", "-", 7], "*", 100], 65, 1], "#484652"],
+[["@This 1", "=", 2], [8, "^", "@This 0", "*", 2], ["HSLA", [-34.5, "*", "@This 0", "+", 331.5], [0.9, "^", ["@This 0", "-", 7], "*", 100], 50, 1], "#484652"],
+[["@This 1", "=", 3], [8, "^", "@This 0", "*", 3], ["HSLA", [-34.5, "*", "@This 0", "+", 331.5], [0.9, "^", ["@This 0", "-", 7], "*", 100], 37.5, 1], "#e8e6f3"],
+[["@This 1", "=", 5], [8, "^", "@This 0", "*", 5], ["HSLA", [-34.5, "*", "@This 0", "+", 331.5], [0.9, "^", ["@This 0", "-", 7], "*", 100], 25, 1], "#e8e6f3"]]
+let MergeRules = [
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [["@This 0", 2]], [8, "^", "@This 0", "*", 2], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1]], false, [["@This 0", 3]], [8, "^", "@This 0", "*", 3], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 2]], false, [["@This 0", 5]], [8, "^", "@This 0", "*", 5], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 5], "&&", ["@This 1", "=", 3]], false, [[["@This 0", "+", 1], 1]], [8, "^", "@This 0", "*", 8], [false, true]],
+]
+let TileSpawns = [[[0, 1], 85], [[0, 2], 8], [[0, 3], 5], [[0, 5], 2]];
+let winConditions = [[4, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#dedaff");
+document.documentElement.style.setProperty("--grid-color", "#a8a7c7");
+document.documentElement.style.setProperty("--tile-color", "#c5c2ec");
+document.documentElement.style.setProperty("--text-color", "#484652");
+displayRules("rules_text", ["h2", "Powers of 8"], ["h1", "4096"], ["p","Merges occur between two equal tiles that are a power of eight, between a tile that's a power of eight and a tile that's double that power of eight, between a tile that's double a power of eight and a tile that's triple that power of eight, and between a tile that's triple a power of eight and a tile that's quintuple that power of eight. Get to the 4096 tile to win!"],
+["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (5%), 5 (2%)"]);
+
+6561:
+let width = 6; let height = 6;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#465252"], [[0, 4], "4", "#828282", "#e2e9e9"], [[1, 1], "9", "#ff52b1", "#465252"], [[1, 4], "36", "#c2006b", "#e2e9e9"],
+[[2, 1], "81", "#df53ff", "#465252"], [[2, 4], "324", "#9000b0", "#e2e9e9"], [[3, 1], "729", "#6e4aff", "#465252"], [[3, 4], "2916", "#2500b7", "#e2e9e9"],
+[[4, 1], "6561", "#44f6ff", "#465252"], [[4, 4], "26244", "#00afb8", "#e2e9e9"], [[5, 1], "59049", "#6eff69", "#465252"], [[5, 4], "236196", "#06ba00", "#e2e9e9"],
+[[6, 1], "531441", "#ffff62", "#465252"], [[6, 4], "2125764", "#caca00", "#e2e9e9"], [[7, 1], "4782969", "#ffb151", "#465252"], [[7, 4], "19131876", "#d67600", "#e2e9e9"],
+[[8, 1], "43046721", "#ff6969", "#465252"], [[8, 4], "172186884", "#ac0000", "#e2e9e9"],
+[["@This 1", "=", 1], [9, "^", "@This 0"], ["HSLA", [-48.5, "*", "@This 0", "+", 736.5], [0.9, "^", ["@This 0", "-", 9], "*", 85], 70, 1], "#465252"],
+[["@This 1", "=", 4], [9, "^", "@This 0", "*", 4], ["HSLA", [-48.5, "*", "@This 0", "+", 736.5], [0.9, "^", ["@This 0", "-", 9], "*", 85], 30, 1], "#e2e9e9"],]
+let MergeRules = [
+    [4, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Next 3 0", "=", "@This 0"], "&&", ["@Next 3 1", "=", "@This 1"],"&&", ["@This 1", "=", 1]], true, [["@This 0", 4]], [9, "^", "@This 0", "*", 4], [false, true, true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 4], "&&", ["@Next 2 1", "=", 4]], false, [[["@This 0", "+", 1], 1]], [9, "^", "@This 0", "*", 9], [false, true, true]],
+]
+let TileSpawns = [[[0, 1], 95], [[0, 4], 5]];
+let winConditions = [[4, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#dafffe");
+document.documentElement.style.setProperty("--grid-color", "#a7c4c7");
+document.documentElement.style.setProperty("--tile-color", "#c2eaec");
+document.documentElement.style.setProperty("--text-color", "#465252");
+displayRules("rules_text", ["h2", "Powers of 9"], ["h1", "6561"], ["p","Merges occur between four equal tiles that are a power of nine, and between a tile that's a power of nine and two tiles that are quadruple that power of nine. Get to the 6561 tile to win!"],
+["p", "Spawning tiles: 1 (95%), 4 (5%)"]);
+
+1000:
+let width = 4; let height = 4;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#524946"], [[0, 2], "2", "#cacaca", "#524946"], [[0, 5], "5", "#7e7e7e", "#524946"],
+[[1, 1], "10", "#94cbff", "#524946"], [[1, 2], "20", "#54acff", "#524946"], [[1, 5], "50", "#0084ff", "#524946"],
+[[2, 1], "100", "#f1ffb8", "#524946"], [[2, 2], "200", "#e6ff82", "#524946"], [[2, 5], "500", "#ccff00", "#524946"], 
+[[3, 1], "1000", "#ffa981", "#524946"], [[3, 2], "2000", "#ff834a", "#524946"], [[3, 5], "5000", "#ff5100", "#524946"],
+[[4, 1], "10000", "#faa4ff", "#524946"], [[4, 2], "20000", "#f765ff", "#524946"], [[4, 5], "50000", "#f200ff", "#524946"],
+[[5, 1], "100000", "#b184ff", "#524946"], [[5, 2], "200000", "#9355ff", "#524946"], [[5, 5], "500000", "#5d00ff", "#524946"],
+[[6, 1], "1000000", "#b0ffeb", "#524946"], [[6, 2], "2000000", "#65ffd9", "#524946"], [[6, 5], "5000000", "#00ffbf", "#524946"],
+[[7, 1], "10000000", "#fff49f", "#524946"], [[7, 2], "20000000", "#ffec5e", "#524946"], [[7, 5], "50000000", "#ffe100", "#524946"],
+[["@This 1", "=", 1], [10, "^", "@This 0"], ["HSVA", [-83, "*", "@This 0", "+", 1000], 50, [0.9, "^", ["@This 0", "-", 8], "*", 100], 1], "#efe6e3"],
+[["@This 1", "=", 2], [10, "^", "@This 0", "*", 2], ["HSVA", [-83, "*", "@This 0", "+", 1000], 75, [0.9, "^", ["@This 0", "-", 8], "*", 100], 1], "#efe6e3"],
+[["@This 1", "=", 3], [10, "^", "@This 0", "*", 5], ["HSVA", [-83, "*", "@This 0", "+", 1000], 100, [0.9, "^", ["@This 0", "-", 8], "*", 100], 1], "#efe6e3"],
+]
+let MergeRules = [
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [["@This 0", 2]], [10, "^", "@This 0", "*", 2], [false, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], false, [["@This 0", 5]], [10, "^", "@This 0", "*", 5], [false, true, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 5], "&&", ["@This 1", "=", 5]], false, [[["@This 0", "+", 1], 1]], [10, "^", "@This 0", "*", 10], [false, true]],
+]
+let TileSpawns = [[[0, 1], 85], [[0, 2], 12], [[0, 5], 3]];
+let winConditions = [[3, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#ffe1da");
+document.documentElement.style.setProperty("--grid-color", "#c7b0a7");
+document.documentElement.style.setProperty("--tile-color", "#ecccc2");
+document.documentElement.style.setProperty("--text-color", "#524946");
+displayRules("rules_text", ["h2", "Powers of 10"], ["h1", "1000"], ["p","Merges occur between two equal tiles that are either a power of ten or quintuple a power of ten, or between one tile that is a power of ten and two tiles that are double that same power of 10. Get to the 1000 tile to win!"],
+["p", "Spawning tiles: 1 (95%), 4 (5%)"]);
+
+1331:
+let width = 5; let height = 5;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#485246"], [[0, 2], "2", "#c6c6c6", "#485246"], [[0, 3], "3", "#898989", "#e1edde"], [[0, 6], "6", "#5f5f5f", "#e1edde"],
+[[1, 1], "11", "#ff5454", "#485246"], [[1, 2], "22", "#ff0000", "#485246"], [[1, 3], "33", "#cb0000", "#e1edde"], [[1, 6], "66", "#950000", "#e1edde"],
+[[2, 1], "121", "#fee975", "#485246"], [[2, 2], "242", "#ffd900", "#485246"], [[2, 3], "363", "#c6a800", "#e1edde"], [[2, 6], "726", "#826e00", "#e1edde"],
+[[3, 1], "1331", "#92ff92", "#485246"], [[3, 2], "2662", "#00ff00", "#485246"], [[3, 3], "3993", "#00b800", "#e1edde"], [[3, 6], "7986", "#006c00", "#e1edde"],
+[[4, 1], "14641", "#81dfff", "#485246"], [[4, 2], "29282", "#00bfff", "#485246"], [[4, 3], "43923", "#028bb8", "#e1edde"], [[4, 6], "87846", "#005673", "#e1edde"],
+[[5, 1], "161051", "#b367ff", "#485246"], [[5, 2], "322102", "#8000ff", "#485246"], [[5, 3], "483153", "#5900b1", "#e1edde"], [[5, 6], "966306", "#37006f", "#e1edde"],
+[[6, 1], "1771561", "#ff6fe5", "#485246"], [[6, 2], "3543122", "#ff00d0", "#485246"], [[6, 3], "5314683", "#c2009e", "#e1edde"], [[6, 6], "10629366", "#83016b", "#e1edde"],
+[["@This 1", "=", 1], [11, "^", "@This 0"], ["HSLA", [67, "*", "@This 0", "-", 439], [0.9, "^", ["@This 0", "-", 7], "*", 100], 70, 1], "#485246"],
+[["@This 1", "=", 2], [11, "^", "@This 0", "*", 2], ["HSLA", [67, "*", "@This 0", "-", 439], [0.9, "^", ["@This 0", "-", 7], "*", 100], 50, 1], "#485246"],
+[["@This 1", "=", 3], [11, "^", "@This 0", "*", 3], ["HSLA", [67, "*", "@This 0", "-", 439], [0.9, "^", ["@This 0", "-", 7], "*", 100], 37.5, 1], "#e1edde"],
+[["@This 1", "=", 6], [11, "^", "@This 0", "*", 6], ["HSLA", [67, "*", "@This 0", "-", 439], [0.9, "^", ["@This 0", "-", 7], "*", 100], 25, 1], "#e1edde"],
+]
+let MergeRules = [
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [["@This 0", 2]], [11, "^", "@This 0", "*", 2], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", 3]]], false, [["@This 0", 3]], [11, "^", "@This 0", "*", 3], [false, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 3], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1]], false, [["@This 0", 6]], [11, "^", "@This 0", "*", 6], [false, true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 6], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 2]], false, [[["@This 0", "+", 1], 1]], [11, "^", "@This 0", "*", 11], [false, true, true]],
+]
+let TileSpawns = [[[0, 1], 80], [[0, 2], 12], [[0, 3], 6], [[0, 6], 2]];
+let winConditions = [[3, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#e1ffda");
+document.documentElement.style.setProperty("--grid-color", "#a8c7a7");
+document.documentElement.style.setProperty("--tile-color", "#caecc2");
+document.documentElement.style.setProperty("--text-color", "#485246");
+displayRules("rules_text", ["h2", "Powers of 11"], ["h1", "1331"], ["p","  Merges can occur between either two tiles that are both the same number and a power of eleven, between a power of eleven and a tile that's double it, between a tile that's a power of eleven, a tile that's double the same power of eleven, and a tile that's triple the same power of eleven, or between a tile that's double a power of eleven, a tile that's triple the same power of eleven, and a tile that's six times the same power of eleven. Get to the 1331 tile to win!"],
+["p", "Spawning tiles: 1 (80%), 2 (12%), 3 (6%), 4 (2%)"]);
+
+1728:
+let width = 5; let height = 5;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#aaff00", "#584e59"], [[0, 2], "2", "#84c503", "#f4edf6"], [[0, 3], "3", "#dbff93", "#2d292e"],
+[[0, 4], "4", "#5c8a00", "#f4edf6"], [[0, 6], "6", "#a9e03c", "#584e59"],
+[[1, 1], "12", "#ff9500", "#584e59"], [[1, 2], "24", "#c97500", "#f4edf6"], [[1, 3], "36", "#ffbc5e", "#2d292e"],
+[[1, 4], "48", "#874f00", "#f4edf6"], [[1, 6], "72", "#d6902e", "#584e59"],
+[[2, 1], "144", "#ff007b", "#584e59"], [[2, 2], "288", "#be005c", "#f4edf6"], [[2, 3], "432", "#ff61ad", "#2d292e"],
+[[2, 4], "576", "#7a003b", "#f4edf6"], [[2, 6], "864", "#cd337e", "#584e59"],
+[[3, 1], "1728", "#d000ff", "#584e59"], [[3, 2], "3456", "#9a00bc", "#f4edf6"], [[3, 3], "5184", "#e261ff", "#2d292e"],
+[[3, 4], "6912", "#610077", "#f4edf6"], [[3, 6], "10368", "#ac27ca", "#584e59"],
+[[4, 1], "20736", "#006aff", "#584e59"], [[4, 2], "41472", "#004fbc", "#f4edf6"], [[4, 3], "62208", "#60a2ff", "#2d292e"],
+[[4, 4], "82944", "#003073", "#f4edf6"], [[4, 6], "124416", "#296ac6", "#584e59"],
+[[5, 1], "248832", "#00ff73", "#584e59"], [[5, 2], "497664", "#00bf56", "#f4edf6"], [[5, 3], "746496", "#70ffb0", "#2d292e"],
+[[5, 4], "995328", "#007f39", "#f4edf6"], [[5, 6], "1492992", "#26be6a", "#584e59"],
+[["@This 1", "=", 1], [12, "^", "@This 0"], ["HSLA", [-74, "*", "@This 0", "+", 495], [0.95, "^", ["@This 0", "-", 6], "*", 100], 50, 1], "#584e59"],
+[["@This 1", "=", 2], [12, "^", "@This 0", "*", 2], ["HSLA", [-74, "*", "@This 0", "+", 495], [0.95, "^", ["@This 0", "-", 6], "*", 100], 37.5, 1], "#f4edf6"],
+[["@This 1", "=", 3], [12, "^", "@This 0", "*", 3], ["HSLA", [-74, "*", "@This 0", "+", 495], [0.95, "^", ["@This 0", "-", 6], "*", 100], 70, 1], "#2d292e"],
+[["@This 1", "=", 4], [12, "^", "@This 0", "*", 4], ["HSLA", [-74, "*", "@This 0", "+", 495], [0.95, "^", ["@This 0", "-", 6], "*", 100], 25, 1], "#f4edf6"],
+[["@This 1", "=", 6], [12, "^", "@This 0", "*", 6], ["HSLA", [-74, "*", "@This 0", "+", 495], [0.95, "^", ["@This 0", "-", 6], "*", 75], 50, 1], "#584e59"],
+];
+let MergeRules = [
+    [4, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Next 3 0", "=", "@This 0"], "&&", ["@Next 3 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 4]], [12, "^", "@This 0", "*", 4], [false, true, true, true]],
+    [4, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Next 3 0", "=", "@This 0"], "&&", ["@Next 3 1", "=", "@This 1"], "&&", ["@This 1", "=", 3]], true, [[["@This 0", "+", 1], 1]], [12, "^", "@This 0", "*", 12], [false, true, true, true]],
+    [3, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 3]], [12, "^", "@This 0", "*", 3], [false, true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [["@This 0", 6]], [12, "^", "@This 0", "*", 6], [false, true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 4]], true, [[["@This 0", "+", 1], 1]], [12, "^", "@This 0", "*", 12], [false, true, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [["@This 0", 2]], [12, "^", "@This 0", "*", 2], [false, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [["@This 0", 4]], [12, "^", "@This 0", "*", 4], [false, true]],
+    [2, [[["@Next -2 0", "!=", "@This 0"], "||", ["@Next -2 1", "!=", "@This 1"]], "&&", [["@Next 2 0", "!=", "@This 0"], "||", ["@Next 2 1", "!=", "@This 1"]], "||", ["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 3]], true, [["@This 0", 6]], [12, "^", "@This 0", "*", 6], [false, true]],
+    [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 6]], true, [[["@This 0", "+", 1], 1]], [12, "^", "@This 0", "*", 12], [false, true]],
+]
+let TileSpawns = [[[0, 1], 80], [[0, 2], 10], [[0, 3], 5], [[0, 4], 5]];
+let winConditions = [[3, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#fbdaff");
+document.documentElement.style.setProperty("--grid-color", "#c2a7c7");
+document.documentElement.style.setProperty("--tile-color", "#e6c2ec");
+document.documentElement.style.setProperty("--text-color", "#514652");
+displayRules("rules_text", ["h2", "Powers of 12"], ["h1", "1728"], ["p","Merges occur between two, three, or four of the same tile, as long as those tiles add up to a power of twelve or double, triple, quadruple, or sextuple a power of twelve, except a merge cannot occur between four tiles that are sextuple a power of twelve. Get to the 1728 tile to win!"],
+["p", "Spawning tiles: 1 (80%), 2 (10%), 3 (5%), 4 (5%)"]);
+
+5040:
+let width = 4; let height = 4;
+let TileNumAmount = 2;
+let TileTypes = [[[1, 1], "1", "#ffd900", "#776e65"],
+[[2, 1], "2", "#ff5ae6", "#584153"], [[2, 2], "4", "#d600b6", "#f6ebf4"],
+[[3, 1], "6", "#ff0000", "#564040"], [[3, 3], "18", "#950000", "#f4ecec"],
+[[4, 1], "24", "#e9ff9f", "#505246"], [[4, 2], "48", "#dafe65", "#505246"], [[4, 3], "72", "#c9ff16", "#f4f7e9"], [[4, 4], "96", "#abe000", "#f4f7e9"],
+[[5, 1], "120", "#00a6ff", "#464d52"], [[5, 2], "240", "#007bbe", "#464d52"], [[5, 3], "360", "#69caff", "#464d52"],
+[[6, 1], "720", "#ff9d00", "#524b46"], [[6, 2], "1440", "#d58300", "#f1ebe7"], [[6, 3], "2160", "#ffc972", "#6d6a67"], [[6, 4], "2880", "#a26400", "#f1ebe7"],
+[[7, 1], "5040", "#6b5aff", "#484652"], [[7, 2], "10080", "#1900ff", "#484652"], [[7, 3], "15120", "#1300be", "#e8e6f3"], [[7, 5], "25200", "#0c007a", "#e8e6f3"],
+[[8, 1], "40320", "#44f6ff", "#465252"], [[8, 4], "161280", "#00afb8", "#e2e9e9"],
+[[9, 1], "362800", "#ffa981", "#524946"], [[9, 2], "725760", "#ff834a", "#524946"], [[9, 5], "1814400", "#ff5100", "#524946"],
+[[10, 1], "3628800", "#92ff92", "#485246"], [[10, 2], "7257600", "#00ff00", "#485246"], [[10, 3], "10886400", "#00b800", "#e1edde"], [[10, 6], "21772800", "#006c00", "#e1edde"],
+[[11, 1], "39916800", "#d000ff", "#584e59"], [[11, 2], "79833600", "#9a00bc", "#f4edf6"], [[11, 3], "119750400", "#e261ff", "#2d292e"], [[11, 4], "159667200", "#610077", "#f4edf6"], [[11, 6], "239500800", "#ac27ca", "#584e59"],
+[[12, 1], "479001600", "#000000", "#ffff00"]
+];
+let MergeRules = [
+    [2, [["@This 0", "=", 1], "&&", ["@Next 1 0", "=", 1]], true, [[2, 1]], 2, [false, true]],
+
+    [2, [["@This 0", "=", 2], "&&", ["@Next 1 0", "=", 2], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], true, [[2, 2]], 4, [false, true]],
+    [2, [["@This 0", "=", 2], "&&", ["@Next 1 0", "=", 2], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1]], false, [[3, 1]], 6, [false, true]],
+
+    [3, [["@This 0", "=", 3], "&&", ["@Next 1 0", "=", 3], "&&", ["@Next 2 0", "=", 3], "&&", ["@Next 1 1", "=", 1], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 1", "=", 1]], true, [[3, 3]], 18, [false, true, true]],
+    [2, [["@This 0", "=", 3], "&&", ["@Next 1 0", "=", 3], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 1]], false, [[4, 1]], 24, [false, true]],
+
+    [2, [["@This 0", "=", 4], "&&", ["@Next 1 0", "=", 4], "&&", ["@Next 1 1", "+", "@This 1", "<", 5]], true, [[4, ["@Next 1 1", "+", "@This 1"]]], [24, "*", ["@Next 1 1", "+", "@This 1"]], [false, true]],
+    [2, [["@This 0", "=", 4], "&&", ["@Next 1 0", "=", 4], "&&", ["@Next 1 1", "+", "@This 1", "=", 5]], true, [[5, 1]], 120, [false, true]],
+
+    [3, [["@This 0", "=", 5], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[5, 3]], 360, [false, true, true]],
+    [3, [["@This 0", "=", 5], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [[6, 1]], 720, [false, true, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", 5], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[5, 2]], 240, [false, true]],
+    [2, [["@This 0", "=", 5], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 3]], true, [[6, 1]], 720, [false, true]],
+
+    [3, [["@This 0", "=", 6], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[6, 3]], 2160, [false, true, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", 6], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[6, 2]], 1440, [false, true]],
+    [2, [["@This 0", "=", 6], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [[6, 4]], 2880, [false, true]],
+    [2, [["@This 0", "=", 6], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 4]], false, [[7, 1]], 5040, [false, true]],
+
+    [2, [["@This 0", "=", 7], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [[7, 2]], 10080, [false, true]],
+    [2, [["@This 0", "=", 7], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1]], false, [[7, 3]], 15120, [false, true]],
+    [2, [["@This 0", "=", 7], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 2]], false, [[7, 5]], 25200, [false, true]],
+    [2, [["@This 0", "=", 7], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 5], "&&", ["@This 1", "=", 3]], false, [[8, 1]], 40320, [false, true]],
+
+    [4, [["@This 0", "=", 8], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Next 3 0", "=", "@This 0"], "&&", ["@Next 3 1", "=", "@This 1"],"&&", ["@This 1", "=", 1]], true, [[8, 4]], 161280, [false, true, true, true]],
+    [3, [["@This 0", "=", 8], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 4], "&&", ["@Next 2 1", "=", 4]], false, [[9, 1]], 362880, [false, true, true]],
+
+    [2, [["@This 0", "=", 9], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [[9, 2]], 725760, [false, true]],
+    [3, [["@This 0", "=", 9], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], false, [[9, 5]], 1814400, [false, true, true]],
+    [2, [["@This 0", "=", 9], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 5], "&&", ["@This 1", "=", 5]], false, [[10, 1]], 3628800, [false, true]],
+
+    [2, [["@This 0", "=", 10], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [[10, 2]], 7257600, [false, true]],
+    [2, [["@This 0", "=", 10], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1], "&&", [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", 3]]], false, [[10, 3]], 10886400, [false, true]],
+    [3, [["@This 0", "=", 10], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 3], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1]], false, [[10, 6]], 21772800, [false, true, true]],
+    [3, [["@This 0", "=", 10], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 6], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 2]], false, [[11, 1]], 39916800, [false, true, true]],
+
+    [4, [["@This 0", "=", 11], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Next 3 0", "=", "@This 0"], "&&", ["@Next 3 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[11, 4]], 159667200, [false, true, true, true]],
+    [4, [["@This 0", "=", 11], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Next 3 0", "=", "@This 0"], "&&", ["@Next 3 1", "=", "@This 1"], "&&", ["@This 1", "=", 3]], true, [[12, 1]], 479001600, [false, true, true, true]],
+    [3, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", 11], "&&",  ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[11, 3]], 119750400, [false, true, true]],
+    [3, [["@This 0", "=", 11], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [[11, 6]], 239500800, [false, true, true]],
+    [3, [["@This 0", "=", 11], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "=", 4]], true, [[12, 1]], 479001600, [false, true, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", 11], "&&",  ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 1]], true, [[11, 2]], 79833600, [false, true]],
+    [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", 11], "&&",  ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 2]], true, [[11, 4]], 159667200, [false, true]],
+    [2, [[["@Next -2 0", "!=", "@This 0"], "||", ["@Next -2 1", "!=", "@This 1"]], "&&", [["@Next 2 0", "!=", "@This 0"], "||", ["@Next 2 1", "!=", "@This 1"]], "||", ["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@This 0", "=", 11], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 3]], true, [[11, 6]], 239500800, [false, true]],
+    [2, [["@This 0", "=", 11], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", "=", 6]], true, [[12, 1]], 479001600, [false, true]]
+]
+let TileSpawns = [[[1, 1], 100]];
+let winConditions = [[7, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#fffeda");
+document.documentElement.style.setProperty("--grid-color", "#c7c6a7");
+document.documentElement.style.setProperty("--tile-color", "#eceac2");
+document.documentElement.style.setProperty("--text-color", "#525146");
+displayRules("rules_text", ["h2", "Factorials"], ["h1", "5040"], ["p","For any whole number x between 1 and 11, tiles that are at least x! and less than (x+1)! follow the merging rules of the gamemode based around powers of (x+1), with x! taking the place of the powers of (x+1) within that particular ruleset. Get to the 5040 tile to win!"],
+["p", "Spawning tiles: 1 (100%)"]);
+
+2047:
+let width = 5; let height = 5;
+let TileNumAmount = 1;
+let TileTypes = [[[1], "1", "#ffffff", "#746577"], [[2], "3", "#d8ffb6", "#746577"], [[3], "7", "#a7ff5a", "#746577"],
+[[4], "15", "#77ff00", "#746577"], [[5], "31", "#00ff33", "#746577"], [[6], "63", "#00ff9d", "#746577"], [[7], "127", "#00ffd9", "#746577"],
+[[8], "255", "#dba6ff", "#f5eff7"], [[9], "511", "#c671ff", "#f5eff7"], [[10], "1023", "#b23eff", "#f5eff7"], [[11], "2047", "#9900ff", "#f5eff7"],
+[[12], "4095", "#ff9ed0", "#f5eff7"], [[13], "8191", "#ff62b3", "#f5eff7"], [[14], "16383", "#ff2b99", "#f5eff7"], [[15], "32767", "#e90079", "#f5eff7"],
+[[16], "65535", "#9d0051", "#f5eff7"], [[17], "131071", "#ff7b4f", "#f5eff7"], [[18], "262143", "#ff4000", "#f5eff7"], [[19], "524287", "#bf3000", "#f5eff7"],
+[true, [2, "^", "@This 0", "-", 1], ["HSLA", [15, "*", "@This 0", "-", 265], 100, [0.9, "^", ["@This 0", "-", 20], "*", 36], 1], "#f5eff7"]];
+let MergeRules = [[3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", 1], "&&", ["@This 0", ">", 0]], false, [[["@This 0", "+", 1]]], [2, "^", ["@This 0", "+", 1], "-", 1], [false, true, true]]];
+let TileSpawns = [[[1], 95], [[2], 5]];
+let winConditions = [[11]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#f1daff");
+document.documentElement.style.setProperty("--grid-color", "#bca7c7");
+document.documentElement.style.setProperty("--tile-color", "#dac2ec");
+document.documentElement.style.setProperty("--text-color", "#4e4652");
+displayRules("rules_text", ["h2", "Powers of 2 Minus 1"], ["h1", "2047"], ["p", "Merges occur between three tiles. Two of them must be equal to each other, and the third must be a 1. Get to the 2047 tile to win!"],
+["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
+
+2186:
+let width = 5; let height = 5;
+let TileNumAmount = 2;
+let TileTypes = [[[0, 1], "1", "#ffffff", "#46524c"], [[1, 1], "2", "#a2a2ff", "#46524c"], [[1, 2], "5", "#0000e6", "#ebf6f1"],
+[[2, 1], "8", "#81ffff", "#46524c"], [[2, 2], "17", "#00ffff", "#ebf6f1"], [[3, 1], "26", "#6fb5ff", "#46524c"], [[3, 2], "53", "#007bff", "#ebf6f1"],
+[[4, 1], "80", "#f4ff62", "#46524c"], [[4, 2], "161", "#d5e400", "#ebf6f1"], [[5, 1], "242", "#d269ff", "#46524c"], [[5, 2], "485", "#9b00dd", "#ebf6f1"],
+[[6, 1], "728", "#9aff7b", "#46524c"], [[6, 2], "1457", "#3bfa00", "#ebf6f1"], [[7, 1], "2186", "#5affb5", "#46524c"], [[7, 2], "4373", "#00ff8c", "#ebf6f1"],
+[[8, 1], "6560", "#698eff", "#46524c"], [[8, 2], "13121", "#0040ff", "#ebf6f1"], [[9, 1], "19682", "#ff7cf4", "#46524c"], [[9, 2], "39365", "#ff00ea", "#ebf6f1"],
+[[10, 1], "59048", "#ff7a78", "#46524c"], [[10, 2], "118097", "#da0300", "#ebf6f1"], [[11, 1], "177146", "#6ee4ff", "#46524c"], [[11, 2], "354293", "#0095e5", "#ebf6f1"],
+[[12, 1], "531440", "#ffbc6b", "#46524c"], [[12, 2], "1062881", "#ff8c00", "#ebf6f1"],
+[["@This 1", "=", 1], [3, "^", "@This 0", "-", 1], ["HSLA", [97, "*", "@This 0", "-", 931], [0.9, "^", ["@This 0", "-", 12], "*", 100], 70, 1], "#46524c"],
+[["@This 1", "=", 2], [3, "^", "@This 0", "*", 2, "-", 1], ["HSLA", [97, "*", "@This 0", "-", 931], [0.9, "^", ["@This 0", "-", 12], "*", 100], 35, 1], "#ebf6f1"]];
+let MergeRules = [
+    [2, [["@This 0", "=", 0], "&&", ["@Next 1 0", "=", 0]], true, [[1, 1]], 2, [false, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1]], false, [["@This 0", 2]], [3, "^", "@This 0", "*", 2, "-", 1], [false, true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1]], false, [[["@This 0", "+", 1], 1]], [3, "^", ["@This 0", "+", 1], "-", 1], [false, true, true]]];
+let TileSpawns = [[[0, 1], 92], [[1, 1], 7], [[1, 2], 1]];
+let winConditions = [[7, 1]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#dafff0");
+document.documentElement.style.setProperty("--grid-color", "#a7c7be");
+document.documentElement.style.setProperty("--tile-color", "#c2ecda");
+document.documentElement.style.setProperty("--text-color", "#46524c");
+displayRules("rules_text", ["h2", "Powers of 3 Minus 1"], ["h1", "2186"], ["p","Two 1s can merge into a 2, but all other merges occur between three tiles: one of the tiles is always a 1, and one of them is always one less than a power of three, while the third tile can be either one less than that same power of three or one less than double that power of three. Get to the 2186 tile to win!"],
+["p", "Spawning tiles: 1 (92%), 2 (7%), 5 (1%)"]);
+
+2049:
+let width = 5; let height = 5;
+let TileNumAmount = 1;
+let TileTypes = [[[-2], "-1", "#444444", "#bbbbbb"], [[-1], "1", "#ffffff", "#52464e"],
+[[0], "2", "#b6afff", "#52464e"], [[1], "3", "#9086ff", "#52464e"], [[2], "5", "#6a5cfc", "#52464e"], [[3], "9", "#3624ff", "#52464e"],
+[[4], "17", "#7c24ff", "#52464e"], [[5], "33", "#bb00ff", "#52464e"], [[6], "65", "#ee00ff", "#52464e"], [[7], "129", "#ffb0d4", "#f9f2f5"],
+[[8], "257", "#ff84bb", "#f9f2f5"], [[9], "513", "#ff5ca5", "#f9f2f5"], [[10], "1025", "#ff3590", "#f9f2f5"], [[11], "2049", "#ff0073", "#f9f2f5"],
+[[12], "4097", "#ffa078", "#f9f2f5"], [[13], "8193", "#ff7a41", "#f9f2f5"], [[14], "16385", "#ff4d00", "#f9f2f5"], [[15], "32769", "#d33f00", "#f9f2f5"],
+[[16], "65537", "#8d2a00", "#f9f2f5"], [[17], "131073", "#ffbe5c", "#f9f2f5"], [[18], "262145", "#ff9900", "#f9f2f5"], [[19], "524289", "#c67700", "#f9f2f5"],
+[true, [2, "^", "@This 0", "+", 1], ["HSLA", [15, "*", "@This 0", "-", 250], 100, [0.9, "^", ["@This 0", "-", 20], "*", 36], 1], "#f9f2f5"]];
+let MergeRules = [
+    [2, [["@Next 1 0", "=", -1], "&&", ["@This 0", "=", -1]], false, [[0]], 2, [false, true]],
+    [2, [["@Next 1 0", "=", -1], "&&", ["@This 0", "=", -2]], false, [], 0, [true, true]],
+    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", -2], "&&", ["@This 0", ">=", 0]], false, [[["@This 0", "+", 1]]], [2, "^", ["@This 0", "+", 1], "-", 1], [false, true, true]]
+];
+let TileSpawns = [[[-1], 65], [[-2], 35]];
+let winConditions = [[11]];
+let winRequirement = 1;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#ffdae7");
+document.documentElement.style.setProperty("--grid-color", "#c7a7bb");
+document.documentElement.style.setProperty("--tile-color", "#ecc2dc");
+document.documentElement.style.setProperty("--text-color", "#52464e");
+displayRules("rules_text", ["h2", "Powers of 2 Plus 1"], ["h1", "2049"], ["p", "Two 1s can merge, but all other merges occur between three tiles: two of them must be equal to each other and not 1s or -1s, and the third must be a -1. But be careful, because if a 1 and a -1 collide, they're both destroyed. Get to the 2049 tile to win!"],
+["p", "Spawning tiles: 1 (65%), -1 (35%)"]);
+
+XXXX:
+let width = 6; let height = 6;
+let TileNumAmount = 2;
+let TileTypes = [[[1, 0], "1", "#ffffff", "#000000"],
+[[["@This 0", ">", 1], "&&", ["@This 1", "<", 5]], ["@This 0", "^", "@This 1"], ["HSLA", [222.49223595, "*", "@This 0", "-", 444.9844719], 100, [100, "-", ["@This 1", "*", 12.5]], 1], "#000000"],
+[true, ["@This 0", "^", "@This 1"], ["HSLA", [222.49223595, "*", "@This 0", "-", 444.9844719], 100, [0.85, "^", ["@This 1", "-", 5], "*", 50], 1], "#ffffff"],];
+let MergeRules = [
+    [2, [["@NextNE -1 0", "!=", 1], "&&", ["@Next 1 0", "=", 1], "&&", ["@This 0", "=", 1]], true, [["@Length", 1]], ["@Length"], [], 2, [0, 1], 1, Math.max(width, height)],
+    ["@This 0", [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 0", ">", 1]], true, [["@This 0", ["@This 1", "+", 1]]], ["@This 0", "^", ["@This 1", "+", 1]], [], 2, [0, 1], 1],
+];
+let TileSpawns = [[[1, 0], 100]];
+let winConditions = [[["@This 0", "^", "@This 1", ">=", 1000]]];
+let winRequirement = 4;
+let slideAmount = Infinity;
+let multiMerge = false;
+document.documentElement.style.setProperty("--background-color", "#e8e8e8");
+document.documentElement.style.setProperty("--grid-color", "#e1c3c3");
+document.documentElement.style.setProperty("--tile-color", "#c6c3e1");
+document.documentElement.style.setProperty("--text-color", "#41433f");
+displayRules("rules_text", ["h2", "Powers of n"], ["h1", "XXXX"], ["p", "Any number of 1s can merge, but upon doing so, they merge into a tile that must merge with the same number of itself on each higher tier: for example, merging two 1s makes a 2, then it takes two 2s to merge, then two of those 4s, and so on, but merging three 1s makes a 3, then it takes three 3s to merge, then three of those 9s, and so on. To win, you must make at least four different tiles that have at least four digits. Sure, you could just win with 1024, 2048, 4096, and 8192, but where's the fun in that? How many different tiles can you discover?"],
+["p", "Spawning tiles: 1 (100%)"]);
+document.getElementById("discovered_container").style.setProperty("display", "inline-block");
+document.getElementById("winning_container").style.setProperty("display", "inline-block");

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>The 2048 Power Compendium</title>
+        <link rel="stylesheet" href="2048 Power Compendium.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <base target="_blank">
+    </head>
+    <body>
+
+        <div id="menu">
+            <h1 id="compendium_title">The 2048 Power Compendium</h1>
+            <p id="menu_subtitle">Click on one of the tiles here to select that game mode.</p>
+            <div id="menu_grid">
+                <div class="menu_tile hover_grow" style="background-color: #ffc400">2048</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff00d9">2187</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff0000">1024</div>
+                <div class="menu_tile hover_grow" style="background-color: #c3ff00">3125</div>
+                <div class="menu_tile hover_grow" style="background-color: #00a6ff">1296</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff9d00">2401</div>
+                <div class="menu_tile hover_grow" style="background-color: #1900ff;">4096</div>
+                <div class="menu_tile hover_grow" style="background-color: #00f2ff">6561</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff5100">1000</div>
+                <div class="menu_tile hover_grow" style="background-color: #00ff00">1331</div>
+                <div class="menu_tile hover_grow" style="background-color: #d000ff">1728</div>
+                <div class="menu_tile hover_grow" style="background-color: #9900ff">2047</div>
+                <div class="menu_tile hover_grow" style="background-color: #00ff8c">2186</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff0073">2049</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffff00">5040</div>
+                <div class="menu_tile hover_grow" style="background-color: #6f0062">2197</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff8258">3375</div>
+                <div class="menu_tile hover_grow" style="background-color: #b2ffb2">4913</div>
+                <div class="menu_tile hover_grow" style="background-color: #0000a8">8000</div>
+                <div class="menu_tile hover_grow" style="background-color: #ff8cf5">9261</div>
+                <div class="menu_tile hover_grow" style="background-color: #007b7b; --tile_font_size: 6.4;">625</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffffff; --tile_font_size: 6.4;">900</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffdf76">2059</div>
+                <div class="menu_tile hover_grow" style="background-color: #829bff">2315</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(135deg, #a06262 0%, #a06262 27.5%, #626fa0 27.5%, #626fa0 50%, #88a062 50%, #88a062 72.5%, #a0629a 72.5%); background-color: #636363">XXXX</div>
+            </div>
+            <div id="extra_menu_container">
+                <div id="extra_menu_grid">
+                <div class="menu_tile hover_grow" style="background-color: #6637a8">2584</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffba7d">2745</div>
+                <div class="menu_tile hover_grow" style="background-color: #009900">1705</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#d0ae91, #d58137, #7a4b21); --tile_font_size: 3.6;">1535 1536 1537</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ffd54d 0% 15%, #fff 15% 85%, #ffd54d 85% 100%)">3072</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#edcc61 0% 50%, #8cff00); --tile_font_size: 4;"><p><sup>256</sup>No</p></div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff3030 0%, #ff00d9 25% 75%, #3030ff 100%); --tile_font_size: 3.2;">Bicolor 2187</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#8fba00 0%, #c3ff00 25% 75%, #8fba00 100%); --tile_font_size: 3.2;">Harder 3125</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff77eb 0% 50%, #6c005c 50% 100%); --tile_font_size: 3.2;">Partial Absorb 243</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#d18cff 0% 50%, #5c0099 50% 100%); --tile_font_size: 3.2;">Partial Absorb 255</div>
+                <div class="menu_tile hover_grow" style="background-color: #990059">1280</div>
+                <div class="menu_tile hover_grow" style="background-color: #af8c00; --tile_font_size: 3">2216.838</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffff4d; --tile_font_size: 6.4;">180</div>
+                <div class="menu_tile hover_grow" style="background-color: #00a068">2592</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(90deg, #f9eee3 0% 33.333%, #ede0c8 33.333% 66.666%, #f2b179 66.666% 100%);">2 4 8</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#660000, #664e00, #1d6600, #00664e, #005866, #003366, #050066); --tile_font_size: 6"><p>X<sup>Y</sup></p></div>
+                </div>
+            </div>
+            <div id="menu_extra" class="hover_grow menu_button">Go to Extra Modes</div>
+            <div id="menu_extra_return" class="hover_grow menu_button">Return to Main Modes</div>
+            <div id="menu_import" class="hover_grow menu_button">Resume From Save Code</div>
+            <div id="menu_to_modifiers" class="hover_grow menu_button">Go to Modifiers</div>
+            <div id="menu_to_guide" class="hover_grow menu_button"><p>Go to Guide<br><span id="guide_attraction">(If this is your first time here, click this button first!)</span></p></div>
+        </div>
+
+        <div id="gamemode">
+            <div id="gm_big_tile"></div>
+            <div id="gm_rules_text"></div>
+            <div id="start_game" class="hover_grow">Start Game</div>
+            <div id="gm_size_line" class="gm_var_line">
+                <div id="gm_width" class="gm_var_container">
+                    <p id="gm_width_title" class="gm_var_title">Grid Width:</p>
+                    <p id="gm_width_counter" class="gm_var_counter"></p>
+                    <div id="gm_width_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_width_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+                <div id="gm_height" class="gm_var_container">
+                    <p id="gm_height_title" class="gm_var_title">Grid Height:</p>
+                    <p id="gm_height_counter" class="gm_var_counter"></p>
+                    <div id="gm_height_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_height_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+            </div>
+            <div id="gm_diamond_line" class="gm_var_line">
+                <div id="gm_diamond" class="gm_var_container">
+                    <p id="gm_diamond_title" class="gm_var_title">Grid Size:</p>
+                    <p id="gm_diamond_counter" class="gm_var_counter"></p>
+                    <div id="gm_diamond_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_diamond_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+            </div>
+            <div id="gm_4D_line" class="gm_var_line">
+                <div id="gm_4D_width" class="gm_var_container">
+                    <p id="gm_4D_width_title" class="gm_var_title">Grid Width:</p>
+                    <p id="gm_4D_width_counter" class="gm_var_counter"></p>
+                    <div id="gm_4D_width_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_4D_width_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+                <div id="gm_4D_height" class="gm_var_container">
+                    <p id="gm_4D_height_title" class="gm_var_title">Grid Height:</p>
+                    <p id="gm_4D_height_counter" class="gm_var_counter"></p>
+                    <div id="gm_4D_height_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_4D_height_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+                <div id="gm_4D_length" class="gm_var_container">
+                    <p id="gm_4D_length_title" class="gm_var_title">Grid Length:</p>
+                    <p id="gm_4D_length_counter" class="gm_var_counter"></p>
+                    <div id="gm_4D_length_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_4D_length_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+                <div id="gm_4D_depth" class="gm_var_container">
+                    <p id="gm_4D_depth_title" class="gm_var_title">Grid Depth:</p>
+                    <p id="gm_4D_depth_counter" class="gm_var_counter"></p>
+                    <div id="gm_4D_depth_plus" class="gm_grid_button plus_button">+</div>
+                    <div id="gm_4D_depth_minus" class="gm_grid_button minus_button">-</div>
+                </div>
+            </div>
+            <div id="mode_vars_line">
+                <div id="2048_vars" class="gm_var_line">
+                    <div id="2048_spawn" class="gm_var_switch_container">
+                        <p id="2048_spawn_text" class="gm_var_text">To match the rest of the 2048 Power Compendium modes, 1s are the primary spawning tile.</p>
+                        <div id="2048_spawn_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="XXXX_vars" class="gm_var_line">
+                    <div id="XXXX_min" class="gm_var_container">
+                        <p id="XXXX_min_title" class="gm_var_title">Minimum Merge Length:</p>
+                        <p id="XXXX_min_counter" class="gm_var_counter"></p>
+                        <div id="XXXX_min_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="XXXX_min_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="XXXX_max" class="gm_var_container">
+                        <p id="XXXX_max_title" class="gm_var_title">Maximum Merge Length:</p>
+                        <p id="XXXX_max_counter" class="gm_var_counter"></p>
+                        <div id="XXXX_max_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="XXXX_max_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="Isotopic256_vars" class="gm_var_line">
+                    <div id="Isotopic256_halfLife" class="gm_var_container">
+                        <p id="Isotopic256_halfLife_title" class="gm_var_title">Tile Lifespan Multiplier:</p>
+                        <form id="Isotopic256_halfLife_form" class="gm_var_form">
+                            <input type="number" step="any" id="Isotopic256_halfLife_change" name="Isotopic256_halfLife_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="2592_vars" class="gm_var_line">
+                    <div id="2592_switch" class="gm_var_switch_container">
+                        <p id="2592_switch_text" class="gm_var_text">The merge rules switch after each move.</p>
+                        <div id="2592_switch_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="Wildcard2048_vars" class="gm_var_line">
+                    <div id="Wildcard2048_add" class="gm_var_switch_container">
+                        <p id="Wildcard2048_add_text" class="gm_var_text">When two wildcard tiles merge, only the possibilities they both share remain.</p>
+                        <div id="Wildcard2048_add_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="XpowY_vars" class="gm_var_line">
+                    <div id="XpowY_pow" class="gm_var_container">
+                        <p id="XpowY_pow_title" class="gm_var_title">Highest Prime Power:</p>
+                        <p id="XpowY_pow_counter" class="gm_var_counter"></p>
+                        <div id="XpowY_pow_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="XpowY_pow_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="XpowY_merge" class="gm_var_container">
+                        <p id="XpowY_merge_title" class="gm_var_title">Maximum Merge Length:</p>
+                        <p id="XpowY_merge_counter" class="gm_var_counter"></p>
+                        <div id="XpowY_merge_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="XpowY_merge_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+            </div>
+            <div id="gm_return" class="hover_grow">Return to menu</div>
+        </div>
+
+        <div id="modifiers">
+            <h1 id="modifiers_title">Modifiers</h1>
+            <p id="modifiers_subtitle">Change these, and their effects alter every game mode!</p>
+            <div id="modifiers_page_switch">
+                <img src="Previous.svg" id="modifiers_previous_page" class="previous_arrow_button">
+                <p id="modifiers_page_counter"></p>
+                <img src="Next.svg" id="modifiers_next_page" class="next_arrow_button">
+            </div>
+            <div id="modifiers_pages">
+                <div id="modifiers_page_1" class="modifiers_page">
+                    <div id="modifiers_settings" class="modifiers_flexbox">
+                        <div id="modifiers_animationSpeed" class="modifiers_var_container">
+                            <p id="modifiers_animationSpeed_title" class="gm_var_title">Animation Speed Multiplier:</p>
+                            <form id="modifiers_animationSpeed_form" class="gm_var_form">
+                                <input type="number" step="any" id="modifiers_animationSpeed_change" name="modifiers_animationSpeed_change">
+                            </form>
+                        </div>
+                    </div>
+                    <div id="modifiers_page_1_numeric" class="modifiers_flexbox">
+                        <div id="modifiers_slideAmount" class="modifiers_var_container">
+                            <p id="modifiers_slideAmount_title" class="gm_var_title">Maximum Spaces Moved per Move:</p>
+                            <p id="modifiers_slideAmount_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_slideAmount_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_slideAmount_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_randomTileAmount" class="modifiers_var_container">
+                            <p id="modifiers_randomTileAmount_title" class="gm_var_title">Tiles Spawned After Each Move:</p>
+                            <p id="modifiers_randomTileAmount_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_randomTileAmount_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_randomTileAmount_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_startTileAmount" class="modifiers_var_container">
+                            <p id="modifiers_startTileAmount_title" class="gm_var_title">Tiles Spawned at the Start:</p>
+                            <p id="modifiers_startTileAmount_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_startTileAmount_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_startTileAmount_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_nextTiles" class="modifiers_var_container">
+                            <p id="modifiers_nextTiles_title" class="gm_var_title">Visible Next Spawned Tiles:</p>
+                            <p id="modifiers_nextTiles_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_nextTiles_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_nextTiles_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_randomVoid" class="modifiers_var_container">
+                            <p id="modifiers_randomVoid_title" class="gm_var_title">Randomly-Placed Holes:</p>
+                            <p id="modifiers_randomVoid_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_randomVoid_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_randomVoid_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_randomBlackBox" class="modifiers_var_container">
+                            <p id="modifiers_randomBlackBox_title" class="gm_var_title">Randomly-Placed Block Tiles:</p>
+                            <p id="modifiers_randomBlackBox_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_randomBlackBox_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_randomBlackBox_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_spawnInterval" class="modifiers_var_container">
+                            <p id="modifiers_spawnInterval_title" class="gm_var_title">Moves Between Spawns:</p>
+                            <p id="modifiers_spawnInterval_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_spawnInterval_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_spawnInterval_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modifiers_page_2" class="modifiers_page">
+                    <p id="modifiers_multiMerge_text" class="modifier_text">A tile that was just merged cannot itself be part of another merge on the same move.</p>
+                    <div id="modifiers_multiMerge_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <p id="modifiers_spawnLocation_text" class="modifier_text">New tiles can spawn in any empty spaces on the grid.</p>
+                    <div id="modifiers_spawnLocation_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <p id="modifiers_simpleSpawns_text" class="modifier_text">Gamemodes have their normal spawning rules.</p>
+                    <div id="modifiers_simpleSpawns_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                </div>
+                <div id="modifiers_page_3" class="modifiers_page">
+                    <div id="modifiers_customGridActivate" class="hover_grow CustomGridSwitch">Activate Custom Grid</div>
+                    <p id="modifiers_gridShape_text" class="modifier_text">The grid is rectangular.</p>
+                    <div id="modifiers_gridShape_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <p id="modifiers_directions_text" class="modifier_text">You may only move in orthogonal directions.</p>
+                    <div id="modifiers_directions_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <p id="modifiers_stayStill_text" class="modifier_text">You have to move on every turn.</p>
+                    <div id="modifiers_stayStill_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                </div>
+                <div id="modifiers_page_3.1" class="modifiers_page">
+                    <div id="modifiers_customGridDeactivate" class="hover_grow CustomGridSwitch">Deactivate Custom Grid</div>
+                    <div id="modifiers_customGridLine">
+                        <div id="modifiers_customGridNotice">Click on a tile here to switch it between being an empty tile, a hole in the grid, or a moving block tile.</div>
+                        <div id="modifiers_customGridAndSize">
+                            <div id="modifiers_customGrid"></div>
+                            <div id="modifiers_customGridSizeLine">
+                                <div id="modifiers_customGridWidth" class="modifiers_var_container">
+                                    <p id="modifiers_customGridWidth_title" class="gm_var_title">Grid Width:</p>
+                                    <p id="modifiers_customGridWidth_counter" class="gm_var_counter"></p>
+                                    <div id="modifiers_customGridWidth_plus" class="gm_grid_button plus_button">+</div>
+                                    <div id="modifiers_customGridWidth_minus" class="gm_grid_button minus_button">-</div>
+                                </div>
+                                <div id="modifiers_customGridHeight" class="modifiers_var_container">
+                                    <p id="modifiers_customGridHeight_title" class="gm_var_title">Grid Height:</p>
+                                    <p id="modifiers_customGridHeight_counter" class="gm_var_counter"></p>
+                                    <div id="modifiers_customGridHeight_plus" class="gm_grid_button plus_button">+</div>
+                                    <div id="modifiers_customGridHeight_minus" class="gm_grid_button minus_button">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modifiers_page_3.2" class="modifiers_page">
+                    <div id="modifiers_customDirectionsLine">
+                        <div id="modifiers_customArrowBO">
+                            <div id="modifiers_customArrowContainer"></div>
+                            <div id="modifiers_customArrowOptions">
+                                <div id="modifiers_customArrowForms">
+                                    <div id="modifiers_customArrow_vdir" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_vdir_title" class="gm_var_title">Vertical Movement Magnitude:</p>
+                                        <form id="modifiers_customArrow_vdir_form" class="gm_var_form">
+                                            <input type="number" step="1" id="modifiers_customArrow_vdir_change" name="modifiers_customArrow_vdir_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_hdir" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_hdir_title" class="gm_var_title">Horizontal Movement Magnitude:</p>
+                                        <form id="modifiers_customArrow_hdir_form" class="gm_var_form">
+                                            <input type="number" step="1" id="modifiers_customArrow_hdir_change" name="modifiers_customArrow_hdir_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_text" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_text_title" class="gm_var_title">Button Text:</p>
+                                        <form id="modifiers_customArrow_text_form" class="gm_var_form">
+                                            <input type="text" id="modifiers_customArrow_text_change" name="modifiers_customArrow_text_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_size" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_size_title" class="gm_var_title">Button Size (%):</p>
+                                        <form id="modifiers_customArrow_size_form" class="gm_var_form">
+                                            <input type="number" step="any" id="modifiers_customArrow_size_change" name="modifiers_customArrow_size_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_fontsize" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_fontsize_title" class="gm_var_title">Font Size (%):</p>
+                                        <form id="modifiers_customArrow_fontsize_form" class="gm_var_form">
+                                            <input type="number" step="any" id="modifiers_customArrow_fontsize_change" name="modifiers_customArrow_fontsize_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_vpos" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_vpos_title" class="gm_var_title">Vertical Position (%):</p>
+                                        <form id="modifiers_customArrow_vpos_form" class="gm_var_form">
+                                            <input type="number" step="any" id="modifiers_customArrow_vpos_change" name="modifiers_customArrow_vpos_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_hpos" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_hpos_title" class="gm_var_title">Horizontal Position (%):</p>
+                                        <form id="modifiers_customArrow_hpos_form" class="gm_var_form">
+                                            <input type="number" step="any" id="modifiers_customArrow_hpos_change" name="modifiers_customArrow_hpos_change">
+                                        </form>
+                                    </div>
+                                    <div id="modifiers_customArrow_rotation" class="customArrow_var_container">
+                                        <p id="modifiers_customArrow_rotation_title" class="gm_var_title">Text Rotation (degrees):</p>
+                                        <form id="modifiers_customArrow_rotation_form" class="gm_var_form">
+                                            <input type="number" step="any" id="modifiers_customArrow_rotation_change" name="modifiers_customArrow_rotation_change">
+                                        </form>
+                                    </div>
+                                </div>
+                                <div id="modifiers_customArrow_keyLine">
+                                    <p id="modifiers_customArrow_keyText"></p>
+                                    <div id="modifiers_customArrow_removeKey" class="hover_grow">Remove Last Key</div>
+                                    <div id="modifiers_customArrow_addKey" class="hover_grow">Add New Key</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="modifiers_customArrow_directionRight">
+                            <div id="modifiers_customArrow_removeDirection" class="hover_grow">Remove This Direction</div>
+                            <div id="modifiers_customArrow_addDirection" class="hover_grow">Add New Direction</div>
+                            <p id="modifiers_customArrow_directionRightText">Click on a button here to select or de-select it.</p>
+                        </div>
+                    </div>
+                </div>
+                <div id="modifiers_page_4" class="modifiers_page">
+                    <p id="modifiers_garbage0_text" class="modifier_text">Garbage 0s: OFF</p>
+                    <p id="modifiers_garbage0_info" class="modifier_subtext">When this modifier is on, whenever tiles merge, 0s are left behind on the tiles emptied by the merge. You can merge any number of 0s into a single 0, which is the only merge that doesn't leave behind more 0s.</p>
+                    <div id="modifiers_garbage0_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <p id="modifiers_negativetiles_text" class="modifier_text">Negative Tiles: OFF</p>
+                    <p id="modifiers_negativetiles_info" class="modifier_subtext">When this modifier is on, positive and negative tiles are equally likely to spawn. Tiles only merge with other tiles of their own sign (in 2049's case, -1s fuel positive merges and 1s fuel negative merges), and you must get the winning tile in both positive and negative forms to win (in modes with multiple win conditions, you need to get twice as many winning tiles to win, but they don't necessarily have to have a mix of positive and negative), but if this modifier is set to Interacting, then when a tile and its own negative collide, they're both destroyed.</p>
+                    <div id="modifiers_negativetiles_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                </div>
+            </div>
+            <div id="modifiers_return" class="hover_grow">Return to menu</div>
+        </div>
+
+        <div id="gameplay">
+            <div id="left_of_grid">
+                <div id="rules_text"></div>
+                <div id="next_tiles_container">
+                    <p>Next Tiles:</p>
+                    <div id="next_tiles"></div> <!--JavaScript is responsible for this-->
+                </div>
+            </div>
+            <div id="grid_and_arrows">
+                <div id="grid_line">
+                    <div id="score_line" style="text-align:center">
+                        <div id="mergeMoves_container" class="stat_container">
+                            <p id="mergeMoves_title" class="stat_title">Moves Where A Merge Occured</p>
+                            <p id="mergeMoves_counter" class="stat_counter">0</p>
+                        </div>
+                        <div id="moves_container" class="stat_container">
+                            <p id="moves_title" class="stat_title">Moves</p>
+                            <p id="moves_counter" class="stat_counter">0</p>
+                        </div>
+                        <div id="discovered_container" class="stat_container">
+                            <p id="discovered_title" class="stat_title">Discovered Tiles</p>
+                            <p id="discovered_counter" class="stat_counter">0</p>
+                        </div>
+                        <div id="score_container" class="stat_container">
+                            <p id="score_title" class="stat_title">Score</p>
+                            <p id="score_counter" class="stat_counter">0</p>
+                        </div>
+                        <div id="winning_container" class="stat_container">
+                            <p id="winning_title" class="stat_title">Discovered Winning Tiles</p>
+                            <p id="winning_counter" class="stat_counter">0</p>
+                        </div>
+                        <div id="merges_container" class="stat_container">
+                            <p id="merges_title" class="stat_title">Merges</p>
+                            <p id="merges_counter" class="stat_counter">0</p>
+                        </div>
+                        <div id="mergesBefore_container" class="stat_container">
+                            <p id="mergesBefore_title" class="stat_title">Merges Before This Move</p>
+                            <p id="mergesBefore_counter" class="stat_counter">0</p>
+                        </div>
+                    </div>
+                    <div id="grid_container">
+                        <div id="grid"></div> <!--JavaScript is responsible for this-->
+                        <div id="game_over_screen">
+                            <p>Game Over!</p>
+                            <div id="go_again">Play again</div>
+                        </div>
+                        <div id="win_screen">
+                            <p>You win!</p>
+                            <div id="win_continue">Continue</div>
+                            <div id="win_again">Play again</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="arrow-container"> <!--and this-->
+                </div>
+            </div>
+            <div id="below_grid_line">
+                <div id="gp_export_button" class="button">Get save code</div>
+                <div id="return_button" class="button">Return to menu</div>
+            </div>
+        </div>
+
+        <div id="save_code">
+            <div id="save_code_heading"></div>
+            <textarea id="save_code_box"></textarea>
+            <div id="save_code_button_container">
+                <div id="save_code_import" class="save_code_button hover_grow">Import Save Code</div>
+                <div id="save_code_return_menu" class="save_code_button hover_grow">Return to menu</div>
+                <div id="save_code_return_game" class="save_code_button hover_grow">Return to game</div>
+            </div>
+        </div>
+
+        <div id="custom">
+            <div id="custom_Menu">
+                <h1>Custom Game</h1>
+                <p>Here, you can make your own 2048 game, with custom tiles, merge rules, grid, and more! Click on one of the buttons below to edit that aspect of the game.</p>
+                <div id="cmenu_to_tiles" class="hover_grow cmenu_button">Tile Types</div>
+                <div id="cmenu_to_merges" class="hover_grow cmenu_button">Merge Rules</div>
+                <div id="cmenu_to_spawned" class="hover_grow cmenu_button">Spawned Tiles</div>
+                <div id="cmenu_to_winning" class="hover_grow cmenu_button">Winning Tiles</div>
+                <div id="cmenu_to_grid" class="hover_grow cmenu_button">Grid</div>
+                <div id="cmenu_to_directions" class="hover_grow cmenu_button">Directions</div>
+                <div id="cmenu_to_background" class="hover_grow cmenu_button">Background Stuff</div>
+                <div id="cmenu_to_other" class="hover_grow cmenu_button">Other Settings</div>
+                <div id="cmenu_return" class="hover_grow">Return to menu</div>
+            </div>
+        </div>
+
+        <div id="guide">
+            <h1>Guide</h1>
+            <p>Confused or curious about any aspect of the 2048 Power Compendium? Read your answers here!</p>
+            <div id="guide_basics" class="guide_box">
+                <h2>Basics of the 2048 Power Compendium</h2>
+                <p>
+                    The 2048 Power Compendium is a collection of 41 different variations of the game <i>2048</i>.
+                    You've probably already played, or at least heard of, 2048, but if you haven't, here's a summary:
+                </p>
+                <img src="Guide Images/Standard 2048 Game.png" style="width: calc(var(--base_size) * 80); height: auto">
+                <p class="img_caption">A game of the original 2048 in the 2048 Power Compendium</p>
+                <p>
+                    2048 is a game that's played on a 4x4 grid of tiles. On each move, you choose one of the four orthogonal directions, and all the tiles slide in
+                    that direction until they hit another tile or the edge of the grid. The tiles are solid to each other, but if two tiles of the same number collide,
+                    they merge into a single tile with twice the number: two 1s merge into a 2, two 2s merge into a 4, two 4s merge into an 8, and so on. After each
+                    move, a new tile spawns. The game continues until the grid is full and no more merges can occur, at which point you're out of moves and the game
+                    is over. You win by reaching the 2048 (2<sup>11</sup>) tile, but if you're good enough at the game, it's possible to get even higher tiles.
+                </p>
+                <img src="Guide Images/2187 Game.png" style="width: calc(var(--base_size) * 80); height: auto">
+                <p class="img_caption">A game of 2187, which uses powers of 3 instead of powers of 2</p>
+                <p>
+                    There are many 2048 variants out there on the internet - what makes the 2048 Power Compendium special is that it's a collection of a bunch of
+                    variants, and while a few of the variants originated elsewhere, most of them are unique to the 2048 Power Compendium. When you first open the
+                    2048 Power Compendium, you're looking at the menu screen, which contains the first 25 modes. Click on one of the tiles on the grid there to go
+                    to a screen that explains what that mode is. On that screen, you can change the dimensions of the grid, then you can begin a game in that variant
+                    by clicking the "Start Game" button. Each mode has different merging rules - the later modes tend to be more complicated than the earlier ones,
+                    so it's recommended that you start at the top-left and work your way across the different modes from left to right, top to bottom.
+                </p>
+                <p>
+                    Note that there are a few differences between the 2048 Power Compendium and other 2048 variants.
+                    Unlike most 2048 versions, the 2048 Power Compendium does not have an automatic game over check, but if you try to move in a
+                    direction and nothing happens, that direction goes black until the next successful move, and it's game over once all directions have failed.
+                    The 2048 Power Compendium supports arrow key controls, WASD controls, and clicking the direction buttons to move, but unlike other 2048 versions,
+                    swiping the screen is not supported.
+                    If you feel that the movement animation is too fast or too slow, then click "Go to Modifiers" on the menu and change the animation speed there.
+                    Progress isn't automatically saved, but you can save your progress yourself by clicking "Get save code" in the middle of a game and copying
+                    the code there, then clicking "Resume From Save Code" on the menu and pasting that save code there when you want to resume the game.
+                </p>
+                <p>If you have any other questions, then read on. Otherwise, click "Return to menu" and enjoy the 2048 Power Compendium!</p>
+            </div>
+            <div id="guide_modes" class="guide_box">
+                <h2>Modes</h2>
+                <img src="Guide Images/Main Modes Grid.png" style="width: calc(var(--base_size) * 60); height: auto">
+                <p class="img_caption">The main 25 modes of the 2048 Power Compendium</p>
+                <p>
+                    Each mode of the 2048 Power Compendium is a 2048 variant with different merge rules, and different tiles that arise from these merge rules.
+                    Most of the modes are based on powers of a certain number: 2048 uses powers of 2, 2187 uses powers of 3, 1024 uses powers of 4, and so on.
+                    A few modes use powers of a certain number offset somehow, such as 2047 (powers of 2, minus 1) and 2059 (powers of 3, minus powers of 2).
+                    5040 and XXXX are special, as both of them combine previous modes or powers somehow. Unlike 2048, most modes have "intermediate" tiles:
+                    for example, in 2187, there's a tile for each power of three, but also for double each power of three, which means the possible tiles are
+                    1, 2, 3, 6, 9, 18, 27, 54, 81, 162, 243, and so on. Each mode has a default grid size, but feel free to play on a differently-sized grid
+                    (by clicking the plus and minus buttons next to the grid width and height on the gamemode explanation screen) if you find the default grid size
+                    for that mode too hard or too easy.
+                </p>
+                <p>
+                    Once you've played some of the regular modes and have a handle on the differences between each mode, you can click the "Go to Extra Modes" button
+                    on the menu, which lets you select among the 16 extra modes. These modes are "extra" for different reasons: some of them aren't related to powers
+                    of numbers (Powers of numbers is the core theme of the 2048 Power Compendium, so almost all of the main modes are based on them), some of them are
+                    alternate versions of main modes, some of them use weird gimmicks, and a few of them are open-ended modes without a single defined progression.
+                    Also, a few of the modes have modifiers, some of which are changed by clicking plus/minus buttons, some of which are changed by clicking
+                    "Switch this Modifier" buttons, and some of which are changed by entering their new value into the provided textbox.
+                </p>
+                <p>
+                    Not all of the 2048 Power Compendium modes will be equally fun - try out various modes and find your favorites!
+                </p>
+            </div>
+            <div id="guide_modifiers" class="guide_box">
+                <h2>Modifiers</h2>
+                <p>
+                    If the 41 modes on their own aren't enough for you, then click "Go to Modifiers" on the menu to access a bunch of different modifiers you can change.
+                    These modifiers affect EVERY mode (for the most part), and they allow a pretty good degree of customization.  The Modifiers selection screens are
+                    split up into four pages - to switch between them, click the blue and orange arrows. With the exception of the Animation Speed Multiplier modifier
+                    (which is just aesthetic, and you're encouraged to change this to whatever value you like the best), all of these modifiers alter the gameplay,
+                    so it's recommended you don't start changing the modifiers until you're comfortable with the variants themselves. Games resumed from save codes
+                    retain their old settings regardless of what the current modifiers are set to, except for Animation Speed Multiplier, which is always based on its
+                    current settings and is not saved by save codes.
+                </p>
+                <img src="Guide Images/Modifiers Page 1.png" style="width: calc(var(--base_size) * 80); height: auto">
+                <p class="img_caption">The first page of the Modifiers screens</p>
+                <p>
+                    The first page contains modifiers with numeric values - most of these are changed via the plus and minus buttons, while Animation Speed
+                    Multiplier is changed by typing a new value into its textbox (1 is default speed, higher numbers are faster, lower numbers are slower... except for 0,
+                    which means there's no animation and moves are instant). When it comes to the "Randomly-Placed" modifiers, "holes" are, well, holes in the grid
+                    (which effectively act as walls), while "block tiles" are tiles that move with the others but can't merge with anything, even themselves.
+                </p>
+                <img src="Guide Images/Modifiers Page 2.png" style="width: calc(var(--base_size) * 60); height: auto">
+                <p class="img_caption">The second page of the Modifiers screens</p>
+                <p>The remaining pages have modifiers that are changed by clicking their respective "Switch this Modifier" buttons. The second page has modifiers
+                    that change some more basic elements of the gameplay, the third page has modifiers that alter the grid and movement directions, and the fourth page
+                    is where the most game-changing modifiers are found. If you decide to enable either of the fourth page modifiers, you should probably play on a
+                    larger grid than you otherwise would! Some modes have special interactions with a couple modifiers, with Negative Tiles in particular having the
+                    most special interactions.
+                </p>
+            </div>
+            <div id="guide_customGrid" class="guide_box">
+                <h2>Custom Grid</h2>
+                <img src="Guide Images/Modifiers Page 3.png" style="width: calc(var(--base_size) * 60); height: auto">
+                <p class="img_caption">I wonder what that "Activate Custom Grid" button does?</p>
+                <p>
+                    Page 3, by default, only offers a few options for the shape of the grid: square, diamond, checkerboard, hexagonal, and 3D/4D...
+                    but if you want to customize it further, you can click the "Activate Custom Grid" button. Doing so enables you to fully customize the grid by
+                    turning page 3 into two pages: one to customize the grid, one to customize the movement directions.
+                </p>
+                <img src="Guide Images/Custom Grid.png" style="width: calc(var(--base_size) * 60); height: auto">
+                <p class="img_caption">Ah, so that's what it does!</p>
+                <p>
+                    The grid customizer is the easier of the two custom grid screens to use: you can change the dimensions of the grid, and you can click on any tile
+                    to switch what it starts as: a regular empty tile, a hole in the grid, or a box tile. You can't make any tile start as a number tile, though, since
+                    different modes have different tiles and the custom grid applies to <i>every</i> mode.
+                </p>
+                <img src="Guide Images/Custom Directions.png" style="width: calc(var(--base_size) * 60); height: auto">
+                <p class="img_caption">The directions customization screen, with the up arrow button selected.</p>
+                <p>
+                    On the directions customization screen, you can alter the direction buttons freely. To alter a specific button, click on that button. Once
+                    a button is selected, you can fill in the textboxes to change its attributes. When it comes to movement magnitudes, -1 vertical is up,
+                    +1 vertical is down, -1 horizontal is left, +1 horizontal is right, +1 vertical and +1 horizontal is southeast, and so on. +2 vertical is downwards
+                    movement that skips every other tile, so tiles jump directly from their current space to the space two tiles below them. The four modifiers with
+                    "(%)" next to them are measured in percentage of the arrows box, where 100% is the entire box. To change which keys on the keyboard correspond to
+                    each direction, click the "Remove Last Key" and "Add New Key" buttons; the former removes the last keyboard key in the list for that direction.
+                    The "Add New Key" button, when clicked, becomes "Listening...", indicating that you should press a key on the keyboard; if the key you clicked isn't
+                    already assigned to a direction, then it will be added to the currently selected direction. The "Remove This Direction" button does what it says it does.
+                    To un-select a direction, click the direction that's already selected; if there's no direction selected, then you can click the "Add This Direction"
+                    button to add a new direction.
+                </p>
+            </div>
+            <div id="guide_credits" class="guide_box">
+                <h2>Credits</h2>
+                <p>
+                    2048 was created by Gabriele Cirulli, and the official version can be found <a href="https://play2048.co/">here</a>. However, those who are
+                    familiar with 2048 probably already know that the true origin comes from <a href="https://asherv.com/threes/">Threes!</a>, which is a premium
+                    mobile game with a free web version <a href="http://threesjs.com/">here</a>; the 2048 Power Compendium's 3072 is based on Threes!. As for the
+                    other modes and modifiers in the 2048 Power Compendium that originated elsewhere:
+                    <ul>
+                        <li>
+                            I can't seem to find the origin of 2187 (powers of 3), but it definitely existed before I added it to the 2048 Power Compendium.
+                        </li>
+                        <li>
+                            3125 (powers of 5) comes from <a href="https://scratch.mit.edu/projects/284912743/">this Scratch project</a>, which was also made by me,
+                            years before I made the 2048 Power Compendium.
+                        </li>
+                        <li>
+                            1000 (powers of 10) is basically <a href="http://jatekos101.github.io/20euros/">20 Euros</a>, a currency-merging 2048 variant.
+                        </li>
+                        <li>
+                            XXXX, specifically its behavior when the minimum and maximum merge length are equal, is inspired by
+                            <a href="https://243game.com/">243</a>.
+                        </li>
+                        <li>
+                            2584 (Fibonacci numbers) shows up in dozens of alternate 2048 apps, though I don't know where it originated from.
+                        </li>
+                        <li>
+                            Isotopic 256 comes from <a href="https://jamesmdonnelly.com/Isotopic256/">here</a>.
+                        </li>
+                        <li>
+                            Wildcard 2048 was inspired by <a href="https://uhyohyo.net/quantum2048/">Quantum 2048</a>, but it's simpler than Quantum 2048 because
+                            I still don't quite understand the exact rules of how quantum tiles in that game merge.
+                        </li>
+                        <li>
+                            Holes in the grid and box tiles are inspired by an old Android app called 2048 Sandbox, which has since been removed from Google Play.
+                        </li>
+                        <li>
+                            A hexagonal grid version of 2048 exists in several places. The 3D/4D grid modifier is based on
+                            <a href="http://huonw.github.io/2048-4D/">2048 4D</a>.
+                        </li>
+                        <li>
+                            The non-interacting version of negative tiles comes from <a href="http://hgentry.github.io/-512/">-512</a>, while the interacting
+                            version comes from <a href="http://cuviper.github.io/pm64/">±64</a>.
+                        </li>
+                    </ul>
+                    All the other modes, as far as I'm aware, are unique to the 2048 Power Compendium. I'll also note that The 2048 Power Compendium was originally
+                    <a href="https://scratch.mit.edu/projects/379989988/">a Scratch project</a> with just nine modes, then it got
+                    <a href="https://scratch.mit.edu/projects/390233934/">an extension</a> that brought it up to sixteen modes, though now that this version exists,
+                    both of these Scratch projects are outdated.
+                </p>
+            </div>
+            <div id="guide_changelog" class="guide_box">
+                <h2>Changelog</h2>
+                <p>
+                    <b>v1.0 (Aug. 15, 2023): Release version of the 2048 Power Compendium. Includes 25 main modes, 16 extra modes, four pages of modifiers, and
+                    custom grid and directions in the modifiers.</b>
+                </p>
+            </div>
+            <div id="guide_bottomspace"></div>
+            <div id="guide_return" class="hover_grow">Return to menu</div>
+        </div>
+    
+        <div id="css_calculator"></div> <!-- Not an actual element -->
+        <p id="test"></p>
+        <script type="text/javascript" src="mathiasbynens-he/he.js"></script>
+        <script type="text/javascript" src="2048 Power Compendium.js"></script>
+    </body>
+</html>
