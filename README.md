@@ -7,6 +7,8 @@ In addition to the 41 variants, there are also a bunch of modifiers which can be
 
 For more information, press "Go the Guide" on the menu screen of the game.
 
+Any requests/ideas for 2048 variants to add to the Compendium? Email me at mathcookie17@gmail.com if you want to give me any ideas.
+
 Credit to mathiasbynens for *[he](https://github.com/mathiasbynens/he)*, an HTML entity encoder and decoder that I used in this project.
 
 This project is released under the MIT License, which I chose for two reasons: because both the original 2048 and *he* are released under the MIT License, and because I feel people should be able to do what they want with the 2048 variants in this project.
