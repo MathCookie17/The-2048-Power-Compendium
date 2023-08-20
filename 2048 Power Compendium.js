@@ -1,56 +1,91 @@
 //Opening setup (the code that executes on its own)
-let width = 4; let height = 4; let min_dim = 2;
+let width = 4; let height = 4; let min_dim = 2; //width and height are the dimensions of the grid, min_dim doesn't really do anything other than set defaults for certain modifiers
 let TileNumAmount = 1;
-let TileTypes = [[[0], "1", "#ffffff", "#776e65"], [[1], "2", "#f9eee3", "#776e65"], [[2], "4", "#ede0c8", "#776e65"], [[3], "8", "#f2b179", "#f9f6f2"],
-[[4], "16", "#f59563", "#f9f6f2"], [[5], "32", "#f67c5f", "#f9f6f2"], [[6], "64", "#f65e3b", "#f9f6f2"], [[7], "128", "#edcf72", "#f9f6f2"],
-[[8], "256", "#edcc61", "#f9f6f2"], [[9], "512", "#edc850", "#f9f6f2"], [[10], "1024", "#edc53f", "#f9f6f2"], [[11], "2048", "#edc22e", "#f9f6f2"],
-[[12], "4096", "#f29eff", "#f9f6f2"], [[13], "8192", "#eb75fd", "#f9f6f2"], [[14], "16384", "#e53bff", "#f9f6f2"], [[15], "32768", "#bd00db", "#f9f6f2"],
-[[16], "65536", "#770089", "#f9f6f2"], [[17], "131072", "#534de8", "#f9f6f2"], [[18], "262144", "#2922e1", "#f9f6f2"], [[19], "524288", "#0a05b6", "#f9f6f2"],
+let TileTypes = [[[0], 1, "#ffffff", "#776e65"], [[1], 2, "#f9eee3", "#776e65"], [[2], 4, "#ede0c8", "#776e65"], [[3], 8, "#f2b179", "#f9f6f2"],
+[[4], 16, "#f59563", "#f9f6f2"], [[5], 32, "#f67c5f", "#f9f6f2"], [[6], 64, "#f65e3b", "#f9f6f2"], [[7], 128, "#edcf72", "#f9f6f2"],
+[[8], 256, "#edcc61", "#f9f6f2"], [[9], 512, "#edc850", "#f9f6f2"], [[10], 1024, "#edc53f", "#f9f6f2"], [[11], 2048, "#edc22e", "#f9f6f2"],
+[[12], 4096, "#f29eff", "#f9f6f2"], [[13], 8192, "#eb75fd", "#f9f6f2"], [[14], 16384, "#e53bff", "#f9f6f2"], [[15], 32768, "#bd00db", "#f9f6f2"],
+[[16], 65536, "#770089", "#f9f6f2"], [[17], 131072, "#534de8", "#f9f6f2"], [[18], 262144, "#2922e1", "#f9f6f2"], [[19], 524288, "#0a05b6", "#f9f6f2"],
 [true, [2, "^", "@This 0"], ["HSLA", [-15, "*", "@This 0", "+", 520], 100, [0.9, "^", ["@This 0", "-", 20], "*", 36], 1], "#f9f6f2"]];
+    /*
+    Tiles are stored as arrays of numbers. For example, in 2048, tiles are arrays containing a single number, which is log2 of the tile's number, so a 4 is [2] and
+    a 32 is [5]. In many of the main modes, the tiles are stored as two numbers, and the tile number of [a, b] is x^a * b, where x is the power number of the mode,
+    so [4, 2] in 2187 is a 3^4 * 2 = 162 tile, while [1, 3] in 4096 is a 8^1 * 3 = 24 tile. TileNumAmount is the amount of entries in such an array for the current
+    gamemode. TileTypes is an array where each entry corresponds one type of tile; within each entry, the 0th entry is either the array of that tile or a CalcArray
+    expression that, if it evaluates to true, indicates that the tile should use that entry of TileTypes, the 1st entry is the text on the tile, the 2nd entry
+    is the color of the tile, and the third entry is the color of the text.
+    */
 let MergeRules = [[2, ["@Next 1 0", "=", "@This 0"], true, [[["@This 0", "+", 1]]], [2, "^", ["@This 0", "+", 1]], [false, true]]];
+    /* MergeRules, like TileTypes, is an array where each entry corresponds to one merge rule. The 0th entry is the amount of tiles in that merge, the 1st entry
+    is a CalcArray expression that must evaluate to true for those tiles to merge, the 2nd entry is whether those tiles need to be in order or not, the third entry
+    is an array containing the tile(s) that result from the merge, the fourth entry is how much the score increases from this merge, and the fifth entry is
+    whether each resulting tile counts as having "used up" its merge that turn. Some modes have merge rules with more than six entries; these rules can scale
+    to multiple lengths. For these multi-length rules, the 0th entry now means the minimum merge length, the 6th entry is what the length of the merge rule as given
+    is, the 7th entry is what to increase each "@Next"'s first number by on each merge length increase (so if the 7th entry is [1, 2, 0], then any strings that were
+    originally "@This 0" become "@Next 1 0", then "@Next 2 0", and so on, any strings that were originally "@Next 1 0" become "@Next 3 0", then "@Next 5 0", and
+    so on, and any strings that were originally "@Next 2 0" are unchanged, as are any that were originally "@Next 3" or higher since the 7th entry doesn't go
+    that far), the 8th entry is how much to increase the merge length by on each merge length increase, and the 9th entry is the maximum merge length. */
 let TileSpawns = [[[0], 85], [[1], 12], [[2], 3]];
-let spawnConditions = true;
-let winConditions = [[11]];
-let winRequirement = 1;
-let slideAmount = Infinity;
-let multiMerge = false;
-let spawnLocation = "All";
-let startTileAmount = 2;
-let randomTileAmount = 1;
+    /* TileSpawns contains the tiles that can spawn between each move. The 0th entry of each entry of TileSpawns is the tile being spawned, the 1st entry of each
+    entry of TileSpawns is the likelihood that that tile type is the one that spawns. */
+let spawnConditions = true; //Tiles only spawn on a turn where spawnConditions is true
+let winConditions = [[11]]; //Which tiles count as "winning"?
+let winRequirement = 1; //How many "winning" tiles you need to win
+let slideAmount = Infinity; //How many spaces tiles can move each turn
+let multiMerge = false; //Can tiles merge multiple times in one turn?
+let spawnLocation = "All"; //Where do new tiles spawn?
+let startTileAmount = 2; //How many tiles spawn at the beginning of the game
+let randomTileAmount = 1; //How many tiles spawn after each move
 let modifiers = [Infinity, 1, 2, false, "All", "Square", 0, 0, 0, 0, "Orthogonal", false, false, "None", 0, "Regular", 1, 0, 0, 1];
-let gamemode = 0;
-let mode_vars = [];
-let nextTiles = 0;
+    /*
+    modifiers[0] corresponds to SlideAmount, modifiers[1] corresponds to randomTileAmount, modifiers[2] corresponds to startTileAmount, modifiers[3] corresponds
+    to multiMerge, and modifiers[4] corresponds to spawnLocation. modifiers[5] changes the shape of the grid, and modifiers[6] through modifiers[9] are used as size
+    variables for alternate grid shapes. modifiers[10] controls the available directions, modifiers[11] is whether you can stay still as a move, modifiers[12] is the
+    toggle for Garbage 0s, modifiers[13] is the toggle for Negative Tiles, modifiers[14] corresponds to nextTiles, modifiers[15] is the toggle for SimpleSpawns,
+    modifiers[16] is the animation speed, modifiers[17] adds holes to the grid, modifiers[18] adds box tiles to the grid, and modifiers[19] changes how many turns
+    there are between each tile spawning (which is done by changing spawnConditions).
+    */
+let gamemode = 0; //Which mode are we in? 2048 is gamemode 1, 2187 is gamemode 2, 1024 is gamemode 3, and so on. Save codes use gamemode 0 to alert StartGame to not go through some of the starting steps.
+let mode_vars = []; //Used by a couple gamemodes
+let nextTiles = 0; //How many next-to-spawn tiles are visible to the player?
 document.documentElement.style.setProperty("--background-color", "#fff5da");
 document.documentElement.style.setProperty("--grid-color", "#c7bea7");
 document.documentElement.style.setProperty("--tile-color", "#ece0c2");
 document.documentElement.style.setProperty("--text-color", "#524c46");
 displayRules("rules_text", ["h2", "Powers of 2"], ["h1", "2048"], ["p", "Merges occur between two tiles of the same number. Get to the 2048 tile to win!"],
 ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
-let directions = [
+let directions = [ 
+    /*
+    An array where each entry is one movement direction. The 0th entry of each entry contains the movement magnitudes: directions[x][0][0] is the vertical
+    magnitude, directions[x][0][1] is the horizontal magnitude. The 1st entry of each entry is the text on the arrow button, the 2nd entry of each entry is the
+    size of the button, the 3rd entry of each entry is the font size, the 4th entry of each entry is the vertical position, the 5th entry of each entry is the
+    horizontal position, the 6th entry of each entry is the keyboard keys associated with that direction, and the 7th entry of each entry is the rotation of the
+    text on the button. Positive vertical is downwards, positive horizontal is rightwards. The top-left tile of the grid is at position [0, 0].
+    */
     [[-1, 0], "&#8593;", 5/33, 3/33, 6/33, 14/33, ["ArrowUp", "KeyW"]],
     [[1, 0], "&#8595;", 5/33, 3/33, 22/33, 14/33, ["ArrowDown", "KeyS"]],
     [[0, -1], "&#8592;", 5/33, 3/33, 14/33, 6/33, ["ArrowLeft", "KeyA"]],
     [[0, 1], "&#8594;", 5/33, 3/33, 14/33, 22/33, ["ArrowRight", "KeyD"]],
 ];
-let directionsAvailable = [true, true, true, true];
+let directionsAvailable = [true, true, true, true]; //Which directions can currently be moved in? The game ends once all entries are false.
 let score = 0;
-let won = 0;
+let won = 0; //This is a positive number if you've discovered any winning tiles but haven't won yet, and it's -1 if you've won the game
 let moves_so_far = 0;
 let merges_so_far = 0;
-let moves_where_merged = 0;
-let merges_before_now = 0;
+let moves_where_merged = 0; //How many moves did a merge occur on
+let merges_before_now = 0; //merges_so_far, but it only updates at the end of each move
 let discoveredTiles = [];
 let discoveredWinning = [];
-let SpawnBoxes = [[], [], []];
-let spawnConveyor = ["Empty"];
-let game_vars = [];
+let SpawnBoxes = []; //In modes like 3072 that have spawn boxes, this is where those are stored
+let spawnConveyor = ["Empty"]; //The next spawning tiles are stored here
+let game_vars = []; //Variables that can be accessed by TileTypes and MergeRules
 
 let Grid = [];
 let startingGrid = [];
-let tsize = 0;
+let tsize = 0; //This is used by CreateGrid and DisplayGrid
 let GridTiles; let visibleNextTiles; let customGridTiles; //These will be HTMLCollections
 
+    //These lists of operators are used by CalcArrayConvert
 let special_operators = ["@repeat", "@if", "@else", "@else-if", "@edit_var", "@add_var", "@insert_var", "@remove_var", "@end-repeat", "@end-if", "@end-else", "@end-else-if", "@end_vars", "@var_retain", "@var_copy"];
 let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "typeof", "output", "CalcArrayParent"];
 let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round", "floor", "ceil", "trunc", "abs", "sign", "sin", "cos", "tan", "gcd", "lcm", "factorial", "prime", "expomod", "rand_int", "rand_float"];
@@ -59,6 +94,7 @@ let boolean_operators = ["&&", "||", "!"];
 let array_operators = ["arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_reduce", "arr_reduceRight", "CalcArray"];
 let pop_1_operators = ["abs", "sign", "sin", "cos", "tan", "!", "factorial", "prime", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
 
+    //Bunch of event listeners
 document.getElementById("menu_extra").addEventListener("click", function(){
     switchScreen("Menu", "Extra");
 });
@@ -508,7 +544,7 @@ let currentScreen = "Menu";
 let subScreen = "Main";
 let screenVars = [];
 switchScreen("Menu", "Main");
-for (let t = 0; t < 25; t++) {
+for (let t = 0; t < 25; t++) { //Adding event listeners to the main mode tiles on the menu
     let mtile = document.getElementById("menu_grid").children[t];
     mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((t % 5) * 14.75 + 1.25) + " / 75)");
     mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor(t / 5)) * 14.75 + 1.25) + " / 75)");
@@ -524,7 +560,7 @@ for (let t = 0; t < 25; t++) {
         });
     }
 }
-for (let t = 0; t < document.getElementById("extra_menu_grid").children.length; t++) {
+for (let t = 0; t < document.getElementById("extra_menu_grid").children.length; t++) { //Adding event listeners to the extra mode tiles on the menu
     let mtile = document.getElementById("extra_menu_grid").children[t];
     mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((t % 4) * 14.75 + 1.25) + " / 75)");
     mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor(t / 4)) * 14.75 + 1.25) + " / 75)");
@@ -555,7 +591,7 @@ function eqPrimArrays(a1, a2) { //"Equal Primitive Arrays"; tests if two arrays 
     return true;
 }
 
-function indexOfPrimArray(inner, outer) {//Checks for the index of inner within outer; works on nested arrays, but not on objects without a length property
+function indexOfPrimArray(inner, outer) {//Checks for the index of inner within outer; works even when inner is itself an array, and can be used on other things with a length property (like strings)
     if (!("length" in outer) || outer.length == 0) return -1;
     for (let i = 0; i < outer.length; i++) {
         if (eqPrimArrays(outer[i], inner)) return i;
@@ -563,7 +599,7 @@ function indexOfPrimArray(inner, outer) {//Checks for the index of inner within 
     return -1;
 }
 
-function indexOfNestedPrimArray(inner, outer) {//Checks for the index of inner within outer; works on nested arrays, but not on objects without a length property. Can find indexes of subarrays; for example, if inner is outer[1][5], then this function will return [1, 5]
+function indexOfNestedPrimArray(inner, outer) {//Checks for the index of inner within outer; wworks even when inner is itself an array, and can be used on other things with a length property (like strings). Can find indexes of subarrays; for example, if inner is outer[1][5], then this function will return [1, 5]
     if (!("length" in outer) || outer.length == 0) return -1;
     for (let i = 0; i < outer.length; i++) {
         if (eqPrimArrays(outer[i], inner)) return i;
@@ -597,7 +633,7 @@ function delay(milliseconds){ //Taken from Alvaro Trigo, only works in an async 
     });
 }
 
-function orders(num) {
+function orders(num) { //Returns an array containing every permutation of "num" numbers
     if (num == 1) return [[0]];
     let prev = orders(num - 1);
     let result = [];
@@ -638,7 +674,7 @@ function mod(n, m) { //mod(-1, 8) is 7 rather than -1. Taken from https://stacko
     return ((n % m) + m) % m;
 }
 
-function arrayTypes(arr) {
+function arrayTypes(arr) { //Returns all the types of the entries in the array: an array of all numbers will return ["number"], an array of numbers and strings will return ["number", "string"] or ["string", "number"] depending on which type shows up first, an array of arrays of numbers will return [["number"]]
     if (!(Array.isArray(arr))) return (typeof arr);
     let typeslist = [];
     for (let i = 0; i < arr.length; i++) {
@@ -713,7 +749,7 @@ function factorial(n) {//Accepts both numbers and bigints, but whole numbers onl
     }
 }
 
-function string_splice(input, start, length) {
+function string_splice(input, start, length) { //Basically the splice method, but on strings instead of arrays. Returns a new string since strings are immutable
     let insert = "";
     if (arguments.length > 3) insert = arguments[3];
     let str = String(input);
@@ -801,7 +837,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("modifiers").style.setProperty("display", "none");
         document.getElementById("gameplay").style.setProperty("display", "none");
         document.getElementById("save_code").style.setProperty("display", "none");
-        document.getElementById("custom").style.setProperty("display", "none");
+        document.getElementById("custom").style.setProperty("display", "none"); //This screen is currently unimplemented, but who knows if I can safely remove it? Code is weird like that
         document.getElementById("guide").style.setProperty("display", "none");
         if (subScreen == "Extra") {
             document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #787800, #004675)");
@@ -936,11 +972,11 @@ function loadMode(mode) {
     game_vars = [];
     document.getElementById("mode_vars_line").style.setProperty("display", "none");
     for (let c of document.getElementById("mode_vars_line").children) c.style.setProperty("display", "none");
-    if (modifiers[5] == "Custom") {
+    if (modifiers[5] == "Custom") { //Part 1 of forcing the custom grid past the modes' width and height changes
         modifiers[6] = width;
         modifiers[7] = height;
     }
-    if (mode == 1) {
+    if (mode == 1) { // 2048
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#776e65"], [[1], 2, "#f9eee3", "#776e65"], [[2], 4, "#ede0c8", "#776e65"], [[3], 8, "#f2b179", "#f9f6f2"],
@@ -953,7 +989,7 @@ function loadMode(mode) {
         TileSpawns = [[[0], 85], [[1], 12], [[2], 3]];
         winConditions = [[11]];
         winRequirement = 1;
-        mode_vars = [false];
+        mode_vars = [false]; //If this is true, TileSpawns is changed to the spawns of the original 2048
         document.documentElement.style.setProperty("background-image", "radial-gradient(#ffc400 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#fff5da");
         document.documentElement.style.setProperty("--grid-color", "#c7bea7");
@@ -966,7 +1002,7 @@ function loadMode(mode) {
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("2048_vars").style.setProperty("display", "flex");
     }
-    else if (mode == 2) {
+    else if (mode == 2) { // 2187
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#584153"], [[0, 2], 2, "#999999", "#f6ebf4"], [[1, 1], 3, "#ffffa2", "#584153"], [[1, 2], 6, "#e6e600", "#f6ebf4"],
@@ -994,7 +1030,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 3"], ["h1", "2187"], ["p","Merges occur between two tiles that are both the same number and a power of 3, and between one tile that is a power of three and one tile that is double that power of three. Get to the 2187 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
-    else if (mode == 3) {
+    else if (mode == 3) { // 1024
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#564040"], [[0, 3], 3, "#777777", "#f4ecec"], [[1, 1], 4, "#00ff00", "#564040"], [[1, 3], 12, "#008a00", "#f4ecec"],
@@ -1022,7 +1058,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 4"], ["h1", "1024"], ["p","Merges occur between three tiles that are both the same number and a power of 4, and between one tile that is a power of four and one tile that is triple that power of four. Get to the 1024 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
     }
-    else if (mode == 4) {
+    else if (mode == 4) { // 3125
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#505246"], [[0, 2], 2, "#c6c6c6", "#505246"], [[0, 3], 3, "#898989", "#f4f7e9"], [[0, 4], 4, "#5f5f5f", "#f4f7e9"],
@@ -1058,7 +1094,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 5"], ["h1", "3125"], ["p","Merges occur between any two tiles that add to a power of five, double a power of five, triple a power of five, or quadruple a power of five. Get to the 3125 tile to win!"],
         ["p", "Spawning tiles: 1 (80%), 2 (8%), 3 (6%), 4 (4%), 5 (2%)"]);
     }
-    else if (mode == 5) {
+    else if (mode == 5) { // 1296
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#464d52"], [[0, 2], 2, "#ffc4c4", "#464d52"], [[0, 3], 3, "#fffec4", "#464d52"],
@@ -1090,7 +1126,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 6"], ["h1", "1296"], ["p","Merges occur between two or three of the same tile: two-tile merges occur between tiles that are a power of six or triple a power of six, and three-tile merges occur between tiles that are a power of six or double a power of six. Get to the 1296 tile to win!"],
         ["p", "Spawning tiles: 1 (80%), 2 (12%), 3 (6%), 6 (2%)"]);
     }
-    else if (mode == 6) {
+    else if (mode == 6) { // 2401
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#d7d7d7", "#524b46"], [[0, 2], 2, "#afafaf", "#f1ebe7"], [[0, 3], 3, "#ffffff", "#6d6a67"], [[0, 4], 4, "#787878", "#f1ebe7"],
@@ -1126,7 +1162,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 7"], ["h1", "2401"], ["p","Merges occur between two or three tiles that are the same power of seven, two tiles that are double the same power of seven, or one tile that is triple a power of seven and one tile that is quadruple that power of seven. Get to the 2401 tile to win!"],
         ["p", "Spawning tiles: 1 (80%), 2 (10%), 3 (5%), 4 (5%)"]);
     }
-    else if (mode == 7) {
+    else if (mode == 7) { // 4096
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#484652"], [[0, 2], 2, "#c6c6c6", "#484652"], [[0, 3], 3, "#898989", "#e8e6f3"], [[0, 5], 5, "#5f5f5f", "#e8e6f3"],
@@ -1159,7 +1195,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 8"], ["h1", "4096"], ["p","Merges occur between two equal tiles that are a power of eight, between a tile that's a power of eight and a tile that's double that power of eight, between a tile that's double a power of eight and a tile that's triple that power of eight, and between a tile that's triple a power of eight and a tile that's quintuple that power of eight. Get to the 4096 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (5%), 5 (2%)"]);
     }
-    else if (mode == 8) {
+    else if (mode == 8) { // 6561
         width = 6; height = 6; min_dim = 4;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#465252"], [[0, 4], 4, "#828282", "#e2e9e9"], [[1, 1], 9, "#ff52b1", "#465252"], [[1, 4], 36, "#c2006b", "#e2e9e9"],
@@ -1186,7 +1222,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 9"], ["h1", "6561"], ["p","Merges occur between four equal tiles that are a power of nine, and between a tile that's a power of nine and two tiles that are quadruple that power of nine. Get to the 6561 tile to win!"],
         ["p", "Spawning tiles: 1 (95%), 4 (5%)"]);
     }
-    else if (mode == 9) {
+    else if (mode == 9) { // 1000
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#524946"], [[0, 2], 2, "#cacaca", "#524946"], [[0, 5], 5, "#7e7e7e", "#524946"],
@@ -1219,7 +1255,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 10"], ["h1", "1000"], ["p","Merges occur between two equal tiles that are either a power of ten or quintuple a power of ten, or between one tile that is a power of ten and two tiles that are double that same power of 10. Get to the 1000 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 5 (3%)"]);
     }
-    else if (mode == 10) {
+    else if (mode == 10) { // 1331
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#485246"], [[0, 2], 2, "#c6c6c6", "#485246"], [[0, 3], 3, "#898989", "#e1edde"], [[0, 6], 6, "#5f5f5f", "#e1edde"],
@@ -1253,7 +1289,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 11"], ["h1", "1331"], ["p","  Merges can occur between two tiles that are both the same number and a power of eleven, between a power of eleven and a tile that's double it, between a tile that's a power of eleven, a tile that's double the same power of eleven, and a tile that's triple the same power of eleven, or between a tile that's double a power of eleven, a tile that's triple the same power of eleven, and a tile that's six times the same power of eleven. Get to the 1331 tile to win!"],
         ["p", "Spawning tiles: 1 (80%), 2 (12%), 3 (6%), 6 (2%)"]);
     }
-    else if (mode == 11) {
+    else if (mode == 11) { // 1728
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#aaff00", "#584e59"], [[0, 2], 2, "#84c503", "#f4edf6"], [[0, 3], 3, "#dbff93", "#2d292e"],
@@ -1298,7 +1334,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 12"], ["h1", "1728"], ["p","Merges occur between two, three, or four of the same tile, as long as those tiles add up to a power of twelve or double, triple, quadruple, or sextuple a power of twelve, except a merge cannot occur between four tiles that are sextuple a power of twelve. Get to the 1728 tile to win!"],
         ["p", "Spawning tiles: 1 (80%), 2 (10%), 3 (5%), 4 (5%)"]);
     }
-    else if (mode == 12) {
+    else if (mode == 12) { // 2047
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 1;
         TileTypes = [[[1], 1, "#ffffff", "#746577"], [[2], 3, "#d8ffb6", "#746577"], [[3], 7, "#a7ff5a", "#746577"],
@@ -1321,7 +1357,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 2 Minus 1"], ["h1", "2047"], ["p", "Merges occur between three tiles. Two of them must be equal to each other, and the third must be a 1. Get to the 2047 tile to win!"],
         ["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
     }
-    else if (mode == 13) {
+    else if (mode == 13) { // 2186
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#46524c"], [[1, 1], 2, "#a2a2ff", "#46524c"], [[1, 2], 5, "#0000e6", "#ebf6f1"],
@@ -1350,13 +1386,14 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 3 Minus 1"], ["h1", "2186"], ["p","Two 1s can merge into a 2, but all other merges occur between three tiles: one of the tiles is always a 1, and one of them is always one less than a power of three, while the third tile can be either one less than that same power of three or one less than double that power of three. Get to the 2186 tile to win!"],
         ["p", "Spawning tiles: 1 (92%), 2 (7%), 5 (1%)"]);
     }
-    else if (mode == 14) {
+    else if (mode == 14) { // 2049
         width = 5; height = 5; min_dim = 3;
         document.documentElement.style.setProperty("background-image", "radial-gradient(#ff0073 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#ffdae7");
         document.documentElement.style.setProperty("--grid-color", "#c7a7bb");
         document.documentElement.style.setProperty("--tile-color", "#ecc2dc");
         document.documentElement.style.setProperty("--text-color", "#52464e");
+        //This mode has to completely reformat if the Negative Tiles modifier on, since it already has -1s in it even without Negative Tiles being on.
         if (modifiers[13] != "None") {
             TileNumAmount = 2;
             TileTypes = [
@@ -1411,7 +1448,7 @@ function loadMode(mode) {
             ["p", "Spawning tiles: 1 (65%), -1 (35%)"]);
         }
     }
-    else if (mode == 15) {
+    else if (mode == 15) { // 5040
         width = 5; height = 5; min_dim = 4;
         TileNumAmount = 2;
         TileTypes = [[[1, 1], 1, "#ffd900", "#776e65"],
@@ -1427,7 +1464,7 @@ function loadMode(mode) {
         [[11, 1], 39916800, "#d000ff", "#584e59"], [[11, 2], 79833600, "#9a00bc", "#f4edf6"], [[11, 3], 119750400, "#e261ff", "#2d292e"], [[11, 4], 159667200, "#610077", "#f4edf6"], [[11, 6], 239500800, "#ac27ca", "#584e59"],
         [[12, 1], 479001600, "#000000", "#ffff00"]
         ];
-        MergeRules = [
+        MergeRules = [ //No generalizing here; different tiers have different merge rule, so every case gets its own rule
             [2, [["@This 0", "=", 1], "&&", ["@Next 1 0", "=", 1]], true, [[2, 1]], 2, [false, true]],
 
             [2, [["@This 0", "=", 2], "&&", ["@Next 1 0", "=", 2], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], true, [[2, 2]], 4, [false, true]],
@@ -1489,7 +1526,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Factorials"], ["h1", "5040"], ["p","For any whole number x between 1 and 11, tiles that are at least x! and less than (x+1)! follow the merging rules of the gamemode based around powers of (x+1), with x! taking the place of the powers of (x+1) within that particular ruleset. Get to the 5040 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
     }
-    else if (mode == 16) {
+    else if (mode == 16) { // 2197
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [
@@ -1533,7 +1570,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 13"], ["h1", "2197"], ["p","Merges occur between two equal tiles that are a power of 13, between a tile that's a power of eight and a tile that's double or triple that power of 13, between a tile that's double a power of 13 and a tile that's quadruple that power of 13, between a tile that's triple a power of 13 and a tile that's sextuple that power of 13, or between a tile that's quadruple a power of 13 and a tile that's 9 times that power of 13. Get to the 2197 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (5%), 4 (2%)"]);
     }
-    else if (mode == 17) {
+    else if (mode == 17) { // 3375
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [
@@ -1579,7 +1616,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 15"], ["h1", "3375"], ["p","Merges occur between a tile that's a power of 15 and a tile that's equal to or eight times that power of 15, between a tile that's double a power of 15 and a tile that's double or nine times that power of 15, or between a tile that's quadruple a power of 15 and a tile that's quadruple or 11 times that power of 15. Get to the 3375 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
     }
-    else if (mode == 18) {
+    else if (mode == 18) { // 4913
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -1615,7 +1652,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 17"], ["h1", "4913"], ["p","  Merges can occur between three tiles that are both the same number and a power of 17, between two tiles that are the same power of 17 and one tile that's triple that power of 17, between one tile that's a power of 17 and two tiles that are quintuple that power of 17, or between one tile that's a power of 17, one tile that's quintuple that power of 17, and one tile that's 11 times that power of 17. Get to the 4913 tile to win!"],
         ["p", "Spawning tiles: 1 (90%), 3 (7%), 5 (3%)"]);
     }
-    else if (mode == 19) {
+    else if (mode == 19) { // 8000
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -1629,7 +1666,7 @@ function loadMode(mode) {
             [["@This 1", "=", 2], [20, "^", "@This 0", "*", 2], ["HSVA", [82, "*", "@This 0", "-", 307], [0.9, "^", ["@This 0", "-", 6], "*", 100], 50, 1], "#dcd9ec"],
             [["@This 1", "=", 6], [20, "^", "@This 0", "*", 6], ["HSVA", [82, "*", "@This 0", "-", 307], [0.9, "^", ["@This 0", "-", 6], "*", 100], 75, 1], "#2d2b39"],
             [["@This 1", "=", 12], [20, "^", "@This 0", "*", 12], ["HSVA", [82, "*", "@This 0", "-", 307], [0.9, "^", ["@This 0", "-", 6], "*", 100], 100, 1], "#2d2b39"],
-    ]
+        ]
         MergeRules = [
             [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", [["@This 1", "=", 1], "||", ["@This 1", "=", 6]]], true, [["@This 0", ["@This 1", "*", 2]]], [20, "^", "@This 0", "*", "@This 1", "*", 2], [false, true]],
             [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 2], "&&",  ["@Next 1 1", "=", 2], "&&", ["@This 1", "=", 2]], true, [["@This 0", 6]], [20, "^", "@This 0", "*", 6], [false, true, true]],
@@ -1648,7 +1685,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 20"], ["h1", "8000"], ["p","Merges occur between two equal tiles that are a power of 20 or sextuple a power of 20, between three equal tiles that are double a power of 20, or between a tile that's double a power of 20, a tile that's sextuple that power of 20, and a tile that's 12 times that power of 20. Get to the 8000 tile to win!"],
         ["p", "Spawning tiles: 1 (90%), 2 (9%), 6 (1%)"]);
     }
-    else if (mode == 20) {
+    else if (mode == 20) { // 9261
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -1689,7 +1726,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 21"], ["h1", "9261"], ["p","Merges occur between any two or three tiles that add to a power of 21, triple a power of 21, sextuple a power of 21, 10 times a power of 21, or 15 times a power of 21. Get to the 9261 tile to win!"],
         ["p", "Spawning tiles: 1 (95%), 3 (4%), 6 (1%)"]);
     }
-    else if (mode == 21) {
+    else if (mode == 21) { // 625
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -1729,7 +1766,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 25"], ["h1", "625"], ["p","Merges occur between two equal tiles that are a power of 25, double a power of 25, quadruple a power of 25, or 8 times a power of 25, between three equal tiles that are a power of 25 or triple a power of 25, or between a tile that's 9 times a power of 25 and a tile that's 16 times a power of 25. Get to the 625 tile to win!"],
         ["p", "Spawning tiles: 1 (90%), 2 (5%), 3 (5%)"]);
     }
-    else if (mode == 22) {
+    else if (mode == 22) { // 900
         width = 7; height = 7; min_dim = 5;
         TileNumAmount = 2;
         TileTypes = [
@@ -1780,7 +1817,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 30"], ["h1", "900"], ["p", "Merges occur between two equal tiles that are equal to, triple, quintuple, or 15 times a power of 30, between three equal tiles that are equal to, double, quintuple, or 10 times a power of 30, or between five equal tiles that are equal to, double, triple, or sextuple a power of 30. A line of four, six, seven, etc. of the same tile will not merge. Get to the 900 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
     }
-    else if (mode == 23) {
+    else if (mode == 23) { // 2059
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -1819,7 +1856,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 3 Minus Powers of 2"], ["h1", "2059"], ["p","For any nonnegative integer n, merges can occur between two 2<sup>n</sup> tiles, between three (3<sup>n</sup> - 2<sup>n</sup>) tiles, or between one (3 * (3<sup>n</sup> - 2<sup>n</sup>)) tile and one 2<sup>n</sup> tile. Get to the 2059 (3<sup>7</sup> - 2<sup>7</sup>) tile to win! (Tip: 1 is both 2<sup>0</sup> and (3<sup>1</sup> - 2<sup>1</sup>), so two 1s and three 1s both have merges)"],
         ["p", "Spawning tiles: 1 (90%), 2 (6%), 3 (4%)"]);
     }
-    else if (mode == 24) {
+    else if (mode == 24) { // 2315
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -1856,7 +1893,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 3 Plus Powers of 2"], ["h1", "2315"], ["p", "Two or three 1s can merge, and for any nonnegative integer n, merges can occur between three 3<sup>n</sup> tiles, or between two (3<sup>n</sup> + 2<sup>n</sup>) tiles and one 3<sup>n</sup> tile. Get to the 2315 (3<sup>7</sup> + 2<sup>7</sup>) tile to win!"],
         ["p", "Spawning tiles: 1 (90%), 2 (6%), 3 (4%)"]);
     }
-    else if (mode == 25) {
+    else if (mode == 25) { // XXXX
         width = 6; height = 6; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[1, 0], 1, "#ffffff", "#000000"],
@@ -1868,9 +1905,9 @@ function loadMode(mode) {
             ["@This 0", [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 0", ">", 1]], true, [["@This 0", ["@This 1", "+", 1]]], ["@This 0", "^", ["@This 1", "+", 1]], [], 2, [0, 1], 1],
         ];
         TileSpawns = [[[1, 0], 100]];
-        winConditions = [[["@This 0", "^", "@This 1", ">=", 1000]]];
+        winConditions = [[["@This 0", "^", "@This 1", ">=", 1000]]]; // Any tile that's at least 1000 is winning
         winRequirement = 4;
-        mode_vars = [2, Infinity];
+        mode_vars = [2, Infinity]; //Minimum and maximum merge lengths; there's some special behavior if these are equal
         document.documentElement.style.setProperty("background-image", "radial-gradient(#636363 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#e8e8e8");
         document.documentElement.style.setProperty("--grid-color", "#e1c3c3");
@@ -1885,7 +1922,7 @@ function loadMode(mode) {
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("XXXX_vars").style.setProperty("display", "flex");
     }
-    else if (mode == 26) {
+    else if (mode == 26) { // 2584
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#2d2b31"], [[1], 2, "#b3ffe8", "#2d2b31"], [[2], 3, "#52ffcb", "#2d2b31"], [[3], 5, "#00ff99", "#2d2b31"],
@@ -1912,7 +1949,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s or between any tile above 1 and the tile before it. Get to the 2584 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
-    else if (mode == 27) {
+    else if (mode == 27) { // 2745
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 1;
         TileTypes = [
@@ -1952,7 +1989,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Narayana's Cows Sequence"], ["h1", "2745"], ["p", "Merges occur between two 1s, between a 1 and a 2, or between any tile above 2 and the tile two tiles before it. Get to the 2745 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
-    else if (mode == 28) {
+    else if (mode == 28) { // 1705
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#2b352a"], [[1], 2, "#fff7c9", "#2b352a"], [[2], 4, "#fff098", "#2b352a"], [[3], 7, "#ffe75f", "#2b352a"],
@@ -1980,7 +2017,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Tribonacci Sequence"], ["h1", "1705"], ["p", "Merges occur between two 1s, between two 1s and a 2, or between any tile above 2, the tile before it, and the tile two before it. Get to the 1705 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
     }
-    else if (mode == 29) {
+    else if (mode == 29) { // 1535, 1536, 1537
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [
@@ -2018,7 +2055,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: Pulls from a \"box\" that starts with one 2, one 3, and one 4, and only refills once it's empty."]);
         document.getElementById("winning_container").style.setProperty("display", "inline-block");
     }
-    else if (mode == 30) {
+    else if (mode == 30) { // 3072
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 1;
         TileTypes = [
@@ -2044,9 +2081,9 @@ function loadMode(mode) {
         ["p", "Spawning tiles: Pulls from a \"box\" containing four 1s, four 2s, and four 3s, which only refills once it's empty. However, if your highest tile is at least 48, there's a 1/21 chance for a \"bonus\" tile to spawn instead, which could be any tile from 6 to the tile that's an eighth of your highest tile."],
         ["p", 'Note: This is not a full recreation of Threes!, as moves still work like they do in 2048. To get a better recreation, go to Modifiers, change "Maximum Spaces per Move" to 1, change "Visible Next Spawned Tiles" to 1, change "Tiles Spawned at the Start" to 9, and change the location of tile spawns to be only on the edge you moved away from.']);
     }
-    else if (mode == 31) {
+    else if (mode == 31) { // Isotopic 256
         width = 3; height = 3; min_dim = 2;
-        mode_vars = [0.75];
+        mode_vars = [0.75]; //Lifespan multiplier
         document.documentElement.style.setProperty("background-image", "radial-gradient(#edcc61 0% 40%, #d6ff63 90%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#fff5da 0% 50%, #edffbb)");
         document.documentElement.style.setProperty("--grid-color", "#dcca9e");
@@ -2084,16 +2121,16 @@ function loadMode(mode) {
                 [["@This 0", "%", 2, "=", 1], ["<sup>", "str_concat", [2, "^", "@This 0"], "str_concat", "</sup>", "str_concat", [[[2, "^", "@This 0"], "+", 200, "^", 0.5, "*", 14.1421356237, "-", 200, "round", 1, "String"], ["@Literal", "n", "u", "d", "t", "q", "p", "h", "s", "o", "e"], "@end_vars", -1, "@repeat", ["@var_retain", "@Var 0", "str_length"], "+", 1, "@edit_var", 0, ["@var_retain", "@Var 0", "str_splice", "@Parent -2", 1, ["@var_retain", "@Var 1", "arr_elem", ["@var_retain", "@Var 0", "str_char", "@Parent -4", "Number"]]], "@end-repeat", "@edit_var", 0, ["@var_retain", "@Var 0", "str_splice", 0, 1, ["@var_retain", "@Var 0", "str_char", 0, "str_toUpperCase"]], "2nd", "@Var 0"]], ["HSLA", [-15, "*", "@This 0", "+", 520], 100, [0.9, "^", ["@This 0", "-", 20], "*", 36], 1], "#f9f6f2", 3, 0, ["@This 1", "bottom-center", 4, 0]]
             ];
             MergeRules = [
-                [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 0", "%", 2, "=", 1]], true, [[["@This 0", "+", 1], 1e300]], [2, "^", ["@This 0", "+", 1]], [false, true]], //Infinity gets replaced by null in save codes, so a number that might as well be infinity will have to do for the lifespans of stable tiles
+                [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 0", "%", 2, "=", 1]], true, [[["@This 0", "+", 1], 1e300]], [2, "^", ["@This 0", "+", 1]], [false, true]],
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 0", "%", 2, "=", 0]], true, [[["@This 0", "+", 1], [2, "^", ["@This 0", "+", 1], "*", 0.75, "round", 1]]], [2, "^", ["@This 0", "+", 1]], [false, true]],
                 [0, [["@This 1", ">", 0]], true, [["@This 0", ["@This 1", "-", 1]]], 0],
                 [0, [["@This 1", "<=", 0]], true, [], 0],
             ];
-            TileSpawns = [[[1, 1e300], 90], [[2, 1e300], 10]];
+            TileSpawns = [[[1, 1e300], 90], [[2, 1e300], 10]]; //JSON.stringify, which is used for the save codes for things like tiles, converts Infinity to null, so a number that might as well be infinity will have to do for the lifespans of stable tiles
             winConditions = [[["@This 0", "=", 8]]];
             winRequirement = 1;
         }
-        else {
+        else { // The overline above the element symbols for the negative tiles means they're antimatter
             TileNumAmount = 3;
             TileTypes = [
                 [[["@This 0", "=", 1], "&&", ["@This 2", "=", 1]], "<sup>2</sup>H", "#f9eee3", "#776e65", 3, 0],
@@ -2151,7 +2188,7 @@ function loadMode(mode) {
             winRequirement = 2;
         }
     }
-    else if (mode == 32) {
+    else if (mode == 32) { // Bicolor 2187
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#584153"], [[0, 2], 2, "#999999", "#f6ebf4"],
@@ -2213,7 +2250,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h1", "Bicolor 2187"], ["p","2187 mode, except tiles that are powers of 3 (other than 1) come in two colors. Two tiles that are a power of three can only merge if they're opposite colors, and which color a power of three tile is depends on which of the two tiles that merged to make it was the one that collided into the other one: the resulting tile is blue if the previous power of three collided into its double, the resulting tile is red if the previous power of three's double collided into its half. Get to either 2187 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), Red 3 (2.5%), Blue 3 (2.5%)"]);
     }
-    else if (mode == 33) {
+    else if (mode == 33) { // Harder 3125
         width = 5; height = 5; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#505246"], [[0, 3], 3, "#898989", "#f4f7e9"],
@@ -2247,7 +2284,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h1", "Harder 3125"], ["p","3125 is a little too easy, so here's a mode that makes it a more appropriate level of difficulty. Merges occur between three equal tiles that are a power of five, or between two equal tiles that are a power of five and one tile that's triple that power of 5. Get to the 3125 tile to win!"],
         ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
     }
-    else if (mode == 34) {
+    else if (mode == 34) { // Partial Absorb 243 (yes, I'm aware that the partial absorb modes aren't good, sorry)
         width = 5; height = 5; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#584153"], [[0, 2], 2, "#999999", "#f6ebf4"],
@@ -2288,7 +2325,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h1", "Partial Absorb 243"], ["p","Merges occur between two tiles that are the same number. If those are two 1s, they will merge into a 2 as normal, but higher tiles don't merge completely. When two even numbers merge, only half of the colliding tile is absorbed into the result: for example, two 2s merge into a 3 and a 1. If the merging tiles aren't even, they must be a power of three, in which case only a third of the colliding tile is merged into the result: for example, two 3s merge into a 4 and a 2. Get to the 243 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
-    else if (mode == 35) {
+    else if (mode == 35) { // Partial Absorb 256
         width = 6; height = 6; min_dim = 3;
         TileNumAmount = 1;
         TileTypes = [[[1], 1, "#ffffff", "#746577"], [[2], 3, "#d8ffb6", "#746577"], [[3], 7, "#a7ff5a", "#746577"],
@@ -2314,7 +2351,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h1", "Partial Absorb 255"], ["p", "Merges occur between three equal tiles. Three 1s will merge into a single 3, but for higher tiles, the result tile will only absorb 0.5 more than half of each of the other two tiles, meaning the result tile becomes the next tile while the other two tiles become the previous tile. Get to the 255 tile to win!"],
         ["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
     }
-    else if (mode == 36) {
+    else if (mode == 36) { // 1280
         width = 8; height = 8; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [
@@ -2357,7 +2394,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h1", "1280"], ["p","Merges occur between three tiles that are the same number. If these three tiles are a power of two, then they merge into two tiles that are each 1.5 times that power of two. If these three tiles are triple a power of two, then they merge into a tile that's 5 times that power of two and a tile that's 4 times that power of two. If these three tiles are quintuple a power of two, then they merge into a tile that's 12 times that power of two and a tile that's 3 times that power of two. Get to the 1280 tile to win!"],
         ["p", "Spawning tiles: 2 (85%), 3 (15%)"]);
     }
-    else if (mode == 37) {
+    else if (mode == 37) { // 2216.8378200531005859375
         width = 8; height = 8; min_dim = 2;
         TileNumAmount = 2;
         TileTypes = [
@@ -2403,7 +2440,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
         ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
     }
-    else if (mode == 38) {
+    else if (mode == 38) { // 180
         width = 7; height = 7; min_dim = 5;
         TileNumAmount = 3;
         TileTypes = [
@@ -2438,7 +2475,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (100%)"]);
         document.getElementById("discovered_container").style.setProperty("display", "inline-block");
     }
-    else if (mode == 39) {
+    else if (mode == 39) { // 2592
         width = 6; height = 6; min_dim = 3;
         TileNumAmount = 2;
         TileTypes = [[true, [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["HSVA", [["@This 0", "%", 8, "-", 3.5, "abs", "*", -15], "+", ["@This 1", "*", 149], "+", 300], [0.75, "^", ["@This 1", "floor", 5, "/", 5], "*", 100], [0.8, "^", ["@This 0", "floor", 4, "/", 4], "*", 100], 1], "#ffffff"]];
@@ -2449,7 +2486,7 @@ function loadMode(mode) {
         TileSpawns = [[[0, 0], 90], [[1, 0], 5], [[0, 1], 5]];
         winConditions = [[5, 4]];
         winRequirement = 1;
-        mode_vars = [0];
+        mode_vars = [0]; //Controls when the merge rules switch
         document.documentElement.style.setProperty("background-image", "radial-gradient(#00a068 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#c3e3d6");
         document.documentElement.style.setProperty("--grid-color", "#7eaa9d");
@@ -2463,9 +2500,9 @@ function loadMode(mode) {
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("2592_vars").style.setProperty("display", "flex");
     }
-    else if (mode == 40) {
+    else if (mode == 40) { // Wildcard 2048
         width = 4; height = 4; min_dim = 2;
-        mode_vars = [false];
+        mode_vars = [false]; //If this is true, all possibilities of wildcards merge rather than just the shared ones
         document.documentElement.style.setProperty("background-image", "linear-gradient(#f2b179, #ede0c8, #f9eee3, #ffffff, #f9eee3, #ede0c8, #f2b179)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#f2b179, #ede0c8, #f9eee3, #ffffff, #f9eee3, #ede0c8, #f2b179)");
         document.documentElement.style.setProperty("--grid-color", "#c7bea7");
@@ -2479,7 +2516,7 @@ function loadMode(mode) {
         document.getElementById("Wildcard2048_vars").style.setProperty("display", "flex");
         if (modifiers[13] == "None") {
             TileNumAmount = 1;
-            TileTypes = [
+            TileTypes = [ //The powers of 2 could be rendered using the rule for wildcards, but they're given specified types to reduce lag
             [[1], "1", "#89817b", "#f9f6f2"], [[2], "2", "#aa937f", "#f9f6f2"], [[4], "4", "#c69d79", "#f9f6f2"], [[8], "8", "#f2b179", "#f9f6f2"],
             [[16], "16", "#f59563", "#f9f6f2"], [[32], "32", "#f67c5f", "#f9f6f2"], [[64], "64", "#f65e3b", "#f9f6f2"], [[128], "128", "#edcf72", "#f9f6f2"],
             [[256], "256", "#edcc61", "#f9f6f2"], [[512], "512", "#edc850", "#f9f6f2"], [[1024], "1024", "#edc53f", "#f9f6f2"], [[2048], "2048", "#edc22e", "#f9f6f2"],
@@ -2493,7 +2530,7 @@ function loadMode(mode) {
             winConditions = [[2048]];
             winRequirement = 1;
         }
-        else {
+        else { //A tile cannot contain both positive and negative possibilities, so "2 -1" is not possible. This restriction was mostly placed to make the code easier to write
             TileNumAmount = 2;
             TileTypes = [
                 [[1, 1], "1", "#89817b", "#f9f6f2"], [[2, 1], "2", "#aa937f", "#f9f6f2"], [[4, 1], "4", "#c69d79", "#f9f6f2"],
@@ -2520,9 +2557,9 @@ function loadMode(mode) {
             winRequirement = 2;
         }
     }
-    else if (mode == 41) {
+    else if (mode == 41) { // X^Y
         width = 5; height = 5; min_dim = 4;
-        mode_vars = [Infinity, 4];
+        mode_vars = [Infinity, 4]; //mode_vars[0] is the maximum prime power, mode_vars[1] is the maximum merge length
         document.documentElement.style.setProperty("background-image", "linear-gradient(#660000, #664e00, #1d6600, #00664e, #005866, #003366, #050066, #3f0066)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#000000, #4c0000, #775800, #3ca400, #00d4c9, #0020f2 110%)");
         document.documentElement.style.setProperty("--grid-color", "#272727");
@@ -2538,7 +2575,7 @@ function loadMode(mode) {
         document.getElementById("XpowY_vars").style.setProperty("display", "flex");
         if (modifiers[13] == "None") {
             TileNumAmount = 2;
-            game_vars = [["@Literal", [["@This 0", "^", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", ">", 1], "2nd", "@Var 0", "log", 2, "ceil", 1, "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "<=", 1], "@edit_var", 2, "@Var 0", "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1"]]];
+            game_vars = [["@Literal", [["@This 0", "^", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", ">", 1], "2nd", "@Var 0", "log", 2, "ceil", 1, "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "<=", 1], "@edit_var", 2, "@Var 0", "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1"]]]; //When the "@Literal" is removed, this becomes a CalcArray expression that calculates the perfect power form of a number, so 25 becomes [5, 2] and 128 becomes [2, 7]. Higher exponents are prioritized, so 64 becomes [2, 6] rather than [4, 3] or [8, 2]. Numbers that are not perfect powers return [0, 1]. 0 and 1 themselves return [0, 1.5] and [1, 1.5]. This expression is used as a variable so each merge rule only has to compute it once per merge attempt instead of several times.
             TileTypes = [
                 [[1, 1], 1, "#000000", "#ffffff"],
                 [["@This 1", "<", 7], ["@This 0", "^", "@This 1"], ["HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]],
@@ -2551,7 +2588,7 @@ function loadMode(mode) {
             winConditions = [[["@This 1", ">=", 3]]];
             winRequirement = 12;
         }
-        else {
+        else { // If Negative Tiles is Non-Interacting, then positives and negatives can't interact with each other, as usual. If Negative Tiles is Interacting, then positive and negative tiles in this mode can freely add under the rules of the mode; for example, a 25 tile and a -9 tile can merge into a 16 tile.
             TileNumAmount = 3;
             TileTypes = [
                 [[1, 1, 1], 1, "#000000", "#ffffff"],
@@ -2586,7 +2623,7 @@ function loadMode(mode) {
         if (min_dim == 2) modifiers[9] = 2;
         else modifiers[9] = 1;
     }
-    else if (modifiers[5] == "Custom") {
+    else if (modifiers[5] == "Custom") { //Part 2 of forcing the custom grid past the modes' width and height changes
         width = modifiers[6];
         height = modifiers[7];
     }
@@ -2642,7 +2679,7 @@ function gmDisplayVars() {
         if (height < 9999) document.getElementById("gm_height_plus").style.setProperty("display", "inline-block");
         else document.getElementById("gm_height_plus").style.setProperty("display", "none");
     }
-    if (gamemode == 1) {
+    if (gamemode == 1) { // 2048
         if (mode_vars[0]) {
             document.getElementById("2048_spawn_text").innerHTML = "To match the original 2048, 2s are the primary spawning tile.";
             document.getElementById("2048_spawn_text").style.setProperty("color", "#f9eee3");
@@ -2660,7 +2697,7 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
         }
     }
-    else if (gamemode == 25) {
+    else if (gamemode == 25) { // XXXX
         if (mode_vars[0] > Math.max(width, height)) mode_vars[0] = Math.max(width, height);
         if (mode_vars[1] > Math.max(width, height) && mode_vars[1] != Infinity) mode_vars[1] = Math.max(width, height);
         document.getElementById("XXXX_min_counter").innerHTML = mode_vars[0];
@@ -2675,10 +2712,10 @@ function gmDisplayVars() {
         if (mode_vars[1] >= Math.max(width, height) && mode_vars[1] != Infinity) document.getElementById("XXXX_max_plus").style.setProperty("display", "none");
         else document.getElementById("XXXX_max_plus").style.setProperty("display", "inline-block");
     }
-    else if (gamemode == 31) {
+    else if (gamemode == 31) { // Isotopic 256
         document.getElementById("Isotopic256_halfLife_change").value = mode_vars[0];
     }
-    else if (gamemode == 39) {
+    else if (gamemode == 39) { // 2592
         if (mode_vars[0] == 0) {
             document.getElementById("2592_switch_text").innerHTML = "The merge rules switch after each move.";
             document.getElementById("2592_switch_text").style.setProperty("color", "#7cffb5");
@@ -2704,7 +2741,7 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 1 (90%), 2 (5%), 3 (5%)"]);
         }
     }
-    else if (gamemode == 40) {
+    else if (gamemode == 40) { // Wildcard 2048
         if (mode_vars[0]) {
             document.getElementById("Wildcard2048_add_text").innerHTML = "When two tiles merge, all of their possibilities combine.";
             document.getElementById("Wildcard2048_add_text").style.setProperty("color", "#b83f1a");
@@ -2722,7 +2759,7 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
         }
     }
-    else if (gamemode == 41) {
+    else if (gamemode == 41) { // X^Y
         if (mode_vars[0] == Infinity) document.getElementById("XpowY_pow_counter").innerHTML = "&infin;";
         else document.getElementById("XpowY_pow_counter").innerHTML = mode_vars[0];
         document.getElementById("XpowY_merge_counter").innerHTML = mode_vars[1];
@@ -2733,7 +2770,7 @@ function gmDisplayVars() {
 }
 
 function displayModifiers(page) {
-    if (modifiers[5] == "Custom") {
+    if (modifiers[5] == "Custom") { // If the Custom Grid is enabled, page 3 (the grid modifiers) is replaced with pages 3.1 (custom grid) and 3.2 (custom directions)
         if (page < 3) document.getElementById("modifiers_page_counter").innerHTML = "Page " + page + " / " + 5;
         else if (page === 3.1) document.getElementById("modifiers_page_counter").innerHTML = "Page 3 / 5";
         else if (page === 3.2) document.getElementById("modifiers_page_counter").innerHTML = "Page 4 / 5";
@@ -2966,7 +3003,7 @@ function startGame() {
     loadResettingModifiers();
     createArrows();
     let exrule = 0;
-    while (exrule < MergeRules.length) {
+    while (exrule < MergeRules.length) { //This script expands the multi-length merge rules into several single-length merge rules
         let exm = structuredClone(MergeRules[exrule]);
         let vars = [];
         if (exm[0] === "@var_retain" || exm[0] == "@var_copy") {
@@ -3010,7 +3047,7 @@ function startGame() {
         SpawnBoxes.push([]);
         if (TileSpawns[i][0] == "Box") refillSpawnBox(i);
     }
-    spawnConveyor = []
+    spawnConveyor = [];
     for (let i = 0; i < Math.max(nextTiles, 1); i++) spawnConveyor.push("Empty");
     refillSpawnConveyor();
     RandomTiles(startTileAmount, 0, 0);
@@ -3019,7 +3056,7 @@ function startGame() {
 }
 
 function createGrid() {
-    let makeStart = true;
+    let makeStart = true; //Normally, createGrid creates the starting grid, but if this is false, the starting grid is preserved and createGrid just makes the HTML tiles
     if (arguments.length > 0) makeStart = arguments[0];
     while (document.getElementById("grid").lastElementChild) document.getElementById("grid").removeChild(document.getElementById("grid").lastElementChild);
     while (document.getElementById("next_tiles").lastElementChild) document.getElementById("next_tiles").removeChild(document.getElementById("next_tiles").lastElementChild);
@@ -3035,7 +3072,7 @@ function createGrid() {
         width = modifiers[6] * modifiers[8] + modifiers[8] - 1;
         height = modifiers[7] * modifiers[9] + modifiers[9] - 1;
     }
-    let BlackBox = ["BlackBox"];
+    let BlackBox = ["BlackBox"]; // From the "Randomly-Placed Box Tiles" modifier
     for (let i = 1; i < TileNumAmount; i++) BlackBox.push(0);
     document.documentElement.style.setProperty("--width", width);
     document.documentElement.style.setProperty("--height", height);
@@ -3063,7 +3100,7 @@ function createGrid() {
             document.getElementById("grid").appendChild(newEmpty);
         }
     }
-    GridTiles = document.getElementById("grid").children;
+    GridTiles = document.getElementById("grid").children; //An HTML collection of the empty tiles
     let Positions = [];
     for (let row = 0; row < height; row++) {
         Positions.push([]);
@@ -3140,7 +3177,7 @@ function createArrows() {
     }
 }
 
-function defaultAbbreviate(n) {
+function defaultAbbreviate(n) { // Tiles whose text values are of type number (which is currently all of them except Garbage 0s and Box Tiles) use this
     if (typeof n == "number") {
         if (Math.abs(n) < 10000 && Math.abs(n) >= 0.1) return abbreviateNumber(n, "Number", 3, false);
         else if (Math.abs(n) >= 10000 && Math.abs(n) < 1e12) return  abbreviateNumber(n, "Number", 3, true);
@@ -3150,7 +3187,7 @@ function defaultAbbreviate(n) {
 }
 
 function displayGrid() {
-    for (let t of GridTiles) {
+    for (let t of GridTiles) { //Displaying the tiles on the grid
         let char = 6;
         let hcoord = "";
         let vcoord = "";
@@ -3164,7 +3201,7 @@ function displayGrid() {
         else tile.parentElement.style.setProperty("display", "inline-block");
         if (Grid[vcoord][hcoord] == "Empty" || Grid[vcoord][hcoord] == "Void") {tile.style.setProperty("display", "none");}
         else {
-            tile.style.setProperty("display", "flex");
+            tile.style.setProperty("display", "flex"); //Flex display is so the number of the tile can be centered on the tile
             tile.style.setProperty("left", "0%");
             tile.style.setProperty("top", "0%");
             let displaynum = 0;
@@ -3198,6 +3235,7 @@ function displayGrid() {
             tile.firstElementChild.innerHTML = defaultAbbreviate(CalcArray(display[1], vcoord, hcoord, 0, 0, 1, Grid, [], vars));
             let fontmin = 2;
             let fontmax = tile.firstElementChild.textContent.length * 0.7;
+            //Normally, the font size on a tile is dependent on the size of the text, but if the TileTypes entry has more than four entries, the 4th and 5th entries place restrictions on the font size
             if (display.length > 4) {
                 if (display[4] > 0) fontmin = display[4];
                 else if (display[4] < 0) fontmin = tile.firstElementChild.textContent.length * display[4];
@@ -3218,7 +3256,7 @@ function displayGrid() {
             tile.style.setProperty("color", (evaluateColor(display[3], vcoord, hcoord, Grid, vars)));
             while (tile.children.length > 1) tile.removeChild(tile.lastElementChild);
             let dispelem = 6;
-            while (dispelem < display.length) {
+            while (dispelem < display.length) { //If a TileTypes entry has more than six entries, all entries after the 5th relate to additional pieces of text on the tile, such as how Isotopic 256 displays the radioactivity counters
                 let innerdisplay = display[dispelem];
                 let innerscript = document.createElement("p");
                 let innertext = document.createElement("span");
@@ -3264,7 +3302,7 @@ function displayGrid() {
             }
         }
     }
-    for (let t of visibleNextTiles) {
+    for (let t of visibleNextTiles) {  //Displaying the next spawning tiles
         let char = 9;
         let nextnum = "";
         while (char < t.id.length) {nextnum += t.id[char]; char++;}
@@ -3374,7 +3412,7 @@ function displayButtons(shown) {
     for (let d = 0; d < directions.length; d++) colorArrow(d, "Arrow_" + d);
 }
 
-function colorArrow(index, ID) {
+function colorArrow(index, ID) { //An arrow button goes black if its direction isn't available
     if (directionsAvailable[index]) {
         document.getElementById(ID).style.setProperty("color", "#ff6666");
         document.getElementById(ID).style.setProperty("border-color", "#ff6666");
@@ -3387,7 +3425,7 @@ function colorArrow(index, ID) {
     }
 }
 
-function displayRules(ID, ...elements) {
+function displayRules(ID, ...elements) { //This basically just clears the element with the corresponding ID and adds elements to it. Each argument after the ID is an array of two entries: the first is the type of element to add, the second is the content of that element
     document.getElementById(ID).innerHTML = "";
     for (let elem of elements) {
         let outer = document.createElement(elem[0]);
@@ -3398,10 +3436,10 @@ function displayRules(ID, ...elements) {
 
 function loadModifiers() {
     if (gamemode != 0) {
-        if (gamemode == 1) {
+        if (gamemode == 1) { // 2048
             if (mode_vars[0]) TileSpawns = [[[1], 90], [[2], 10]];
         }
-        else if (gamemode == 25) {
+        else if (gamemode == 25) { // XXXX
             MergeRules[0][0] = mode_vars[0];
             if (mode_vars[1] == Infinity) {
                 MergeRules[0][9] = Math.max(width, height);
@@ -3413,7 +3451,7 @@ function loadModifiers() {
                 MergeRules[1][0] = mode_vars[1];
                 MergeRules[1][9] = mode_vars[1];
             }
-            if (mode_vars[0] == mode_vars[1]) {
+            if (mode_vars[0] == mode_vars[1]) { // If the minimum and maximum merge lengths are the same, you're effectively playing a "merge n tiles" gamemode, and XXXX makes the colors of the tiles more varied since there's only one "chain" of tiles now.
                 TileTypes = [[[1, 0], 1, "#ffffff", "#000000"],
                 [[["@This 0", ">", 1], "&&", ["@This 1", "<", 5]], ["@This 0", "^", "@This 1"], ["HSLA", [222.49223595, "*", "@This 0", "-", 444.9844719, "+", ["@This 1", "-", 1, "*", 19]], 100, [100, "-", ["@This 1", "*", 12.5]], 1], "#000000"],
                 [true, ["@This 0", "^", "@This 1"], ["HSLA", [222.49223595, "*", "@This 0", "-", 444.9844719, "+", ["@This 1", "-", 1, "*", 19]], 100, [0.85, "^", ["@This 1", "-", 5], "*", 50], 1], "#ffffff"],];
@@ -3424,12 +3462,12 @@ function loadModifiers() {
                 document.getElementById("winning_container").style.setProperty("display", "none");
             }
         }
-        else if (gamemode == 31) {
+        else if (gamemode == 31) { // Isotopic 256
             MergeRules[1][3][0][1][4] = mode_vars[0];
             displayRules("rules_text", ["h1", "Isotopic 256"], ["p", "Regular 2048, but odd powers of 2 other than 2 itself (8, 32, 128, etc.) are radioactive, disappearing if they go without merging for more than " + mode_vars[0] + "x its number of turns. For aesthetic purposes, the tiles are associated with isotopes of elements with the corresponding atomic mass (though they stop making chemical sense for 256 and above; 256 should be radioactive but isn't, and higher tiles don't have real elements that are that heavy). Get to the <sup>256</sup>No tile to win!"],
             ["p", "Spawning tiles: <sup>2</sup>H (90%), <sup>4</sup>He (10%)"]);
         }
-        else if (gamemode == 39) {
+        else if (gamemode == 39) { // 2592
             if (mode_vars[0] == 0) {
                 document.getElementById("moves_container").style.setProperty("display", "inline-block");
                 MergeRules[0][1][8][0] = "@Moves";
@@ -3451,7 +3489,7 @@ function loadModifiers() {
                 MergeRules[1][1][4][0] = "@Merges";
             }
         }
-        else if (gamemode == 40) {
+        else if (gamemode == 40) { // Wildcard 2048
             if (mode_vars[0]) {
                 MergeRules = [[[1, "@end_vars", 0, "@repeat", ["@var_retain", "@This 0", "min", "@Next 1 0", ">=", "@Var 0"], "@if", ["@var_retain", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "&&", ["@var_retain", "@Next 1 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1]], "+", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0, "&&", ["@This 1", "=", "@Next 1 1"]], true, [[["@This 0", "+", "@Next 1 0"], "@This 1"]], ["@This 0", "+", "@Next 1 0"], [false, true]]];
                 if (modifiers[13] == "Interacting") {
@@ -3460,7 +3498,7 @@ function loadModifiers() {
                 }
             }
         }
-        else if (gamemode == 41) {
+        else if (gamemode == 41) { // X^Y
             MergeRules[0][11] = mode_vars[1];
             if (mode_vars[0] != Infinity) {
                 if (modifiers[13] == "None") game_vars = [["@Literal", [["@This 0", "^", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", ">", 1], "2nd", "@Var 0", "log", 2, "ceil", 1, "min", mode_vars[0], "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "<=", 1], "@edit_var", 2, "@Var 0", "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1"]]];
@@ -3472,7 +3510,7 @@ function loadModifiers() {
         startTileAmount = modifiers[2];
         multiMerge = modifiers[3];
         spawnLocation = modifiers[4];
-        if (modifiers[5] != "Custom") {
+        if (modifiers[5] != "Custom") { //Adding directions based on the grid shape and available directions modifiers; if the Custom Grid is enabled, this is skipped so the directions you chose remain
             directions = [];
             if (modifiers[5] == "Checkerboard") {
                 if (modifiers[10] == "Orthogonal" || modifiers[10] == "Both") {
@@ -3543,11 +3581,11 @@ function loadModifiers() {
                 else directions.push([[0, 0], "&#8226;", 5/33, 3/33, 14/33, 14/33, ["Space"]]);
             }
         }
-        if (modifiers[15] == "Simple" && gamemode != 14 && gamemode != 40) {
+        if (modifiers[15] == "Simple" && gamemode != 14 && gamemode != 40) { // 2049 and Wildcard 2048 ignore the simple spawns: 2049 needs both 1s and -1s, and simple spawns would defeat the whole point of Wildcard 2048
             if (gamemode == 30) TileSpawns = [["Box", 20, [-1], 4, [-2], 4]];
             else TileSpawns = [TileSpawns[0]];
         }
-        else if (modifiers[15] == "Equal" && gamemode != 29 && gamemode != 30) {
+        else if (modifiers[15] == "Equal" && gamemode != 29 && gamemode != 30) { //1535 1536 1537 and 3072 ignore the equal spawns; honestly I don't remember why 1535 1536 1537 does, but 3072 ignores it so the bonus tiles aren't messed up, as their probability changes depending on whether you've unlocked them or not
             for (let t = 0; t < TileSpawns.length; t++) {
                 TileSpawns[t][1] = 1;
             }
@@ -3556,7 +3594,7 @@ function loadModifiers() {
             spawnConditions = ["@Moves", "+", 1, "%", modifiers[19], "=", 0];
             document.getElementById("moves_container").style.setProperty("display", "inline-block");
         }
-        if (modifiers[13] != "None" && gamemode != 14 && gamemode != 31 && gamemode != 40 && gamemode != 41) {
+        if (modifiers[13] != "None" && gamemode != 14 && gamemode != 31 && gamemode != 40 && gamemode != 41) { // 2049, Isotopic 256, Wildcard 2048, and X^Y all do special things with negative tiles, but this script is what adds the negative tiles to the rest of the modes
             TileNumAmount++;
             let neganum = TileNumAmount - 1
             let positiveTiles = [];
@@ -3659,7 +3697,7 @@ function loadModifiers() {
     }
 }
 
-function loadResettingModifiers() {
+function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed Box Tiles re-randomize after each game, but the rest of the modifiers don't, so those two are loaded here instead of in loadModifiers
     if (gamemode != 0) {
         let BlackBox = ["BlackBox"];
         for (let i = 1; i < TileNumAmount; i++) BlackBox.push(0);
@@ -3787,7 +3825,7 @@ function createCustomArrows() {
     }
 }
 
-//Calculations for the kinds of arrays seen in TileTypes and MergeRules
+//Calculations for CalcArrays, the kinds of arrays seen all across the project, especially in TileTypes and MergeRules
 
 function operation(n1, operator, n2) {
     let additional = [];
@@ -4095,7 +4133,7 @@ function operation(n1, operator, n2) {
         case "second":
             result = n2;
         break;
-        case "output":
+        case "output": //For testing purposes only
             output(n2);
             result = n1;
         break;
@@ -4104,74 +4142,32 @@ function operation(n1, operator, n2) {
     return result;
 }
 
-function CalcArrayConvert(input, operator) {
-    let vcoord = 0; let hcoord = 0; let vdir = 0; let hdir = 0; let mlength = 2; let gri = Grid; let parents = []; let vars = [];
-    if (arguments.length > 2) vcoord = arguments[2];
-    if (arguments.length > 3) hcoord = arguments[3];
-    if (arguments.length > 4) vdir = arguments[4];
-    if (arguments.length > 5) hdir = arguments[5];
-    if (arguments.length > 6) mlength = arguments[6];
-    if (arguments.length > 7) gri = arguments[7];
-    if (arguments.length > 8) parents = arguments[8];
-    if (arguments.length > 9) vars = arguments[9];
-    let result = structuredClone(input);
-    do {
-        if (Array.isArray(result)) {
-            if (result[0] === "@Literal") {
-                for (let c = 1; c < result.length; c++) {
-                    if (Array.isArray(result[c])) {
-                        if (result[c][0] === "@CalcArray") result[c] = CalcArray(result[c].slice(1), vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-                        else {
-                            result[c].unshift("@Literal");
-                            result[c] = CalcArray(result[c], vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-                        }
-                    }
-                }
-                result = result.slice(1);
-            }
-            else result = CalcArray(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-        }
-        if (any_operators.indexOf(operator) > -1) {
-            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-        }
-        else if (number_operators.indexOf(operator) > -1) {
-            if (typeof result == "string") result = strictCalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-            result = Number(result);
-            if (Number.isNaN(result)) result = 0;
-        }
-        else if (string_operators.indexOf(operator) > -1) {
-            result = CalcArrayString(String(result), vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-        }
-        else if (boolean_operators.indexOf(operator) > -1) {
-            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-            result = Boolean(result);
-        }
-        else if (array_operators.indexOf(operator) > -1) {
-            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
-            if (!(Array.isArray(result))) result = [result];
-        }
-    } while (Array.isArray(result) && result[0] === "@Literal")
-    return result;
-}
-
 function CalcArray(arr) {
+    /*
+    CalcArrays, in their most basic form, are something like [2, "+", 3, "*", 5]. The CalcArray function evaluates a CalcArray into its result, working from left
+    to right: for example, [2, "+", 3, "*", 5] = [5, "*", 5] = 25. What makes these useful is that they can use properties of the tiles they're working with in
+    TileTypes and MergeRules: for example, ["@This 0", "*", 2] evaluates to double the 0th number of that tile's internal representation, so for a 162 tile in 2187,
+    which internally is a [4, 2] tile, ["@This 0", "*", 2] evaluates to 8. CalcArrays can work with numbers, strings, booleans, and other arrays - but avoid using the
+    @ character in strings if you want to work with them as strings, as strings beginning with @ mean special things, as seen in CalcArrayString. With all the features
+    that CalcArrays support, they're almost a miniature programming language...
+    */
     let vcoord = 0; let hcoord = 0; let vdir = 0; let hdir = 0; let mlength = 2; let gri = Grid; let parents = []; let vars = []; let inner = true;
-    if (arguments.length > 1) vcoord = arguments[1];
-    if (arguments.length > 2) hcoord = arguments[2];
-    if (arguments.length > 3) vdir = arguments[3];
-    if (arguments.length > 4) hdir = arguments[4];
-    if (arguments.length > 5) mlength = arguments[5];
-    if (arguments.length > 6) gri = arguments[6];
-    if (arguments.length > 7) parents = arguments[7];
-    if (arguments.length > 8 && arr[0] === "@var_retain") vars = arguments[8];
+    if (arguments.length > 1) vcoord = arguments[1]; // If this CalcArray is basing itself at a certain tile (usually via "@This" or "@Next" strings), this is the vertical coordinate of that tile
+    if (arguments.length > 2) hcoord = arguments[2]; // Horizontal coordinate
+    if (arguments.length > 3) vdir = arguments[3]; // For MergeRules, this is the vertical movement magnitude of the direction being moved
+    if (arguments.length > 4) hdir = arguments[4]; // Horizontal movement magnitude
+    if (arguments.length > 5) mlength = arguments[5]; // Length of the current merge; only used as a hand-me-down to CalcArrayString
+    if (arguments.length > 6) gri = arguments[6]; // If we're looking at a grid that isn't the regular Grid, this specifies what the grid is
+    if (arguments.length > 7) parents = arguments[7]; // The last entry of parents is the first entry of the current CalcArray. The second-to-last entry of parents is the first entry of the CalcArray that the current CalcArray is contained in, and so on, up to the first entry of parents being the first entry of the outermost CalcArray.
+    if (arguments.length > 8 && arr[0] === "@var_retain") vars = arguments[8]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray, 
     else if (arguments.length > 8 && arr[0] === "@var_copy") vars = structuredClone(arguments[8]);
-    if (arguments.length > 9) inner = arguments[9];
+    if (arguments.length > 9) inner = arguments[9]; // If inner is true, then this counts as an inner CalcArray, so it adds to the parents array. This is set to false for things like repeats, ifs, and elses, since they call CalcArray despite not actually being inner arrays
     if ((typeof arr == "string")) return CalcArrayString(arr, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
     if (!Array.isArray(arr)) return arr;
     let carr = structuredClone(arr);
     if (carr[0] === "@Literal") return CalcArrayConvert(carr, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
     if (carr[0] === "@var_retain" || carr[0] === "@var_copy") carr.shift();
-    if (carr[0] === "@include_gvars") {
+    if (carr[0] === "@include_gvars") { // Include the variables from game_vars as the first variables in this CalcArray
         let newvars = structuredClone(game_vars);
         for (let v = 0; v < newvars.length; v++) {
             newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
@@ -4180,7 +4176,7 @@ function CalcArray(arr) {
         }
         carr.shift();
     }
-    if (carr.indexOf("@end_vars") > -1) {
+    if (carr.indexOf("@end_vars") > -1) { // When a CalcArray includes variables, it uses "@end_vars" to mark where the list of variables ends and the actual expression to evaluate begins.
         let newvars = carr.slice(0, carr.indexOf("@end_vars"));
         for (let v = 0; v < newvars.length; v++) {
             newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
@@ -4197,14 +4193,14 @@ function CalcArray(arr) {
     let n2 = 0;
     let additional_args = [];
     let operator = "";
-    let to_pop = 2;
-    let if_skipped = false;
+    let to_pop = 2; // How many entries (starting from the 1st, since the 0th is where the result is) should be removed after an operation?
+    let if_skipped = false; // Is set to true only right after an if or else_if's condition is false; this is used so the CalcArray knows when to look at elses and else_ifs.
     while (carr.length > 1) {
         if (Array.isArray(carr[1])) carr[1] = CalcArray(carr[1], vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
         operator = carr[1];
         n1 = CalcArrayConvert(carr[0], operator, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
         additional_args = [];
-        if (operator == "@repeat") {
+        if (operator == "@repeat") { // Repeats the operations between the entry after "@repeat" and "@end-repeat". If the entry after "@repeat" is a number, that's how many times those operations are repeated (like a for loop); otherwise, it should be a CalcArray expression, and the repetition continues as long as that expression evaluates to true (like a while loop)
             if (typeof CalcArray(carr[2], vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars) == "number") carr[2] = CalcArray(carr[2], vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
             let nesting = 1;
             let position = 3;
@@ -4227,7 +4223,7 @@ function CalcArray(arr) {
             }
             to_pop = position;
         }
-        else if (operator == "@if") {
+        else if (operator == "@if") { // The operations between the entry after "@if" and "@end_if" only occur if the entry after "@if" evaluates to true
             let nesting = 1;
             let position = 3;
             let nestarray = [];
@@ -4249,7 +4245,7 @@ function CalcArray(arr) {
             else if_skipped = true;
             to_pop = position;
         }
-        else if (operator == "@else") {
+        else if (operator == "@else") { // The operations between "@else" and "@end-else" only occur if an "@if" or an "@else-if" was just skipped
             let nesting = 1;
             let position = 2;
             let nestarray = [];
@@ -4271,7 +4267,7 @@ function CalcArray(arr) {
             if_skipped = false;
             to_pop = position;
         }
-        else if (operator == "@else-if") {
+        else if (operator == "@else-if") { // You can probably guess how this one works
             let nesting = 1;
             let position = 3;
             let nestarray = [];
@@ -4296,7 +4292,7 @@ function CalcArray(arr) {
             }
             to_pop = position;
         }
-        else if (operator == "@edit_var") {
+        else if (operator == "@edit_var") { // The entry after "@edit_var" is which variable to edit, the entry after that is what to change that variable to
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
@@ -4304,13 +4300,13 @@ function CalcArray(arr) {
             if (vlocation % 1 == 0 && vlocation >= vars.length * -1 && vlocation < vars.length) vars[vlocation] = n2;
             to_pop = 3;
         }
-        else if (operator == "@add_var") {
+        else if (operator == "@add_var") { // Adds a new variable at the end of the variables array
             n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
             if (Array.isArray(n2)) n2.unshift("@Literal");
             vars.push(n2);
             to_pop = 2;
         }
-        else if (operator == "@insert_var") {
+        else if (operator == "@insert_var") { // The entry after "@insert_var" is where to insert the new variable, the entry after that is the value of the new variable
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
@@ -4318,7 +4314,7 @@ function CalcArray(arr) {
             vars.splice(vlocation, 0, n2);
             to_pop = 3;
         }
-        else if (operator == "@remove_var") {
+        else if (operator == "@remove_var") { // Removes the variable at the given position of the variables array
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
             vars.splice(vlocation, 1);
@@ -4385,7 +4381,59 @@ function CalcArray(arr) {
     return carr[0];
 }
 
+function CalcArrayConvert(input, operator) { // Converts the input into a type based on the operator
+    let vcoord = 0; let hcoord = 0; let vdir = 0; let hdir = 0; let mlength = 2; let gri = Grid; let parents = []; let vars = [];
+    if (arguments.length > 2) vcoord = arguments[2];
+    if (arguments.length > 3) hcoord = arguments[3];
+    if (arguments.length > 4) vdir = arguments[4];
+    if (arguments.length > 5) hdir = arguments[5];
+    if (arguments.length > 6) mlength = arguments[6];
+    if (arguments.length > 7) gri = arguments[7];
+    if (arguments.length > 8) parents = arguments[8];
+    if (arguments.length > 9) vars = arguments[9];
+    let result = structuredClone(input);
+    do {
+        if (Array.isArray(result)) {
+            if (result[0] === "@Literal") {
+                // CalcArrays assume that any arrays within them are also CalcArray expressions (making array brackets act sort of like parentheses). To get a CalcArray expression to work with an array inside it as an actual array, you have to put "@Literal" as the 0th entry of the array. CalcArray and CalcArrayString will do the rest to ensure that array stays as an actual array that doesn't actually include that "@Literal".
+                for (let c = 1; c < result.length; c++) {
+                    if (Array.isArray(result[c])) {
+                        if (result[c][0] === "@CalcArray") result[c] = CalcArray(result[c].slice(1), vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars); // Once you're in a literal array, the subarrays are considered literal to... unless their 0th entry is "@CalcArray", which indicates that, despite being inside a literal array, that subarray is to be evaluated as a CalcArray expression.
+                        else {
+                            result[c].unshift("@Literal");
+                            result[c] = CalcArray(result[c], vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+                        }
+                    }
+                }
+                result = result.slice(1);
+            }
+            else result = CalcArray(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+        }
+        if (any_operators.indexOf(operator) > -1) {
+            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+        }
+        else if (number_operators.indexOf(operator) > -1) {
+            if (typeof result == "string") result = strictCalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+            result = Number(result);
+            if (Number.isNaN(result)) result = 0;
+        }
+        else if (string_operators.indexOf(operator) > -1) {
+            result = CalcArrayString(String(result), vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+        }
+        else if (boolean_operators.indexOf(operator) > -1) {
+            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+            result = Boolean(result);
+        }
+        else if (array_operators.indexOf(operator) > -1) {
+            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
+            if (!(Array.isArray(result))) result = [result];
+        }
+    } while (Array.isArray(result) && result[0] === "@Literal")
+    return result;
+}
+
 function CalcArrayString(str) {
+    // CalcArrays treat strings with an @ as their 0th character specially: these strings are used to indicate things, most commonly one of the values of a tile.
     let vcoord = 0; let hcoord = 0; let vdir = 0; let hdir = 0; let mlength = 2; let gri = Grid; let parents = []; let vars = [];
     if (arguments.length > 1) vcoord = arguments[1];
     if (arguments.length > 2) hcoord = arguments[2];
@@ -4398,7 +4446,7 @@ function CalcArrayString(str) {
     let result = str;
     if (str[0] != "@") return str;
     let split = str.split(" ");
-    if (split.length < 3 && split[0] == "@This") {
+    if (split.length < 3 && split[0] == "@This") { // "@This 0" refers to the 0th entry of the internal array of the tile being examined, "@This 1" is its first entry, and so on. "@This" without the number refers to the whole array of that tile.
         let gri_pos;
         if (vcoord == "None") gri_pos = gri;
         else if (hcoord == "None") gri_pos = gri[vcoord];
@@ -4416,7 +4464,7 @@ function CalcArrayString(str) {
             else return str;
         }
     }
-    else if (split.length < 5 && split[0] == "@Next") {
+    else if (split.length < 5 && split[0] == "@Next") { // "@Next 1 0" is the 0th entry of the first "next" tile: if the movement direction is 1 tile to the left, then "@Next 1 0" is the 0th entry of the tile that's one tile to the left of the tile being examined. Primarily used in merge rules. "@Next 1" returns the entire first next tile, "@Next" returns all of the next tiles within the merge length.
         if (split.length == 1) {
             let nextv = vcoord + vdir;
             let nexth = hcoord + hdir;
@@ -4454,7 +4502,7 @@ function CalcArrayString(str) {
             }
         }
     }
-    else if (split.length < 4 && (split[0] == "@NextNE" || split[0] == "@NextFull")) {
+    else if (split.length < 4 && (split[0] == "@NextNE" || split[0] == "@NextFull")) { // "@NextNE 1 0" is like "@Next 1 0", but it skips over empty tiles. @NextFull skips over both empty and void tiles. Most commonly used for the purposes of using "@NextNE -1 0" to refer to the next non-empty tile BEHIND the current tile, such as preventing a two-tile merge if the tile behind the current tile would cause a three-tile merge, allowing the three-tile merge to take priority.
         let nextv = vcoord;
         let nexth = hcoord;
         let tiles_found = 0;
@@ -4482,7 +4530,7 @@ function CalcArrayString(str) {
             else result = gri[nextv][nexth][tnum];
         }
     }
-    else if (split.length < 5 && split[0] == "@Relative") {
+    else if (split.length < 5 && split[0] == "@Relative") { // "@Relative -3 1 2" is the 2nd entry of the tile that's 3 spaces up and 1 space to the right of the current tile
         let nextv = vcoord + Number(split[1]);
         let nexth = hcoord + Number(split[2]);
         if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return str;
@@ -4497,7 +4545,7 @@ function CalcArrayString(str) {
             else result = gri[nextv][nexth][tnum];
         }
     }
-    else if (split[0] == "@Grid") {
+    else if (split[0] == "@Grid") { // "@Grid 1 2 0" is the 0th entry of the tile in position [1, 2]. "@Grid 3 5" is the whole tile at position [3, 5], "@Grid 2" is the entire 2nd row of the grid, and "@Grid" is the whole grid, which is an array (grid) of arrays (rows) of arrays (tiles).
         result = Grid;
         for (let t = 1; t < split.length; t++) {
             if (!(Array.isArray(result))) break;
@@ -4509,17 +4557,17 @@ function CalcArrayString(str) {
         result = structuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
-    else if (split.length == 1 && split[0] == "@MLength") {
+    else if (split.length == 1 && split[0] == "@MLength") { // Length of the current merge
         result = mlength;
     }
-    else if (split.length < 3 && split[0] == "@Parent") {
+    else if (split.length < 3 && split[0] == "@Parent") {  // "@Parent 0" is the first entry of the outermost CalcArray, "@Parent 1" is the first entry of the second-to-outermost CalcArray (that contains the current CalcArray), and so on. Uses .at for negative indices, so "@Parent -1" is the last entry of parents, i.e. the first entry of the current CalcArray.
         if (split.length == 1) result = parents.length;
         let tnum = Number(split[1]);
         let varn = parents.at(tnum);
         if (varn == undefined) return str;
         else result = CalcArray(varn, vcoord, hcoord, vdir, hdir, mlength, gri, parents, vars);
     }
-    else if (split.length < 3 && split[0] == "@Var") {
+    else if (split.length < 3 && split[0] == "@Var") { // "@Var 0" is the 0th variable. Also uses .at for negative indices.
         if (split.length == 1) result = vars.length;
         let tnum = Number(split[1]);
         let varn = vars.at(tnum);
@@ -4541,7 +4589,7 @@ function CalcArrayString(str) {
     else if (split.length == 1 && split[0] == "@MergesBefore") {
         result = merges_before_now;
     }
-    else if (split[0] == "@DiscTiles") {
+    else if (split[0] == "@DiscTiles") { // "@DiscTiles 0" is the 0th discovered tile this game, "@DiscTiles 1 2" is the 2nd entry of the 1st discovered tile this game, and "@DiscTiles" is the whole array of discovered tiles
         result = discoveredTiles;
         for (let t = 1; t < split.length; t++) {
             if (!(Array.isArray(result))) break;
@@ -4553,7 +4601,7 @@ function CalcArrayString(str) {
         result = structuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
-    else if (split[0] == "@DiscWinning") {
+    else if (split[0] == "@DiscWinning") { // Like @DiscTiles, but only including the tiles that are included in the win conditions
         let result = discoveredWinning;
         for (let t = 1; t < split.length; t++) {
             if (!(Array.isArray(result))) break;
@@ -4565,7 +4613,7 @@ function CalcArrayString(str) {
         result = structuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
-    else if (split[0] == "@NextSpawns") {
+    else if (split[0] == "@NextSpawns") { // "@NextSpawns 0" is the next tile to spawn, "@NextSpawns 3 4" is the 4th entry of the 3rd tile to spawn after the next one
         let result = spawnConveyor;
         for (let t = 1; t < split.length; t++) {
             if (!(Array.isArray(result))) break;
@@ -4614,7 +4662,7 @@ function strictCalcArrayString(str) { //CalcArrayString, except if it would retu
     else return result;
 }
 
-function calcArrayReorder(arr, order) {
+function calcArrayReorder(arr, order) { // Changes which tiles the "@Next" strings target in accordance with the 7th entry of a MergeRule
     let vdir = 0; let hdir = 0;
     if (arguments.length > 2) vdir = arguments[2];
     if (arguments.length > 3) hdir = arguments[3];
@@ -4630,8 +4678,7 @@ function calcArrayReorder(arr, order) {
             }
             else if (split.length == 3 && (split[0] == "@Next" || split[0] == "@NextNE") && split[1] >= 0) {
                 let position = split[1];
-                // if (order[position] == 0) elem = "@This " + split[2];
-                /*else*/ elem = split[0] + " " + order[position] + " " + split[2];
+                elem = split[0] + " " + order[position] + " " + split[2];
             }
             else if (split.length == 4 && split[0] == "@Relative") {
                 elem = "@Relative " + (split[1] + vdir * order[0]) + " " + (split[2] + hdir * order[0]) + " " + split[3];
@@ -4643,6 +4690,10 @@ function calcArrayReorder(arr, order) {
 }
 
 function evaluateColor(color) {
+    /*
+    Colors can appear in several forms in TileTypes: as a string like #f938ac, or as an array such as ["RGBA", 255, 40, 20, 1]
+    (which can come in RGBA, HSLA, or HSVA forms), and there can be gradients, which are arrays with each entry being either a color or a position in the gradient.
+    */
     let vcoord = 0; let hcoord = 0; let gri = Grid; let vars = [];
     if (arguments.length > 1) vcoord = arguments[1];
     if (arguments.length > 2) hcoord = arguments[2];
@@ -4702,8 +4753,8 @@ function evaluateColor(color) {
         let grad = color[0] + "("
         let i = 1;
         while (i < color.length) {
-            if (typeof color[i] == "number") {
-                if (i == 1) {
+            if (typeof color[i] == "number") { // Strings and arrays in a gradient array represent colors, but numbers represent positions in the gradient...
+                if (i == 1) { // ...unless it's the very first entry after the type of gradient, in which case it's the angle of the gradient.
                     grad += color[i];
                     grad += "deg";
                 }
@@ -4723,7 +4774,7 @@ function evaluateColor(color) {
         grad += ")";
         return grad;
     }
-    else if (color[0] == "multi-gradient") {
+    else if (color[0] == "multi-gradient") { // Now each entry is itself a gradient, with multiple gradients stacked
         let result = "";
         let i = 1;
         while (i < color.length) {
@@ -4739,7 +4790,7 @@ function evaluateColor(color) {
     else return CalcArray(color, vcoord, hcoord, 0, 0, 2, gri, [], vars);
 }
 
-function convertColor(col, system) {
+function convertColor(col, system) { // Converts colors between systems; mostly useful because rotateColor prefers HSLA colors
     let vcoord = 0; let hcoord = 0; let gri = Grid;
     if (arguments.length > 2) vcoord = arguments[2];
     if (arguments.length > 3) hcoord = arguments[3];
@@ -4872,7 +4923,7 @@ function convertColor(col, system) {
 
 function rotateColor(color, degrees) { //degrees = 180 gives the complementary color
     let invertL = false; let vcoord = 0; let hcoord = 0; let gri = Grid;
-    if (arguments.length > 2) invertL = arguments[2];
+    if (arguments.length > 2) invertL = arguments[2]; // If this is true, then the lightness of the color is inverted
     if (arguments.length > 3) vcoord = arguments[3];
     if (arguments.length > 4) hcoord = arguments[4];
     if (arguments.length > 5) gri = arguments[5];
@@ -4891,7 +4942,7 @@ function rotateColor(color, degrees) { //degrees = 180 gives the complementary c
     }
 }
 
-function evaluateMergeRule(rule) {
+function evaluateMergeRule(rule) { // This does not actually evaluate whether a merge rule is currently applicable, it just turns the merge rule into a state such that CalcArray can do its job.
     let vcoord = 0; let hcoord = 0; let vdir = 0; let hdir = 0; let gri = Grid; let vars = [];
     if (arguments.length > 1) vcoord = arguments[1];
     if (arguments.length > 2) hcoord = arguments[2];
@@ -4972,19 +5023,19 @@ function evaluateMergeRule(rule) {
 }
 
 //Gameplay
-function refillSpawnConveyor() {
+function refillSpawnConveyor() { // This function ensures that nextTiles is always full. spawnConveyor always has at least 1 tile in it, and it can have more if nextTiles is above 1.
     for (let s = 0; s < spawnConveyor.length; s++) {
         if (spawnConveyor[s] == "Empty") {
             let weighttotal = 0;
             let cSpawns = structuredClone(TileSpawns);
             for (let p of cSpawns) {
                 if (Array.isArray(p[1])) p[1] = CalcArray(p[1]);
-                weighttotal += p[1];
+                weighttotal += p[1]; // weighttotal is the sum of the spawn chances of each tile
             }
             let randnum = getRndInteger(1, weighttotal);
             let spawnedtile = "Empty";
             let entry = 0;
-            TileDecider: {
+            TileDecider: { // Chooses which tile we're spawning
                 while (entry < cSpawns.length) {
                     randnum -= cSpawns[entry][1];
                     if (randnum <= 0) {
@@ -4994,7 +5045,7 @@ function refillSpawnConveyor() {
                     entry++;
                 }
             }
-            if (spawnedtile == "Box") {
+            if (spawnedtile == "Box") { // If the tile we landed on is a spawn box, choose a tile from the box at random
                 if (SpawnBoxes[entry].length == 0) refillSpawnBox(entry);
                 let itemindex = getRndInteger(0, SpawnBoxes[entry].length - 1);
                 spawnedtile = SpawnBoxes[entry][itemindex];
@@ -5004,7 +5055,7 @@ function refillSpawnConveyor() {
             if (spawnedtile[0] == "@CalcArray") spawnedtile = CalcArray(spawnedtile.slice(1));
             if (Array.isArray(spawnedtile)) {
                 for (let i = 0; i < spawnedtile.length; i++) {
-                    if (Array.isArray(spawnedtile[i])) spawnedtile[i] = CalcArray(spawnedtile[i]);
+                    if (Array.isArray(spawnedtile[i])) spawnedtile[i] = CalcArray(spawnedtile[i]); //If a spawned tile's entries are themselves arrays, assume those entries are CalcArray expressions
                 }
             }
             spawnConveyor[s] = structuredClone(spawnedtile);
@@ -5012,7 +5063,7 @@ function refillSpawnConveyor() {
     }
 }
 
-function spawnConveyorSelect() {
+function spawnConveyorSelect() { // Takes the 0th entry of spawnConveyor and returns it, pushes the rest of the entries to the previous entry (thus closer to spawning), and refills the conveyor
     refillSpawnConveyor();
     let spawnedtile = structuredClone(spawnConveyor[0]);
     for (let s = 0; s < spawnConveyor.length - 1; s++) spawnConveyor[s] = structuredClone(spawnConveyor[s + 1]);
@@ -5021,7 +5072,7 @@ function spawnConveyorSelect() {
     return spawnedtile;
 }
 
-function RandomTiles(amount, vdir, hdir) {
+function RandomTiles(amount, vdir, hdir) { // This is what spawns the random tiles. amount is the amount of tiles to spawn. vdir and hdir are the directions of the previous move, which we need if spawnLocation is Edge.
     let TileChoices = [];
     if (spawnLocation == "Edge" && (vdir != 0 || hdir != 0)) {
         let iterations = 0;
@@ -5129,7 +5180,7 @@ function RandomTiles(amount, vdir, hdir) {
     displayGrid();
 }
 
-function refillSpawnBox(entry) {
+function refillSpawnBox(entry) { // When a spawn box is empty, this function refills it.
     let j = 2;
     while (j < TileSpawns[entry].length) {
         if ((j < TileSpawns[entry].length - 1) && (typeof TileSpawns[entry][j + 1] == "number")) {
@@ -5144,16 +5195,21 @@ function refillSpawnBox(entry) {
 }
 
 async function MoveHandler(direction_num) {
+    /*
+    This is probably the second most important function here (I'd say CalcArray is the most important), as this function is what performs moves,
+    which are, y'know, how the game is played. MoveHandler is asynchronous so that the delay function can be used for tile animations, but since it sets
+    inputAvailable to false for the duration of the move, you can't do other things during a move.
+    */
     let vdir = directions[direction_num][0][0];
     let hdir = directions[direction_num][0][1];
     inputAvailable = false;
     displayButtons(false);
-    let movementOccurred = false;
-    let mergeCount = 0;
-    let TileOrder = [];
-    let stillMoving = [];
-    let mergeable = [];
-    if (vdir == 0 && hdir == 0) {
+    let movementOccurred = false; // If this is still false by the end of the move, then a move hasn't actually occured, so mark the direction as not available and don't spawn more tiles.
+    let mergeCount = 0; // How many merges have occurred this move?
+    let TileOrder = []; // When moving upwards, tiles closest to the top move first, and similarly for the other directions. Vertical outweighs horizontal, though that choice is arbitrary
+    let stillMoving = []; // Which tiles in TileOrder are still moving?
+    let mergeable = []; // Which tiles in TileOrder haven't merged already?
+    if (vdir == 0 && hdir == 0) { // If both movement magnitudes are zero, this move is just staying still and letting new tiles spawn
         movementOccurred = false;
         for (let row = 0; row < height; row++) {
             for (let column = 0; column < width; column++) {
@@ -5201,9 +5257,9 @@ async function MoveHandler(direction_num) {
                 }
             }
         }
-        let slides = 0;
+        let slides = 0; // How many times have all the tiles gone through the movement process? If this value reaches SlideAmount, end the move early.
         while (stillMoving.indexOf(true) > -1 && slides < slideAmount) {
-            let oldStillMoving = structuredClone(stillMoving);
+            let oldStillMoving = structuredClone(stillMoving); // oldStillMoving is used for animation purposes
             for (let position of TileOrder) {
                 let index = indexOfPrimArray(position, TileOrder);
                 if (!(stillMoving[index])) continue;
@@ -5229,14 +5285,14 @@ async function MoveHandler(direction_num) {
                 if (tile == "Empty" || tile == "Void") {
                     stillMoving[index] = false; oldStillMoving[index] = false; continue;
                 }
-                else if (nexttiles[0] == "Empty") {
+                else if (nexttiles[0] == "Empty") { // If the tile ahead of the currently-examined tile is empty, the tile moves
                     Grid[nextpositions[0][0]][nextpositions[0][1]] = structuredClone(Grid[position[0]][position[1]]);
                     Grid[position[0]][position[1]] = "Empty";
                     stillMoving[index] = false;
                     stillMoving[nextindices[0]] = true;
                     movementOccurred = true;
                 }
-                else if (mergeable[index] || multiMerge) {
+                else if (mergeable[index] || multiMerge) { // Checking for an applicable merge rule, and applying it if one is found. Earlier entries in MergeRules take priority over later ones.
                     let rule = false;
                     let vars = [];
                     MergeCheck: {
@@ -5264,7 +5320,7 @@ async function MoveHandler(direction_num) {
                                 }
                                 checkedrule.splice(0, checkedrule.indexOf("@end_vars") + 1);
                             }
-                            if (checkedrule[0] == 0) break;
+                            if (checkedrule[0] == 0) break; // Merge rules of length 0 are a special case that's saved for the end of the move
                             checkedrule = evaluateMergeRule(checkedrule, position[0], position[1], vdir, hdir, Grid, vars);
                             if (checkedrule[2]) {
                                 if (nextpositions.length >= checkedrule[0] - 1 && CalcArray(checkedrule[1], position[0], position[1], vdir, hdir, checkedrule[0], Grid, [], vars) === true) {
@@ -5272,7 +5328,7 @@ async function MoveHandler(direction_num) {
                                     break MergeCheck;
                                 }
                             }
-                            else if (nextpositions.length >= checkedrule[0] - 1) {
+                            else if (nextpositions.length >= checkedrule[0] - 1) { // If the 2nd entry is false, we need to look at every permutation of the merge rule, which grows factorially with the length of the rule, to see if any permutation evaluates to true
                                 let arrangements = orders(checkedrule[0]);
                                 for (let permu = 0; permu < arrangements.length; permu++) {
                                     let testing = calcArrayReorder(checkedrule, arrangements[permu], vdir, hdir, checkedrule[0]);
@@ -5284,9 +5340,9 @@ async function MoveHandler(direction_num) {
                             }
                         }
                     }
-                    if (rule !== false) {
+                    if (rule !== false) { // If we found a rule, it's time to do the merge
                         Merge: {
-                            for (let p = rule[0] - 1; p >= 0; p--) {
+                            for (let p = rule[0] - 1; p >= 0; p--) { //...but only if all the tiles in the merge are still capable of merging
                                 if ((mergeable[nextindices[p - 1]] === false || mergeable[index] === false) && !multiMerge) {
                                     stillMoving[index] = false;
                                     oldStillMoving[index] = false;
@@ -5339,7 +5395,7 @@ async function MoveHandler(direction_num) {
                     stillMoving[index] = false; oldStillMoving[index] = false;
                 }
             }
-            if (modifiers[16] > 0) {
+            if (modifiers[16] > 0) { // Movement animation
                 let frames = 10 / modifiers[16];
                 frames = Math.ceil(40 / modifiers[16] / Math.max(width, height) * Math.max(Math.abs(vdir), Math.abs(hdir)));
                 for (let f = 1; f <= frames; f++) {
@@ -5362,6 +5418,11 @@ async function MoveHandler(direction_num) {
         for (let position of TileOrder) {
             if (Grid[position[0]][position[1]] == "Empty" || Grid[position[0]][position[1]] == "Void") continue;
             for (let m = 0; m < MergeRules.length; m++) {
+                /*
+                This checks for merge rules of length 0, which are a special case: merge rules of length 0 are effects that are applied to a single tile
+                at the end of the move. Each length 0 merge rule is only checked once per tile per move. For example, Isotopic 256 uses length-0 merge rules
+                to decrease the radioactivity counters of radioactive tiles.
+                */
                 let rule = false;
                 let checkedrule = structuredClone(MergeRules[m]);
                 let vars = [];
@@ -5416,13 +5477,13 @@ async function MoveHandler(direction_num) {
         }
         if (CalcArray(spawnConditions) === true) RandomTiles(randomTileAmount, vdir, hdir);
         moves_so_far++;
-        if (mergeCount > 0) {
+        if (mergeCount > 0) { // Transferring the merges done this move into Merges Before This Move
             moves_where_merged++;
             merges_before_now += mergeCount;
         }
     }
     else {
-        directionsAvailable[direction_num] = false;
+        directionsAvailable[direction_num] = false; // Marks the direction as not available if the move failed
     }
     tileDiscoveryCheck();
     let victory = winCheck();
@@ -5437,7 +5498,7 @@ async function MoveHandler(direction_num) {
     }
 }
 
-function tileDiscoveryCheck() {
+function tileDiscoveryCheck() { // Adds newly-discovered tiles into discoveredTiles if there are any
     for (let row = 0; row < height; row++) {
         for (let column = 0; column < width; column++) {
             if (indexOfPrimArray(Grid[row][column], discoveredTiles) == -1 && !(Grid[row][column] == "Empty" || Grid[row][column] == "Void"))
@@ -5446,7 +5507,7 @@ function tileDiscoveryCheck() {
     }
 }
 
-function winCheck() {
+function winCheck() { // Adds newly-discovered winning tiles into discoveredWinning if there are any, and checks to see if the game has been won
     for (let row = 0; row < height; row++) {
         for (let column = 0; column < width; column++) {
             if (indexOfPrimArray(Grid[row][column], discoveredWinning) == -1) {
@@ -5528,7 +5589,7 @@ async function PlayAgain() {
 }
 
 //Save codes
-function exportSave(midgame) {
+function exportSave(midgame) { // A save code where midgame = true saves a game in progress, a save code where midgame = false saves a gamemode. Mode save codes are currently unused in the project itself, but if you code your own 2048 mode using the 2048 Power Compendium's code, you can save it as a code and play it in the game
     try {
         let SaveCode = "";
         if (midgame) SaveCode = "@2048PowCompGame|";
@@ -5740,7 +5801,7 @@ function importSave(code) {
 }
 
 //Testing
-function output(output) {
+function output(output) { //Outputs whatever text is given as a new paragraph on the document
     let literal = false;
     if (arguments.length > 1) literal = arguments[1];
     let testP = document.createElement("p");
