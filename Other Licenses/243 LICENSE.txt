@@ -1,4 +1,4 @@
-NOTE: For the purposes of the 2048 Power Compendium, this license applies to XXXX mode, as that mode was inspired by 243.
+NOTE: For the purposes of the 2048 Power Compendium, this license is here because Misho M. Petkovic's 243 inspired XXXX mode.
 
 The MIT License (MIT)
 
