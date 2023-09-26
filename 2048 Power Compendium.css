@@ -21,7 +21,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color: #fab444; /* This is just here so I have an easy place to choose colors from */
+    color: #7d000a; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -58,7 +58,7 @@ html {
     position: relative;
     display: inline-block;
     width: calc(var(--menu_grid_size) * 60.25 / 75);
-    height: calc(var(--menu_grid_size) * 60.25 / 75);
+    height: calc(var(--menu_grid_size));
     background-color: #efecd7;
     margin: auto;
 }
@@ -365,6 +365,31 @@ html {
     margin: auto;
     padding: 0.75vh;
 }
+.gmSwitchModifier {
+    width: 25vh;
+    font-size: 2.25vh;
+    background-color: #00ff91;
+    color: #00b7ff;
+    border: 0.56vh solid #00b7ff;
+    font-weight: bold;
+    margin: auto;
+    padding: 0.75vh;
+}
+.gmSwitchButtonLine {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+.gmDecreaseModifier {
+    background-color: #001aff;
+    color: #00bbff;
+    border: 0.56vh solid #00bbff;
+}
+.gmIncreaseModifier {
+    background-color: #ffe600;
+    color: #ff1500;
+    border: 0.56vh solid #ff1500;
+}
 .gm_var_text {
     font-size: 2.25vh;
     font-weight: bold;
@@ -434,7 +459,7 @@ html {
     .gmSwitchModifier {
         width: calc(15.15vw * var(--gm_scale));
         font-size: calc(1.36vw * var(--gm_scale));
-        border: calc(0.34vw * var(--gm_scale)) solid #00b7ff;
+        border-width: calc(0.34vw * var(--gm_scale));
         padding: calc(0.45vw * var(--gm_scale));
     }
     .gm_var_text {
@@ -535,7 +560,7 @@ html {
     position: relative;
     margin-top: calc(var(--modifiers_base_size) * -2);
 }
-#modifiers_page_counter {
+#modifiers_page_counter, #modifiers_AutoMoves_counter {
     display: inline-block;
     font-size: calc(var(--modifiers_base_size) * 4);
     font-weight: bold;
@@ -592,6 +617,12 @@ html {
     position: relative;
     width: 25%;
 }
+.modifiers_var_container_stretching {
+    font-size: calc(var(--modifiers_base_size) * 3);
+    min-height: calc(var(--modifiers_base_size) * 15);
+    position: relative;
+    width: 25%;
+}
 .modifier_text {
     font-weight: bold;
     font-size: calc(var(--modifiers_base_size) * 3); 
@@ -640,6 +671,26 @@ html {
     margin: auto;
     padding: calc(var(--modifiers_base_size) * 1);
     margin-top: calc(var(--modifiers_base_size) * -2);
+}
+.ModifierAdd {
+    width: calc(var(--modifiers_base_size) * 45);
+    font-size: calc(var(--modifiers_base_size) * 3);
+    background-color: #73006f;
+    color: #ca00c3;
+    border: calc(var(--modifiers_base_size) * 0.75) solid #ca00c3;
+    font-weight: bold;
+    margin: auto;
+    padding: calc(var(--modifiers_base_size) * 1);
+}
+.ModifierRemove {
+    width: calc(var(--modifiers_base_size) * 45);
+    font-size: calc(var(--modifiers_base_size) * 3);
+    background-color: #006478;
+    color: #00a9ca;
+    border: calc(var(--modifiers_base_size) * 0.75) solid #00a9ca;
+    font-weight: bold;
+    margin: auto;
+    padding: calc(var(--modifiers_base_size) * 1);
 }
 #modifiers_customGridLine, #modifiers_customDirectionsLine {
     width: 100%;
@@ -739,6 +790,25 @@ html {
     position: relative;
     bottom: calc(var(--modifiers_base_size) * 1);
 }
+#modifiers_customArrowForms .gm_var_counter {
+    font-size: calc(var(--modifiers_base_size) * 5);
+    position: relative;
+    bottom: calc(var(--modifiers_base_size) * 1);
+}
+#modifiers_customArrowForms .gm_grid_button {
+    width: calc(var(--modifiers_base_size) * 4);
+    height: calc(var(--modifiers_base_size) * 4);
+    border: calc(var(--modifiers_base_size) * 0.24) solid;
+    font-size: calc(var(--modifiers_base_size) * 3.2);
+}
+#modifiers_customArrowForms .minus_button {
+    left: calc(50% - calc(var(--modifiers_base_size) * 16));
+    top: calc(var(--modifiers_base_size) * 5);
+}
+#modifiers_customArrowForms .plus_button {
+    right: calc(50% - calc(var(--modifiers_base_size) * 16));
+    top: calc(var(--modifiers_base_size) * 5);
+}
 #modifiers_customArrowForms .gm_var_form > input {
     font-size: calc(var(--modifiers_base_size) * 2.5);
     height: calc(var(--modifiers_base_size) * 4.17);
@@ -813,6 +883,57 @@ html {
     margin: auto;
     padding: calc(var(--modifiers_base_size) * 0.75);
 }
+#modifiers_AutoMovesBox {
+    width: 100%;
+    color: #742fc3;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#modifiers_AutoMoves_selectionLine, #modifiers_AutoMoves_buttonsLine {
+    width: 100%;
+    height: calc(var(--modifiers_base_size) * 9);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+}
+#modifiers_AutoMoves_propertiesLine {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: calc(var(--modifiers_base_size) * 0.5);
+}
+#modifiers_AutoMovesBox .previous_arrow_button {
+    height: calc(var(--modifiers_base_size) * 5.5);
+    left: calc(50% - calc(var(--modifiers_base_size) * 35));
+    top: calc(var(--modifiers_base_size) * 1.8);
+}
+#modifiers_AutoMovesBox .next_arrow_button {
+    height: calc(var(--modifiers_base_size) * 5.5);
+    right: calc(50% - calc(var(--modifiers_base_size) * 35));
+    top: calc(var(--modifiers_base_size) * 1.8);
+}
+@media screen and (max-aspect-ratio: 19/10) {
+    #modifiers_customArrowForms .minus_button {
+        left: calc(50% - calc(var(--modifiers_base_size) * 14));
+    }
+    #modifiers_customArrowForms .plus_button {
+        right: calc(50% - calc(var(--modifiers_base_size) * 14));
+    }
+}
+@media screen and (max-aspect-ratio: 16/9) {
+    #modifiers {
+        --modifiers_base_size: 0.5625vw;
+    }
+    #modifiers_customArrowForms .gm_var_title {
+        font-size: calc(var(--modifiers_base_size) * 2);
+    }
+}
 @media screen and (max-aspect-ratio: 16/9) {
     #modifiers {
         --modifiers_base_size: 0.5625vw;
@@ -825,7 +946,7 @@ html {
     #modifiers {
         --modifiers_base_size: 0.65vw;
     }
-    .modifiers_var_container {
+    .modifiers_var_container, .modifiers_var_container_stretching {
         width: 33%;
     }
     #modifiers_customGridNotice {
@@ -879,12 +1000,24 @@ html {
     #modifiers {
         --modifiers_base_size: 0.75vw;
     }
+    #modifiers_customArrowForms .gm_grid_button {
+        width: calc(var(--modifiers_base_size) * 3.5);
+        height: calc(var(--modifiers_base_size) * 3.5);
+        border: calc(var(--modifiers_base_size) * 0.21) solid;
+        font-size: calc(var(--modifiers_base_size) * 2.7);
+    }
+    #modifiers_customArrowForms .minus_button {
+        left: calc(50% - calc(var(--modifiers_base_size) * 12));
+    }
+    #modifiers_customArrowForms .plus_button {
+        right: calc(50% - calc(var(--modifiers_base_size) * 12));
+    }
 }
 @media screen and (max-aspect-ratio: 1/1) {
     #modifiers {
         --modifiers_base_size: 0.85vw;
     }
-    .modifiers_var_container {
+    .modifiers_var_container, .modifiers_var_container_stretching {
         width: 50%;
     }
     #modifiers_customArrowForms .gm_var_title {
@@ -893,6 +1026,18 @@ html {
     #modifiers_customArrow_removeKey, #modifiers_customArrow_addKey {
         width: calc(var(--modifiers_base_size) * 20);
         font-size: calc(var(--modifiers_base_size) * 2);
+    }
+    #modifiers_customArrowForms .gm_grid_button {
+        width: calc(var(--modifiers_base_size) * 3);
+        height: calc(var(--modifiers_base_size) * 3);
+        border: calc(var(--modifiers_base_size) * 0.18) solid;
+        font-size: calc(var(--modifiers_base_size) * 2.4);
+    }
+    #modifiers_customArrowForms .minus_button {
+        left: calc(50% - calc(var(--modifiers_base_size) * 9));
+    }
+    #modifiers_customArrowForms .plus_button {
+        right: calc(50% - calc(var(--modifiers_base_size) * 9));
     }
 }
 @media screen and (max-aspect-ratio: 8/10) {
@@ -949,9 +1094,24 @@ html {
         left: 0px;
         top: 0px;
     }
+    #modifiers_customArrowForms .gm_grid_button {
+        width: calc(var(--modifiers_base_size) * 4);
+        height: calc(var(--modifiers_base_size) * 4);
+        border: calc(var(--modifiers_base_size) * 0.24) solid;
+        font-size: calc(var(--modifiers_base_size) * 3.2);
+    }
+    #modifiers_customArrowForms .minus_button {
+        left: calc(50% - calc(var(--modifiers_base_size) * 14));
+    }
+    #modifiers_customArrowForms .plus_button {
+        right: calc(50% - calc(var(--modifiers_base_size) * 14));
+    }
+    #modifiers_AutoMoves_buttonsLine {
+        height: calc(var(--modifiers_base_size) * 18);
+    }
 }
 @media screen and (max-aspect-ratio: 6/10) {
-    .modifiers_var_container {
+    .modifiers_var_container, .modifiers_var_container_stretching {
         width: 100%;
     }
     #modifiers_customGridSizeLine > .modifiers_var_container {
@@ -1056,11 +1216,8 @@ html {
     margin-left: calc(1.55vw/33 * var(--grid_vw));
     margin-right: calc(1.55vw/33 * var(--grid_vw));
     min-width: calc(5.2vw/33 * var(--grid_vw));
-    display: none;
-    font-size: calc(1vw/33 * var(--grid_vw));
-}
-#score_container {
     display: inline-block;
+    font-size: calc(1vw/33 * var(--grid_vw));
 }
 .stat_container > .stat_title {
     color: var(--text-color);
@@ -1075,14 +1232,6 @@ html {
     font-size: 175%;
     position: relative;
     top: calc(0.2vw/33 * var(--grid_vw));
-}
-#discovered_container > .stat_title {
-    font-size: 75%;
-    top: calc(-0.42vw/33 * var(--grid_vw));
-}
-#winning_container > .stat_title, #mergesBefore_container > .stat_title, #mergeMoves_container > .stat_title {
-    font-size: 70%;
-    top: calc(-0.42vw/33 * var(--grid_vw));
 }
 #arrow-container {
     position: absolute;
@@ -1130,7 +1279,7 @@ html {
     position: relative;
     bottom: calc(var(--grid_height) / 6);
 }
-#go_again {
+#go_again, #lone_win_again {
     display: flex;
     align-items: center;
     justify-content: center;
