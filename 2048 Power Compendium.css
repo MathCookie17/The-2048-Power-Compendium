@@ -1949,11 +1949,12 @@ ul {
 }
 
 #announcements {
-    font-size: 3em;
+    font-size: calc(3vw/33 * var(--grid_vw));
     font-weight: bold;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
     position: fixed;
     top: 50%;
     left: 50%;
