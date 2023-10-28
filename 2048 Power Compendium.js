@@ -108,17 +108,19 @@ let Grid = [];
 let startingGrid = [];
 let tsize = 0; //This is used by CreateGrid and DisplayGrid
 let GridTiles; let visibleNextTiles; let customGridTiles; //These will be HTMLCollections
-let statBoxes = [["Score", "@Score"]]; // Which stats are visible on the screen; the first entry of each entry is the text in that box, the second is a CalcArray that returns the box's value
+let statBoxes = [["Score", "@Score"]]; // Which stats are visible on the screen; the first entry of each entry is the text in that box, the second is a CalcArray that returns the box's value. If the third entry is true, the box appears on the bottom of the screen instead of the top.
 
-    //These lists of operators are used by CalcArrayConvert
-let special_operators = ["@repeat", "@if", "@else", "@else-if", "@edit_var", "@add_var", "@insert_var", "@remove_var", "@end-repeat", "@end-if", "@end-else", "@end-else-if", "@end_vars", "@var_retain", "@var_copy", "@include_gvars", "@edit_gvar", "@add_gvar", "@insert_gvar", "@remove_gvar", "@add_score", "@edit_spawn", "@add_spawn", "@insert_spawn", "@remove_spawn", "@replace_tile", "@run-script"];
+//These lists of operators are used by CalcArrayConvert
+let special_operators = ["@repeat", "@if", "@else", "@else-if", "@edit_var", "@add_var", "@insert_var", "@remove_var", "@end-repeat", "@end-if", "@end-else", "@end-else-if", "@end_vars", "@var_retain", "@var_copy", "@include_gvars", "@edit_gvar", "@add_gvar", "@insert_gvar", "@remove_gvar", "@add_score", "@edit_spawn", "@add_spawn", "@insert_spawn", "@remove_spawn", "@replace_tile", "@run-script", "@primesUpdate", "announce"];
 let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "typeof", "output", "CalcArrayParent"];
 let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round", "floor", "ceil", "ceiling", "trunc", "abs", "sign", "sin", "cos", "tan", "gcd", "lcm", "factorial", "prime", "expomod", "rand_int", "rand_float", "defaultAbbrev"];
 let string_operators = ["str_char", "str_concat", "str_concat_front", "str_length", "str_slice", "str_substr", "str_replace", "str_indexOf", "str_lastIndexOf", "str_indexOfFrom", "str_lastIndexOfFrom", "str_includes", "str_splice", "str_toUpperCase", "str_toLowerCase", "str_split"];
 let boolean_operators = ["&&", "||", "!"];
-let array_operators = ["arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_reduce", "arr_reduceRight", "CalcArray"];
+let array_operators = ["arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "CalcArray"];
 let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "rand_bigint", "defaultAbbrevB"];
-let pop_1_operators = ["abs", "absB", "sign", "signB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "defaultAbbrev", "defaultAbbrevB", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
+let pop_1_operators = ["abs", "absB", "sign", "signB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "defaultAbbrev", "defaultAbbrevB", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
+
+let primes = [2n, 3n, 5n]; 
 
     //Bunch of event listeners
 document.getElementById("menu_extra").addEventListener("click", function(){
@@ -196,6 +198,10 @@ document.getElementById("ThreeHalves_mode_button").addEventListener("click", fun
     mode_vars[0] = (mode_vars[0] + 1) % 2;
     gmDisplayVars();
 });
+document.getElementById("180_length_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
 document.getElementById("2592_switch_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
@@ -232,6 +238,38 @@ document.getElementById("2100_difficulty_increase").addEventListener("click", fu
     mode_vars[0] += 1;
     gmDisplayVars();
 });
+document.getElementById("378_goal_button").addEventListener("click", function(){
+    mode_vars[0] = !(mode_vars[0]);
+    gmDisplayVars();
+});
+document.getElementById("378_merge_plus").addEventListener("click", function(){
+    mode_vars[1]++;
+    gmDisplayVars();
+});
+document.getElementById("378_merge_minus").addEventListener("click", function(){
+    mode_vars[1]--;
+    gmDisplayVars();
+});
+document.getElementById("DIVE_seeds_button").addEventListener("click", function(){
+    if (mode_vars[0] == 0) mode_vars[0] = -1;
+    else if (mode_vars[0] == -1) mode_vars[0] = 4;
+    else mode_vars[0] = 0;
+    gmDisplayVars();
+});
+document.getElementById("DIVE_primeSpawns_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (isFinite(v) && v > 0 && v % 1 == 0) mode_vars[0] = v;
+    else mode_vars[0] = 4;
+    gmDisplayVars();
+});
+document.getElementById("DIVE_primeSpawns_button").addEventListener("click", function(){
+    mode_vars[0] = 0;
+    gmDisplayVars();
+});
+document.getElementById("DIVE_1s_button").addEventListener("click", function(){
+    mode_vars[1] = !(mode_vars[1]);
+    gmDisplayVars();
+});
 document.getElementById("start_game").addEventListener("click", startGame);
 document.addEventListener("keydown", (event) => {
     if (!inputAvailable || (currentScreen != "Gameplay" && !(currentScreen == "Modifiers" && subScreen == 3.2))) return;
@@ -250,6 +288,11 @@ document.addEventListener("keydown", (event) => {
         displayModifiers(3.2);
     }
 });
+window.addEventListener("resize", function(){
+    if (currentScreen == "Gameplay" && inputAvailable) {
+        displayGrid();
+    }
+})
 document.getElementById("go_again").addEventListener("click", function(){
     if (!inputAvailable) return;
     PlayAgain();
@@ -276,7 +319,11 @@ document.getElementById("gp_export_button").addEventListener("click", function()
     switchScreen("SaveCode", "Export");
 });
 document.getElementById("save_code_import").addEventListener("click", function(){
-    importSave(document.getElementById("save_code_box").value);
+    if (document.getElementById("save_code_box").value == "View Color Schemes") {
+        screenVars = [2n, true];
+        switchScreen("Tile Viewer", "Wildcard 2048");
+    }
+    else importSave(document.getElementById("save_code_box").value);
 });
 document.getElementById("save_code_return_game").addEventListener("click", function(){
     switchScreen("Gameplay", "Main");
@@ -474,10 +521,10 @@ document.getElementById("modifiers_customGridActivate").addEventListener("click"
     width = 4;
     height = 4;
     directions = [
-        [[-1, 0, modifiers[0], 0, [1, true, true]], "&#8593;", 5/33, 5/33, 3/33, 6/33, 14/33, ["ArrowUp", "KeyW"], 0],
-        [[1, 0, modifiers[0], 0, [1, true, true]], "&#8595;", 5/33, 5/33, 3/33, 22/33, 14/33, ["ArrowDown", "KeyS"], 0],
-        [[0, -1, modifiers[0], 0, [1, true, true]], "&#8592;", 5/33, 5/33, 3/33, 14/33, 6/33, ["ArrowLeft", "KeyA"], 0],
-        [[0, 1, modifiers[0], 0, [1, true, true]], "&#8594;", 5/33, 5/33, 3/33, 14/33, 22/33, ["ArrowRight", "KeyD"], 0],
+        [[-1, 0, modifiers[0], 0, [1, true, true, true]], "&#8593;", 5/33, 5/33, 3/33, 6/33, 14/33, ["ArrowUp", "KeyW"], 0],
+        [[1, 0, modifiers[0], 0, [1, true, true, true]], "&#8595;", 5/33, 5/33, 3/33, 22/33, 14/33, ["ArrowDown", "KeyS"], 0],
+        [[0, -1, modifiers[0], 0, [1, true, true, true]], "&#8592;", 5/33, 5/33, 3/33, 14/33, 6/33, ["ArrowLeft", "KeyA"], 0],
+        [[0, 1, modifiers[0], 0, [1, true, true, true]], "&#8594;", 5/33, 5/33, 3/33, 14/33, 22/33, ["ArrowRight", "KeyD"], 0],
     ];
     directionsAvailable = [true, true, true, true];
     createCustomGrid();
@@ -600,7 +647,7 @@ document.getElementById("modifiers_customArrow_removeDirection").addEventListene
     displayModifiers(3.2);
 });
 document.getElementById("modifiers_customArrow_addDirection").addEventListener("click", function() {
-    directions.push([[0, 0, modifiers[0], 0, 2], "&#8226;", 5/33, 5/33, 3/33, 14/33, 14/33, [], 0]);
+    directions.push([[0, 0, modifiers[0], 0, [1, true, true, true]], "&#8226;", 5/33, 5/33, 3/33, 14/33, 14/33, [], 0]);
     screenVars[0] = directions.length - 1;
     displayModifiers(3.2);
 });
@@ -700,6 +747,67 @@ document.getElementById("modifiers_AutoMoves_timing_button").addEventListener("c
 document.getElementById("guide_return").addEventListener("click", function(){
     switchScreen("Menu", "Main");
 });
+document.getElementById("tile_viewer_return").addEventListener("click", function(){
+    switchScreen("Menu", "Main");
+});
+document.getElementById("tile_viewer_return").addEventListener("click", function(){
+    switchScreen("Menu", "Main");
+});
+document.getElementById("tile_viewer_next").addEventListener("click", function(){
+    if (subScreen == "Wildcard 2048") {
+        screenVars = [screenVars[0], 0];
+        switchScreen("Tile Viewer", "mod 27");
+    }
+    else if (subScreen == "mod 27") {
+        screenVars = [screenVars[0], 48];
+        switchScreen("Tile Viewer", "180");
+    }
+    else if (subScreen == "180") {
+        screenVars = [screenVars[0], 168];
+        switchScreen("Tile Viewer", "DIVE");
+    }
+    else {
+        screenVars = [screenVars[0], true];
+        switchScreen("Tile Viewer", "Wildcard 2048");
+    }
+});
+document.getElementById("tile_viewer_previous").addEventListener("click", function(){
+    if (subScreen == "180") {
+        screenVars = [screenVars[0], 0];
+        switchScreen("Tile Viewer", "mod 27");
+    }
+    else if (subScreen == "DIVE") {
+        screenVars = [screenVars[0], 48];
+        switchScreen("Tile Viewer", "180");
+    }
+    else if (subScreen == "Wildcard 2048") {
+        screenVars = [screenVars[0], 168];
+        switchScreen("Tile Viewer", "DIVE");
+    }
+    else {
+        screenVars = [screenVars[0], true];
+        switchScreen("Tile Viewer", "Wildcard 2048");
+    }
+});
+document.getElementById("viewer_number_change").addEventListener("change", function() {
+    try {
+        let v = BigInt(this.value);
+        screenVars[0] = v;
+    }
+    catch {
+        screenVars[0] = 0n;
+    }
+    displayViewerTile();
+});
+document.getElementById("viewer_primes_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (isFinite(v) && v > 0 && v % 1 == 0) screenVars[1] = v;
+    displayViewerTile();
+});
+document.getElementById("viewer_WildcardText_button").addEventListener("click", function() {
+    screenVars[1] = !screenVars[1];
+    displayViewerTile();
+});
 
 let currentScreen = "Menu";
 let subScreen = "Main";
@@ -720,15 +828,16 @@ for (let t = 0; t < 25; t++) { //Adding event listeners to the main mode tiles o
         });
     }
 }
-let extra_modes_order = [26, 27, 28, 30, 33, 32, 42, 31, 29, 38, 43, 40, 34, 35, 36, 37, 39, 44, 45, 41]
+let extra_modes_order = [26, 27, 28, 46, 30, 33, 32, 42, 31, 40, 29, 47, 48, 38, 43, 34, 35, 36, 37, 39, 41, 49, 50, 44, 45];
 for (let t = 0; t < document.getElementById("extra_menu_grid").children.length; t++) { //Adding event listeners to the extra mode tiles on the menu
     let mtile = document.getElementById("extra_menu_grid").children[t];
-    mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((t % 4) * 14.75 + 1.25) + " / 75)");
-    mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor(t / 4)) * 14.75 + 1.25) + " / 75)");
-    mtile.id = "menu_tile_" + (extra_modes_order[t]);
+    let position = extra_modes_order.indexOf(t + 26);
+    mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((position % 5) * 14.75 + 1.25) + " / 75)");
+    mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor(position / 5)) * 14.75 + 1.25) + " / 75)");
+    mtile.id = "menu_tile_" + (t + 26);
     if (mtile.innerHTML != "TBA") {
         mtile.addEventListener("click", function(){
-            loadMode(extra_modes_order[t]);
+            loadMode(t + 26);
             document.getElementById("gm_big_tile").style.setProperty("background-color", getComputedStyle(this).getPropertyValue("background-color"));
             document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
             document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
@@ -737,7 +846,6 @@ for (let t = 0; t < document.getElementById("extra_menu_grid").children.length; 
     }
 }
 let inputAvailable = true;
-
 
 //Basic functions
 function eqPrimArrays(a1, a2) { //"Equal Primitive Arrays"; tests if two arrays are equal. Only works if the arrays being compared do not contain non-array objects themselves, but works on nested arrays.
@@ -867,6 +975,10 @@ function mod(n, m) { //mod(-1, 8) is 7 rather than -1. Taken from https://stacko
     return ((n % m) + m) % m;
 }
 
+function modularDistance(n1, n2, m) {
+    return Math.min(Math.abs(mod(n1, m) - mod(n2, m)), Math.abs(mod(n1, m) - mod(n2, m) - m), Math.abs(mod(n1, m) - mod(n2, m) + m));
+}
+
 function arrayTypes(arr) { //Returns all the types of the entries in the array: an array of all numbers will return ["number"], an array of numbers and strings will return ["number", "string"] or ["string", "number"] depending on which type shows up first, an array of arrays of numbers will return [["number"]]
     if (!(Array.isArray(arr))) return (typeof arr);
     let typeslist = [];
@@ -878,41 +990,40 @@ function arrayTypes(arr) { //Returns all the types of the entries in the array: 
     return typeslist;
 }
 
-function prime(n) {//Returns the nth prime; uses numbers or BigInts depending on the type of the input. prime(-n) is the negative of the nth prime.
-    if ((typeof n == "number") && (n % 1 != 0)) return undefined;
-    if (n == 0) {
-        if (typeof n == "bigint") return 1n;
-        else return 1;
-    }
-    let pn = n;
-    if (n < 0) {
-        if (typeof n == "bigint") pn *= -1n;
-        else pn *= -1;
-    }
-    let primes = [2];
-    let test = 3;
-    if (typeof n == "bigint") {
-        primes = [2n];
-        test = 3n;
-    }
-    let pcheck = true;
-    while (primes.length < pn) {
-        pcheck = true;
-        for (let p of primes) {
-            if (test % p == 0) {
-                pcheck = false;
-                break;
+function primesUpdate(max) {
+    if (primes[primes.length - 1] >= max) return;
+    try {
+        max = BigInt(max);
+        while (primes[primes.length - 1] ** 2n < max) primesUpdate(primes[primes.length - 1] ** 2n - 1n);
+        let arr = Array(Number(max) + 1).fill(true);
+        arr[0] = false; arr[1] = false;
+        for (let p = 0; p < primes.length && primes[p] ** 2n <= max; p++) {
+            for (let i = Number(primes[p]) * 2; i < arr.length; i += Number(primes[p])) {
+                arr[i] = false;
             }
         }
-        if (pcheck) primes.push(test);
-        test++;
+        let newprimes = [];
+        for (let a = 0; a < arr.length; a++) {
+            if (arr[a]) newprimes.push(BigInt(a));
+        }
+        primes = newprimes;
     }
-    let answer = primes.at(-1);
-    if (answer < 0) {
-        if (typeof n == "bigint") answer *= -1n;
-        else answer *= -1;
+    catch {
+        return;
     }
-    return answer;
+}
+
+function prime(n) {//Returns the nth prime; uses numbers or BigInts depending on the type of the input. prime(-n) is the negative of the nth prime.
+    while (primes.length < n) primesUpdate(primes[primes.length - 1] * 2n);
+    if ((typeof n == "number") && (n % 1 != 0)) return undefined;
+    let an = Math.abs(Number(n));
+    let answer = 0n;
+    if (n == 0) answer = 1n;
+    else answer = primes[an - 1];
+    if (n < 0) answer *= -1n;
+    if (typeof n == "bigint") return answer;
+    else if (typeof n == "number") return Number(answer);
+    else return undefined;
 }
 
 function expomod(n, m) { //How many factors of m are in n? 7 expomod 2 is 0, 6 expomod 2 is 1, 12 expomod 2 is 2, 1250 expomod 5 is 4, and so on. Returns -1 for invalid inputs. Works on numbers and bigints; n and m must have matching types. Only works on whole numbers.
@@ -970,10 +1081,11 @@ function iroot(base, root) { // nth root for bigints; taken from https://stackov
 function ilog(num, base) { //logarithm for bigints
     if (typeof num !== 'bigint' || typeof base !== 'bigint') throw new Error("Arguments must be bigints.");
     let result = 0n;
-    while (num > 1) {
+    while (num >= base) {
         num /= base;
         result++;
     }
+    return result;
 }
 
 function deepArrayReplace(entry, replacement, array) { // Replaces all occurances of the given entry in the given array with the replacement, including in nested subarrays.
@@ -984,6 +1096,33 @@ function deepArrayReplace(entry, replacement, array) { // Replaces all occurance
         if (array == entry) return replacement;
     }
     return array;
+}
+
+function nestedElement(array, indices) { // nestedElement(array, [1, 2, 0]) returns array[1][2][0]
+    let result = array;
+    for (let i = 0; i < indices.length; i++) {
+        result = result[indices[i]];
+        if (result == undefined) return undefined;
+    }
+    return result;
+}
+
+function arrayDepth(array) { // A flat array has a depth of 1, an array containing arrays has a depth of 2, an array containing arrays that themselves contain arrays has a depth of 3, and so on.
+    if (!(Array.isArray(array))) return 0;
+    let result = 1;
+    for (let i = 0; i < array.length; i++) {
+        if (Array.isArray(array[i])) result = Math.max(result, arrayDepth(array[i]) + 1);
+    }
+    return result;
+}
+
+async function announce(message, ms) { // Makes a message appear on the screen for a certain number of milliseconds
+    let popup = document.createElement("p");
+    let popupText = document.createTextNode(boxArrayString(message));
+    popup.appendChild(popupText);
+    document.getElementById("announcements").appendChild(popup);
+    await delay(ms);
+    popup.remove();
 }
 
 function abbreviateNumber(num, system, decimals, commas, ...more) {
@@ -1086,6 +1225,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "none");
         document.getElementById("custom").style.setProperty("display", "none"); //This screen is currently unimplemented, but who knows if I can safely remove it? Code is weird like that
         document.getElementById("guide").style.setProperty("display", "none");
+        document.getElementById("tile_viewer").style.setProperty("display", "none");
         if (subScreen == "Extra") {
             document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #787800, #004675)");
             document.getElementById("menu_grid").style.setProperty("display", "none");
@@ -1111,6 +1251,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "none");
         document.getElementById("custom").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "none");
+        document.getElementById("tile_viewer").style.setProperty("display", "none");
         if (modifiers[5] == "Diamond" || modifiers[5] == "Hexagon") {
             document.getElementById("gm_size_line").style.setProperty("display", "none");
             document.getElementById("gm_diamond_line").style.setProperty("display", "flex");
@@ -1140,6 +1281,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "none");
         document.getElementById("custom").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "none");
+        document.getElementById("tile_viewer").style.setProperty("display", "none");
         document.documentElement.style.setProperty("background-image", "linear-gradient(#ffcf88, #ffed88 30% 70%, #ffcf88)");
         if (subScreen == 3.2) {
             screenVars = [-1];
@@ -1160,6 +1302,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "none");
         document.getElementById("custom").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "none");
+        document.getElementById("tile_viewer").style.setProperty("display", "none");
         let dispbackground = evaluateColor(getComputedStyle(document.documentElement).getPropertyValue("--background-color"), 0, 0);
             if (dispbackground.includes("gradient")) {
                 document.documentElement.style.setProperty("background-image", dispbackground);
@@ -1170,9 +1313,19 @@ function switchScreen(screen, subscreen) {
             let gridcolor = evaluateColor(getComputedStyle(document.documentElement).getPropertyValue("--grid-color"), 0, 0);
             if (gridcolor.includes("gradient")) {
                 document.getElementById("grid").style.setProperty("background-image", gridcolor);
+                document.getElementById("gp_export_button").style.setProperty("background-image", gridcolor);
+                document.getElementById("go_again").style.setProperty("background-image", gridcolor);
+                document.getElementById("lone_win_again").style.setProperty("background-image", gridcolor);
+                document.getElementById("win_again").style.setProperty("background-image", gridcolor);
+                document.getElementById("win_continue").style.setProperty("background-image", gridcolor);
             }
             else {
                 document.getElementById("grid").style.setProperty("background-image", "none");
+                document.getElementById("gp_export_button").style.setProperty("background-image", "none");
+                document.getElementById("go_again").style.setProperty("background-image", "none");
+                document.getElementById("lone_win_again").style.setProperty("background-image", "none");
+                document.getElementById("win_again").style.setProperty("background-image", "none");
+                document.getElementById("win_continue").style.setProperty("background-image", "none");
             }
     }
     else if (screen == "SaveCode") {
@@ -1183,6 +1336,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "block");
         document.getElementById("custom").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "none");
+        document.getElementById("tile_viewer").style.setProperty("display", "none");
         document.documentElement.style.setProperty("background-image", "linear-gradient(#5b0085, #ae00ff, #5b0085)");
         if (subscreen == "Export") {
             displayRules("save_code_heading", ["h2", "Export Save Code"], ["p", 'Copy this save code, then if you want to resume your game at a later time, click the "Resumed Saved Game" button on the menu and paste the code there.']);
@@ -1205,7 +1359,20 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "none");
         document.getElementById("custom").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "block");
+        document.getElementById("tile_viewer").style.setProperty("display", "none");
         document.documentElement.style.setProperty("background-image", "radial-gradient(#00552f, #00e980)");
+    }
+    else if (screen == "Tile Viewer") {
+        document.getElementById("menu").style.setProperty("display", "none");
+        document.getElementById("gamemode").style.setProperty("display", "none");
+        document.getElementById("modifiers").style.setProperty("display", "none");
+        document.getElementById("gameplay").style.setProperty("display", "none");
+        document.getElementById("save_code").style.setProperty("display", "none");
+        document.getElementById("custom").style.setProperty("display", "none");
+        document.getElementById("guide").style.setProperty("display", "none");
+        document.getElementById("tile_viewer").style.setProperty("display", "block");
+        displayViewerTile();
+        document.documentElement.style.setProperty("background-image", "linear-gradient(#ffeb9c, #ff9cfc)");
     }
 }
 
@@ -1213,6 +1380,7 @@ function loadMode(mode) {
     gamemode = mode;
     switchScreen("Gamemode", mode);
     document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", "6");
+    document.getElementById("gamemode").style.setProperty("color", "black");
     statBoxes = [["Score", "@Score"]];
     mode_vars = [];
     start_game_vars = [];
@@ -2184,7 +2352,7 @@ function loadMode(mode) {
         [[12], 377, "#0180ff", "#dddbe1"], [[13], 610, "#0055a9", "#dddbe1"], [[14], 987, "#0030a9", "#dddbe1"], [[15], 1597, "#2d0087", "#dddbe1"],
         [[16], 2584, "#1a004f", "#dddbe1"], [[17], 4181, "#3d004f", "#dddbe1"], [[18], 6765, "#750099", "#dddbe1"], [[19], 10946, "#c300ff", "#dddbe1"],
         [[20], 17711, "#d85aff", "#dddbe1"], [[21], 28657, "#e591ff", "#dddbe1"],
-        [true, [[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1], ["@HSLA", [6.5, "*", "@This 0", "+", 157], [0.99, "^", ["@This 0", "-", 22], "*", 100], ["@This 0", "-", 21, "%", 9, "*", -1, "+", 4, "abs", "*", 10, "+", 30], 1], "#2d2b31"]];
+        [true, [[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1], ["@HSLA", [6.5, "*", "@This 0", "+", 157], [0.99, "^", ["@This 0", "-", 22], "*", 100], ["@This 0", "-", 21, "%", 9, "*", -1, "+", 4, "abs", "*", 10, "+", 30], 1], "#dddbe1"]];
         MergeRules = [
             [2, [["@Next 1 0", "=", 0], "&&", ["@This 0", "=", 0]], true, [[1]], 2, [false, true]],
             [2, ["@This 0", "-", 1, "=", "@Next 1 0"], false, [[["@This 0", "+", 1]]], [[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 3]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 3]], "/", Math.sqrt(5), "round", 1], [false, true]]
@@ -2436,7 +2604,7 @@ function loadMode(mode) {
                 [0, [["@This 1", "<=", 0]], true, [], 0],
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 2", "!=", "@Next 1 2"]], true, [], 0, [true, true]])
-            startTileSpawns = [[[1, 1e300, 1], 90], [[2, 1e300, 1], 10], [[1, 1e300, -1], 90], [[2, 1e300, -1], 10]];
+            startTileSpawns = [[[1, 1e300, 1], 90], [[1, 1e300, -1], 90], [[2, 1e300, 1], 10], [[2, 1e300, -1], 10]];
             winConditions = [[["@This 0", "=", 8]]];
             winRequirement = 2;
         }
@@ -2578,7 +2746,7 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h1", "Partial Absorb 243"], ["p","Merges occur between two tiles that are the same number. If those are two 1s, they will merge into a 2 as normal, but higher tiles don't merge completely. When two even numbers merge, only half of the colliding tile is absorbed into the result: for example, two 2s merge into a 3 and a 1. If the merging tiles aren't even, they must be a power of three, in which case only a third of the colliding tile is merged into the result: for example, two 3s merge into a 4 and a 2. Get to the 243 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
-    else if (mode == 35) { // Partial Absorb 256
+    else if (mode == 35) { // Partial Absorb 255
         width = 6; height = 6; min_dim = 3;
         TileNumAmount = 1;
         TileTypes = [[[1], 1, "#ffffff", "#746577"], [[2], 3, "#d8ffb6", "#746577"], [[3], 7, "#a7ff5a", "#746577"],
@@ -2699,6 +2867,7 @@ function loadMode(mode) {
     }
     else if (mode == 38) { // 180
         width = 7; height = 7; min_dim = 5;
+        mode_vars = [0]; // 0 means merges are between 2, 3 or 5 of the same tile, 1 allows any prime merge length, and 2 allows any merge length
         TileNumAmount = 3;
         TileTypes = [
             [[0, 0, 0], 1, "#000000", "#ffffff"],
@@ -2718,13 +2887,15 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("background-image", "radial-gradient(#e5e55b 0%, #fff 100%)");
         document.documentElement.style.setProperty("--background-color", "#fffdf1");
         document.documentElement.style.setProperty("--grid-color", "#a8a8a8");
-        document.documentElement.style.setProperty("--tile-color", "#cbcbcb");
+        document.documentElement.style.setProperty("--tile-color", "#ece0c2");
         document.documentElement.style.setProperty("--text-color", "#484848");
         displayRules("rules_text", ["h2", "5-Smooth Numbers"], ["h1", "180"], ["p", "Merges occur between exactly two, three, or five tiles of the same number - note that a line of four, six, etc. of the same tile will not merge! Get to the 180 tile to win, or see how many different tiles you can discover!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         displayRules("gm_rules_text", ["h2", "5-Smooth Numbers"], ["h1", "180"], ["p", "Merges occur between exactly two, three, or five tiles of the same number - note that a line of four, six, etc. of the same tile will not merge! Get to the 180 tile to win, or see how many different tiles you can discover!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("180_vars").style.setProperty("display", "flex");
     }
     else if (mode == 39) { // 2592
         width = 6; height = 6; min_dim = 3;
@@ -2774,7 +2945,7 @@ function loadMode(mode) {
             [[4096], "4096", "#f29eff", "#f9f6f2"], [[8192], "8192", "#eb75fd", "#f9f6f2"], [[16384], "16384", "#e53bff", "#f9f6f2"],
             [[32768], "32768", "#bd00db", "#f9f6f2"], [[65536], "65536", "#770089", "#f9f6f2"], [[131072], "131072", "#534de8", "#f9f6f2"],
             [[262144], "262144", "#2922e1", "#f9f6f2"], [[524288], "524288", "#0a05b6", "#f9f6f2"],
-            [true, [1, "@This 0", "@end_vars", "", "@repeat", ["@var_retain", "@Var 0", "<=", "@Var 1"], "@if", ["@var_retain", "@Var 1", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "str_concat", " ", "str_concat", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat", "str_splice", 0, 1, ""], ["@CalcArray", [1, "@end_vars", ["@Literal"], "@repeat", ["@var_retain", "@Var 0", "<=", "@This 0"], "@if", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "arr_push", ["@var_retain", "@Var 0", "log", 2, "round", 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], 0, ["@Literal", "#89817b", "#aa937f", "#c69d79", "#f2b179", "#f59563", "#f67c5f", "#f65e3b", "#edcf72", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#f29eff", "#eb75fd", "#e53bff", "#bd00db", "#770089", "#534de8", "#2922e1", "#0a05b6"], "@end_vars", ["@Literal"], "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@if", ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "<", 20], "arr_concat", ["@var_retain", "@Var 2", "arr_elem", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"]], "@end-if", "@else", "arr_push", ["@var_retain", ["@Literal"], "arr_push", "@HSLA", "arr_push", ["@var_retain", -15, "*", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "+", 520], "arr_push", 100, "arr_push", ["@var_retain", 0.9, "^", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "-", 20], "*", 36], "arr_concat", 1], "@end-else", "arr_concat", ["@var_retain", "@Var 1", "*", 100, "/", ["@var_retain", "@Var 0", "arr_length"]], "arr_concat", ["@var_retain", "@Var 1", "+", 1, "*", 100, "/", ["@var_retain", "@Var 0", "arr_length"]], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "arr_concat_front", 90, "arr_concat_front", "@linear-gradient"], "#f9f6f2"]
+            [true, 0, "@ColorScheme", "Wildcard 2048", ["@This 0", true]]
             ];
             MergeRules = [[[1, "@end_vars", 0, "@repeat", ["@var_retain", "@This 0", "min", "@Next 1 0", ">=", "@Var 0"], "@if", ["@var_retain", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "&&", ["@var_retain", "@Next 1 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1]], "+", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0], true, [[["@var_retain", "@Var 0", "*", 2]]], ["@var_retain", "@Var 0", "*", 2], [false, true]]];
             startTileSpawns = [[[1], 35], [[2], 15], [[4], 10], [[3], 12], [[5], 8], [[6], 8], [[7], 8], [[[2, "^", ["@DiscTiles", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, ">", "@Parent -2"], "2nd", ["@var_retain", "@Var -1", "arr_elem", 0], "@end-if"], "+", 0.5, "log", 2, "floor", 1, "rand_float", 1], "round", 1, "-", 1, "max", 1]], 4]];
@@ -2791,7 +2962,6 @@ function loadMode(mode) {
                 [[4096, 1], "4096", "#f29eff", "#f9f6f2"], [[8192, 1], "8192", "#eb75fd", "#f9f6f2"], [[16384, 1], "16384", "#e53bff", "#f9f6f2"],
                 [[32768, 1], "32768", "#bd00db", "#f9f6f2"], [[65536, 1], "65536", "#770089", "#f9f6f2"], [[131072, 1], "131072", "#534de8", "#f9f6f2"],
                 [[262144, 1], "262144", "#2922e1", "#f9f6f2"], [[524288, 1], "524288", "#0a05b6", "#f9f6f2"],
-                [["@This 1", "=", 1], [1, "@This 0", "@end_vars", "", "@repeat", ["@var_retain", "@Var 0", "<=", "@Var 1"], "@if", ["@var_retain", "@Var 1", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "str_concat", " ", "str_concat", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat", "str_splice", 0, 1, ""], ["@CalcArray", [1, "@end_vars", ["@Literal"], "@repeat", ["@var_retain", "@Var 0", "<=", "@This 0"], "@if", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "arr_push", ["@var_retain", "@Var 0", "log", 2, "round", 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], 0, ["@Literal", "#89817b", "#aa937f", "#c69d79", "#f2b179", "#f59563", "#f67c5f", "#f65e3b", "#edcf72", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#f29eff", "#eb75fd", "#e53bff", "#bd00db", "#770089", "#534de8", "#2922e1", "#0a05b6"], "@end_vars", ["@Literal"], "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@if", ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "<", 20], "arr_concat", ["@var_retain", "@Var 2", "arr_elem", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"]], "@end-if", "@else", "arr_push", ["@var_retain", ["@Literal"], "arr_push", "@HSLA", "arr_push", ["@var_retain", -15, "*", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "+", 520], "arr_push", 100, "arr_push", ["@var_retain", 0.9, "^", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "-", 20], "*", 36], "arr_concat", 1], "@end-else", "arr_concat", ["@var_retain", "@Var 1", "*", 100, "/", ["@var_retain", "@Var 0", "arr_length"]], "arr_concat", ["@var_retain", "@Var 1", "+", 1, "*", 100, "/", ["@var_retain", "@Var 0", "arr_length"]], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "arr_concat_front", 90, "arr_concat_front", "@linear-gradient"], "#f9f6f2"],
                 [[1, -1], "-1", "#767e84", "#06090d"], [[2, -1], "-2", "#556c80", "#06090d"], [[4, -1], "-4", "#396286", "#06090d"],
                 [[8, -1], "-8", "#0d4e86", "#06090d"], [[16, -1], "-16", "#0a6a9c", "#06090d"], [[32, -1], "-32", "#0983a0", "#06090d"],
                 [[64, -1], "-64", "#09a1c4", "#06090d"], [[128, -1], "-128", "#12308d", "#06090d"], [[256, -1], "-256", "#12339e", "#06090d"],
@@ -2799,7 +2969,7 @@ function loadMode(mode) {
                 [[4096, -1], "-4096", "#0d6100", "#06090d"], [[8192, -1], "-8192", "#148a02", "#06090d"], [[16384, -1], "-16384", "#1ac400", "#06090d"],
                 [[32768, -1], "-32768", "#42ff24", "#06090d"], [[65536, -1], "-65536", "#88ff76", "#06090d"], [[131072, -1], "-131072", "#acb217", "#06090d"],
                 [[262144, -1], "-262144", "#d6dd1e", "#06090d"], [[524288, -1], "-524288", "#f5fa49", "#06090d"],
-                [["@This 1", "=", -1], [1, "@This 0", "@end_vars", "", "@repeat", ["@var_retain", "@Var 0", "<=", "@Var 1"], "@if", ["@var_retain", "@Var 1", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "str_concat", " ", "str_concat", ["@var_retain", "@Var 0", "*", -1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat", "str_splice", 0, 1, ""], ["@CalcArray", [1, "@end_vars", ["@Literal"], "@repeat", ["@var_retain", "@Var 0", "<=", "@This 0"], "@if", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "arr_push", ["@var_retain", "@Var 0", "log", 2, "round", 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], 0, ["@Literal", "#767e84", "#556c80", "#396286", "#0d4e86", "#0a6a9c", "#0983a0", "#09a1c4", "#12308d", "#12339e", "#1237af", "#123ac0", "#123dd1", "#0d6100", "#148a02", "#1ac400", "#42ff24", "#88ff76", "#acb217", "#d6dd1e", "#f5fa49"], "@end_vars", ["@Literal"], "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@if", ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "<", 20], "arr_concat", ["@var_retain", "@Var 2", "arr_elem", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"]], "@end-if", "@else", "arr_push", ["@var_retain", ["@Literal"], "arr_push", "@HSLA", "arr_push", ["@var_retain", -15, "*", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "+", 340], "arr_push", 100, "arr_push", ["@var_retain", 100, "-", ["@var_retain", 0.9, "^", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "-", 20], "*", 36]], "arr_concat", 1], "@end-else", "arr_concat", ["@var_retain", "@Var 1", "*", 100, "/", ["@var_retain", "@Var 0", "arr_length"]], "arr_concat", ["@var_retain", "@Var 1", "+", 1, "*", 100, "/", ["@var_retain", "@Var 0", "arr_length"]], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "arr_concat_front", 90, "arr_concat_front", "@linear-gradient"], "#06090d"]
+                [true, 0, "@ColorScheme", "Wildcard 2048", [["@This 0", "*", "@This 1"], true]]
             ];
             MergeRules = [[[1, "@end_vars", 0, "@repeat", ["@var_retain", "@This 0", "min", "@Next 1 0", ">=", "@Var 0"], "@if", ["@var_retain", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "&&", ["@var_retain", "@Next 1 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1]], "+", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0, "&&", ["@This 1", "=", "@Next 1 1"]], true, [[["@var_retain", "@Var 0", "*", 2], "@This 1"]], ["@var_retain", "@Var 0", "*", 2], [false, true]]];
             if (modifiers[13] == "Interacting") MergeRules.push([[1, "@end_vars", 0, "@repeat", ["@var_retain", "@This 0", "min", "@Next 1 0", ">=", "@Var 0"], "@if", ["@var_retain", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "&&", ["@var_retain", "@Next 1 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1]], "+", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0, "&&", ["@This 1", "!=", "@Next 1 1"]], true, [], 0, [true, true]]);
@@ -2982,7 +3152,7 @@ function loadMode(mode) {
                     [2, [["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 1]], true, [[["@This 0", "+", "@Next 1 0"], 1]], ["@This 0", "+", "@Next 1 0", "abs"], [false, true]]
                 ];
             }
-            startTileSpawns = [[[1, 0], 70], [[1, 1], 30], [[-1, 0], 70], [[-1, 1], 30]];
+            startTileSpawns = [[[1, 0], 70], [[-1, 0], 70], [[1, 1], 30], [[-1, 1], 30]];
             winConditions = [["@This 0", "abs", "=", 1321]];
             winRequirement = 2; 
         }
@@ -3003,9 +3173,7 @@ function loadMode(mode) {
         if (modifiers[13] == "None") {
             TileNumAmount = 1;
             TileTypes = [
-                [[0], 0, "#444444", "#ffffff"],
-                [[1], 1, ["@multi-gradient", ["@radial-gradient", "#000000", "#0008"], ["@conic-gradient", "#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ff0000"]], "#ffffff"],
-                [true, ["@This 0"], ["@linear-gradient", ["@HSVA", ["@This 0", "-", 2, "*", 55.623], ["@This 0", "-", 2, "/", 13, "mod", 4, "-", 2, "abs", "*", 35, "+", 30], ["@This 0", "-", 2, "/", 50, "mod", 4, "-", 2, "abs", "*", 25, "+", 50], 1], ["@HSVA", ["@This 0", "-", 2, "*", 0.995, "*", 55.623], ["@This 0", "-", 2, "*", 0.995, "/", 13, "mod", 4, "-", 2, "abs", "*", 35, "+", 30], ["@This 0", "-", 2, "*", 0.995, "/", 50, "mod", 4, "-", 2, "abs", "*", 25, "+", 50], 1]], "#ffffff"]
+                [true, "@This 0", "@ColorScheme", "mod 27", ["@This 0"]]
             ];
             MergeRules = [
                 [2, [["@NextNE -1 0", "!=", "@This 0"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "!=", 1]], true, [[["@This 0", "*", "@MLength", "%", "@GVar 0"]]], [0, "@if", [["@This 0", "*", "@MLength", "%", "@GVar 0"], "=", 1], "2nd", 1, "@end-if"], [], 2, [0, 1], 1, Math.max(width, height)],
@@ -3016,11 +3184,7 @@ function loadMode(mode) {
         else {
             TileNumAmount = 1;
             TileTypes = [
-                [[0], 0, "#444444", "#ffffff"],
-                [[1], 1, ["@multi-gradient", ["@radial-gradient", "#000000", "#0008"], ["@conic-gradient", "#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ff0000"]], "#ffffff"],
-                [["@This 0", ">", 0], ["@This 0"], ["@linear-gradient", ["@HSVA", ["@This 0", "-", 2, "*", 55.623], ["@This 0", "-", 2, "/", 13, "mod", 4, "-", 2, "abs", "*", 35, "+", 30], ["@This 0", "-", 2, "/", 50, "mod", 4, "-", 2, "abs", "*", 25, "+", 50], 1], ["@HSVA", ["@This 0", "-", 2, "*", 0.995, "*", 55.623], ["@This 0", "-", 2, "*", 0.995, "/", 13, "mod", 4, "-", 2, "abs", "*", 35, "+", 30], ["@This 0", "-", 2, "*", 0.995, "/", 50, "mod", 4, "-", 2, "abs", "*", 25, "+", 50], 1]], "#ffffff"],
-                [[-1], -1, ["@rotate", 180, true, ["@multi-gradient", ["@radial-gradient", "#000000", "#0008"], ["@conic-gradient", "#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ff0000"]]], "#000000"],
-                [["@This 1", "<", 0], ["@This 0"], ["@rotate", 180, true, ["@linear-gradient", ["@HSVA", ["@This 0", "*", -1, "-", 2, "*", 55.623], ["@This 0", "*", -1, "-", 2, "/", 13, "mod", 4, "-", 2, "abs", "*", 35, "+", 30], ["@This 0", "*", -1, "-", 2, "/", 50, "mod", 4, "-", 2, "abs", "*", 25, "+", 50], 1], ["@HSVA", ["@This 0", "*", -1, "-", 2, "*", 0.995, "*", 55.623], ["@This 0", "*", -1, "-", 2, "*", 0.995, "/", 13, "mod", 4, "-", 2, "abs", "*", 35, "+", 30], ["@This 0", "*", -1, "-", 2, "*", 0.995, "/", 50, "mod", 4, "-", 2, "abs", "*", 25, "+", 50], 1]]], "#000000"]
+                [true, ["@This 0"], "@ColorScheme", "mod 27", ["@This 0"]]
             ];
             MergeRules = [
                 [2, [["@NextNE -1 0", "!=", "@This 0"], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "abs", "!=", 1]], true, [[["@This 0", "*", "@MLength", "%", "@GVar 0"]]], [0, "@if", [["@This 0", "*", "@MLength", "%", "@GVar 0", "abs"], "=", 1], "2nd", 1, "@end-if"], [], 2, [0, 1], 1, Math.max(width, height)],
@@ -3063,6 +3227,204 @@ function loadMode(mode) {
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("2100_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 46) { // 2378
+        width = 5; height = 5; min_dim = 3;
+        TileNumAmount = 1;
+        TileTypes = [
+            [[1], 1, "#ffffff", "#403f3a"], [[2], 2, "#d5ddea", "#403f3a"], [[3], 5, "#aabcd8", "#403f3a"], [[4], 12, "#7892bc", "#403f3a"], 
+            [[5], 29, "#5171a5", "#403f3a"], [[6], 70, "#335286", "#403f3a"], [[7], 169, "#6a6449", "#eae8db"], [[8], 408, "#a2955a", "#eae8db"],
+            [[9], 985, "#c6b25c", "#eae8db"], [[10], 2378, "#e9cd53", "#eae8db"], [[11], 5741, "#5c8865", "#eae8db"], [[12], 13860, "#54a564", "#eae8db"],
+            [[13], 33461, "#44cb5f", "#eae8db"], [[14], 80782, "#1dee47", "#eae8db"],
+            [true, [[(1 + Math.sqrt(2)), "^", "@This 0"], "-", [(1 - Math.sqrt(2)), "^", "@This 0"], "/", Math.sqrt(2), "/", 2, "round", 1], ["@HSLA", [141, "*", ["@This 0", "-", 3, "floor", 4, "/", 4], "-", 130], [23, "*", ["@This 0", "-", 3, "%", 4], "+", 23], [0.95, "^", ["@This 0", "-", 15, "floor", 4, "/", 4], "*", 50], 1], "#eae8db"]
+        ];
+        MergeRules = [
+            [2, [["@Next 1 0", "=", 1], "&&", ["@This 0", "=", 1]], true, [[2]], 2, [false, true]],
+            [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 0", "-", 1, "=", "@Next 2 0"]], false, [[["@This 0", "+", 1]]], [[(1 + Math.sqrt(2)), "^", ["@This 0", "+", 1]], "-", [(1 - Math.sqrt(2)), "^", ["@This 0", "+", 1]], "/", Math.sqrt(2), "/", 2, "round", 1], [false, true]]
+        ];
+        startTileSpawns = [[[1], 85], [[2], 12], [[3], 3]];
+        winConditions = [[10]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(#eace51 0%, #fff 150%)");
+        document.documentElement.style.setProperty("--background-color", "#f1d98f");
+        document.documentElement.style.setProperty("--grid-color", "#a58d46");
+        document.documentElement.style.setProperty("--tile-color", "#c8b270");
+        document.documentElement.style.setProperty("--text-color", "#403f3a");
+        displayRules("rules_text", ["h2", "Pell Numbers"], ["h1", "2378"], ["p", "Merges occur between two 1s or between two of the same tile and one of the tile before that. Get to the 2378 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (12%), 5 (3%)"]);
+        displayRules("gm_rules_text", ["h2", "Pell Numbers"], ["h1", "2378"], ["p", "Merges occur between two 1s or between two of the same tile and one of the tile before that. Get to the 2378 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (12%), 5 (3%)"]);
+    }
+    else if (mode == 47) { // 1093 1094
+        width = 4; height = 4; min_dim = 2;
+        TileNumAmount = 2;
+        TileTypes = [
+            [[1, -1], 1, "#ffffff", "#656a5c"], [[1, 1], 2, "#919191", "#dde3d0"], [[1, 0], 3, "#cecece", "#333b24"],
+            [[2, -1], 4, "#96ffd2", "#656a5c"], [[2, 1], 5, "#00b365", "#dde3d0"], [[2, 0], 9, "#00ff91", "#333b24"],
+            [[3, -1], 13, "#cc74ff", "#656a5c"], [[3, 1], 14, "#7300b5", "#dde3d0"], [[3, 0], 27, "#a200ff", "#333b24"],
+            [[4, -1], 40, "#ffc16f", "#656a5c"], [[4, 1], 41, "#aa6100", "#dde3d0"], [[4, 0], 81, "#ff9100", "#333b24"],
+            [[5, -1], 121, "#fff98d", "#656a5c"], [[5, 1], 122, "#aea600", "#dde3d0"], [[5, 0], 243, "#fff200", "#333b24"],
+            [[6, -1], 364, "#76cfff", "#656a5c"], [[6, 1], 365, "#0075b4", "#dde3d0"], [[6, 0], 729, "#00a6ff", "#333b24"],
+            [[7, -1], 1093, "#d3ff75", "#656a5c"], [[7, 1], 1094, "#7eb800", "#dde3d0"], [[7, 0], 2187, "#aeff00", "#333b24"],
+            [[8, -1], 3280, "#ff7364", "#656a5c"], [[8, 1], 3281, "#a61100", "#dde3d0"], [[8, 0], 6561, "#ff1900", "#333b24"],
+            [[9, -1], 9841, "#ff7dfb", "#656a5c"], [[9, 1], 9842, "#a800a2", "#dde3d0"], [[9, 0], 19683, "#ff00f7", "#333b24"],
+            [[10, -1], 29524, "#5e86ff", "#656a5c"], [[10, 1], 29525, "#00289e", "#dde3d0"], [[10, 0], 59049, "#0040ff", "#333b24"],
+            [["@This 1", "=", -1], [3, "^", "@This 0", "-", 1, "/", 2], ["@HSLA", [-97, "*", "@This 0", "+", 1090], [0.95, "^", ["@This 0", "-", 11], "*", 100], 70, 1], "#656a5c"],
+            [["@This 1", "=", 1], [3, "^", "@This 0", "+", 1, "/", 2], ["@HSLA", [-97, "*", "@This 0", "+", 1090], [0.95, "^", ["@This 0", "-", 11], "*", 100], 30, 1], "#dde3d0"],
+            [["@This 1", "=", 0], [3, "^", "@This 0"], ["@HSLA", [-97, "*", "@This 0", "+", 1090], [0.95, "^", ["@This 0", "-", 11], "*", 100], 50, 1], "#333b24"]
+        ];
+        MergeRules = [
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", -1]], false, [["@This 0", 0]], [3, "^", "@This 0"], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "!=", 0], "&&", ["@Next 1 1", "=", 0]], false, [[["@This 0", "+", 1], "@This 1"]], [3, "^", "@This 0", "*", 3, "+", "@This 1", "/", 2], [false, true]]
+        ];
+        startTileSpawns = [["Box", 1, [1, -1], 3, [1, 1], 3, [1, 0], 1]];
+        winConditions = [[7, 0]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(#77b700 0%, #fff 150%)");
+        document.documentElement.style.setProperty("--background-color", "#d7eeac");
+        document.documentElement.style.setProperty("--grid-color", "#91bb43");
+        document.documentElement.style.setProperty("--tile-color", "#d2ee9d");
+        document.documentElement.style.setProperty("--text-color", "#333b24");
+        displayRules("rules_text", ["h1", "1093, 1094"], ["p", 'Merges occur between two tiles of consecutive number, or between a power of three and a tile that\'s less than 1 away from half that power of three. Get to the 2187 tile to win!'],
+        ["p", "Spawning tiles: Pulls from a \"box\" that starts with three 1s, three 2s, and one 3, and only refills once it's empty."]);
+        displayRules("gm_rules_text", ["h1", "1093, 1094"], ["p", 'Merges occur between two tiles of consecutive number, or between a power of three and a tile that\'s less than 1 away from half that power of three. Get to the 2187 tile to win!'],
+        ["p", "Spawning tiles: Pulls from a \"box\" that starts with three 1s, three 2s, and one 3, and only refills once it's empty."]);
+    }
+    else if (mode == 48) { // 2310
+        width = 4; height = 4; min_dim = 2;
+        TileNumAmount = 2;
+        TileTypes = [
+            [[0, 0], 1, "#ffffff", "#1a2727"],
+            [["@This 1", "=", 0], [0, "@end_vars", 1, "@repeat", "@This 0", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat", "*", ["@This 1", "prime"]], ["@HSLA", [[-1, "@end_vars", "@This 0", "-", 1, "@repeat", ["@Parent -2", ">=", 3], "/", 2, "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "2nd", "@Var 0"], "@end_vars", "@This 0", "-", 1, "*", 120, "@if", ["@var_retain", "@Var 0", ">", -1], "2nd", ["@var_retain", 0, "+", 120, "/", ["@var_retain", 2, "^", "@Var 0"], "*", ["@This 0", "-", 0.5]], "@end-if"], 100, 35, 1], "#e4ffff"],
+            [true, [0, "@end_vars", 1, "@repeat", "@This 0", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat", "*", ["@This 1", "prime"]], ["@radial-gradient", ["@HSLA", [[-1, "@end_vars", "@This 1", "-", 1, "@repeat", ["@Parent -2", ">=", 3], "/", 2, "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "2nd", "@Var 0"], "@end_vars", "@This 1", "-", 1, "*", 120, "@if", ["@var_retain", "@Var 0", ">", -1], "2nd", ["@var_retain", 0, "+", 120, "/", ["@var_retain", 2, "^", "@Var 0"], "*", ["@This 1", "-", 0.5]], "@end-if"], 100, 65, 1], 0, 20, ["@HSLA", [[-1, "@end_vars", "@This 0", "-", 1, "@repeat", ["@Parent -2", ">=", 3], "/", 2, "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "2nd", "@Var 0"], "@end_vars", "@This 0", "-", 1, "*", 120, "@if", ["@var_retain", "@Var 0", ">", -1], "2nd", ["@var_retain", 0, "+", 120, "/", ["@var_retain", 2, "^", "@Var 0"], "*", ["@This 0", "-", 0.5]], "@end-if"], 100, 35, 1], 100], "#1a2727"],
+        ];
+        MergeRules = [
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "<", 2], "&&", ["@Next 1 1", "=", 0]], false, [[["@This 0", "@if", ["@This 0", "=", "@This 1"], "+", 1, "@end-if"], ["@This 1", "+", 1, "%", ["@This 0", "+", 1]]]], [0, "@end_vars", 1, "@repeat", "@This 0", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat", "*", ["@This 1", "+", 1, "prime"]], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", ">", "@Next 1 1"], "&&", [["@This 1", "prime"], "+", 2, "=", ["@This 1", "+", 1, "prime"]], "&&", ["@Next 1 1", "=", 1]], false, [[["@This 0", "@if", ["@This 0", "=", "@This 1"], "+", 1, "@end-if"], ["@This 1", "+", 1, "%", ["@This 0", "+", 1]]]], [0, "@end_vars", 1, "@repeat", "@This 0", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat", "*", ["@This 1", "+", 1, "prime"]], [false, true]],
+            [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", ">", "@Next 1 1"], "&&", ["@This 1", ">", "@Next 2 1"], "&&", [["@This 1", "prime"], "+", ["@Next 1 1", "prime"], "+", ["@Next 2 1", "prime"], "=", ["@This 1", "+", 1, "prime"]], "&&", ["@Next 1 1", "!=", 0], "&&", ["@Next 2 1", "!=", 0]], false, [[["@This 0", "@if", ["@This 0", "=", "@This 1"], "+", 1, "@end-if"], ["@This 1", "+", 1, "%", ["@This 0", "+", 1]]]], [0, "@end_vars", 1, "@repeat", "@This 0", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat", "*", ["@This 1", "+", 1, "prime"]], [false, true]]
+        ];
+        startTileSpawns = [[[0, 0], 85], [[1, 0], 12], [[1, 1], 3]];
+        winConditions = [[5, 0]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(#007575 0%, #a6ffff 100%)");
+        document.documentElement.style.setProperty("--background-color", "radial-gradient(#80ffff 0%, #00dada 150%)");
+        document.documentElement.style.setProperty("--grid-color", "#82dbdb");
+        document.documentElement.style.setProperty("--tile-color", "#539a9a");
+        document.documentElement.style.setProperty("--text-color", "#1a2727");
+        displayRules("rules_text", ["h2", "Primorials"], ["h1", "2310"], ["p", "Tiles that are not a multiple of any square number merge with themselves. A tile that's a multiple of 4 merges with a tile that's half of it. A tile that's a multiple of 9 merges with a tile that's two-thirds of it. A tile that's a multiple of 25 merges with a tile that's two-fifths of it. A tile that's a multiple of 49 merges with two tiles that are each two-sevenths of it. This continues for each squared prime: a tile that's a multiple of a squared prime merges with two or three tiles that get it to either be the next primorial or a multiple of the next squared prime. Three-tile merges cannot include tiles that are primorials. Get to the 2310 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
+        displayRules("gm_rules_text", ["h2", "Primorials"], ["h1", "2310"], ["p", "Tiles that are not a multiple of any square number merge with themselves. A tile that's a multiple of 4 merges with a tile that's half of it. A tile that's a multiple of 9 merges with a tile that's two-thirds of it. A tile that's a multiple of 25 merges with a tile that's two-fifths of it. A tile that's a multiple of 49 merges with two tiles that are each two-sevenths of it. This continues for each squared prime: a tile that's a multiple of a squared prime merges with two or three tiles that get it to either be the next primorial or a multiple of the next squared prime. Three-tile merges cannot include tiles that are primorials. Get to the 2310 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
+    }
+    else if (mode == 49) { // 378
+        width = 5; height = 5; min_dim = 3;
+        start_game_vars = [3, false]; // The 0th entry is the goal tile, the 1st entry is whether a goal tile was made this turn
+        mode_vars = [true, 3]; // The 0th entry is whether a goal tile exists, the 1st entry is the maximum merge length
+        if (modifiers[13] == "None") {
+            TileNumAmount = 1;
+            TileTypes = [
+                [[1], 1, "#ffffff", "#2c2700"],
+                [true, ["@This 0", "+", 1, "*", "@This 0", "/", 2], ["@radial-gradient", ["@HSLA", [34, "*", "@This 0", "-", 8], ["@This 0", "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1], ["@HSLA", [34, "*", "@This 0", "*", 0.995, "-", 8], ["@This 0", "*", 0.995, "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "*", 0.995, "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1]], "#ffffff"]
+            ];
+            MergeRules = [
+                [["@This 0", "+", 1, "*", "@This 0", "/", 2, "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2]]]], ["@This 0", "+", 1, "*", "@This 0", "/", 2, "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2]]], "*", 8, "+", 1, "^", 0.5, "-", 1, "/", 2, "round", 1], "@end_vars", 2, ["@var_retain", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]], "&&", ["@var_retain", "@Var 1", "+", 1, "*", "@Var 1", "/", 2, "=", "@Var 0"]], true, [[["@var_retain", "@Var 1"]]], "@Var 0", [], 2, [0, 0], 1, 3],
+                [0, ["@This 0", "=", "@GVar 0"], false, [], 0, []]
+            ];
+            startTileSpawns = [[[1], 90], [[2], 10]];
+            winConditions = [[27]];
+            winRequirement = 1;
+        }
+        else {
+            TileNumAmount = 2;
+            TileTypes = [
+                [[1, 1], 1, "#ffffff", "#2c2700"], [[1, -1], -1, "#000000", "#d3d8ff"],
+                [["@This 1", "=", 1], ["@This 0", "+", 1, "*", "@This 0", "/", 2], ["@radial-gradient", ["@HSLA", [34, "*", "@This 0", "-", 8], ["@This 0", "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1], ["@HSLA", [34, "*", "@This 0", "*", 0.995, "-", 8], ["@This 0", "*", 0.995, "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "*", 0.995, "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1]], "#ffffff"],
+                [["@This 1", "=", -1], ["@This 0", "+", 1, "*", "@This 0", "/", -2], ["@rotate", 180, true, ["@radial-gradient", ["@HSLA", [34, "*", "@This 0", "-", 8], ["@This 0", "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1], ["@HSLA", [34, "*", "@This 0", "*", 0.995, "-", 8], ["@This 0", "*", 0.995, "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "*", 0.995, "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1]]], "#000000"]
+            ];
+            startTileSpawns = [[[1, 1], 90], [[1, -1], 90], [[2, 1], 10], [[2, -1], 10]];
+            winConditions = [["@This 0", "=", 27]];
+            winRequirement = 1;
+            if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [["@This 0", "+", 1, "*", "@This 0", "/", 2, "*", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2, "*", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@This 0", "+", 1, "*", "@This 0", "/", 2, "*", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2, "*", ["@var_retain", "@Var -1", "arr_elem", 1]]]], "abs", "*", 8, "+", 1, "^", 0.5, "-", 1, "/", 2, "round", 1], "@end_vars", 2, ["@var_retain", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 1, "!=", "@This 1"], "2nd", false, "@end-if"]], "&&", ["@var_retain", "@Var 1", "+", 1, "*", "@Var 1", "/", 2, "=", ["@var_retain", "@Var 0", "abs"]]], true, [[["@var_retain", "@Var 1"], ["@var_retain", "@Var 0", "sign"]]], ["@var_retain", "@Var 0", "abs"], [], 2, [0, 0], 1, 3],
+                    [0, ["@This 0", "=", "@GVar 0"], false, [], 0, []]
+                ];
+            }
+            else {
+                MergeRules = [
+                    [["@This 0", "+", 1, "*", "@This 0", "/", 2, "*", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2, "*", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@This 0", "+", 1, "*", "@This 0", "/", 2, "*", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2, "*", ["@var_retain", "@Var -1", "arr_elem", 1]]]], "abs", "*", 8, "+", 1, "^", 0.5, "-", 1, "/", 2, "round", 1], "@end_vars", 2, ["@var_retain", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]], "&&", ["@var_retain", "@Var 1", "=", 0]], true, [], 0, [], 2, [0, 0], 1, 3],
+                    [["@This 0", "+", 1, "*", "@This 0", "/", 2, "*", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2, "*", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@This 0", "+", 1, "*", "@This 0", "/", 2, "*", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "+", 1, "*", ["@var_retain", "@Var -1", "arr_elem", 0], "/", 2, "*", ["@var_retain", "@Var -1", "arr_elem", 1]]]], "abs", "*", 8, "+", 1, "^", 0.5, "-", 1, "/", 2, "round", 1], "@end_vars", 2, ["@var_retain", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]], "&&", ["@var_retain", "@Var 1", "+", 1, "*", "@Var 1", "/", 2, "=", ["@var_retain", "@Var 0", "abs"]]], true, [[["@var_retain", "@Var 1"], ["@var_retain", "@Var 0", "sign"]]], ["@var_retain", "@Var 0", "abs"], [], 2, [0, 0], 1, 3],
+                    [0, ["@This 0", "=", "@GVar 0"], false, [], 0, []]
+                ];
+            }
+        }
+        loseConditions = [["@This 0", ">", "@GVar 0"]];
+        loseRequirement = 1;
+        winPriority = false;
+        scripts = [
+            [[0, "@if", ["@Grid", "arr_flat", 1, "arr_reduce", false, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "2nd", true, "@end-if"]], "@edit_gvar", 1, true, "@end-if"], "EndMovement"],
+            [[0, "@if", "@GVar 1", "@edit_gvar", 1, false, "@edit_gvar", 0, ["@GVar 0", "+", 1], "@end-if"], "TrueEndTurn"]
+        ];
+        document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #ffffac, #d8ffae, #a6ffcd, #aaf8ff, #b7c2ff, #e2bcff, #ffaaff)");
+        document.documentElement.style.setProperty("--background-color", "radial-gradient(#ffaaff, #aaf8ff, #ffffac)");
+        document.documentElement.style.setProperty("--grid-color", "#eea0e9");
+        document.documentElement.style.setProperty("--tile-color", "#fff6c3");
+        document.documentElement.style.setProperty("--text-color", "#2c2700");
+        displayRules("rules_text", ["h2", "Triangular Numbers"], ["h1", "378"], ["p", "Any two or three tiles can merge as long as they add to a triangular number. There is a \"goal tile\" that starts at 6. Whenever you make the goal tile, that tile disappears and the goal tile increases to the next triangular number. If you ever make a tile greater than the current goal tile, you immediately lose. Get to and make the 378 tile to win!"],
+        ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        displayRules("gm_rules_text", ["h2", "Triangular Numbers"], ["h1", "378"], ["p", "Any two or three tiles can merge as long as they add to a triangular number. There is a \"goal tile\" that starts at 6. Whenever you make the goal tile, that tile disappears and the goal tile increases to the next triangular number. If you ever make a tile greater than the current goal tile, you immediately lose. Get to and make the 378 tile to win!"],
+        ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("378_vars").style.setProperty("display", "flex");
+        statBoxes = [["Goal Tile", ["@GVar 0", "+", 1, "*", "@GVar 0", "/", 2]], ["Score", "@Score"]];
+    }
+    else if (mode == 50) { // DIVE
+        width = 4; height = 4; min_dim = 2;
+        TileNumAmount = 1;
+        mode_vars = [0, false]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is whether 1s can spawn.
+        start_game_vars = [[2n], [2n], [], []] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, and the fourth entry is the seeds that are currently being removed.
+        TileTypes = [
+            [true, "@This 0", "@ColorScheme", "DIVE", ["@This 0"]]
+        ];
+        if (modifiers[13] == "None") {
+            MergeRules = [
+                [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "min", "@Next 1 0"], [false, true]]
+            ];
+            startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], 1]];
+        }
+        else {
+            startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], 1], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", -1n]], 1]];
+            if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
+                ];
+            }
+            else {
+                MergeRules = [
+                    [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], true, [], 0],
+                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
+                ];
+            }
+        }
+        winRequirement = false;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(circle, #fff8 0%, #0000 19.666% 30.333%, #0008 38.888% 44.444%, #0000 53% 63.666%, #fff8 72.222% 77.777%, #0000 86.333%, #0008 100%), conic-gradient(#0000 0deg 10deg, #fff8 35deg 55deg, #0000 80deg 100deg, #0008 125deg 145deg, #0000 170deg 190deg, #fff8 215deg 235deg, #0000 260deg 280deg, #0008 305deg 325deg, #0000 350deg), linear-gradient(#69c, #69c)");
+        document.documentElement.style.setProperty("--background-color", "repeating-radial-gradient(circle, #fff8 0%, #0000 5% 10%, #0008 15%, #0000 20% 25%, #fff8 30%), conic-gradient(#0000 0deg 10deg, #fff8 35deg 55deg, #0000 80deg 100deg, #0008 125deg 145deg, #0000 170deg 190deg, #fff8 215deg 235deg, #0000 260deg 280deg, #0008 305deg 325deg, #0000 350deg), radial-gradient(#b5cce4, #b5cce4)");
+        document.documentElement.style.setProperty("--grid-color", "#7a9aba");
+        document.documentElement.style.setProperty("--tile-color", "#9ec3e7");
+        document.documentElement.style.setProperty("--text-color", "#16395a");
+        displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+        ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+        displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+        ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+        statBoxes = [["Score", "@Score", false, false, "Tile", "DIVE"], ["Seeds", "@GVar 0", false, false, "TileArray", "DIVE"], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "DIVE"]];
+        scripts = [
+            [[["@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]]], 0, 0n, "@end_vars", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "absB"], "2nd", ["@var_retain", "@GVar 0", "arr_reduce", "@Var 2", ["@if", ["@var_retain", "@Var -1", "absB", ">", 1n], "/B", ["@var_retain", "@Var -1", "absB", "^B", ["@var_retain", "@Parent -3", "expomodB", ["@var_retain", "@Var -1", "absB"]]], "@end-if"], "absB"], "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
+            [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", "@Var -1", "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"],
+        ];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("DIVE_vars").style.setProperty("display", "flex");
     }
     if (modifiers[5] == "Diamond" || modifiers[5] == "Hexagon") modifiers[6] = min_dim;
     else if (modifiers[5] == "4D") {
@@ -3198,6 +3560,32 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 1 (50%), &#247;2 (50%)"])
             displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p", "Merges occur between a tile that's a power of 1.5 and a tile that's half of that power of 1.5, or between two equal tiles that are not a power of 1.5. There are also &#247;2 tiles, which can merge with any power of 1.5 (or with themselves to reduce clutter). Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
             ["p", "Spawning tiles: 1 (50%), &#247;2 (50%)"]);
+        }
+    }
+    else if (gamemode == 38) { // 180
+        if (mode_vars[0] == 0) {
+            document.getElementById("180_length_text").innerHTML = "Merges occur between 2, 3, or 5 of the same tile.";
+            document.getElementById("180_length_text").style.setProperty("color", "#0055d5");
+            displayRules("rules_text", ["h2", "5-Smooth Numbers"], ["h1", "180"], ["p", "Merges occur between exactly two, three, or five tiles of the same number - note that a line of four, six, etc. of the same tile will not merge! Get to the 180 tile to win, or see how many different tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "5-Smooth Numbers"], ["h1", "180"], ["p", "Merges occur between exactly two, three, or five tiles of the same number - note that a line of four, six, etc. of the same tile will not merge! Get to the 180 tile to win, or see how many different tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("180_length_text").innerHTML = "Merges occur between a prime number amount of the same tile.";
+            document.getElementById("180_length_text").style.setProperty("color", "#0c2e00");
+            displayRules("rules_text", ["h2", "Prime Supermerging"], ["h1", "180"], ["p", "Merges occur between a prime number amount (2, 3, 5, 7, etc.) tiles of the same number - note that a line of four, six, etc. of the same tile will not merge! Get to the 180 tile to win, or see how many different tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Prime Supermerging"], ["h1", "180"], ["p", "Merges occur between a prime number amount (2, 3, 5, 7, etc.) tiles of the same number - note that a line of four, six, etc. of the same tile will not merge! Get to the 180 tile to win, or see how many different tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("180_length_text").innerHTML = "Merges occur between any amount of the same tile.";
+            document.getElementById("180_length_text").style.setProperty("color", "#ff6e46");
+            displayRules("rules_text", ["h2", "Supermerging"], ["h1", "180"], ["p", "Merges occur between any amount of the same tile. Get to the 180 tile to win, or see how many different tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Supermerging"], ["h1", "180"], ["p", "Merges occur between any amount of the same tile. Get to the 180 tile to win, or see how many different tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
         }
     }
     else if (gamemode == 39) { // 2592
@@ -3754,6 +4142,105 @@ function gmDisplayVars() {
             }
         }
     }
+    else if (gamemode == 49) {
+        if (mode_vars[0]) {
+            document.getElementById("378_goal_text").innerHTML = "You have to make the triangular numbers in order.";
+            document.getElementById("378_goal_text").style.setProperty("color", "#166c00");
+            displayRules("rules_text", ["h2", "Triangular Numbers"], ["h1", "378"], ["p", "Any two or three tiles can merge as long as they add to a triangular number. There is a \"goal tile\" that starts at 6. Whenever you make the goal tile, that tile disappears and the goal tile increases to the next triangular number. If you ever make a tile greater than the current goal tile, you immediately lose. Get to and make the 378 tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+            displayRules("gm_rules_text", ["h2", "Triangular Numbers"], ["h1", "378"], ["p", "Any two or three tiles can merge as long as they add to a triangular number. There is a \"goal tile\" that starts at 6. Whenever you make the goal tile, that tile disappears and the goal tile increases to the next triangular number. If you ever make a tile greater than the current goal tile, you immediately lose. Get to and make the 378 tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        }
+        else {
+            document.getElementById("378_goal_text").innerHTML = "You may make tiles freely.";
+            document.getElementById("378_goal_text").style.setProperty("color", "#a54bff");
+            displayRules("rules_text", ["h2", "Triangular Numbers"], ["h1", "378"], ["p", "Any two or three tiles can merge as long as they add to a triangular number. There's no win condition here - just play around and see how many tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+            displayRules("gm_rules_text", ["h2", "Triangular Numbers"], ["h1", "378"], ["p", "Any two or three tiles can merge as long as they add to a triangular number. There's no win condition here - just play around and see how many tiles you can discover!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        }
+        document.getElementById("378_merge_counter").innerHTML = mode_vars[1];
+        if (mode_vars[1] < 4) document.getElementById("378_merge_minus").style.setProperty("display", "none");
+        else document.getElementById("378_merge_minus").style.setProperty("display", "inline-block");
+        document.getElementById("378_merge_plus").style.setProperty("display", "inline-block");
+    }
+    else if (gamemode == 50) {
+        if (mode_vars[0] > 0) {
+            document.getElementById("DIVE_seeds").style.setProperty("display", "none");
+            document.getElementById("DIVE_primeSpawns").style.setProperty("display", "block");
+            document.getElementById("DIVE_primeSpawns_change").value = mode_vars[0];
+        }
+        else {
+            document.getElementById("DIVE_seeds").style.setProperty("display", "block");
+            document.getElementById("DIVE_primeSpawns").style.setProperty("display", "none");
+            if (mode_vars[0] == 0) {
+                document.getElementById("DIVE_seeds_text").innerHTML = "Spawning tiles, a.k.a. seeds, can be unlocked and eliminated.";
+                document.getElementById("DIVE_seeds_text").style.setProperty("color", "#060");
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+            }
+            else if (mode_vars[0] == -1) {
+                document.getElementById("DIVE_seeds_text").innerHTML = "Spawning tiles, a.k.a. seeds, are unlocked permanently.";
+                document.getElementById("DIVE_seeds_text").style.setProperty("color", "#400");
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+            }
+        }
+        if (mode_vars[1]) {
+            document.getElementById("DIVE_1s_text").innerHTML = "1s are as likely to spawn as any other spawning tile.";
+            document.getElementById("DIVE_1s_text").style.setProperty("color", "#000");
+        }
+        else {
+            document.getElementById("DIVE_1s_text").innerHTML = "1s cannot spawn.";
+            document.getElementById("DIVE_1s_text").style.setProperty("color", "#fff");
+        }
+        if (mode_vars[0] == 0) {
+            if (mode_vars[1]) {
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+            }
+            else {
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+            }
+        }
+        else if (mode_vars[0] == -1) {
+            if (mode_vars[1]) {
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+            }
+            else {
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+            }
+        }
+        else {
+            if (mode_vars[1]) {
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
+            }
+            else {
+                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "The spawning tiles are the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
+                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+                ["p", "The spawning tiles are the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
+            }
+        }
+    }
 }
 
 function displayModifiers(page) {
@@ -3830,7 +4317,7 @@ function displayModifiers(page) {
             document.getElementById("modifiers_spawnLocation_text").style.setProperty("color", "#c6af00");
         }
         if (modifiers[15] == "Simple") {
-            document.getElementById("modifiers_simpleSpawns_text").innerHTML = "Only the first spawnable tile type in each mode can spawn. (In 3072, this gets rid of spawning 3s and bonus tiles, keeping only 1s and 2s in the box. Does not affect 2049, Wildcard 2048, versions of 2216.838 with &#247;2 tiles, 1321, or 1535, 1536, 1537, or any mode that already only spawns one tile)";
+            document.getElementById("modifiers_simpleSpawns_text").innerHTML = "Only the first spawnable tile type in each mode can spawn. (In 3072 and 1093 1094, this gets rid of spawning 3s and bonus tiles, keeping only 1s and 2s in the box. Does not affect 2049, 1535 1536 1537, Wildcard 2048, versions of 2216.838 with &#247;2 tiles, 1321, DIVE, or any mode that already only spawns one tile)";
             document.getElementById("modifiers_simpleSpawns_text").style.setProperty("color", "#d3c480");
         }
         else if (modifiers[15] == "Equal") {
@@ -4218,6 +4705,7 @@ function createGrid() {
         let newTilet = document.createTextNode("");
         newTilep.appendChild(newTilet);
         t.firstElementChild.appendChild(newTilep);
+        newTilep.classList.add("tile_text");
     }
     if (nextTiles == 0) document.getElementById("next_tiles_container").style.setProperty("display", "none");
     else {
@@ -4231,6 +4719,7 @@ function createGrid() {
             let newTilet = document.createTextNode("");
             newTilep.appendChild(newTilet);
             newNext.appendChild(newTilep);
+            newTilep.classList.add("tile_text");
         }
     }
     visibleNextTiles = document.getElementById("next_tiles").children;
@@ -4267,11 +4756,21 @@ function createArrows() {
 
 function createStatBoxes() {
     while (document.getElementById("score_line").children.length > 0) document.getElementById("score_line").removeChild(document.getElementById("score_line").lastElementChild);
+    while (document.getElementById("bottom_score_line").children.length > 0) document.getElementById("bottom_score_line").removeChild(document.getElementById("bottom_score_line").lastElementChild);
     for (let b = 0; b < statBoxes.length; b++) {
         let newBox = document.createElement("div");
         newBox.id = "stat_container_" + b;
         newBox.classList.add("stat_container");
-        document.getElementById("score_line").appendChild(newBox);
+        if (statBoxes[b].length > 2 && statBoxes[b][2]) {
+            document.getElementById("bottom_score_line").appendChild(newBox);
+        }
+        else {
+            document.getElementById("score_line").appendChild(newBox);
+        }
+        if (statBoxes[b].length > 3 && statBoxes[b][3]) {
+            newBox.style.setProperty("margin-left", "50%");
+            newBox.style.setProperty("margin-right", "50%");
+        }
         let title = document.createElement("p");
         title.id = "stat_title_" + b;
         title.classList.add("stat_title");   
@@ -4279,11 +4778,19 @@ function createStatBoxes() {
         else title.style.setProperty("font-size", "calc(75% *" + Math.min(1, Math.sqrt(20/statBoxes[b][0].length)) + ")");
         title.innerHTML = statBoxes[b][0];
         newBox.appendChild(title);
-        let counter = document.createElement("p");
-        counter.id = "stat_counter_" + b;
-        counter.classList.add("stat_counter");
-        counter.innerHTML = "0";
-        newBox.appendChild(counter);
+        if (statBoxes[b].length > 4 && (statBoxes[b][4] == "Tile" || statBoxes[b][4] == "TileArray")) {
+            let container = document.createElement("div");
+            container.id = "stat_counter_" + b;
+            container.classList.add("stat_tiles");
+            newBox.appendChild(container);
+        }
+        else {
+            let counter = document.createElement("p");
+            counter.id = "stat_counter_" + b;
+            counter.classList.add("stat_counter");
+            counter.innerHTML = "0";
+            newBox.appendChild(counter);
+        }
     }
 }
 
@@ -4313,40 +4820,113 @@ function displayGrid() {
         let tile = t.firstElementChild;
         if (Grid[vcoord][hcoord] == "@Void") tile.parentElement.style.setProperty("display", "none");
         else tile.parentElement.style.setProperty("display", "inline-block");
-        if (Grid[vcoord][hcoord] == "@Empty" || Grid[vcoord][hcoord] == "@Void") {tile.style.setProperty("display", "none");}
-        else {
+        displayTile("Grid", tile, vcoord, hcoord, Grid, Grid[vcoord][hcoord]);
+    }
+    for (let t of visibleNextTiles) {  //Displaying the next spawning tiles
+        let char = 9;
+        let nextnum = "";
+        while (char < t.id.length) {nextnum += t.id[char]; char++;}
+        nextnum = Number(nextnum);
+        let tile = t;
+        displayTile("NextTiles", tile, nextnum, "None", spawnConveyor, spawnConveyor[nextnum]);
+        if (nextnum < randomTileAmount) tile.style.setProperty("border-style", "solid");
+        else tile.style.setProperty("border-style", "none");
+    }
+    for (let b = 0; b < statBoxes.length; b++) {
+        let box = document.getElementById("stat_counter_" + b);
+        if (statBoxes[b].length > 4 && (statBoxes[b][4] == "Tile" || statBoxes[b][4] == "TileArray")) {
+            while (box.lastElementChild) box.removeChild(box.lastElementChild);
+            let tiles = structuredClone(CalcArray(statBoxes[b][1]));
+            if (statBoxes[b][4] == "Tile") tiles = [tiles];
+            for (let t = 0; t < tiles.length; t++) {
+                let newTile = document.createElement("div");
+                newTile.id = "stat_tile_" + b + "_" + t;
+                if (statBoxes[b][4] == "Tile") newTile.classList.add("stat_tile")
+                else newTile.classList.add("stat_array_tile");
+                box.appendChild(newTile);
+                let newTilep = document.createElement("p");
+                let newTilet = document.createTextNode("");
+                newTilep.appendChild(newTilet);
+                newTile.appendChild(newTilep);
+                newTilep.classList.add("tile_text");
+                if (!Array.isArray(tiles[t])) tiles[t] = [tiles[t]];
+                if (statBoxes[b][4] == "Tile") displayTile("Score", newTile, "None", "None", tiles[t], [true, "@This 0", "@ColorScheme", statBoxes[b][5], ["@This 0"]]);
+                else displayTile("ScoreArray", newTile, "None", "None", tiles[t], [true, "@This 0", "@ColorScheme", statBoxes[b][5], ["@This 0"]]);
+            }
+        }
+        else box.innerHTML = defaultAbbreviate(CalcArray(statBoxes[b][1]));
+    }
+    console.log("Move score line " + moves_so_far);
+    if (screen.width/screen.height > 1.2) {
+        document.getElementById("left_of_grid").style.setProperty("top", getComputedStyle(document.getElementById("score_line")).getPropertyValue("height"));
+    }
+    else {
+        document.getElementById("left_of_grid").style.setProperty("top", "");
+    }
+    console.log("Finished grid display " + moves_so_far);
+}
+
+function displayTile(dType, tile, vcoord, hcoord, container, location) {
+    let sizeExpression = 0;
+    if (location == "@Empty" || location == "@Void") {tile.style.setProperty("display", "none");}
+    else {
+        if (dType != "Subtile") {
             tile.style.setProperty("display", "flex"); //Flex display is so the number of the tile can be centered on the tile
             tile.style.setProperty("left", "0%");
             tile.style.setProperty("top", "0%");
-            let displaynum = 0;
-            let displayfound = false;
-            let display = [];
-            let vars = [];
-            while (!displayfound && displaynum < TileTypes.length) {
-                display = structuredClone(TileTypes[displaynum]);
-                if (display[0] === "@include_gvars") {
-                    let newvars = structuredClone(game_vars);
-                    for (let v = 0; v < newvars.length; v++) {
-                        newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity], Grid, [], vars);
-                        if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
-                        vars.push(newvars[v]);
-                    }
-                    display.shift();
+            while (tile.children.length > 1) tile.removeChild(tile.lastElementChild);
+        }
+        let displaynum = 0;
+        let displayfound = false;
+        let display = [];
+        let vars = [];
+        if (dType == "Subtile" || dType == "Score" || dType == "ScoreArray" || dType == "Viewer") {
+            display = structuredClone(location);
+            if (display[0] === "@include_gvars") {
+                let newvars = structuredClone(game_vars);
+                for (let v = 0; v < newvars.length; v++) {
+                    newvars[v] = CalcArrayConvert(newvars[v], "=", "None", "None", 0, 0, [1, Infinity, 0], container, [], vars);
+                    if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
+                    vars.push(newvars[v]);
                 }
-                if (display.indexOf("@end_vars") > -1) {
-                    let newvars = display.slice(0, display.indexOf("@end_vars"));
-                    for (let v = 0; v < newvars.length; v++) {
-                        newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity], Grid, [], vars);
-                        if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
-                        vars.push(newvars[v]);
-                    }
-                    display.splice(0, display.indexOf("@end_vars") + 1);
-                }
-                if (eqPrimArrays(display[0], Grid[vcoord][hcoord]) || (CalcArray(display[0], vcoord, hcoord, 0, 0, [1, Infinity, 0], Grid, [], vars) === true)) displayfound = true;
-                else displaynum++;
+                display.shift();
             }
-            if (displaynum >= TileTypes.length) {displaynum = TileTypes.length - 1;}
-            tile.firstElementChild.innerHTML = defaultAbbreviate(CalcArray(display[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], Grid, [], vars));
+            if (display.indexOf("@end_vars") > -1) {
+                let newvars = display.slice(0, display.indexOf("@end_vars"));
+                for (let v = 0; v < newvars.length; v++) {
+                    newvars[v] = CalcArrayConvert(newvars[v], "=", "None", "None", 0, 0, [1, Infinity, 0], container, [], vars);
+                    if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
+                    vars.push(newvars[v]);
+                }
+                display.splice(0, display.indexOf("@end_vars") + 1);
+            }
+        }
+        else while (!displayfound && displaynum < TileTypes.length) {
+            display = structuredClone(TileTypes[displaynum]);
+            if (display[0] === "@include_gvars") {
+                let newvars = structuredClone(game_vars);
+                for (let v = 0; v < newvars.length; v++) {
+                    newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+                    if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
+                    vars.push(newvars[v]);
+                }
+                display.shift();
+            }
+            if (display.indexOf("@end_vars") > -1) {
+                let newvars = display.slice(0, display.indexOf("@end_vars"));
+                for (let v = 0; v < newvars.length; v++) {
+                    newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+                    if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
+                    vars.push(newvars[v]);
+                }
+                display.splice(0, display.indexOf("@end_vars") + 1);
+            }
+            if (eqPrimArrays(display[0], location) || (CalcArray(display[0], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars) === true)) displayfound = true;
+            else displaynum++;
+        }
+        if (displaynum >= TileTypes.length) {displaynum = TileTypes.length - 1;}
+        if (dType != "Subtile") {
+            tile.firstElementChild.innerHTML = defaultAbbreviate(CalcArray(display[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars));
             let fontmin = 2;
             let fontmax = tile.firstElementChild.textContent.length * 0.7;
             //Normally, the font size on a tile is dependent on the size of the text, but if the TileTypes entry has more than four entries, the 4th and 5th entries place restrictions on the font size
@@ -4358,210 +4938,585 @@ function displayGrid() {
                 if (display[6] > 0) fontmax = display[5];
                 else if (display[6] < 0) fontmax = tile.firstElementChild.textContent.length * display[6];
             }
-            tile.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax)) + ")");
-            let dispbackground = evaluateColor(display[2], vcoord, hcoord, Grid, vars);
+            if (dType == "Viewer") tile.style.setProperty("font-size", "calc(var(--secondary_size) * " + (40 / Math.max(fontmin, fontmax)) + ")");
+            else {
+                if (dType == "Grid") sizeExpression = (tsize / 100 / Math.max(fontmin, fontmax));
+                else if (dType == "Score") sizeExpression = (6/33 / Math.max(fontmin, fontmax));
+                else sizeExpression = (4/33 / Math.max(fontmin, fontmax));
+                tile.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + sizeExpression + ")"); 
+            }
+        }
+        if (display[2] != "@ColorScheme") {
+            let dispbackground = evaluateColor(display[2], vcoord, hcoord, container, vars);
             if (dispbackground.includes("gradient")) {
-                tile.style.setProperty("background-image", (evaluateColor(display[2], vcoord, hcoord, Grid, vars)));
+                tile.style.setProperty("background-image", (evaluateColor(display[2], vcoord, hcoord, container, vars)));
             }
             else {
-                tile.style.setProperty("background-color", (evaluateColor(display[2], vcoord, hcoord, Grid, vars)));
+                tile.style.setProperty("background-color", (evaluateColor(display[2], vcoord, hcoord, container, vars)));
                 tile.style.setProperty("background-image", "none");
             }
-            tile.style.setProperty("color", (evaluateColor(display[3], vcoord, hcoord, Grid, vars)));
+            tile.style.setProperty("color", (evaluateColor(display[3], vcoord, hcoord, container, vars)));
             tile.style.setProperty("text-shadow", "none");
             if (display.length > 4) {
                 if (typeof display[4] == "string") tile.style.setProperty("text-shadow", display[4]);
                 else if (Array.isArray(display[4]) && display[4].length > 3) {
-                    let offset1 = "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax) * display[4][0]) + ") ";
-                    let offset2 = "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax) * display[4][1]) + ") ";
-                    let blur = "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax) * display[4][2]) + ") ";
-                    let color = evaluateColor(display[4][3], vcoord, hcoord, Grid, vars);
+                    let offset1 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + display[4][0] + ") ";
+                    let offset2 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + display[4][1] + ") ";
+                    let blur = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + display[4][2] +  ") ";
+                    let color = evaluateColor(display[4][3], vcoord, hcoord, container, vars);
                     let shadow = offset1 + offset2 + blur + color;
                     tile.style.setProperty("text-shadow", shadow);
                 }
             }
-            while (tile.children.length > 1) tile.removeChild(tile.lastElementChild);
-            let dispelem = 7;
-            while (dispelem < display.length) { //If a TileTypes entry has more than six entries, all entries after the 5th relate to additional pieces of text on the tile, such as how Isotopic 256 displays the radioactivity counters
-                if (display[dispelem][0] == "Innerscript") {
-                    let innerdisplay = display[dispelem].slice(1);
-                    let innerscript = document.createElement("p");
-                    let innertext = document.createElement("span");
-                    innerscript.appendChild(innertext);
-                    tile.appendChild(innerscript);
-                    innerscript.style.setProperty("position", "absolute");
-                    let vert = (innerdisplay[1].split("-"))[0];
-                    let horiz = (innerdisplay[1].split("-"))[1];
-                    innerscript.style.setProperty("display", "flex");
-                    innerscript.style.setProperty("width", "100%");
-                    innerscript.style.setProperty("height", "100%");
-                    if (vert == "top") {
-                        innerscript.style.setProperty("align-items", "flex-start");
-                    }
-                    if (vert == "bottom") {
-                        innerscript.style.setProperty("align-items", "flex-end");
-                    }
-                    else {
-                        innerscript.style.setProperty("align-items", "center");
-                    }
-                    if (horiz == "left") {
-                        innerscript.style.setProperty("justify-content", "flex-start");
-                    }
-                    if (horiz == "right") {
-                        innerscript.style.setProperty("justify-content", "flex-end");
-                    }
-                    else {
-                        innerscript.style.setProperty("justify-content", "center");
-                    }
-                    innertext.innerHTML = defaultAbbreviate(CalcArray(innerdisplay[0], vcoord, hcoord, 0, 0, [1, Infinity, 0], Grid, [], vars));
-                    let fontmin = 2;
-                    let fontmax = innerscript.textContent.length * 0.7;
-                    if (innerdisplay.length > 2) {
-                        if (innerdisplay[2] > 0) fontmin = innerdisplay[2];
-                        else if (innerdisplay[2] < 0) fontmin = innerscript.textContent.length * innerdisplay[2];
-                    }
-                    if (innerdisplay.length > 3) {
-                        if (innerdisplay[3] > 0) fontmax = innerdisplay[3];
-                        else if (innerdisplay[3] < 0) fontmax = innerscript.textContent.length * innerdisplay[3];
-                    }
-                    innerscript.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax)) + ")");
-                    if (innerdisplay.length > 4) innerscript.style.setProperty("color", (evaluateColor(innerdisplay[4], vcoord, hcoord, Grid, vars)));
-                    if (innerdisplay.length > 5) {
-                        if (typeof innerdisplay[5] == "string") innerscript.style.setProperty("text-shadow", innerdisplay[5]);
-                        else if (Array.isArray(innerdisplay[5]) && innerdisplay[5].length > 3) {
-                            let offset1 = "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax) * innerdisplay[5][0]) + ") ";
-                            let offset2 = "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax) * innerdisplay[5][1]) + ") ";
-                            let blur = "calc(1vw * var(--grid_vw) * " + (tsize / 100 / Math.max(fontmin, fontmax) * innerdisplay[5][2]) + ") ";
-                            let color = evaluateColor(innerdisplay[5][3], vcoord, hcoord, Grid, vars);
-                            let shadow = offset1 + offset2 + blur + color;
-                            innerscript.style.setProperty("text-shadow", shadow);
-                        }
-                    }
-                    dispelem++;
-                }
-            }
         }
-    }
-    for (let t of visibleNextTiles) {  //Displaying the next spawning tiles
-        let char = 9;
-        let nextnum = "";
-        while (char < t.id.length) {nextnum += t.id[char]; char++;}
-        nextnum = Number(nextnum);
-        let tile = t;
-        if (nextTiles[nextnum] == "@Empty") {tile.style.setProperty("display", "none");}
         else {
-            tile.style.setProperty("display", "flex");
-            let displaynum = 0;
-            let displayfound = false;
-            let display = [];
-            let vars = [];
-            while (!displayfound && displaynum < TileTypes.length) {
-                display = structuredClone(TileTypes[displaynum]);
-                if (display[0] === "@include_gvars") {
-                    let newvars = structuredClone(game_vars);
-                    for (let v = 0; v < newvars.length; v++) {
-                        newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity, 0], Grid, [], vars);
-                        if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
-                        vars.push(newvars[v]);
-                    }
-                    display.shift();
+            let value = CalcArray(display[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+            let params = [];
+            if (display[4].length > 0) {
+                value = CalcArray(display[4][0], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+                params = display[4].slice(1);
+            }
+            if (display[3] == "Wildcard 2048") {
+                value = Number(value);
+                let negative = false;
+                if (value < 0) {
+                    negative = true;
+                    value = abs(value);
                 }
-                if (display.indexOf("@end_vars") > -1) {
-                    let newvars = display.slice(0, display.indexOf("@end_vars"));
-                    for (let v = 0; v < newvars.length; v++) {
-                        newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity, 0], Grid, [], vars);
-                        if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
-                        vars.push(newvars[v]);
-                    }
-                    display.splice(0, display.indexOf("@end_vars") + 1);
+                let textColor = "#f9f6f2";
+                let values = [1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, [["@Var -1", ">=", 1048576], [2, "^", ["@var_retain", "@Var -1", "+", 0.5, "log", 2, "floor", 1]]]];
+                let colors = ["#89817b", "#aa937f", "#c69d79", "#f2b179", "#f59563", "#f67c5f", "#f65e3b", "#edcf72", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#f29eff", "#eb75fd", "#e53bff", "#bd00db", "#770089", "#534de8", "#2922e1", "#0a05b6", ["@HSLA", ["@var_retain", -15, "*", ["@var_retain", "@Var -1", "+", 0.5, "log", 2, "floor", 1], "+", 520], 100, ["@var_retain", 0.9, "^", ["@var_retain", "@Var -1", "+", 0.5, "log", 2, "floor", 1, "-", 20], "*", 36], 1]];
+                let remaining = value;
+                let gradientArray = [];
+                let textArray = [];
+                if (value == 0) {
+                    textColor = "#808080";
+                    gradientArray = ["#ffffff"];
+                    textArray = ["0"];
                 }
-                if (eqPrimArrays(display[0], spawnConveyor[nextnum]) || (CalcArray(display[0], nextnum, "None", 0, 0, [1, Infinity, 0], spawnConveyor, [], vars) === true)) displayfound = true;
-                else displaynum++;
-            }
-            if (displaynum >= TileTypes.length) {displaynum = TileTypes.length - 1;}
-            tile.firstElementChild.innerHTML = defaultAbbreviate(CalcArray(display[1], nextnum, "None", 0, 0, [1, Infinity, 0], spawnConveyor, [], vars));
-            let fontmin = 2;
-            let fontmax = tile.firstElementChild.textContent.length * 0.7;
-            if (display.length > 5) {
-                if (display[5] > 0) fontmin = display[5];
-                else if (display[5] < 0) fontmin = tile.firstElementChild.textContent.length * display[5];
-            }
-            if (display.length > 6) {
-                if (display[6] > 0) fontmax = display[6];
-                else if (display[6] < 0) fontmax = tile.firstElementChild.textContent.length * display[6];
-            }
-            tile.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax)) + ")");
-            let dispbackground = evaluateColor(display[2], nextnum, "None", spawnConveyor);
-            if (dispbackground.includes("gradient")) {
-                tile.style.setProperty("background-image", (evaluateColor(display[2], nextnum, "None", spawnConveyor, vars)));
-            }
-            else {
-                tile.style.setProperty("background-color", (evaluateColor(display[2], nextnum, "None", spawnConveyor, vars)));
-                tile.style.setProperty("background-image", "none");
-            }
-            tile.style.setProperty("color", (evaluateColor(display[3], nextnum, "None", spawnConveyor, vars)));
-            tile.style.setProperty("text-shadow", "none");
-            if (display.length > 4) {
-                if (typeof display[4] == "string") tile.style.setProperty("text-shadow", display[4]);
-                else if (Array.isArray(display[4]) && display[4].length > 3) {
-                    let offset1 = "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax) * display[4][0]) + ") ";
-                    let offset2 = "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax) * display[4][1]) + ") ";
-                    let blur = "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax) * display[4][2]) + ") ";
-                    let color = evaluateColor(display[4][3], nextnum, "None", spawnConveyor, vars);
-                    let shadow = offset1 + offset2 + blur + color;
-                    tile.style.setProperty("text-shadow", shadow);
-                }
-            }
-            while (tile.children.length > 1) tile.removeChild(tile.lastElementChild);
-            let dispelem = 7;
-            while (dispelem < display.length) {
-                if (display[dispelem][0] == "Innerscript") {
-                    let innerdisplay = display[dispelem];
-                    let innerscript = document.createElement("p");
-                    let innertext = document.createElement("span");
-                    innerscript.appendChild(innertext);
-                    tile.appendChild(innerscript);
-                    innerscript.style.setProperty("position", "absolute");
-                    let vert = (innerdisplay[1].split("-"))[0];
-                    let horiz = (innerdisplay[1].split("-"))[1];
-                    if (vert == "top") {
-                        innerscript.style.setProperty("top", "0px");
-                    }
-                    else innerscript.style.setProperty("bottom", "0px");
-                    innerscript.style.setProperty("text-align", horiz);
-                    innertext.innerHTML = defaultAbbreviate(CalcArray(innerdisplay[0], nextnum, "None", 0, 0, [1, Infinity, 0], spawnConveyor, [], vars));
-                    let fontmin = 2;
-                    let fontmax = innerscript.textContent.length * 0.7;
-                    if (innerdisplay.length > 2) {
-                        if (innerdisplay[2] > 0) fontmin = display[4];
-                        else if (innerdisplay[2] < 0) fontmin = innerscript.textContent.length * display[4];
-                    }
-                    if (innerdisplay.length > 3) {
-                        if (innerdisplay[3] > 0) fontmax = display[5];
-                        else if (innerdisplay[3] < 0) fontmax = innerscript.textContent.length * display[5];
-                    }
-                    innerscript.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax)) + ")");
-                    if (innerdisplay.length > 4) innerscript.style.setProperty("color", (evaluateColor(innerdisplay[4], nextnum, "None", spawnConveyor, vars)));
-                    if (innerdisplay.length > 5) {
-                        if (typeof innerdisplay[5] == "string") innerscript.style.setProperty("text-shadow", innerdisplay[5]);
-                        else if (Array.isArray(innerdisplay[5]) && innerdisplay[5].length > 3) {
-                            let offset1 = "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax) * innerdisplay[5][0]) + ") ";
-                            let offset2 = "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax) * innerdisplay[5][1]) + ") ";
-                            let blur = "calc(1vw * var(--grid_vw) * " + (4/33 / Math.max(fontmin, fontmax) * innerdisplay[5][2]) + ") ";
-                            let color = evaluateColor(innerdisplay[5][3], nextnum, "None", spawnConveyor, vars);
-                            let shadow = offset1 + offset2 + blur + color;
-                            innerscript.style.setProperty("text-shadow", shadow);
+                else while (remaining > 0) {
+                    let testedvalue = 0;
+                    let nextvalue = 0;
+                    let nextentry = -1;
+                    NextValueFinder: {
+                        for (let i = 0; i < values.length; i++) {
+                            if (Array.isArray(values[i])) {
+                                let allowanceArray = structuredClone(values[i][0]);
+                                let vpos = 0; 
+                                if (allowanceArray.indexOf("@end_vars") > -1) {
+                                    vpos = allowanceArray.indexOf("@end_vars") - 1;
+                                    allowanceArray.splice(vpos, 0, remaining);
+                                }
+                                else {
+                                    if (allowanceArray[0] == "@var_retain" || allowanceArray[0] == "@var_copy") vpos = 1;
+                                    allowanceArray.splice(vpos, 0, remaining, "@end_vars");
+                                }
+                                if (CalcArray(allowanceArray, vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars)) {
+                                    let valueArray = structuredClone(values[i][1]);
+                                    let vpos = 0; 
+                                    if (valueArray.indexOf("@end_vars") > -1) {
+                                        vpos = valueArray.indexOf("@end_vars") - 1;
+                                        valueArray.splice(vpos, 0, remaining);
+                                    }
+                                    else {
+                                        if (valueArray[0] == "@var_retain" || valueArray[0] == "@var_copy") vpos = 1;
+                                        valueArray.splice(vpos, 0, remaining, "@end_vars");
+                                    }
+                                    testedvalue = CalcArray(valueArray, vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+                                }
+                                else continue;
+                            }
+                            else testedvalue = values[i];
+                            if (testedvalue <= remaining && testedvalue >= nextvalue) {
+                                nextvalue = testedvalue;
+                                nextentry = i;
+                            }
                         }
                     }
-                    dispelem++;
+                    let color = structuredClone(colors[nextentry]);
+                    if (negative) color = ["@rotate", 180, true, color];
+                    if (Array.isArray(color)) {
+                        let vpos = 0; 
+                        if (color.indexOf("@end_vars") > -1) {
+                            vpos = color.indexOf("@end_vars") - 1;
+                            color.splice(vpos, 0, remaining);
+                        }
+                        else {
+                            if (color[0] == "@var_retain" || color[0] == "@var_copy") vpos = 1;
+                            color.splice(vpos, 0, remaining, "@end_vars");
+                        }
+                    }
+                    gradientArray.unshift(evaluateColor(color, vcoord, hcoord, container, vars));
+                    if (negative) {
+                        if (typeof value == "number") textArray.unshift(defaultAbbreviate(nextvalue * -1));
+                        else if (typeof value == "bigint") textArray.unshift(defaultAbbreviate(nextvalue * -1n));
+                        else textArray.unshift(defaultAbbreviate(nextvalue));
+                    }
+                    else textArray.unshift(defaultAbbreviate(nextvalue));
+                    remaining -= nextvalue;
+                }
+                let background = [];
+                for (let c = 0; c < gradientArray.length; c++) {
+                    background.push(gradientArray[c], 100 * c / gradientArray.length, 100 * (c + 1) / gradientArray.length);
+                }
+                tile.style.setProperty("background-image", (evaluateColor(["@linear-gradient", 90].concat(background), vcoord, hcoord, container, vars)));
+                if (negative) textColor = ["@rotate", 180, true, textColor];
+                tile.style.setProperty("color", (evaluateColor(textColor, vcoord, hcoord, container, vars)));
+                if (params.length > 0 && params[0]) {
+                    tile.firstElementChild.innerHTML = textArray.join(" ");
+                    let fontmin = 2;
+                    let fontmax = tile.firstElementChild.textContent.length * 0.7;
+                    if (display.length > 5) {
+                        if (display[5] > 0) fontmin = display[5];
+                        else if (display[5] < 0) fontmin = tile.firstElementChild.textContent.length * display[5];
+                    }
+                    if (display.length > 6) {
+                        if (display[6] > 0) fontmax = display[5];
+                        else if (display[6] < 0) fontmax = tile.firstElementChild.textContent.length * display[6];
+                    }
+                    if (dType == "Viewer") tile.style.setProperty("font-size", "calc(var(--secondary_size) * " + (40 / Math.max(fontmin, fontmax)) + ")");
+                    else {
+                        if (dType == "Grid") sizeExpression = (tsize / 100 / Math.max(fontmin, fontmax));
+                        else if (dType == "Score") sizeExpression = (6/33 / Math.max(fontmin, fontmax));
+                        else sizeExpression = (4/33 / Math.max(fontmin, fontmax));
+                        tile.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + sizeExpression + ")"); 
+                    }
+                    tile.style.setProperty("text-shadow", "none");
+                }
+            }
+            else if (display[3] == "mod 27") {
+                tile.style.setProperty("color", "#ffffff");
+                let negative = false;
+                if (value < 0) {
+                    negative = true;
+                    value = abs(value);
+                    tile.style.setProperty("color", "#000000");
+                }
+                if (value == 0) {
+                    tile.style.setProperty("background-color", "#444444");
+                    tile.style.setProperty("background-image", "none");
+                }
+                else if (value == 1) {
+                    if (negative) tile.style.setProperty("background-image", evaluateColor(["@rotate", 180, true, ["@multi-gradient", ["@radial-gradient", "#000000", "#0008"], ["@conic-gradient", "#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ff0000"]]]));
+                    else tile.style.setProperty("background-image", evaluateColor(["@multi-gradient", ["@radial-gradient", "#000000", "#0008"], ["@conic-gradient", "#ff0000", "#ffff00", "#00ff00", "#00ffff", "#0000ff", "#ff00ff", "#ff0000"]]));
+                }
+                else {
+                    let background = ["@linear-gradient"];
+                    if (value < 40000) {
+                        value = Number(value) - 2;
+                        background = ["@linear-gradient", ["@HSVA", value * 55.623, Math.abs((value/13) % 4 - 2) * 35 + 30, Math.abs((value/50) % 4 - 2) * 25 + 50, 1], ["@HSVA", (value * 0.995) * 55.623, Math.abs(((value * 0.995)/13) % 4 - 2) * 35 + 30, Math.abs(((value * 0.995)/50) % 4 - 2) * 25 + 50, 1]];
+                    }
+                    else {
+                        let bValue = BigInt(value);
+                        let tier = ilog(bValue, 200n);
+                        value = Number(bValue - 200n**tier);
+                        let baseValue = value;
+                        background.push(["@HSVA", value * 55.623, Math.abs((value/13) % 4 - 2) * 35 + 30, Math.abs((value/50) % 4 - 2) * 25 + 50, 1]);
+                        let zebraStart = 0;
+                        for (let i = 0; i < Number(tier); i++) {
+                            zebraStart = (zebraStart + 1) % 2
+                            value = Math.floor(value / 200);
+                            background.push(["@HSVA", ((baseValue % (360/55.623)) - (value % (360/55.623)) + zebraStart) * 55.623, Math.abs((((baseValue % 52) - (value % 52) + zebraStart)/13) % 4 - 2) * 35 + 30, Math.abs((((baseValue % 200) - (value % 200) + zebraStart)/50) % 4 - 2) * 25 + 50, 1]);
+                        }
+                    }
+                    if (negative) tile.style.setProperty("background-image", evaluateColor(["@rotate", 180, true, background]));
+                    else tile.style.setProperty("background-image", evaluateColor(background));
+                    tile.style.setProperty("text-shadow", "none");
+                }
+            }
+            else if (display[3] == "180" || display[3] == "DIVE") {
+                let scheme = display[3];
+                let prime_amount = 48;
+                if (scheme == "DIVE") prime_amount = 168;
+                if (params.length > 0) prime_amount = params[0];
+                while (primes.length < prime_amount && primes[primes.length - 1] < abs(value)) primesUpdate(primes[primes.length - 1] * 2n);
+                let subtile_size = 0.5;
+                if (scheme == "180") subtile_size = 0.6;
+                let all_factors = [];
+                let negative = false;
+                if (Array.isArray(value)) {
+                    all_factors = value;
+                }
+                else {
+                    try {
+                        value = BigInt(value);
+                    }
+                    catch {
+                        value = 0n;
+                    }
+                    tile.style.setProperty("color", "#fff");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #000");
+                    if (value < 0n) {
+                        value *= -1n;
+                        negative = true;
+                    }
+                    if (value == 0n) {
+                        tile.style.setProperty("color", "#888");
+                        if (scheme == "DIVE") {
+                            while (primes.length < 73) primesUpdate(primes[primes.length - 1] * 2n);
+                            all_factors = [([7, 4, 3]).concat(Array(70).fill(2))];
+                        }
+                        else {
+                            tile.style.setProperty("background-color", "#444");
+                            tile.style.setProperty("text-shadow", "0px 0px 5px #222");
+                            return;
+                        }
+                    }
+                    else all_factors = factor(value, prime_amount);
+                }
+                let factors = all_factors[0];
+                while (factors[factors.length - 1] === 0) factors.pop();
+                while (factors.length < 3) factors.push(0);
+                tile.style.setProperty("background-image", "none");
+                if (scheme == "180") {
+                    tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative));
+                    if (negative) tile.style.setProperty("color", threeFactorColor(factors.slice(0, 3), scheme));
+                }
+                else tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme));
+                let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
+                if (getComputedStyle(tile).getPropertyValue("border-style") != "none") borderWidth = getComputedStyle(tile).getPropertyValue("border-width");
+                if (factors.length > 3) {
+                    if (scheme == "DIVE") {
+                        for (let p = 3; p < factors.length; p++) {
+                            if (factors[p] > 0) {
+                                let pImage = document.createElement("div");
+                                pImage.classList.add("primeImage");
+                                tile.appendChild(pImage);
+                                if (p == 3) pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg 10deg, #fff 35deg 55deg, #0000 80deg 100deg, #000 125deg 145deg, #0000 170deg 190deg, #fff 215deg 235deg, #0000 260deg 280deg, #000 305deg 325deg, #0000 350deg");
+                                else if (p == 4) pImage.style.setProperty("background-image", "radial-gradient(#fff 0%, #0000 19.666% 30.333%, #000 38.888% 44.444%, #0000 53% 63.666%, #fff 72.222% 77.777%, #0000 86.333%, #000 100%)");
+                                else if (p == 5) { // 13 in the original DIVE uses the same generation rules as the rest of the primes above 11, but my version looks good for the rest of the primes but not 13, so I'm setting 13 manually to retain its iconic look
+                                    pImage.style.setProperty("background-image", "repeating-linear-gradient(#0000 0%, #fff 15%, #0000 30%, #000 45%, #0000 60%)");
+                                    pImage.style.setProperty("mask-image", "repeating-linear-gradient(90deg, #000 0% 14%, #0000 14% 42%");
+                                }
+                                else {
+                                    let prime = primes[p];
+                                    let basenum = (prime + 1n)/2n;
+                                    let basefactors = (factor(basenum, 4))[0];
+                                    while (basefactors.length < 4) basefactors.push(0);
+                                    let basecolor = threeFactorColor(basefactors.slice(0, 3), "DIVE_primeGrey");
+                                    let residuenum = basenum / defactor(basefactors);
+                                    let residueList = DIVEresidueFactor(residuenum, 4, prime_amount);
+                                    let layerDepth = arrayDepth(residueList) / 2;
+                                    let layerNum = 1;
+                                    let width = 110 / Math.sqrt(Number(prime));
+                                    let direction = 45 + 291.246118 * (p - 3);
+                                    if (residuenum == 1n) {
+                                        if (basefactors[3] == 0) { // No sevens
+                                            pImage.style.setProperty("background-image", "linear-gradient(" + (direction + 90) + "deg, #000, " + basecolor + ", #000)");
+                                        }
+                                        else { // Sevens
+                                            let sevensWidth = 40 / basefactors[3];
+                                            let bottomcolor = "#000";
+                                            pImage.style.setProperty("background-image", "repeating-linear-gradient(" + (direction + 90) + "deg, " + bottomcolor + " 0% " + (sevensWidth / 12) + "%, " + basecolor + " " + (sevensWidth / 4) + "%, #fff " + (5 * sevensWidth / 12) + "% " + (7 * sevensWidth/ 12) + "%, " + basecolor + " " + (sevensWidth * 3/4) + "%, " + bottomcolor + " " + (11 * sevensWidth / 12) + "% " + sevensWidth + "%)");
+                                        }
+                                    }
+                                    else {
+                                        let longBar = ((residueList.length > 2) || (residueList[1][2].length > 1) || (residueList[1][2][0][3] > 0));
+                                        let outercolor = threeFactorColor(basefactors.slice(0, 3), "DIVE_primeGrey", false, 0.5);
+                                        let innermax = residueList.slice(1).reduce(
+                                            function(total, value) {
+                                                return max(total, value[1] ** BigInt(value[0]));
+                                            }, 0n
+                                        );
+                                        let length = 100 / Math.sqrt(Number(innermax)) / (residueList.length - 1);
+                                        let innercolors = [];
+                                        for (let i = 1; i < residueList.length; i++) {
+                                            innercolors.push([residueList[i][1], residueList[i][2][0], residueList[i][0]]);
+                                        }
+                                        let result = "repeating-linear-gradient(" + (direction + 90) + "deg";
+                                        let innerBars = [];
+                                        let length_to_add = 0;
+                                        let length_thus_far = 0;
+                                        let iteration_length = 0;
+                                        for (let b = 0; b < innercolors.length * 2; b++) {
+                                            let inner_color = innercolors[b % innercolors.length];
+                                            if (longBar) length_to_add = length / 2;
+                                            else length_to_add = length * 2/3;
+                                            if (basefactors[3] == 0) {
+                                                result += (", " + outercolor + " " + length_thus_far + "% " + (length_thus_far + length_to_add) + "%, ");
+                                            }
+                                            else {
+                                                result += ", ";
+                                                for (let s = 0; s < basefactors[3] * 2; s++) {
+                                                    if ((b + s) % 2 == 0) result += outercolor;
+                                                    else result += "#fff";
+                                                    result += " " + (length_thus_far + length_to_add*s/(basefactors[3] * 2 - 1)) + "%, "
+                                                }
+                                            }
+                                            length_thus_far += length_to_add;
+                                            if (longBar) length_to_add = length / 2;
+                                            else length_to_add = length/3;
+                                            length_to_add *= Math.sqrt(Number(inner_color[0]) ** inner_color[2] / Number(innermax));
+                                            result += DIVERenderInnerBar(inner_color[1], length_thus_far, length_to_add, layerNum, layerDepth);
+                                            if (b < innercolors.length) innerBars.push([[b + 1], length_thus_far, length_to_add]);
+                                            length_thus_far += length_to_add;
+                                            if (b == innercolors.length - 1) iteration_length = length_thus_far;
+                                        }
+                                        result += ")";
+                                        pImage.style.setProperty("background-image", result);
+                                        while (innerBars.length > 0) {
+                                            layerNum++;
+                                            let layerLength = innerBars.length;
+                                            let layerBars = [];
+                                            for (let b = 0; b < layerLength; b++) {
+                                                let target = nestedElement(residueList, innerBars[0][0])[2];
+                                                if (target.length > 1) {
+                                                    let deepmax = target.slice(1).reduce(
+                                                        function(total, value) {
+                                                            return max(total, value[1] ** BigInt(value[0]));
+                                                        }, 0n
+                                                    );
+                                                    let segments = [];
+                                                    length_thus_far = 0;
+                                                    length_to_add = 0;
+                                                    for (let t = 1; t < target.length; t++) {
+                                                        length_to_add = 1;
+                                                        segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
+                                                        length_thus_far += length_to_add;
+                                                        length_to_add = Math.sqrt(Number(target[t][1]) ** target[t][0] / Number(deepmax));
+                                                        segments.push([target[t][2][0], length_thus_far, length_thus_far + length_to_add]);
+                                                        length_thus_far += length_to_add;
+                                                    }
+                                                    length_to_add = 1;
+                                                    segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
+                                                    length_thus_far += length_to_add;
+                                                    for (let s = 1; s < segments.length; s += 2) {
+                                                        layerBars.push([DIVERenderInnerBar(segments[s][0], innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far, layerNum, layerDepth), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][1] + innerBars[0][2] * segments[s][2]/length_thus_far]);
+                                                        innerBars.push([innerBars[0][0].concat(2, (s + 1)/2), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far]);
+                                                    }
+                                                }
+                                                innerBars.shift();
+                                            }
+                                            if (layerBars.length > 0) {
+                                                let layerImage = document.createElement("div");
+                                                layerImage.classList.add("primeImage");
+                                                pImage.appendChild(layerImage);
+                                                let layerBackground = "repeating-linear-gradient(" + (direction + 90) + "deg";
+                                                let previousend = 0;
+                                                for (let b = 0; b < layerBars.length; b++) {
+                                                    layerBackground += ", #0000 " + previousend + "% " + layerBars[b][1] + "%, " + layerBars[b][0];
+                                                    previousend = layerBars[b][2];
+                                                }
+                                                layerBackground += ", #0000 " + previousend + "% " + iteration_length + "%)";
+                                                layerImage.style.setProperty("background-image", layerBackground);
+                                                layerImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
+                                            }
+                                        }
+                                    }
+                                    pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
+                                }
+                                pImage.style.setProperty("opacity", 0.5 * factors[p]);
+                            }
+                        }
+                    }
+                    if (scheme == "180") {
+                        let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
+                        let rcol = "#444";
+                        if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) rcol = "#444";
+                        else {
+                            bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
+                            rcol = ArraytoRGB(bcol);
+                            }
+                        for (let p = 3; p < factors.length && p < 12; p++) {
+                            if (factors[p] > 0) {
+                                let primePower = factor(factors[p], 3);
+                                if (p == 3) {
+                                    for (let p = 0; p < primePower.length; p++) {
+                                        let icol = threeFactorColor(primePower[p], scheme);
+                                            let pImage = document.createElement("div");
+                                            pImage.classList.add("primeImage");
+                                            tile.appendChild(pImage);
+                                            if (defactor(primePower[p]) == 1n) pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 56%, #0000 56%)");
+                                            else pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 50%, " + icol + " 50% 54%, " + rcol + " 54% 56%, #0000 56%)");
+                                            if (primePower.length > 1) {
+                                                if (p == 0) pImage.style.setProperty("mask-image", "conic-gradient(#000 0deg " + 360/primePower.length * 0.49 + "deg, #0000 " + 360/primePower.length * 0.49 + "deg " + (360 - 360/primePower.length * 0.49) + "deg, #000 " + (360 - 360/primePower.length * 0.49) + "deg)");
+                                                else pImage.style.setProperty("mask-image", "conic-gradient(#0000 0deg " + 360/primePower.length * (p - 0.49) + "deg, #000 " + 360/primePower.length * (p - 0.49) + "deg " + 360/primePower.length * (p + 0.49) + "deg, #0000 " + 360/primePower.length * (p + 0.49) + "deg)");
+                                        }
+                                    }
+                                }
+                                else if (p < 12) {
+                                    let pImage = document.createElement("div");
+                                    tile.appendChild(pImage);
+                                    if (p == 4) {
+                                        pImage.classList.add("VSideBox");
+                                        pImage.style.setProperty("left", "25%");
+                                        pImage.style.setProperty("top", "0%");
+                                    }
+                                    else if (p == 5) {
+                                        pImage.classList.add("VSideBox");
+                                        pImage.style.setProperty("left", "25%");
+                                        pImage.style.setProperty("bottom", "0%");
+                                    }
+                                    else if (p == 6) {
+                                        pImage.classList.add("HSideBox");
+                                        pImage.style.setProperty("left", "0%");
+                                        pImage.style.setProperty("top", "25%");
+                                    }
+                                    else if (p == 7) {
+                                        pImage.classList.add("HSideBox");
+                                        pImage.style.setProperty("right", "0%");
+                                        pImage.style.setProperty("top", "25%");
+                                    }
+                                    else if (p == 8) {
+                                        pImage.classList.add("cornerBox");
+                                        pImage.style.setProperty("left", "0%");
+                                        pImage.style.setProperty("top", "0%");
+                                    }
+                                    else if (p == 9) {
+                                        pImage.classList.add("cornerBox");
+                                        pImage.style.setProperty("right", "0%");
+                                        pImage.style.setProperty("top", "0%");
+                                    }
+                                    else if (p == 10) {
+                                        pImage.classList.add("cornerBox");
+                                        pImage.style.setProperty("left", "0%");
+                                        pImage.style.setProperty("bottom", "0%");
+                                    }
+                                    else if (p == 11) {
+                                        pImage.classList.add("cornerBox");
+                                        pImage.style.setProperty("right", "0%");
+                                        pImage.style.setProperty("bottom", "0%");
+                                    }
+                                    pImage.style.setProperty("background-color", rcol);
+                                    let subimage = document.createElement("div");
+                                    subimage.classList.add("subBox");
+                                    pImage.appendChild(subimage);
+                                    let icol = threeFactorColor(primePower[0], scheme);
+                                    subimage.style.setProperty("background-color", icol);
+                                    if (primePower.length > 1) {
+                                        for (let layer = 1; layer < primePower.length; layer++) {
+                                            pImage = subimage;
+                                            let rcol = RGBtoArray(getComputedStyle(pImage).getPropertyValue("background-color"));
+                                            if (rcol[0] == 0 && rcol[1] == 0 && rcol[2] == 0) rcol = "#444";
+                                            else {
+                                            rcol[0] *= 0.5; rcol[1] *= 0.5; rcol[2] *= 0.5;
+                                            rcol = ArraytoRGB(rcol);
+                                            }
+                                            subimage = document.createElement("div");
+                                            subimage.classList.add("subBox");
+                                            pImage.appendChild(subimage);
+                                            subimage.style.setProperty("background-color", rcol);
+                                            pImage = subimage;
+                                            subimage = document.createElement("div");
+                                            subimage.classList.add("subBox");
+                                            pImage.appendChild(subimage);
+                                            icol = threeFactorColor(primePower[layer], scheme);
+                                            subimage.style.setProperty("background-color", icol);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (factors.length >= 13) {
+                            while (factors.length % 3 != 0) factors.push(0);
+                            let post37colors = [];
+                            for (let p = 12; p < factors.length; p += 3) {
+                                post37colors.push(threeFactorColor([factors[p], factors[p + 1], factors[p + 2]], scheme));
+                            }
+                            let width = 240 / Math.max(4, post37colors.length);
+                            for (let c = 0; c < post37colors.length; c++) {
+                                let center = 360 / post37colors.length * c;
+                                let pImage = document.createElement("div");
+                                pImage.classList.add("primeImage");
+                                tile.appendChild(pImage);
+                                if (c == 0) pImage.style.setProperty("background-image", "conic-gradient(" + post37colors[c] + " 0deg " + (width / 4) + "deg, " + rcol + " " + (width / 2) + "deg, #0000 " + (width / 2) + "deg " + (360 - width / 2) + "deg, " + rcol + " " + (360 - width / 2) + "deg, " + post37colors[c] + " " + (360 - width / 4) + "deg 360deg)")
+                                else pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg " + (center - width / 2) + "deg, " + rcol + " " + (center - width / 2) + "deg, " + post37colors[c] + " " + (center - width / 4) + "deg " + (center + width / 4) + "deg, " + rcol + " " + (center + width / 2) + "deg, #0000 " + (center + width / 2) + "deg)");
+                                pImage.style.setProperty("mask-image", "radial-gradient(#000, #0000)");
+                            }
+                        }
+                    }
+                }
+                if (negative && scheme == "DIVE") {
+                    let pImage = document.createElement("div");
+                    tile.appendChild(pImage);
+                    pImage.classList.add("primeImage");
+                    pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + threeFactorColor(factors.slice(0, 3), scheme, true) + ")");
+                    tile.style.setProperty("color", "black");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
+                }
+                if (all_factors.length > 1) {
+                    let subtile = document.createElement("div");
+                    subtile.classList.add("subtile");
+                    tile.appendChild(subtile);
+                    let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
+                    if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) subtile.style.setProperty("border-color", "#444");
+                    else {
+                        bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
+                        bcol = ArraytoRGB(bcol);
+                        subtile.style.setProperty("border-color", bcol);
+                    }
+                    subtile.style.setProperty("width", subtile_size * 100 + "%");
+                    subtile.style.setProperty("height", subtile_size * 100 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
+                    subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+                    display[4][0] = ["@Literal"].concat(all_factors.slice(1));
+                    displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display);
                 }
             }
         }
-        if (nextnum < randomTileAmount) tile.style.setProperty("border-style", "solid");
-        else tile.style.setProperty("border-style", "none");
-    }
-    for (let b = 0; b < statBoxes.length; b++) {
-        document.getElementById("stat_counter_" + b).innerHTML = CalcArray(statBoxes[b][1]);
+        let dispelem = 7;
+        while (dispelem < display.length) { //If a TileTypes entry has more than six entries, all entries after the 5th relate to additional pieces of text on the tile, such as how Isotopic 256 displays the radioactivity counters
+            if (display[dispelem][0] == "Innerscript") {
+                let innerdisplay = display[dispelem].slice(1);
+                let innerscript = document.createElement("p");
+                let innertext = document.createElement("span");
+                innerscript.appendChild(innertext);
+                tile.appendChild(innerscript);
+                innerscript.classList.add("tile_text");
+                innerscript.style.setProperty("position", "absolute");
+                let vert = (innerdisplay[1].split("-"))[0];
+                let horiz = (innerdisplay[1].split("-"))[1];
+                innerscript.style.setProperty("display", "flex");
+                innerscript.style.setProperty("width", "100%");
+                innerscript.style.setProperty("height", "100%");
+                if (vert == "top") {
+                    innerscript.style.setProperty("align-items", "flex-start");
+                }
+                if (vert == "bottom") {
+                    innerscript.style.setProperty("align-items", "flex-end");
+                }
+                else {
+                    innerscript.style.setProperty("align-items", "center");
+                }
+                if (horiz == "left") {
+                    innerscript.style.setProperty("justify-content", "flex-start");
+                }
+                if (horiz == "right") {
+                    innerscript.style.setProperty("justify-content", "flex-end");
+                }
+                else {
+                    innerscript.style.setProperty("justify-content", "center");
+                }
+                innertext.innerHTML = defaultAbbreviate(CalcArray(innerdisplay[0], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars));
+                let fontmin = 2;
+                let fontmax = innerscript.textContent.length * 0.7;
+                if (innerdisplay.length > 2) {
+                    if (innerdisplay[2] > 0) fontmin = innerdisplay[2];
+                    else if (innerdisplay[2] < 0) fontmin = innerscript.textContent.length * innerdisplay[2];
+                }
+                if (innerdisplay.length > 3) {
+                    if (innerdisplay[3] > 0) fontmax = innerdisplay[3];
+                    else if (innerdisplay[3] < 0) fontmax = innerscript.textContent.length * innerdisplay[3];
+                }
+                if (dType == "Grid") sizeExpression = (tsize / 100 / Math.max(fontmin, fontmax));
+                else if (dType == "NextTiles") sizeExpression = (4/33 / Math.max(fontmin, fontmax));
+                innerscript.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + sizeExpression + ")");
+                if (innerdisplay.length > 4) innerscript.style.setProperty("color", (evaluateColor(innerdisplay[4], vcoord, hcoord, container, vars)));
+                if (innerdisplay.length > 5) {
+                    if (typeof innerdisplay[5] == "string") innerscript.style.setProperty("text-shadow", innerdisplay[5]);
+                    else if (Array.isArray(innerdisplay[5]) && innerdisplay[5].length > 3) {
+                        let offset1 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + innerdisplay[5][0] + ") ";
+                        let offset2 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + innerdisplay[5][1] +  ") ";
+                        let blur = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + innerdisplay[5][2] +  ") ";
+                        let color = evaluateColor(innerdisplay[5][3], vcoord, hcoord, container, vars);
+                        let shadow = offset1 + offset2 + blur + color;
+                        innerscript.style.setProperty("text-shadow", shadow);
+                    }
+                }
+                dispelem++;
+            }
+        }
     }
 }
 
@@ -4650,6 +5605,32 @@ function loadModifiers() {
                 startTileSpawns = [[[0, 1], 50], [["Div2", "@Signless"], 50]];
             }
         }
+        else if (gamemode == 38) { // 180
+            if (mode_vars[0] != 0) {
+                TileNumAmount = 1;
+                TileTypes = [
+                    [true, "@This 0", "@ColorScheme", "180", ["@This 0"]]
+                ];
+                MergeRules = [
+                    [2, [["@NextNE -1 0", "!=", "@This 0"], "&&", [["@NextNE", "arr_elem", ["@MLength", "-", 1], "arr_elem", 0], "!=", "@This 0"], "&&", ["@Next 1 0", "=", "@This 0"]], true, [[["@This 0", "*B", "@MLength"]]], ["@This 0", "*B", "@MLength"], [], 2, [0, 1, 1], 1, Math.max(width, height)]
+                ];
+                if (mode_vars[0] == 1) {
+                    primesUpdate(BigInt(Math.max(width, height)));
+                    MergeRules[0][1].unshift(["@Primes", "arr_indexOf", ["@MLength", "BigInt"], ">", -1], "&&");
+                }
+                if (modifiers[13] == "None") {
+                    startTileSpawns = [[[1n], 100]];
+                    winConditions = [[180n]];
+                    winRequirement = 1;
+                }
+                else {
+                    startTileSpawns = [[[1n], 100], [[-1n], 100]];
+                    winConditions = [[180n], [-180n]];
+                    winRequirement = 2;
+                    if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0]);
+                }
+            }
+        }
         else if (gamemode == 39) { // 2592
             if (mode_vars[0] == 0) {
                 statBoxes = [["Moves", "@Moves"], ["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
@@ -4691,6 +5672,40 @@ function loadModifiers() {
         }
         else if (gamemode == 44) { // mod 27
             MergeRules[0][9] = Math.max(width, height);
+        }
+        else if (gamemode == 49) { // 378
+            MergeRules[0][12] = mode_vars[1];
+            if (!mode_vars[0]) {
+                winRequirement = false;
+                loseRequirement = false;
+                scripts = [];
+                statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+                MergeRules.pop();
+            }
+        }
+        else if (gamemode == 50) { // DIVE
+            if (mode_vars[0] > 0) {
+                scripts = [];
+                statBoxes = [statBoxes[0]];
+                if (modifiers[13] == "None") {
+                    if (mode_vars[1]) startTileSpawns = [[[[0, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1]];
+                    else startTileSpawns = [[[[1, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1]];
+                }
+                else {
+                    if (mode_vars[1]) startTileSpawns = [[[[0, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1], [[[0, "rand_int", mode_vars[0], "BigInt", "primeB", "*B", -1n]], 1]];
+                    else startTileSpawns = [[[[1, "rand_int", mode_vars[0], "BigInt", "primeB"]], 1], [[[1, "rand_int", mode_vars[0], "BigInt", "primeB", "*B", -1n]], 1]];
+                }
+            }
+            else {
+                if (mode_vars[1]) {
+                    start_game_vars[0] = [1n];
+                    start_game_vars[1] = [1n];
+                }
+                if (mode_vars[0] == -1) {
+                    scripts = [scripts[0], scripts[2]];
+                    statBoxes.pop();
+                }
+            }
         }
         randomTileAmount = modifiers[1];
         startTileAmount = modifiers[2];
@@ -4767,11 +5782,15 @@ function loadModifiers() {
                 else directions.push([[0, 0, 0, 0, [1, true, true, true]], "&#8226;", 5/33, 5/33, 3/33, 14/33, 14/33, ["Space"]]);
             }
         }
-        if (modifiers[15] == "Simple" && gamemode != 14 && (gamemode != 37 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 43) { // 2049, Wildcard 2048, 2216.838, and 1321 ignore the simple spawns: 2049 needs both 1s and -1s, 2216.838 and 1321 have special tiles that make them work (÷2s and +1s respectively), and simple spawns would defeat the whole point of Wildcard 2048
+        if (modifiers[15] == "Simple" && gamemode != 14 && (gamemode != 37 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 43 && gamemode != 50) { // 2049, Wildcard 2048, 2216.838, 1321, and DIVE ignore the simple spawns: 2049 needs both 1s and -1s, 2216.838 and 1321 have special tiles that make them work (÷2s and +1s respectively), the different spawning tiles are a fundamental part of DIVE, and simple spawns would defeat the whole point of Wildcard 2048
             if (gamemode == 30) startTileSpawns = [["Box", 20, [-1], 4, [-2], 4]];
-            else startTileSpawns = [startTileSpawns[0]];
+            else if (gamemode == 47) startTileSpawns = [["Box", 1, [1, -1], 3, [1, 1], 3]];
+            else {
+                if (modifiers[13] != "None" && (gamemode == 31 || (gamemode == 38 && mode_vars[0] != 0) || gamemode == 41 || gamemode == 44 || gamemode == 49)) startTileSpawns = startTileSpawns.slice(0, 2);
+                else startTileSpawns = [startTileSpawns[0]];
+            }
         }
-        else if (modifiers[15] == "Equal" && gamemode != 29 && gamemode != 30) { //1535 1536 1537 and 3072 ignore the equal spawns; honestly I don't remember why 1535 1536 1537 does, but 3072 ignores it so the bonus tiles aren't messed up, as their probability changes depending on whether you've unlocked them or not
+        else if (modifiers[15] == "Equal" && gamemode != 29 && gamemode != 30 && gamemode != 47) { //1535 1536 1537, 3072, and 1093 1094 ignore the equal spawns; honestly I don't remember why 1535 1536 1537 and 1093 1094 do, but 3072 ignores it so the bonus tiles aren't messed up, as their probability changes depending on whether you've unlocked them or not
             for (let t = 0; t < startTileSpawns.length; t++) {
                 startTileSpawns[t][1] = 1;
             }
@@ -4791,7 +5810,7 @@ function loadModifiers() {
                 MergeRules[m][mstart + 1].push("&&", [["@VDir", "arr_push", "@HDir", "arr_push", "@SlideAmount"], "=", ("@MVar " + mnum)]);
             }
         }
-        if (modifiers[13] != "None" && gamemode != 14 && gamemode != 31 && gamemode != 40 && gamemode != 41 && gamemode != 43 && gamemode != 44) { // 2049, Isotopic 256, Wildcard 2048, X^Y, 1321, and mod 27 all do special things with negative tiles, but this script is what adds the negative tiles to the rest of the modes
+        if (modifiers[13] != "None" && gamemode != 14 && gamemode != 31 && (gamemode != 38 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 41 && gamemode != 43 && gamemode != 44 && gamemode != 49 && gamemode != 50) { // 2049, Isotopic 256, 180 (with prime merges or all merges), Wildcard 2048, X^Y, 1321, mod 27, 378, and DIVE all do special things with negative tiles, but this script is what adds the negative tiles to the rest of the modes
             TileNumAmount++;
             let neganum = TileNumAmount - 1;
             let positiveTiles = [];
@@ -5311,6 +6330,19 @@ function operation(n1, operator, n2) {
                 }
             )
         break;
+        case "arr_filter":
+            result = n1.filter(
+                function(value, index) {
+                    let nn2 = structuredClone(n2);
+                    let vpos = 0;
+                    if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
+                    if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
+                    vpos = nn2.indexOf("@end_vars");
+                    nn2.splice(vpos, 0, index, value);
+                    return CalcArray(nn2, ...additional[0]);
+                }
+            )
+        break;
         case "arr_reduce":
             result = n1.reduce(
                 function(total, value, index) {
@@ -5411,8 +6443,16 @@ function operation(n1, operator, n2) {
         case "@add_score":
             score += n2;
         break;
+        case "@primesUpdate":
+            primesUpdate(n2);
+        break;
         case "ignore":
             //Does nothing; this is used for leaving comments in CalcArray expressions, and in particular leaving "@no-negative-sign" is how to prevent loadModifiers from trying to multiply an expression by -1 for auto-generated negative tiles
+            result = n1;
+        break;
+        case "announce":
+            announce(n2, additional[0]);
+            result = n1;
         break;
         case "output": //For testing purposes only
             output(n2);
@@ -5609,14 +6649,12 @@ function CalcArray(arr) {
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < game_vars.length) game_vars[vlocation] = n2;
             else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= game_vars.length * -1) game_vars[game_vars.length - vlocation] = n2;
             to_pop = 3;
         }
         else if (operator == "@add_gvar") {
             n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             game_vars.push(n2);
             to_pop = 2;
         }
@@ -5624,7 +6662,6 @@ function CalcArray(arr) {
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             game_vars.splice(vlocation, 0, n2);
             to_pop = 3;
         }
@@ -5638,14 +6675,12 @@ function CalcArray(arr) {
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < modifier_vars.length) modifier_vars[vlocation] = n2;
             else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= modifier_vars.length * -1) modifier_vars[modifier_vars.length - vlocation] = n2;
             to_pop = 3;
         }
         else if (operator == "@add_mvar") {
             n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             modifier_vars.push(n2);
             to_pop = 2;
         }
@@ -5653,7 +6688,6 @@ function CalcArray(arr) {
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             modifier_vars.splice(vlocation, 0, n2);
             to_pop = 3;
         }
@@ -5667,14 +6701,12 @@ function CalcArray(arr) {
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < TileSpawns.length) TileSpawns[vlocation] = n2;
             else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= TileSpawns.length * -1) TileSpawns[TileSpawns.length - vlocation] = n2;
             to_pop = 3;
         }
         else if (operator == "@add_spawn") {
             n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             TileSpawns.push(n2);
             to_pop = 2;
         }
@@ -5682,7 +6714,6 @@ function CalcArray(arr) {
             let vlocation = 0;
             vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-            if (Array.isArray(n2)) n2.unshift("@Literal");
             TileSpawns.splice(vlocation, 0, n2);
             to_pop = 3;
         }
@@ -5697,7 +6728,6 @@ function CalcArray(arr) {
                 let rvcoord = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 let rhcoord = CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 n2 = CalcArrayConvert(carr[4], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
-                if (Array.isArray(n2)) n2.unshift("@Literal");
                 Grid[rvcoord][rhcoord] = n2;
             }
             to_pop = 4;
@@ -5716,12 +6746,13 @@ function CalcArray(arr) {
                 n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
                 if (operator == "str_splice" || operator == "arr_splice") {
+                    to_pop = 4;
                     additional_args.push(CalcArrayConvert(carr[4], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
                 }
             }
-            else if (operator == "str_indexOfFrom" || operator == "str_lastIndexOfFrom" || operator == "arr_indexOfFrom" || operator == "arr_lastIndexOfFrom") {
+            else if (operator == "str_indexOfFrom" || operator == "str_lastIndexOfFrom" || operator == "arr_indexOfFrom" || operator == "arr_lastIndexOfFrom" || operator == "announce") {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
+                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
             }
             else if (operator == "arr_edit_elem") {
@@ -5729,11 +6760,11 @@ function CalcArray(arr) {
                 n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 additional_args.push(CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
             }
-            else if (operator == "arr_push" || operator == "arr_unshift") {
+            else if (operator == "arr_push" || operator == "arr_unshift" || operator == "str_indexOf" || operator == "arr_indexOf") {
                 to_pop = 2;
                 n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             }
-            else if (operator == "arr_sort" || operator == "arr_map" || operator == "CalcArrayParent") {
+            else if (operator == "arr_sort" || operator == "arr_map" || operator == "arr_filter" || operator == "CalcArrayParent") {
                 to_pop = 2;
                 n2 = carr[2]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars]); //The CalcArray in operation will need these
@@ -5743,6 +6774,10 @@ function CalcArray(arr) {
                 n2 = carr[3]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars]); //The CalcArray in operation will need these
                 additional_args.push(CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars)); //Initial value
+            }
+            else if (operator == "@primesUpdate") {
+                to_pop = 2;
+                n2 = CalcArrayConvert(carr[2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             }
             else if (operator == "CalcArray") {
                 to_pop = 1;
@@ -5895,29 +6930,42 @@ function CalcArrayString(str) {
     else if (split.length < 4 && (split[0] == "@NextNE" || split[0] == "@NextFull")) { // "@NextNE 1 0" is like "@Next 1 0", but it skips over empty tiles. @NextFull skips over both empty and void tiles. Most commonly used for the purposes of using "@NextNE -1 0" to refer to the next non-empty tile BEHIND the current tile, such as preventing a two-tile merge if the tile behind the current tile would cause a three-tile merge, allowing the three-tile merge to take priority.
         let nextv = vcoord;
         let nexth = hcoord;
-        let tiles_found = 0;
-        while (tiles_found < Math.abs(split[1])) {
-            if (split[1] < 0) {
-                nextv -= vdir;
-                nexth -= hdir;
-            }
-            else {
+        if (split.length == 1) {
+            let tiles_found = [];
+            nextv += vdir;
+            nexth += hdir;
+            while ((!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) && (!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) {
+                if (gri[nextv][nexth] != "@Empty" && (gri[nextv][nexth] != "@Void" || split[0] == "@NextNE")) tiles_found.push(gri[nextv][nexth]);
                 nextv += vdir;
                 nexth += hdir;
             }
-            if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return false;
-            if (gri[nextv][nexth] != "@Empty" && (gri[nextv][nexth] != "@Void" || split[0] == "@NextNE")) tiles_found++;
-        }
-        if (split.length == 2) {
-            if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return false;
-            result = structuredClone(gri[nextv][nexth]);
-            if (Array.isArray(result)) result.unshift("@Literal");
+            result = tiles_found;
         }
         else {
-            let tnum = Number(split[2]);
-            if (!(!(Number.isNaN(tnum)) && tnum % 1 == 0 && tnum >= 0 && tnum < TileNumAmount)) return str;
-            if (typeof gri[nextv][nexth] == "string") result = gri[nextv][nexth];
-            else result = gri[nextv][nexth][tnum];
+            let tiles_found = 0;
+            while (tiles_found < Math.abs(split[1])) {
+                if (split[1] < 0) {
+                    nextv -= vdir;
+                    nexth -= hdir;
+                }
+                else {
+                    nextv += vdir;
+                    nexth += hdir;
+                }
+                if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return false;
+                if (gri[nextv][nexth] != "@Empty" && (gri[nextv][nexth] != "@Void" || split[0] == "@NextNE")) tiles_found++;
+            }
+            if (split.length == 2) {
+                if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return false;
+                result = structuredClone(gri[nextv][nexth]);
+                if (Array.isArray(result)) result.unshift("@Literal");
+            }
+            else {
+                let tnum = Number(split[2]);
+                if (!(!(Number.isNaN(tnum)) && tnum % 1 == 0 && tnum >= 0 && tnum < TileNumAmount)) return str;
+                if (typeof gri[nextv][nexth] == "string") result = gri[nextv][nexth];
+                else result = gri[nextv][nexth][tnum];
+            }
         }
     }
     else if (split.length < 5 && split[0] == "@Relative") { // "@Relative -3 1 2" is the 2nd entry of the tile that's 3 spaces up and 1 space to the right of the current tile
@@ -5967,6 +7015,9 @@ function CalcArrayString(str) {
     }
     else if (split.length == 1 && split[0] == "@MoveType") { // Move type of the movement direction
         result = addInfo[2];
+    }
+    else if (split.length == 1 && split[0] == "@TileContainer") { // Where is this tile? Usually returns the same as "@Grid", but can be different if, for example, we're looking at one of the next spawning tiles
+        result = gri;
     }
     else if (split.length < 3 && split[0] == "@Parent") {  // "@Parent 0" is the first entry of the outermost CalcArray, "@Parent 1" is the first entry of the second-to-outermost CalcArray (that contains the current CalcArray), and so on. Uses .at for negative indices, so "@Parent -1" is the last entry of parents, i.e. the first entry of the current CalcArray.
         if (split.length == 1) result = parents.length;
@@ -6064,6 +7115,10 @@ function CalcArrayString(str) {
         }
         result = structuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
+    }
+    else if (split.length == 1 && split[0] == "@Primes") { // No need to support "@Primes 0" because there's already a CalcArray operator "prime"
+        result = structuredClone(primes);
+        result.unshift("@Literal");
     }
     else return str;
     return structuredClone(result);
@@ -6192,21 +7247,22 @@ function evaluateColor(color) {
         return result;
     }
     else if (color[0] === "@rotate") {
-        let rotated = rotateColor(color[3], color[1], color[2], vcoord, hcoord, gri);
+        let rotated = rotateColor(color[3], color[1], color[2], vcoord, hcoord, gri, vars);
         return evaluateColor(rotated, vcoord, hcoord, gri, vars);
     }
     else return CalcArray(color, vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
 }
 
 function convertColor(col, system) { // Converts colors between systems; mostly useful because rotateColor prefers HSLA colors
-    let vcoord = 0; let hcoord = 0; let gri = Grid;
+    let vcoord = 0; let hcoord = 0; let gri = Grid; let vars = [];
     if (arguments.length > 2) vcoord = arguments[2];
     if (arguments.length > 3) hcoord = arguments[3];
     if (arguments.length > 4) gri = arguments[4];
+    if (arguments.length > 5) vars = arguments[5];
     let color = structuredClone(col);
     if (Array.isArray(color) && (color[0] == "@linear-gradient" || color[0] == "@radial-gradient" || color[0] == "@conic-gradient" || color[0] == "@multi-gradient")) {
         for (let i = 1; i < color.length; i++) {
-            if (Array.isArray(color[i]) || (typeof color[i] == "string" && color[i][0] == "#")) color[i] = convertColor(color[i], system, vcoord, hcoord, gri);
+            if (Array.isArray(color[i]) || (typeof color[i] == "string" && color[i][0] == "#")) color[i] = convertColor(color[i], system, vcoord, hcoord, gri, vars);
         }
         return color;
     }
@@ -6232,10 +7288,10 @@ function convertColor(col, system) { // Converts colors between systems; mostly 
             }
         }
         if (Array.isArray(colorarray) && (colorarray[0] == "@RGBA" || colorarray[0] == "@HSLA" || colorarray[0] == "@HSVA")) {
-            let e1 = CalcArray(colorarray[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri);
-            let e2 = CalcArray(colorarray[2], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri);
-            let e3 = CalcArray(colorarray[3], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri);
-            let e4 = CalcArray(colorarray[4], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri);
+            let e1 = CalcArray(colorarray[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
+            let e2 = CalcArray(colorarray[2], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
+            let e3 = CalcArray(colorarray[3], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
+            let e4 = CalcArray(colorarray[4], vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
             //Conversion formulas are from the subpages of https://www.rapidtables.com/convert/color/
             if (colorarray[0] == "@RGBA" && system == "@HSLA") {
                 let rprime = e1 / 255;
@@ -6330,20 +7386,21 @@ function convertColor(col, system) { // Converts colors between systems; mostly 
 }
 
 function rotateColor(color, degrees) { //degrees = 180 gives the complementary color
-    let invertL = false; let vcoord = 0; let hcoord = 0; let gri = Grid;
+    let invertL = false; let vcoord = 0; let hcoord = 0; let gri = Grid; let vars = [];
     if (arguments.length > 2) invertL = arguments[2]; // If this is true, then the lightness of the color is inverted
     if (arguments.length > 3) vcoord = arguments[3];
     if (arguments.length > 4) hcoord = arguments[4];
     if (arguments.length > 5) gri = arguments[5];
+    if (arguments.length > 6) vars = arguments[6];
     let colorcopy = structuredClone(color);
     if (Array.isArray(color) && (color[0] == "@linear-gradient" || color[0] == "@radial-gradient" || color[0] == "@conic-gradient" || color[0] == "@multi-gradient")) {
         for (let i = 1; i < color.length; i++) {
-            if (Array.isArray(colorcopy[i]) || (typeof colorcopy[i] == "string" && colorcopy[i][0] == "#")) colorcopy[i] = rotateColor(colorcopy[i], degrees, invertL, vcoord, hcoord, gri);
+            if (Array.isArray(colorcopy[i]) || (typeof colorcopy[i] == "string" && colorcopy[i][0] == "#")) colorcopy[i] = rotateColor(colorcopy[i], degrees, invertL, vcoord, hcoord, gri, vars);
         }
         return colorcopy;
     }
     else {
-        colorcopy = convertColor(colorcopy, "@HSLA", vcoord, hcoord, gri);
+        colorcopy = convertColor(colorcopy, "@HSLA", vcoord, hcoord, gri, vars);
         colorcopy[1] += degrees;
         if (invertL) colorcopy[3] = 100 - colorcopy[3];
         return colorcopy;
@@ -6431,6 +7488,146 @@ function evaluateMergeRule(rule) { // This does not actually evaluate whether a 
     else return crule;
 }
 
+//I first made the 180 and DIVE color schemes in a separate project, so these next few functions are pasted in from there.
+function factor(num, prime_amount) {
+    try {
+        num = BigInt(num);
+    }
+    catch {
+        num = 1n;
+    }
+    let leftover = num;
+    let product = 1n;
+    let factors = [[]];
+    for (let p = 0; p < prime_amount; p++) {
+        factors[0].push(0);
+        while (leftover % primes[p] == 0n) {
+            factors[0][p]++;
+            product *= primes[p];
+            leftover /= primes[p];
+        }
+        if (leftover == 1n) break;
+    }
+    leftover -= 1n;
+    if (leftover > 0n) factors = factors.concat(factor(leftover, prime_amount));
+    return factors;
+}
+
+function defactor(num) {
+    let result = 1n;
+    if (!(Array.isArray(num[0]))) num = [num];
+    for (i = num.length - 1; i >= 0; i--) {
+        while (primes.length < num[i].length) primesUpdate(primes[primes.length - 1] * 2n);
+        for (p = 0; p < num[i].length; p++) {
+            result *= primes[p] ** BigInt(num[i][p]);
+        }
+        if (i > 0) result += 1n;
+    }
+    return result;
+}
+
+function HSVtoString(h, s, v) {
+    return evaluateColor(["@HSVA", h, s, v, 1]);
+}
+
+function threeFactorColor(factors, scheme) {
+    let invert = false; let alpha = 1;
+    if (arguments.length > 2) invert = arguments[2];
+    if (arguments.length > 3) alpha = arguments[3];
+    while (factors.length < 3) factors.push(0);
+    if (scheme == "DIVE" || scheme == "DIVE_prime" || scheme == "DIVE_primeGrey") {
+        let r = ([0, 4, 8, 10, 12, 13, 14, 15])[Math.min(factors[0], 7)] * 17;
+        let g = ([0, 6, 10, 13, 15])[Math.min(factors[1], 4)] * 17;
+        if (scheme != "DIVE") g = ([0, 4, 8, 12, 15])[Math.min(factors[1], 4)] * 17;
+        let b = ([0, 8, 12, 15])[Math.min(factors[2], 3)] * 17;
+        if (scheme != "DIVE") {
+            if (scheme == "DIVE_primeGrey" && r == g && g == b) {
+                r += (255 - r)/2;
+                g += (255 - g)/2;
+                b += (255 - b)/2;
+            }
+            else if (!(r == g && g == b)) {
+                let brighten = 255 / Math.max(r, g, b);
+                r *= brighten; g *= brighten; b *= brighten;
+            }
+        }
+        if (invert) {
+            r = 255- r;
+            g = 255 - g;
+            b = 255 - b;
+        }
+        if (alpha != 1) return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
+        else return "rgb(" + r + ", " + g + ", " + b + ")";
+    }
+    if (scheme == "180") {
+        let answer = "";
+        if (factors[0] == 0 && factors[1] == 0 && factors[2] == 0) answer = HSVtoString(0, 0, 0);
+        else if (factors[0] == factors[1] && factors[1] == factors[2]) answer = HSVtoString(0, 0, (0.85 ** (factors[0] - 1) * 100));
+        else if (factors[0] >= factors[2] && factors[1] >= factors[2]) answer = HSVtoString(((factors[1] - factors[2]) / (factors[0] + factors[1] - factors[2] * 2) * 120), (0.7 ** factors[2] * 100), (0.85 ** (gcd((factors[0] - factors[2]), (factors[1] - factors[2])) - 1) * 100));
+        else if (factors[1] >= factors[0] && factors[2] >= factors[0]) answer = HSVtoString(((factors[2] - factors[0]) / (factors[1]  + factors[2] - factors[0] * 2) * 120 + 120), (0.7 ** factors[0] * 100), (0.85 ** (gcd((factors[2] - factors[0]), (factors[1] - factors[0])) - 1) * 100));
+        else if (factors[2] >= factors[1] && factors[0] >= factors[1]) answer = HSVtoString(((factors[0] - factors[1]) / (factors[2] + factors[0] - factors[1] * 2) * 120 + 240), (0.7 ** factors[1] * 100), (0.85 ** (gcd((factors[2] - factors[1]), (factors[0] - factors[1])) - 1) * 100));
+        if (invert) {
+            answer = answer.split(", ");
+            answer[0] = "hsl(" + (Number(answer[0].slice(5)) + 180);
+            answer[2] = (100 - Number(answer[2].slice(0, answer[2].length - 1))) + "%)";
+            answer = answer[0] + ", " + answer[1] + ", " + answer[2];
+        }
+        return answer;
+    }
+}
+
+function DIVEresidueFactor(number, small_primes, total_primes) {
+    while (primes.length < total_primes && primes[primes.length - 1] < abs(number)) primesUpdate(primes[primes.length - 1] * 2n);
+    let result = [];
+    let small_factors = factor(number, small_primes)[0];
+    while (small_factors.length < 4) small_factors.push(0);
+    let residue = number / defactor(small_factors);
+    if (residue == 1n) return [small_factors];
+    result.push(small_factors);
+    let large_factors = factor(residue, total_primes)[0];
+    for (let p = 0; p < large_factors.length; p++) {
+        if (large_factors[p] > 0) result.push([large_factors[p], primes[p], DIVEresidueFactor((primes[p] + 1n)/2n, small_primes, total_primes)]);
+    }
+    return result;
+}
+
+function DIVERenderInnerBar(factors, start, length, layer, depth) {
+    let alpha = 0.5 + 0.5 * layer/depth;
+    let result = [];
+    if (factors[3] == 0) {
+        result += (threeFactorColor(factors.slice(0, 3), "DIVE_prime", false, alpha) + " " + start + "% " + (start + length) + "%");
+    }
+    else {
+        for (let s = 0; s < factors[3] * 4 + 1; s++) {
+            let mid_color = threeFactorColor(factors.slice(0, 3), "DIVE_primeGrey", false, alpha);
+            let black = threeFactorColor([0, 0, 0], "DIVE", false, alpha);
+            let white = threeFactorColor([7, 4, 3], "DIVE", false, alpha);
+            if (s % 4 == 0) result += black;
+            if (s % 4 == 1 || s % 4 == 3) result += mid_color;
+            if (s % 4 == 2) result += white;
+            result += " " + (start + length*s/(factors[3] * 4)) + "%";
+            if (s < factors[3] * 4) result += ", ";
+        }
+    }
+    return result;
+}
+
+function RGBtoArray(rgb) {
+    rgb = rgb.slice(4, rgb.length - 1);
+    rgb = rgb.split(", ");
+    return rgb;
+}
+
+function ArraytoRGB(rgb) {
+    let result = "rgb(";
+    for (let i = 0; i < rgb.length - 1; i++) {
+        result += rgb[i]; result += ", ";
+    }
+    result += rgb[rgb.length - 1];
+    result += ")";
+    return result;
+}
+
 //Gameplay
 function refillSpawnConveyor() { // This function ensures that nextTiles is always full. spawnConveyor always has at least 1 tile in it, and it can have more if nextTiles is above 1.
     for (let s = 0; s < spawnConveyor.length; s++) {
@@ -6477,7 +7674,7 @@ function spawnConveyorSelect() { // Takes the 0th entry of spawnConveyor and ret
     let spawnedtile = structuredClone(spawnConveyor[0]);
     for (let s = 0; s < spawnConveyor.length - 1; s++) spawnConveyor[s] = structuredClone(spawnConveyor[s + 1]);
     spawnConveyor[spawnConveyor.length - 1] = "@Empty";
-    refillSpawnConveyor();
+    if (nextTiles > 0) refillSpawnConveyor(); //If there are no visible next tiles, then spawnConveyor should only be refilled when it's time to spawn a tile, as otherwise changes to TileSpawns would be delayed by a turn.
     return spawnedtile;
 }
 
@@ -7115,33 +8312,38 @@ async function MoveHandler(direction_num) {
     }
     tileDiscoveryCheck();
     let victory = winCheck();
-    displayGrid();
     if (directionsAvailable.indexOf(true) == -1 && manualStrength[0] > -1) {
         if (!possibleOverChecked && executeScripts("PossibleOver", 0, 0, vdir, hdir, [1, slideAmount, moveType]) > 0) {
             for (let d = 0; d < directionsAvailable.length; d++) {directionsAvailable[d] = true;}
             possibleOverChecked = true;
+            if (manualStrength[3] && manualStrength[0] == 1) executeScripts("TrueEndTurn", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             displayButtons(true);
             inputAvailable = true;
         }
         else {
+            executeScripts("TrueEndTurn", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             executeScripts("GameOver", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             GameOver();
         }
     }
     else {
         if ((victory == 1 || (victory == 2 && winPriority)) && manualStrength[0] > -1) {
+            executeScripts("TrueEndTurn", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             executeScripts("Victory", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             winScreen();
         }
         else if ((victory == -1 || (victory == 2 && !winPriority)) && manualStrength[0] > -1) {
+            executeScripts("TrueEndTurn", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             executeScripts("GameOver", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             GameOver();
         }
         else if (manual) {
+            if (manualStrength[3] && manualStrength[0] == 1) executeScripts("TrueEndTurn", 0, 0, vdir, hdir, [1, slideAmount, moveType]);
             displayButtons(true);
             inputAvailable = true;
         }
     }
+    displayGrid();
     return movementOccurred;
 }
 
@@ -7236,6 +8438,7 @@ function executeScripts(type) { //Runs the scripts of that type, and returns the
         PossibleOver: Executes when it's about to be Game Over: if there are any of these scripts, the Game Over is postponed in case it's not quite game over yet (but if there are still no moves left, then it's game over for real)
         Victory: Executes upon winning (right before the win screen pops up)
         GameOver: Executes upon Game Over (right before the Game Over screen pops up)
+        TrueEndTurn: Executes at the very end of the turn, after all the win condition stuff is checked (but before Victory or GameOver scripts).
         None: Is not triggered automatically, but can still be called directly in CalcArray expressions (this is true of any type that aren't the ones listed above, but "None" is the recommended way to denote this)
     */
 }
@@ -7243,6 +8446,7 @@ function executeScripts(type) { //Runs the scripts of that type, and returns the
 
 //Endgame
 async function GameOver() {
+    displayGrid();
     currentScreen = "Game Over";
     document.getElementById("game_over_screen").style.setProperty("opacity", 0);
     document.getElementById("game_over_screen").style.setProperty("display", "flex");
@@ -7260,6 +8464,7 @@ async function GameOver() {
 }
 
 async function winScreen() {
+    displayGrid();
     currentScreen = "Win";
     document.getElementById("win_screen").style.setProperty("opacity", 0);
     document.getElementById("win_screen").style.setProperty("display", "flex");
@@ -7355,7 +8560,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         let SaveCode = "";
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "1.1|"
+        SaveCode += "1.2|"
         SaveCode += window.btoa(String(width));
         SaveCode += "|";
         SaveCode += window.btoa(String(height));
@@ -7470,7 +8675,7 @@ function importSave(code) {
         let coderesults = [];
         let codebits = code.split("|");
         if (!(codebits[0] == "@2048PowCompGame" || codebits[0] == "@2048PowCompMode")) throw "Wrong code type";
-        if (codebits[1] == "1.1") {
+        if (codebits[1] == "1.1" || codebits[1] == "1.2") {
             coderesults.push(Number(window.atob(codebits[2]))); //coderesults[0] is width
             if (isNaN(coderesults[0]) || coderesults[0] < 1 || (coderesults[0] % 1) != 0) throw "Invalid width";
             coderesults.push(Number(window.atob(codebits[3]))); //coderesults[1] is height
@@ -7581,6 +8786,7 @@ function importSave(code) {
                 modifier_vars = coderesults[48];
                 possibleOverChecked = coderesults[49];
                 displayGrid();
+                displayButtons(true);
             }
             
         }
@@ -7707,6 +8913,7 @@ function importSave(code) {
                 manual_moves_so_far = moves_so_far;
                 possibleOverChecked = false;
                 displayGrid();
+                displayButtons(true);
             }
             
         }
@@ -7718,6 +8925,54 @@ function importSave(code) {
         }
         else document.getElementById("save_code_box").value = "There was an error with importing your save code: " + err;
     }
+}
+
+//Hidden Tile Viewer
+function displayViewerTile() {
+    document.getElementById("viewer_number_change").value = screenVars[0];
+    if (subScreen == "Wildcard 2048") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: Wildcard 2048";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#f2b179");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#ece0c2");
+        document.getElementById("viewer_primes").style.setProperty("display", "none");
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "block");
+        if (screenVars[1]) {
+            document.getElementById("viewer_WildcardText_button").innerHTML = "The text on the tile shows all the possibilities.";
+            document.getElementById("viewer_WildcardText_button").style.setProperty("background-color", "#c8b68b");
+            document.getElementById("viewer_WildcardText_button").style.setProperty("color", "#ffeb3b");
+            document.getElementById("viewer_WildcardText_button").style.setProperty("border-color", "#ffeb3b");
+        }
+        else {
+            document.getElementById("viewer_WildcardText_button").innerHTML = "The text on the tile is just the number.";
+            document.getElementById("viewer_WildcardText_button").style.setProperty("background-color", "#eb85ff");
+            document.getElementById("viewer_WildcardText_button").style.setProperty("color", "#ff5238");
+            document.getElementById("viewer_WildcardText_button").style.setProperty("border-color", "#ff5238");
+        }
+    }
+    else if (subScreen == "mod 27") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: mod 27";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#d5b5c5");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#c3ed8f");
+        document.getElementById("viewer_primes").style.setProperty("display", "none");
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
+    else if (subScreen == "180") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: 180";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#ffff4d");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#ece0c2");
+        document.getElementById("viewer_primes").style.setProperty("display", "block");
+        document.getElementById("viewer_primes_change").value = screenVars[1];
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
+    else if (subScreen == "DIVE") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: DIVE";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#468");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#9ec3e7");
+        document.getElementById("viewer_primes").style.setProperty("display", "block");
+        document.getElementById("viewer_primes_change").value = screenVars[1];
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
+    displayTile("Viewer", document.getElementById("viewer_tile"), "None", "None", [screenVars[0]], [true, "@This 0", "@ColorScheme", subScreen, ["@This 0", screenVars[1]]]);
 }
 
 //Testing
