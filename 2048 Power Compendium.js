@@ -1217,6 +1217,7 @@ function switchScreen(screen, subscreen) {
     subScreen = subscreen;
     document.getElementById("game_over_screen").style.setProperty("display", "none");
     document.getElementById("win_screen").style.setProperty("display", "none");
+    document.getElementById("announcements").style.setProperty("display", "none");
     if (screen == "Menu") {
         document.getElementById("menu").style.setProperty("display", "block");
         document.getElementById("gamemode").style.setProperty("display", "none");
@@ -1303,6 +1304,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("custom").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "none");
         document.getElementById("tile_viewer").style.setProperty("display", "none");
+        document.getElementById("announcements").style.setProperty("display", "block");
         let dispbackground = evaluateColor(getComputedStyle(document.documentElement).getPropertyValue("--background-color"), 0, 0);
             if (dispbackground.includes("gradient")) {
                 document.documentElement.style.setProperty("background-image", dispbackground);
