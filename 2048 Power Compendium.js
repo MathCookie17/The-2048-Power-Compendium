@@ -4858,14 +4858,12 @@ function displayGrid() {
         }
         else box.innerHTML = defaultAbbreviate(CalcArray(statBoxes[b][1]));
     }
-    console.log("Move score line " + moves_so_far);
     if (screen.width/screen.height > 1.2) {
         document.getElementById("left_of_grid").style.setProperty("top", getComputedStyle(document.getElementById("score_line")).getPropertyValue("height"));
     }
     else {
         document.getElementById("left_of_grid").style.setProperty("top", "");
     }
-    console.log("Finished grid display " + moves_so_far);
 }
 
 function displayTile(dType, tile, vcoord, hcoord, container, location) {
