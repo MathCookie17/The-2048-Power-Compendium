@@ -22,7 +22,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color: #ffeb3b /* This is just here so I have an easy place to choose colors from */
+    color: #be5f00 /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -1931,6 +1931,15 @@ ul {
     font-weight: bold;
     margin: auto;
     padding: calc(var(--base_size) * 1);
+}
+#viewer_hideNumber {
+    width: calc(var(--base_size) * 30);
+    font-size: calc(var(--base_size) * 3);
+    border: calc(var(--base_size) * 0.5) solid #000000;
+    font-weight: bold;
+    margin: auto;
+    padding: calc(var(--base_size) * 1);
+    margin-top: calc(var(--base_size) * 1);
 }
 @media screen and (max-aspect-ratio: 9/10) {
     #tile_viewer {

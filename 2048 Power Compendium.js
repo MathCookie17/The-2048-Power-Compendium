@@ -320,7 +320,7 @@ document.getElementById("gp_export_button").addEventListener("click", function()
 });
 document.getElementById("save_code_import").addEventListener("click", function(){
     if (document.getElementById("save_code_box").value == "View Color Schemes") {
-        screenVars = [2n, true];
+        screenVars = [2n, true, true];
         switchScreen("Tile Viewer", "Wildcard 2048");
     }
     else importSave(document.getElementById("save_code_box").value);
@@ -755,37 +755,37 @@ document.getElementById("tile_viewer_return").addEventListener("click", function
 });
 document.getElementById("tile_viewer_next").addEventListener("click", function(){
     if (subScreen == "Wildcard 2048") {
-        screenVars = [screenVars[0], 0];
+        screenVars[1] = 0;
         switchScreen("Tile Viewer", "mod 27");
     }
     else if (subScreen == "mod 27") {
-        screenVars = [screenVars[0], 48];
+        screenVars[1] = 48;
         switchScreen("Tile Viewer", "180");
     }
     else if (subScreen == "180") {
-        screenVars = [screenVars[0], 168];
+        screenVars[1] = 168;
         switchScreen("Tile Viewer", "DIVE");
     }
     else {
-        screenVars = [screenVars[0], true];
+        screenVars[1] = true;
         switchScreen("Tile Viewer", "Wildcard 2048");
     }
 });
 document.getElementById("tile_viewer_previous").addEventListener("click", function(){
     if (subScreen == "180") {
-        screenVars = [screenVars[0], 0];
+        screenVars[1] = 0;
         switchScreen("Tile Viewer", "mod 27");
     }
     else if (subScreen == "DIVE") {
-        screenVars = [screenVars[0], 48];
+        screenVars[1] = 48;
         switchScreen("Tile Viewer", "180");
     }
     else if (subScreen == "Wildcard 2048") {
-        screenVars = [screenVars[0], 168];
+        screenVars[1] = 168;
         switchScreen("Tile Viewer", "DIVE");
     }
     else {
-        screenVars = [screenVars[0], true];
+        screenVars[1] = true;
         switchScreen("Tile Viewer", "Wildcard 2048");
     }
 });
@@ -806,6 +806,10 @@ document.getElementById("viewer_primes_change").addEventListener("change", funct
 });
 document.getElementById("viewer_WildcardText_button").addEventListener("click", function() {
     screenVars[1] = !screenVars[1];
+    displayViewerTile();
+});
+document.getElementById("viewer_hideNumber").addEventListener("click", function() {
+    screenVars[2] = !screenVars[2];
     displayViewerTile();
 });
 
@@ -1215,6 +1219,7 @@ function abbreviateNumber(num, system, decimals, commas, ...more) {
 function switchScreen(screen, subscreen) {
     currentScreen = screen;
     subScreen = subscreen;
+    document.documentElement.style.setProperty("background-size", "none");
     document.getElementById("game_over_screen").style.setProperty("display", "none");
     document.getElementById("win_screen").style.setProperty("display", "none");
     document.getElementById("announcements").style.setProperty("display", "none");
@@ -1374,7 +1379,7 @@ function switchScreen(screen, subscreen) {
         document.getElementById("guide").style.setProperty("display", "none");
         document.getElementById("tile_viewer").style.setProperty("display", "block");
         displayViewerTile();
-        document.documentElement.style.setProperty("background-image", "linear-gradient(#ffeb9c, #ff9cfc)");
+        document.documentElement.style.setProperty("background-image", "linear-gradient(#ffeb9c, #ff9cfc, #ffeb9c)");
     }
 }
 
@@ -8973,6 +8978,28 @@ function displayViewerTile() {
         document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
     }
     displayTile("Viewer", document.getElementById("viewer_tile"), "None", "None", [screenVars[0]], [true, "@This 0", "@ColorScheme", subScreen, ["@This 0", screenVars[1]]]);
+    if (screenVars[2]) {
+        document.getElementById("tile_viewer_previous").style.setProperty("display", "inline-block");
+        document.getElementById("tile_viewer_next").style.setProperty("display", "inline-block");
+        document.getElementById("viewer_tile_text").style.setProperty("display", "block");
+        document.getElementById("viewer_number").style.setProperty("display", "block");
+        document.getElementById("viewer_hideNumber").innerHTML = "Hide Number";
+        document.getElementById("viewer_hideNumber").style.setProperty("background-color", "#230039");
+        document.getElementById("viewer_hideNumber").style.setProperty("color", "#8100d1");
+        document.getElementById("viewer_hideNumber").style.setProperty("border-color", "#c363ff");
+    }
+    else {
+        document.getElementById("tile_viewer_previous").style.setProperty("display", "none");
+        document.getElementById("tile_viewer_next").style.setProperty("display", "none");
+        document.getElementById("viewer_tile_text").style.setProperty("display", "none");
+        document.getElementById("viewer_number").style.setProperty("display", "none");
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+        document.getElementById("viewer_primes").style.setProperty("display", "none");
+        document.getElementById("viewer_hideNumber").innerHTML = "Show Number";
+        document.getElementById("viewer_hideNumber").style.setProperty("background-color", "#ffe9d3");
+        document.getElementById("viewer_hideNumber").style.setProperty("color", "#ffb469");
+        document.getElementById("viewer_hideNumber").style.setProperty("border-color", "#be5f00");
+    }
 }
 
 //Testing
