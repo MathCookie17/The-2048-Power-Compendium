@@ -1,4 +1,4 @@
-MIT License
+MIT License, but with a renaming clause
 
 Copyright (c) 2023 MathCookie17
 
@@ -19,3 +19,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+If you rerelease this Software, especially in an altered form,
+you must clearly indicate that the Software is not the original version.
+For example, if you release a copy of the Software with new modes added, 
+you may call it "The 2048 Power Compendium Plus" or "The 2048 Power Compendium Modified"
+or really any other name that indicates it's not the original 2048 Power Compendium, 
+but don't just call it "The 2048 Power Compendium".
+You may recreate individual modes without having to rename them - 
+for example, if you recreate the 2047 mode as a standalone project, you are free to just call it
+"2047" - the renaming clause only applies to the name "The 2048 Power Compendium" itself, not to its
+individual modes.
