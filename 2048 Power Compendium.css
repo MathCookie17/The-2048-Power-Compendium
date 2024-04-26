@@ -22,7 +22,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color: #be5f00 /* This is just here so I have an easy place to choose colors from */
+    color: #dd88ff /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -422,6 +422,9 @@ html {
 }
 #DIVE_primeSpawns {
     color: #008;
+}
+#DIVE_unlockRules {
+    color: #b7ff3c;
 }
 #gm_return {
     background-color: var(--grid-color);

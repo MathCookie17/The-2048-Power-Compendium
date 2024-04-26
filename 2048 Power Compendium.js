@@ -117,7 +117,7 @@ let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round
 let string_operators = ["str_char", "str_concat", "str_concat_front", "str_length", "str_slice", "str_substr", "str_replace", "str_indexOf", "str_lastIndexOf", "str_indexOfFrom", "str_lastIndexOfFrom", "str_includes", "str_splice", "str_toUpperCase", "str_toLowerCase", "str_split"];
 let boolean_operators = ["&&", "||", "!"];
 let array_operators = ["arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "CalcArray"];
-let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "rand_bigint", "defaultAbbrevB"];
+let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "rand_bigint", "defaultAbbrevB", "DIVESeedUnlock"];
 let pop_1_operators = ["abs", "absB", "sign", "signB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "defaultAbbrev", "defaultAbbrevB", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
 
 let primes = [2n, 3n, 5n]; 
@@ -210,6 +210,10 @@ document.getElementById("Wildcard2048_add_button").addEventListener("click", fun
     mode_vars[0] = !(mode_vars[0]);
     gmDisplayVars();
 });
+document.getElementById("Wildcard2048_chaosSpawns_button").addEventListener("click", function(){
+    mode_vars[1] = !(mode_vars[1]);
+    gmDisplayVars();
+});
 document.getElementById("XpowY_pow_plus").addEventListener("click", function(){
     let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, Infinity];
     let p = primes.indexOf(mode_vars[0]);
@@ -268,6 +272,10 @@ document.getElementById("DIVE_primeSpawns_button").addEventListener("click", fun
 });
 document.getElementById("DIVE_1s_button").addEventListener("click", function(){
     mode_vars[1] = !(mode_vars[1]);
+    gmDisplayVars();
+});
+document.getElementById("DIVE_unlockRules_button").addEventListener("click", function(){
+    mode_vars[2] = (mode_vars[2] + 1) % 4;
     gmDisplayVars();
 });
 document.getElementById("start_game").addEventListener("click", startGame);
@@ -2931,7 +2939,7 @@ function loadMode(mode) {
     }
     else if (mode == 40) { // Wildcard 2048
         width = 4; height = 4; min_dim = 2;
-        mode_vars = [false]; //If this is true, all possibilities of wildcards merge rather than just the shared ones
+        mode_vars = [false, false]; //If mode_vars[0] is true, all possibilities of wildcards merge rather than just the shared ones. If mode_vars[1] is true, all tile spawns are crazy combinations.
         document.documentElement.style.setProperty("background-image", "linear-gradient(#f2b179, #ede0c8, #f9eee3, #ffffff, #f9eee3, #ede0c8, #f2b179)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#f2b179, #ede0c8, #f9eee3, #ffffff, #f9eee3, #ede0c8, #f2b179)");
         document.documentElement.style.setProperty("--grid-color", "#c7bea7");
@@ -3388,8 +3396,8 @@ function loadMode(mode) {
     else if (mode == 50) { // DIVE
         width = 4; height = 4; min_dim = 2;
         TileNumAmount = 1;
-        mode_vars = [0, false]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is whether 1s can spawn.
-        start_game_vars = [[2n], [2n], [], []] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, and the fourth entry is the seeds that are currently being removed.
+        mode_vars = [0, false, 0]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time
+        start_game_vars = [[2n], [2n], [], [], 0] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry matches the third entry of mode_vars.
         TileTypes = [
             [true, "@This 0", "@ColorScheme", "DIVE", ["@This 0"]]
         ];
@@ -3425,10 +3433,10 @@ function loadMode(mode) {
         ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
         statBoxes = [["Score", "@Score", false, false, "Tile", "DIVE"], ["Seeds", "@GVar 0", false, false, "TileArray", "DIVE"], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "DIVE"]];
         scripts = [
-            [[["@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]]], 0, 0n, "@end_vars", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "absB"], "2nd", ["@var_retain", "@GVar 0", "arr_reduce", "@Var 2", ["@if", ["@var_retain", "@Var -1", "absB", ">", 1n], "/B", ["@var_retain", "@Var -1", "absB", "^B", ["@var_retain", "@Parent -3", "expomodB", ["@var_retain", "@Var -1", "absB"]]], "@end-if"], "absB"], "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
+            [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 4", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
             [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", "@Var -1", "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
-            [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"],
+            [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("DIVE_vars").style.setProperty("display", "flex");
@@ -3625,18 +3633,46 @@ function gmDisplayVars() {
         if (mode_vars[0]) {
             document.getElementById("Wildcard2048_add_text").innerHTML = "When two tiles merge, all of their possibilities combine.";
             document.getElementById("Wildcard2048_add_text").style.setProperty("color", "#b83f1a");
-            displayRules("rules_text", ["h1", "Wildcard 2048 (Melting Pot Mode)"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 or with a 4. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility. When two tiles merge, they combine in a \"melting pot\" fashion: for example, a 4 tile and a 2 4 tile merge into an 8 2 tile, while a 1 2 tile and a 1 4 tile merge into an 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
-            ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
-            displayRules("gm_rules_text", ["h1", "Wildcard 2048 (Melting Pot Mode)"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 or with a 4. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility. When two tiles merge, they combine in a \"melting pot\" fashion: for example, a 4 tile and a 2 4 tile merge into an 8 2 tile, while a 1 2 tile and a 1 4 tile merge into an 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
-            ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
         }
         else {
             document.getElementById("Wildcard2048_add_text").innerHTML = "When two tiles merge, only the possibilities they both share remain.";
             document.getElementById("Wildcard2048_add_text").style.setProperty("color", "#524439");
-            displayRules("rules_text", ["h1", "Wildcard 2048"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 to make a 4, or it could merge with a 4 to make an 8. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility, and the result of their merge is a tile that contains all of the possibilities they both had, but doubled since they just merged. For example, a 1 2 4 tile and a 2 4 8 tile share the 2 and 4 possibilities, so they merge into a 4 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
-            ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
-            displayRules("gm_rules_text", ["h1", "Wildcard 2048"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 to make a 4, or it could merge with a 4 to make an 8. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility, and the result of their merge is a tile that contains all of the possibilities they both had, but doubled since they just merged. For example, a 1 2 4 tile and a 2 4 8 tile share the 2 and 4 possibilities, so they merge into a 4 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
-            ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
+        }
+        if (mode_vars[1]) {
+            document.getElementById("Wildcard2048_chaosSpawns_text").innerHTML = "All tiles spawned are crazy combination tiles.";
+            document.getElementById("Wildcard2048_chaosSpawns_text").style.setProperty("color", "#dd88ff");
+        }
+        else {
+            document.getElementById("Wildcard2048_chaosSpawns_text").innerHTML = "Crazy combination tiles only spawn 4% of the time.";
+            document.getElementById("Wildcard2048_chaosSpawns_text").style.setProperty("color", "#ffbfa4");
+        }
+        if (mode_vars[1]) {
+            if (mode_vars[0]) {
+                displayRules("rules_text", ["h1", "Wildcard 2048 (Melting Pot Mode)"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 or with a 4. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility. When two tiles merge, they combine in a \"melting pot\" fashion: for example, a 4 tile and a 2 4 tile merge into an 8 2 tile, while a 1 2 tile and a 1 4 tile merge into an 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Tiles spawned could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but they're biased towards smaller values."]);
+                displayRules("gm_rules_text", ["h1", "Wildcard 2048 (Melting Pot Mode)"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 or with a 4. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility. When two tiles merge, they combine in a \"melting pot\" fashion: for example, a 4 tile and a 2 4 tile merge into an 8 2 tile, while a 1 2 tile and a 1 4 tile merge into an 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Tiles spawned could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but they're biased towards smaller values."]);
+            }
+            else {
+                displayRules("rules_text", ["h1", "Wildcard 2048"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 to make a 4, or it could merge with a 4 to make an 8. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility, and the result of their merge is a tile that contains all of the possibilities they both had, but doubled since they just merged. For example, a 1 2 4 tile and a 2 4 8 tile share the 2 and 4 possibilities, so they merge into a 4 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Tiles spawned could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but they're biased towards smaller values."]);
+                displayRules("gm_rules_text", ["h1", "Wildcard 2048"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 to make a 4, or it could merge with a 4 to make an 8. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility, and the result of their merge is a tile that contains all of the possibilities they both had, but doubled since they just merged. For example, a 1 2 4 tile and a 2 4 8 tile share the 2 and 4 possibilities, so they merge into a 4 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Tiles spawned could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but they're biased towards smaller values."]);
+            }
+        }
+        else {
+            if (mode_vars[0]) {
+                displayRules("rules_text", ["h1", "Wildcard 2048 (Melting Pot Mode)"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 or with a 4. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility. When two tiles merge, they combine in a \"melting pot\" fashion: for example, a 4 tile and a 2 4 tile merge into an 8 2 tile, while a 1 2 tile and a 1 4 tile merge into an 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
+                displayRules("gm_rules_text", ["h1", "Wildcard 2048 (Melting Pot Mode)"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 or with a 4. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility. When two tiles merge, they combine in a \"melting pot\" fashion: for example, a 4 tile and a 2 4 tile merge into an 8 2 tile, while a 1 2 tile and a 1 4 tile merge into an 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
+            }
+            else {
+                displayRules("rules_text", ["h1", "Wildcard 2048"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 to make a 4, or it could merge with a 4 to make an 8. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility, and the result of their merge is a tile that contains all of the possibilities they both had, but doubled since they just merged. For example, a 1 2 4 tile and a 2 4 8 tile share the 2 and 4 possibilities, so they merge into a 4 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
+                displayRules("gm_rules_text", ["h1", "Wildcard 2048"], ["p", "2048, but some tiles can act as multiple tiles, such as a \"2 4\" tile, which could merge with a 2 to make a 4, or it could merge with a 4 to make an 8. Two of these \"wildcard\" tiles can merge as long as they share at least one possibility, and the result of their merge is a tile that contains all of the possibilities they both had, but doubled since they just merged. For example, a 1 2 4 tile and a 2 4 8 tile share the 2 and 4 possibilities, so they merge into a 4 8 tile. To win, you must make a regular 2048 tile - a tile with 2048 as one of its multiple possibilities doesn't count!"],
+                ["p", "Spawning tiles: 1 (35%), 2 (15%), 4 (10%), 1 2 (12%), 1 4 (8%), 2 4 (8%), 1 2 4 (8%). The remaining 4% chance spawns a tile that could be any combination of tiles up to (but not including) the highest power of 2 you've reached, but is biased towards smaller values."]);
+            }
         }
     }
     else if (gamemode == 41) { // X^Y
@@ -4205,32 +4241,53 @@ function gmDisplayVars() {
             document.getElementById("DIVE_1s_text").innerHTML = "1s cannot spawn.";
             document.getElementById("DIVE_1s_text").style.setProperty("color", "#fff");
         }
+        let seedCheckDescription = "";
+        if (mode_vars[2] == 0) {
+            document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked largest to smallest.";
+            document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#b7ff3c");
+            seedCheckDescription = " (Seeds are checked largest to smallest.) "
+        }
+        else if (mode_vars[2] == 1) {
+            document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, the minimum possibility is always chosen, as in the original DIVE. (This may be laggy.)";
+            document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#e3ae79");
+            seedCheckDescription = " (Seeds are checked in a way that gives the minimum possible outcome.) "
+        }
+        else if (mode_vars[2] == 2) {
+            document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked smallest to largest.";
+            document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#fa6756");
+            seedCheckDescription = " (Seeds are checked smallest to largest.) "
+        }
+        else {
+            document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked in the order they were unlocked.";
+            document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#58c2dc");
+            seedCheckDescription = " (Seeds are checked in the order they were unlocked.) "
+        }
         if (mode_vars[0] == 0) {
             if (mode_vars[1]) {
                 displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
                 displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
             }
             else {
                 displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
                 displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
             }
         }
         else if (mode_vars[0] == -1) {
             if (mode_vars[1]) {
                 displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
                 displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
             }
             else {
                 displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
                 displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
+                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
             }
         }
         else {
@@ -4801,7 +4858,7 @@ function createStatBoxes() {
     }
 }
 
-function defaultAbbreviate(n) { // Tiles whose text values are of type number (which is currently all of them except Garbage 0s and Box Tiles) use this
+function defaultAbbreviate(n) { // Tiles whose text values are of type number (which is currently all of them except Garbage 0s, Box Tiles, and the tiles in DIVE) use this
     if (typeof n == "number") {
         if (Math.abs(n) < 10000 && Math.abs(n) >= 0.1) return abbreviateNumber(n, "Number", 3, false);
         else if (Math.abs(n) >= 10000 && Math.abs(n) < 1e12) return abbreviateNumber(n, "Number", 3, true);
@@ -5667,6 +5724,14 @@ function loadModifiers() {
                     MergeRules.push([[1, "@end_vars", 0, "@repeat", ["@var_retain", "@This 0", "min", "@Next 1 0", ">=", "@Var 0"], "@if", ["@var_retain", ["@var_retain", "@This 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1], "&&", ["@var_retain", "@Next 1 0", "floor", "@Var 0", "/", "@Var 0", "%", 2, "=", 1]], "+", "@Var 0", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "*", 2], "@end-repeat"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0, "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", -1], "&&", ["@This 0", "!=", "@Next 1 0"]], false, [[["@This 0", "-", "@Next 1 0", "abs"], ["@This 0", "-", "@Next 1 0", "sign"]]], 0, [false, true]]);
                 }
             }
+            if (mode_vars[1]) {
+                if (modifiers[13] == "None") {
+                    startTileSpawns = [[[[2, "^", ["@DiscTiles", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, ">", "@Parent -2"], "2nd", ["@var_retain", "@Var -1", "arr_elem", 0], "@end-if"], "+", 0.5, "log", 2, "floor", 1, "rand_float", 1], "round", 1, "-", 1, "max", 1]], 1]];
+                }
+                else {
+                    startTileSpawns = [[[[2, "^", ["@DiscTiles", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, ">", "@Parent -2"], "2nd", ["@var_retain", "@Var -1", "arr_elem", 0], "@end-if"], "+", 0.5, "log", 2, "floor", 1, "rand_float", 1], "round", 1, "-", 1, "max", 1], 1], 1], [[[2, "^", ["@DiscTiles", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, ">", "@Parent -2"], "2nd", ["@var_retain", "@Var -1", "arr_elem", 0], "@end-if"], "+", 0.5, "log", 2, "floor", 1, "rand_float", 1], "round", 1, "-", 1, "max", 1], -1], 1]]
+                }
+            }
         }
         else if (gamemode == 41) { // X^Y
             MergeRules[0][11] = mode_vars[1];
@@ -5711,6 +5776,7 @@ function loadModifiers() {
                     statBoxes.pop();
                 }
             }
+            start_game_vars[4] = mode_vars[2];
         }
         randomTileAmount = modifiers[1];
         startTileAmount = modifiers[2];
@@ -6451,6 +6517,9 @@ function operation(n1, operator, n2) {
         case "@primesUpdate":
             primesUpdate(n2);
         break;
+        case "DIVESeedUnlock":
+            result = DIVESeedUnlock(n1, n2, additional[0])
+        break;
         case "ignore":
             //Does nothing; this is used for leaving comments in CalcArray expressions, and in particular leaving "@no-negative-sign" is how to prevent loadModifiers from trying to multiply an expression by -1 for auto-generated negative tiles
             result = n1;
@@ -6783,6 +6852,11 @@ function CalcArray(arr) {
             else if (operator == "@primesUpdate") {
                 to_pop = 2;
                 n2 = CalcArrayConvert(carr[2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
+            }
+            else if (operator == "DIVESeedUnlock") {
+                to_pop = 3;
+                n2 = CalcArrayConvert(carr[2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
+                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
             }
             else if (operator == "CalcArray") {
                 to_pop = 1;
@@ -7633,6 +7707,76 @@ function ArraytoRGB(rgb) {
     return result;
 }
 
+function DIVESeedUnlock(tile, seeds, mode) {
+    if (tile == 0n) return 1n;
+    mode = mod(mode, 4);
+    tile = abs(tile);
+    seeds = structuredClone(seeds);
+    if (seeds.indexOf(1n) != -1) seeds.splice(seeds.indexOf(1n), 1);
+    if (seeds.length == 0) return tile;
+    if (mode == 1 || mode == 2) sortedSeeds = seeds.sort((a, b) => Number(a - b));
+    else if (mode == 0) sortedSeeds = seeds.sort((a, b) => Number(b - a));
+    if (mode != 1) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
+        for (let i = 0; i < seeds.length; i++) {
+            while (tile % seeds[i] == 0) tile /= seeds[i];
+        }
+        return tile;
+    }
+    else {
+        // Mode 1 guarantees the minimum possible result by going through every possible combination. 
+        // To reduce lag, it speeds this up by finding a decently-sized set of coprime seeds - that one set can be treated as one unit in the subsequent testing, as since they're coprime, they can't affect each other, i.e. they won't "steal possibilities" from each other. 
+        let coprimesAndSeeds = [[], []];
+        let potentialCAS = [[], []];
+        let coprimeValue = 1n;
+        for (let i = 0; i < seeds.length; i++) {
+            potentialCAS = [[seeds[i]], []];
+            coprimeValue = seeds[i];
+            for (let j = (i + 1) % seeds.length; j != i; j = (j + 1) % seeds.length) {
+                if (gcd(seeds[j], coprimeValue) == 1n) {
+                    coprimeValue *= seeds[j];
+                    potentialCAS[0].push(seeds[j])
+                }
+                else potentialCAS[1].push(seeds[j]);
+            }
+            if (potentialCAS[0].length > coprimesAndSeeds[0].length) coprimesAndSeeds = potentialCAS;
+        }
+        coprimesAndSeeds[0] = coprimesAndSeeds[0].sort(function(a, b){
+            if (a < b) return -1;
+            else if (a == b) return 0;
+            else return 1;
+        });
+        coprimesAndSeeds[1] = coprimesAndSeeds[1].sort(function(a, b){
+            if (a < b) return -1;
+            else if (a == b) return 0;
+            else return 1;
+        });
+        let coprimes = coprimesAndSeeds[0];
+        let remainingSeeds = coprimesAndSeeds[1];
+        let seedPowers = Array(remainingSeeds.length).fill(0n);
+        let minimum = tile;
+        let index = 0;
+        let seededTile = tile;
+        while (true) {
+            for (let c = 0; c < coprimes.length; c++) {
+                while (tile % coprimes[c] == 0n) tile /= coprimes[c];
+            }
+            if (tile < minimum) minimum = tile;
+            if (remainingSeeds.length == 0) return minimum;
+            tile = seededTile;
+            index = 0;
+            while (tile % remainingSeeds[index] != 0n) {
+                tile *= remainingSeeds[index] ** seedPowers[index];
+                seedPowers[index] = 0n;
+                index++;
+                if (index >= remainingSeeds.length) return minimum;
+            }
+            tile /= remainingSeeds[index];
+            seededTile = tile;
+            seedPowers[index] += 1n;
+        }
+    }
+}
+
 //Gameplay
 function refillSpawnConveyor() { // This function ensures that nextTiles is always full. spawnConveyor always has at least 1 tile in it, and it can have more if nextTiles is above 1.
     for (let s = 0; s < spawnConveyor.length; s++) {
@@ -8166,7 +8310,7 @@ async function MoveHandler(direction_num) {
                             merges_so_far++;
                             oldStillMoving[nextindices[rule[0] - 2]] = false;
                             score += CalcArrayConvert(CalcArray(rule[4], position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], preMergeGrid, [], vars), "+", position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], preMergeGrid, [], vars);
-                            executeScripts("Merge", position[0], position[1], paramV, paramH, [rule[0], paramSlide], Grid, [], vars.concat(mergeResults));
+                            executeScripts("Merge", position[0], position[1], paramV, paramH, [rule[0], paramSlide], Grid, [], vars.concat([mergeResults]));
                             tileDiscoveryCheck();
                             movementOccurred = true;
                             mergeCount++;
