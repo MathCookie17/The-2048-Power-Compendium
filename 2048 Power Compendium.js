@@ -913,12 +913,12 @@ for (let t = 0; t < document.getElementById("extra_menu_grid").children.length; 
     }
 }
 let inputAvailable = true;
-window.addEventListener('keydown', (e) => {
-    if (e.key == "o") {
-        output(Grid);
-    }
-}
-)
+// window.addEventListener('keydown', (e) => {
+//     if (e.key == "o") {
+//         output(Grid);
+//     }
+// }
+// )
 
 // loadMode(60);
 // height = 8; width = 8;
