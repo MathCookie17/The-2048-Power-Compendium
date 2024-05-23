@@ -22,7 +22,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color: #dd88ff /* This is just here so I have an easy place to choose colors from */
+    color: #ba77d0 /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -64,7 +64,7 @@ html {
     background-color: #efecd7;
     margin: auto;
 }
-.menu_tile {
+.menu_tile, .extra_menu_tile {
     width: calc(var(--menu_grid_size) * 13.5 / 75);
     height: calc(var(--menu_grid_size) * 13.5 / 75);
     --tile_font_size: 4.8;
@@ -78,6 +78,12 @@ html {
     box-shadow: none;
     border: calc(var(--menu_grid_size) * 0.4 / 75) solid black;
     box-sizing: border-box;
+}
+.extra_menu_tile {
+    width: calc(var(--menu_grid_size) * 54 / 359);
+    height: calc(var(--menu_grid_size) * 54 / 359);
+    border: calc(var(--menu_grid_size) * 0.335 / 75) solid black;
+    --tile_font_size: 4;
 }
 .menu_button {
     width: 33vh;
@@ -1451,22 +1457,26 @@ html {
     margin-right: auto;
     margin-top: calc(0.05vw * var(--grid_vw));
 }
-#return_button, #gp_export_button {
-    font-size: calc(1.5vw/33 * var(--grid_vw));
+#return_button, #new_game_button, #gp_export_button {
+    font-size: calc(1.4vw/33 * var(--grid_vw));
     font-weight: bold;
     padding: calc(0.5vw/33 * var(--grid_vw));
-    width: calc(12.5vw/33 * var(--grid_vw));
+    width: calc(8.5vw/33 * var(--grid_vw));
     margin: auto;
     transition: scale 0.5s;
     text-align: center;
     justify-content: center;
 }
-#return_button:hover, #gp_export_button:hover {
+#return_button:hover, #new_game_button:hover, #gp_export_button:hover {
     scale: 1.05;
 }
 #return_button {
     background-color: var(--text-color);
     color: #ffffff;
+}
+#new_game_button {
+    background-color: var(--tile-color);
+    color: #000000;
 }
 #gp_export_button {
     background-color: var(--grid-color);
