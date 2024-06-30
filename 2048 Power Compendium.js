@@ -1561,9 +1561,9 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("--tile-color", "#ecc2c2");
         document.documentElement.style.setProperty("--text-color", "#564040");
         displayRules("rules_text", ["h2", "Powers of 4"], ["h1", "1024"], ["p","Merges occur between three tiles that are both the same number and a power of 4, and between one tile that is a power of four and one tile that is triple that power of four. Get to the 1024 tile to win!"],
-        ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+        ["p", "Spawning tiles: 1 (85%), 3 (10%), 4 (5%)"]);
         displayRules("gm_rules_text", ["h2", "Powers of 4"], ["h1", "1024"], ["p","Merges occur between three tiles that are both the same number and a power of 4, and between one tile that is a power of four and one tile that is triple that power of four. Get to the 1024 tile to win!"],
-        ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+        ["p", "Spawning tiles: 1 (85%), 3 (10%), 4 (5%)"]);
     }
     else if (mode == 4) { // 3125
         width = 4; height = 4; min_dim = 2;
