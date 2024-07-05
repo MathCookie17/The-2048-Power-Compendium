@@ -3698,9 +3698,9 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("--grid-color", "#6b2548");
         document.documentElement.style.setProperty("--tile-color", "#8bd5d5");
         document.documentElement.style.setProperty("--text-color", "#203720");
-        displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "2000"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
+        displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
-        displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "2000"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
+        displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
     }
