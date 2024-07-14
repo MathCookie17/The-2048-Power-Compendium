@@ -14,6 +14,7 @@ html {
     --grid-color: #c7bea7;
     --tile-color: #ece0c2;
     --text-color: #524c46;
+    --tile-image: none;
     color: var(--text-color);
     background-image: linear-gradient(90deg, #ffff00, #0099ff);
     background-size: 100vw 100vh;
@@ -22,7 +23,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color: #ba77d0 /* This is just here so I have an easy place to choose colors from */
+    color: #bb9e4d /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -443,7 +444,7 @@ html {
     margin-bottom: 2vh;
     text-align: center;
 }
-#gm_diamond {
+#gm_diamond, #modifiers_customGridSize {
     color: #006a7c;
 }
 #gm_4D_height {
@@ -647,6 +648,28 @@ html {
     position: relative;
     width: 25%;
 }
+.modifiers_box_2x2_entry {
+    width: 50%;
+    height: 50%;
+}
+#modifiers_negativetiles_SpawnRatios {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+#modifiers_negativetiles_positiveSpawnRatio_title {
+    color: #ad0000
+}
+#modifiers_negativetiles_negativeSpawnRatio_title {
+    color: #0000ad
+}
+.negativeTiles_spawnFormBox {
+    width: 50%;
+}
+#modifiers_temporaryHoles_numeric {
+    color: #222;
+}
 .modifier_text {
     font-weight: bold;
     font-size: calc(var(--modifiers_base_size) * 3); 
@@ -745,8 +768,9 @@ html {
     left: 0px;
     top: 0px;
     box-sizing: border-box;
+    background-size: 100% 100%;
 }
-#modifiers_customGridSizeLine, #modifiers_customGridNotice {
+.modifiers_customGridSizeLine, #modifiers_customGridNotice {
     width: calc(var(--modifiers_base_size) * 56);
     height: calc(var(--modifiers_base_size) * 56);
     position: absolute;
@@ -755,14 +779,14 @@ html {
     align-items: center;
     flex-wrap: wrap;
 }
-#modifiers_customGridSizeLine {
+.modifiers_customGridSizeLine {
     left: calc(25% - calc(var(--modifiers_base_size) * 42));
 }
 #modifiers_customGridNotice {
     right: calc(25% - calc(var(--modifiers_base_size) * 42));
     font-size: calc(var(--modifiers_base_size) * 4);
 }
-#modifiers_customGridSizeLine > .modifiers_var_container {
+.modifiers_customGridSizeLine > .modifiers_var_container {
     font-size: calc(var(--modifiers_base_size) * 3);
     height: calc(var(--modifiers_base_size) * 15);
     position: relative;
@@ -992,7 +1016,7 @@ html {
     #modifiers_customGrid {
         left: calc(66% - calc(var(--custom_grid_width) / 2));
     }
-    #modifiers_customGridSizeLine {
+    .modifiers_customGridSizeLine {
         left: calc(33% - calc(var(--modifiers_base_size) * 42));
     }
     #modifiers_customArrowBO {
@@ -1018,6 +1042,9 @@ html {
     }
     #modifiers_customArrow_removeDirection, #modifiers_customArrow_addDirection {
         width: calc(var(--modifiers_base_size) * 50);
+    }
+    #modifiers_negativetiles_SpawnRatios {
+        width: 100%;
     }
 }
 @media screen and (max-aspect-ratio: 6/5) {
@@ -1068,7 +1095,7 @@ html {
     #modifiers {
         --modifiers_base_size: 1vw;
     }
-    #modifiers_customGridAndSize {
+    #modifiers_customGridAndSize, .modifiers_box_2x2_entry {
         all: revert;
     }
     #modifiers_customGrid {
@@ -1076,13 +1103,13 @@ html {
         display: block;
         left: calc(50% - calc(var(--custom_grid_width) / 2));
     }
-    #modifiers_customGridSizeLine {
+    .modifiers_customGridSizeLine {
         position: relative;
         width: auto;
         height: auto;
         left: 0vw;
     }
-    #modifiers_customGridSizeLine > .modifiers_var_container {
+    .modifiers_customGridSizeLine > .modifiers_var_container {
         width: 50%;
     }
     #modifiers_customArrowBO {
@@ -1134,33 +1161,33 @@ html {
         height: calc(var(--modifiers_base_size) * 18);
     }
 }
-@media screen and (max-aspect-ratio: 6/10) {
+@media screen and (max-aspect-ratio: 11/20) {
     .modifiers_var_container, .modifiers_var_container_stretching {
         width: 100%;
     }
-    #modifiers_customGridSizeLine > .modifiers_var_container {
+    .modifiers_customGridSizeLine > .modifiers_var_container {
         width: 100%;
     }
     .customArrow_var_container {
         width: 50%;
     }
 }
-@media screen and (max-aspect-ratio: 5/10) {
+@media screen and (max-aspect-ratio: 9/20) {
     #modifiers {
         --modifiers_base_size: 1.2vw;
     }
 }
-@media screen and (max-aspect-ratio: 4/10) {
+@media screen and (max-aspect-ratio: 13/40) {
     #modifiers {
         --modifiers_base_size: 1.5vw;
     }
-}
-@media screen and (max-aspect-ratio: 13/40) {
-    #modifiers {
-        --modifiers_base_size: 1.75vw;
-    }
     .customArrow_var_container {
         width: 100%;
+    }
+}
+@media screen and (max-aspect-ratio: 6/20) {
+    #modifiers {
+        --modifiers_base_size: 1.75vw;
     }
 }
 
@@ -1203,11 +1230,29 @@ html {
     display: inline-block;
     width: calc(var(--tile_size) * max(1, var(--height)/var(--width)));
     height: calc(var(--tile_size) * max(1, var(--width)/var(--height)));
-    background-color: var(--tile-color);
     position: absolute;
     overflow: visible;
     left: 0px;
     top: 0px;
+    --this-tile-color: var(--tile-color);
+    --this-tile-image: var(--tile-image);
+    background-size: 100% 100%;
+}
+.empty_tile:not(.hexagon_clip) {
+    background-color: var(--this-tile-color);
+    background-image: var(--this-tile-image);
+}
+.empty_tile.hexagon_clip::before {
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    clip-path: polygon(6.67% 25%, 6.67% 75%, 50% 100%, 93.3% 75%, 93.3% 25%, 50% 0%);
+    background-color: var(--this-tile-color);
+    background-image: var(--this-tile-image);
+    background-size: 100% 100%;
 }
 .tile {
     display: flex;
@@ -1222,6 +1267,9 @@ html {
     font-size: calc(var(--tile_size) * 0.5);
     font-weight: bold;
     z-index: 1;
+}
+.hexagon_clip:not(.empty_tile) {
+    clip-path: polygon(6.67% 25%, 6.67% 75%, 50% 100%, 93.3% 75%, 93.3% 25%, 50% 0%);
 }
 .tile_text {
     z-index: 2;
@@ -1677,67 +1725,6 @@ html {
         font-size: 5.14vw;
         padding: 3.43vw;
         height: 5.14vw;
-    }
-}
-
-/* CURRENTLY UNIMPLEMENTED */
-#custom {
-    display: none;
-    text-align: center;
-}
-
-#custom_Menu {
-    --base_size: 1vh;
-    font-size: calc(var(--base_size) * 2.5);
-    color: #e000cd;
-}
-.cmenu_button {
-    width: calc(var(--base_size) * 75);
-    font-size: calc(var(--base_size) * 3);
-    background-color: #ff00e1;
-    color: #b5009f;
-    border: calc(var(--base_size) * 0.75) solid #b5009f;
-    font-weight: bold;
-    margin: auto;
-    padding: calc(var(--base_size) * 1);
-    margin-top: calc(var(--base_size) * 1);
-    margin-bottom: calc(var(--base_size) * 1);
-}
-#cmenu_return {
-    width: calc(var(--base_size) * 33);
-    position: relative;
-    font-size: calc(var(--base_size) * 4);
-    font-weight: bold;
-    padding: calc(var(--base_size) * 2);
-    height: calc(var(--base_size) * 5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #787800;
-    background-color: #004675;
-    border: var(--base_size) solid #787800;
-    margin: auto;
-    margin-top: calc(var(--base_size) * 3);
-    margin-bottom: 0;
-}
-@media screen and (max-aspect-ratio: 16/9) {
-    #custom_Menu {
-        --base_size: 0.95vh;
-    }
-}
-@media screen and (max-aspect-ratio: 4/5) {
-    .cmenu_button {
-        width: 90%;
-    }
-}
-@media screen and (max-aspect-ratio: 3/5) {
-    #custom_Menu {
-        --base_size: 0.85vh;
-    }
-}
-@media screen and (max-aspect-ratio: 9/25) {
-    #custom_Menu {
-        --base_size: 2.35vw;
     }
 }
 

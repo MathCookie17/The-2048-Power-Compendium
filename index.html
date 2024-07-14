@@ -367,6 +367,12 @@
                             <div id="modifiers_randomBlackBox_plus" class="gm_grid_button plus_button">+</div>
                             <div id="modifiers_randomBlackBox_minus" class="gm_grid_button minus_button">-</div>
                         </div>
+                        <div id="modifiers_randomSlippery" class="modifiers_var_container">
+                            <p id="modifiers_randomSlippery_title" class="gm_var_title">Randomly-Placed Slippery Tiles:</p>
+                            <p id="modifiers_randomSlippery_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_randomSlippery_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_randomSlippery_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
                         <div id="modifiers_spawnInterval" class="modifiers_var_container">
                             <p id="modifiers_spawnInterval_title" class="gm_var_title">Moves Between Spawns:</p>
                             <p id="modifiers_spawnInterval_counter" class="gm_var_counter"></p>
@@ -376,12 +382,24 @@
                     </div>
                 </div>
                 <div id="modifiers_page_2" class="modifiers_page">
-                    <p id="modifiers_multiMerge_text" class="modifier_text">A tile that was just merged cannot itself be part of another merge on the same move.</p>
-                    <div id="modifiers_multiMerge_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
-                    <p id="modifiers_spawnLocation_text" class="modifier_text">New tiles can spawn in any empty spaces on the grid.</p>
-                    <div id="modifiers_spawnLocation_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
-                    <p id="modifiers_simpleSpawns_text" class="modifier_text">Gamemodes have their normal spawning rules.</p>
-                    <div id="modifiers_simpleSpawns_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <div class="modifiers_flexbox">
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_multiMerge_text" class="modifier_text">A tile that was just merged cannot itself be part of another merge on the same move.</p>
+                            <div id="modifiers_multiMerge_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_spawnLocation_text" class="modifier_text">New tiles can spawn in any empty spaces on the grid.</p>
+                            <div id="modifiers_spawnLocation_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_simpleSpawns_text" class="modifier_text">Gamemodes have their normal spawning rules.</p>
+                        <div id="modifiers_simpleSpawns_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_twoMoveMerge_text" class="modifier_text">Merges can occur on any move.</p>
+                            <div id="modifiers_twoMoveMerge_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                    </div>
                 </div>
                 <div id="modifiers_page_3" class="modifiers_page">
                     <div id="modifiers_customGridActivate" class="hover_grow CustomGridSwitch">Activate Custom Grid</div>
@@ -395,10 +413,11 @@
                 <div id="modifiers_page_3.1" class="modifiers_page">
                     <div id="modifiers_customGridDeactivate" class="hover_grow CustomGridSwitch">Deactivate Custom Grid</div>
                     <div id="modifiers_customGridLine">
-                        <div id="modifiers_customGridNotice">Click on a tile here to switch it between being an empty tile, a hole in the grid, or a moving block tile.</div>
+                        <div id="modifiers_customGridNotice">Click on a tile here to switch it between being an empty tile, a hole in the grid, a moving block tile, or a slippery tile.</div>
                         <div id="modifiers_customGridAndSize">
                             <div id="modifiers_customGrid"></div>
-                            <div id="modifiers_customGridSizeLine">
+                            <div id="modifiers_customGridSizeLineNormal" class="modifiers_customGridSizeLine">
+                                <div id="modifiers_customGridShape_Square" class="hover_grow ModifierAdd" style="background-color: #197500;color: #2ed400;border-color: #2ed400">Grid Shape: Square</div>
                                 <div id="modifiers_customGridWidth" class="modifiers_var_container">
                                     <p id="modifiers_customGridWidth_title" class="gm_var_title">Grid Width:</p>
                                     <p id="modifiers_customGridWidth_counter" class="gm_var_counter"></p>
@@ -410,6 +429,15 @@
                                     <p id="modifiers_customGridHeight_counter" class="gm_var_counter"></p>
                                     <div id="modifiers_customGridHeight_plus" class="gm_grid_button plus_button">+</div>
                                     <div id="modifiers_customGridHeight_minus" class="gm_grid_button minus_button">-</div>
+                                </div>
+                            </div>
+                            <div id="modifiers_customGridSizeLineSingle" class="modifiers_customGridSizeLine">
+                                <div id="modifiers_customGridShape_Hexagonal" class="hover_grow ModifierAdd" style="background-color: #500075;color: #9900e0;border-color: #9900e0">Grid Shape: Hexagonal</div>
+                                <div id="modifiers_customGridSize" class="modifiers_var_container">
+                                    <p id="modifiers_customGridSize_title" class="gm_var_title">Grid Size:</p>
+                                    <p id="modifiers_customGridSize_counter" class="gm_var_counter"></p>
+                                    <div id="modifiers_customGridSize_plus" class="gm_grid_button plus_button">+</div>
+                                    <div id="modifiers_customGridSize_minus" class="gm_grid_button minus_button">-</div>
                                 </div>
                             </div>
                         </div>
@@ -497,16 +525,63 @@
                     </div>
                 </div>
                 <div id="modifiers_page_4" class="modifiers_page">
-                    <p id="modifiers_garbage0_text" class="modifier_text">Garbage 0s: OFF</p>
-                    <p id="modifiers_garbage0_info" class="modifier_subtext">When this modifier is on, whenever tiles merge, 0s are left behind on the tiles emptied by the merge. You can merge any number of 0s into a single 0, which is the only merge that doesn't leave behind more 0s.</p>
-                    <div id="modifiers_garbage0_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
-                    <p id="modifiers_negativetiles_text" class="modifier_text">Negative Tiles: OFF</p>
-                    <p id="modifiers_negativetiles_info" class="modifier_subtext">When this modifier is on, positive and negative tiles are equally likely to spawn. Tiles only merge with other tiles of their own sign (in 2049's case, -1s fuel positive merges and 1s fuel negative merges), and you must get the winning tile in both positive and negative forms to win (in modes with multiple win conditions, you need to get twice as many winning tiles to win, but they don't necessarily have to have a mix of positive and negative), but if this modifier is set to Interacting, then when a tile and its own negative collide, they're both destroyed.</p>
-                    <div id="modifiers_negativetiles_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <div class="modifiers_flexbox">
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_garbage0_text" class="modifier_text">Garbage 0s: OFF</p>
+                            <p id="modifiers_garbage0_info" class="modifier_subtext">When this modifier is on, whenever tiles merge, 0s are left behind on the tiles emptied by the merge. You can merge any number of 0s into a single 0, which is the only merge that doesn't leave behind more 0s.</p>
+                            <div id="modifiers_garbage0_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_hiddenTileText_text" class="modifier_text">Tile numbers are shown as normal.</p>
+                            <div id="modifiers_hiddenTileText_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                        <div class="modifiers_box_2x2_entry">
+                            <p id="modifiers_negativetiles_text" class="modifier_text">Negative Tiles: OFF</p>
+                            <p id="modifiers_negativetiles_info" class="modifier_subtext">When this modifier is on, both positive tiles and negative tiles can spawn. Tiles only merge with other tiles of their own sign (in 2049's case, -1s fuel positive merges and 1s fuel negative merges), and you must get the winning tile in both positive and negative forms to win (in modes with multiple win conditions, you need to get twice as many winning tiles to win, but they don't necessarily have to have a mix of positive and negative), but if this modifier is set to Interacting, then when a tile and its own negative collide, they're both destroyed.</p>
+                            <div id="modifiers_negativetiles_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                        </div>
+                        <div id="modifiers_negativetiles_SpawnRatios" class="modifiers_box_2x2_entry">
+                            <div id="modifiers_negativetiles_positiveSpawnRatio" class="modifiers_var_container negativeTiles_spawnFormBox">
+                                <p id="modifiers_negativetiles_positiveSpawnRatio_title" class="gm_var_title">Positive Tiles Spawn Ratio:</p>
+                                <form id="modifiers_negativetiles_positiveSpawnRatio_form" class="gm_var_form">
+                                    <input type="number" step="any" id="modifiers_negativetiles_positiveSpawnRatio_change" name="modifiers_negativetiles_positiveSpawnRatio_change">
+                                </form>
+                            </div>
+                            <div id="modifiers_negativetiles_negativeSpawnRatio" class="modifiers_var_container negativeTiles_spawnFormBox">
+                                <p id="modifiers_negativetiles_negativeSpawnRatio_title" class="gm_var_title">Negative Tiles Spawn Ratio:</p>
+                                <form id="modifiers_negativetiles_negativeSpawnRatio_form" class="gm_var_form">
+                                    <input type="number" step="any" id="modifiers_negativetiles_negativeSpawnRatio_change" name="modifiers_negativetiles_negativeSpawnRatio_change">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div id="modifiers_page_5" class="modifiers_page">
-                    <p id="modifiers_twoMoveMerge_text" class="modifier_text">Merges can occur on any move.</p>
-                    <div id="modifiers_twoMoveMerge_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <p id="modifiers_tricolortiles_text" class="modifier_text">Tricolor Tiles: OFF</p>
+                    <p id="modifiers_tricolortiles_info" class="modifier_subtext">When this modifier is on, in modes where all merges occur between two tiles, tiles come in three colors. Two tiles can only merge if they are different colors, and the resulting tile will be the color that neither of its components were. In modes where all merges occur between three tiles, there are four colors. This modifier does not work on modes with merges of multiple lengths, Partial Absorb modes, or Bicolor modes.</p>
+                    <div id="modifiers_tricolortiles_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                    <div id="modifiers_temporaryHoles_numeric" class="modifiers_flexbox">
+                        <div id="modifiers_temporaryHoles_amount" class="modifiers_var_container">
+                            <p id="modifiers_temporaryHoles_amount_title" class="gm_var_title">Temporary Holes per Spawn:</p>
+                            <p id="modifiers_temporaryHoles_amount_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_temporaryHoles_amount_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_temporaryHoles_amount_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_temporaryHoles_interval" class="modifiers_var_container">
+                            <p id="modifiers_temporaryHoles_interval_title" class="gm_var_title">Turns Between Hole Spawns:</p>
+                            <p id="modifiers_temporaryHoles_interval_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_temporaryHoles_interval_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_temporaryHoles_interval_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                        <div id="modifiers_temporaryHoles_lifespan" class="modifiers_var_container">
+                            <p id="modifiers_temporaryHoles_lifespan_title" class="gm_var_title">Temporary Hole Lifespan:</p>
+                            <p id="modifiers_temporaryHoles_lifespan_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_temporaryHoles_lifespan_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_temporaryHoles_lifespan_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="modifiers_page_6" class="modifiers_page">
                     <p id="modifiers_emptyAutoMoves_text" class="modifier_text" style="color:#742fc3">All moves are manual.</p>
                     <div id="modifiers_emptyAutoMoves_button" class="hover_grow ModifierAdd">Add an Automatic Move</div>
                     <div id="modifiers_AutoMovesBox">
@@ -557,6 +632,12 @@
                             <div id="modifiers_AutoMoves_merges" class="modifiers_var_container_stretching">
                                 <p id="modifiers_AutoMoves_merges_text" class="modifier_text">Tiles can be merged during this move.</p>
                                 <div id="modifiers_AutoMoves_merges_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                            </div>
+                            <div id="modifiers_AutoMoves_probability" class="modifiers_var_container">
+                                <p id="modifiers_AutoMoves_probability_title" class="gm_var_title">Chance of Occurring (%):</p>
+                                <form id="modifiers_AutoMoves_probability_form" class="gm_var_form">
+                                    <input type="number" step="any" id="modifiers_AutoMoves_probability_change" name="modifiers_AutoMoves_probabilityd_change">
+                                </form>
                             </div>
                         </div>
                         <div id="modifiers_AutoMoves_buttonsLine">
@@ -612,22 +693,6 @@
                 <div id="save_code_import" class="save_code_button hover_grow">Import Save Code</div>
                 <div id="save_code_return_menu" class="save_code_button hover_grow">Return to menu</div>
                 <div id="save_code_return_game" class="save_code_button hover_grow">Return to game</div>
-            </div>
-        </div>
-
-        <div id="custom"> 
-            <div id="custom_Menu">
-                <h1>Custom Game</h1>
-                <p>CURRENTLY UNIMPLEMENTED</p>
-                <div id="cmenu_to_tiles" class="hover_grow cmenu_button">Tile Types</div>
-                <div id="cmenu_to_merges" class="hover_grow cmenu_button">Merge Rules</div>
-                <div id="cmenu_to_spawned" class="hover_grow cmenu_button">Spawned Tiles</div>
-                <div id="cmenu_to_winning" class="hover_grow cmenu_button">Winning Tiles</div>
-                <div id="cmenu_to_grid" class="hover_grow cmenu_button">Grid</div>
-                <div id="cmenu_to_directions" class="hover_grow cmenu_button">Directions</div>
-                <div id="cmenu_to_background" class="hover_grow cmenu_button">Background Stuff</div>
-                <div id="cmenu_to_other" class="hover_grow cmenu_button">Other Settings</div>
-                <div id="cmenu_return" class="hover_grow">Return to menu</div>
             </div>
         </div>
 
@@ -704,8 +769,8 @@
                 <h2>Modifiers</h2>
                 <p>
                     If the 61 modes on their own aren't enough for you, then click "Go to Modifiers" on the menu to access a bunch of different modifiers you can change.
-                    These modifiers affect EVERY mode (for the most part), and they allow a pretty good degree of customization.  The Modifiers selection screens are
-                    split up into five pages - to switch between them, click the blue and orange arrows. With the exception of the Animation Speed Multiplier modifier
+                    These modifiers affect EVERY mode (for the most part), and they allow a pretty good degree of customization. The Modifiers selection screens are
+                    split up into six pages - to switch between them, click the blue and orange arrows. With the exception of the Animation Speed Multiplier modifier
                     (which is just aesthetic, and you're encouraged to change this to whatever value you like the best), all of these modifiers alter the gameplay,
                     so it's recommended you don't start changing the modifiers until you're comfortable with the variants themselves. Games resumed from save codes
                     retain their old settings regardless of what the current modifiers are set to, except for Animation Speed Multiplier, which is always based on its
@@ -717,15 +782,16 @@
                     The first page contains modifiers with numeric values - most of these are changed via the plus and minus buttons, while Animation Speed
                     Multiplier is changed by typing a new value into its textbox (1 is default speed, higher numbers are faster, lower numbers are slower... except for 0,
                     which means there's no animation and moves are instant). When it comes to the "Randomly-Placed" modifiers, "holes" are, well, holes in the grid
-                    (which effectively act as walls), while "block tiles" are tiles that move with the others but can't merge with anything, even themselves.
+                    (which effectively act as walls), "block tiles" are tiles that move with the others but can't merge with anything (even themselves),
+                    and "slippery tiles" are spaces on the grid that tiles will slide right over (as if the slippery tile isn't there).
                 </p>
                 <img src="Guide Images/Modifiers Page 2.png" style="width: calc(var(--base_size) * 60); height: auto">
                 <p class="img_caption">The second page of the Modifiers screens</p>
                 <p>The remaining pages have modifiers that are changed by clicking their respective "Switch this Modifier" buttons. The second page has modifiers
-                    that change some more basic elements of the gameplay, the third page has modifiers that alter the grid and movement directions, and the fourth
-                    and fifth pages are where the most game-changing modifiers are found. If you decide to enable either of the fourth page modifiers, you should
-                    probably play on a larger grid than you otherwise would! Some modes have special interactions with a couple modifiers, with Negative Tiles in
-                    particular having the most special interactions.
+                    that change some more basic elements of the gameplay, the third page has modifiers that alter the grid and movement directions, the fourth
+                    and fifth pages are where the most game-changing modifiers are found, and the sixth page lets you add moves that trigger automatically.
+                    If you decide to enable either of the fourth page modifiers, you should probably play on a larger grid than you otherwise would!
+                    Some modes have special interactions with a couple modifiers, with Negative Tiles in particular having the most special interactions.
                 </p>
             </div>
             <div id="guide_customGrid" class="guide_box">
@@ -733,16 +799,17 @@
                 <img src="Guide Images/Modifiers Page 3.png" style="width: calc(var(--base_size) * 60); height: auto">
                 <p class="img_caption">I wonder what that "Activate Custom Grid" button does?</p>
                 <p>
-                    Page 3, by default, only offers a few options for the shape of the grid: square, diamond, checkerboard, hexagonal, and 3D/4D...
+                    Page 3, by default, only offers a few options for the shape of the grid: square, diamond, checkerboard, hexagonal, triangular (made of hexagons), and 3D/4D...
                     but if you want to customize it further, you can click the "Activate Custom Grid" button. Doing so enables you to fully customize the grid by
                     turning page 3 into two pages: one to customize the grid, one to customize the movement directions.
                 </p>
                 <img src="Guide Images/Custom Grid.png" style="width: calc(var(--base_size) * 60); height: auto">
                 <p class="img_caption">Ah, so that's what it does!</p>
                 <p>
-                    The grid customizer is the easier of the two custom grid screens to use: you can change the dimensions of the grid, and you can click on any tile
-                    to switch what it starts as: a regular empty tile, a hole in the grid, or a box tile. You can't make any tile start as a number tile, though, since
-                    different modes have different tiles and the custom grid applies to <i>every</i> mode.
+                    The grid customizer is the easier of the two custom grid screens to use: you can change the dimensions of the grid,
+                    you can switch the grid between square tiles and hexagonal tiles, and you can click on any tile
+                    to switch what it starts as: a regular empty tile, a hole in the grid, a box tile, or a slippery tile.
+                    You can't make any tile start as a number tile, though, since different modes have different tiles and the custom grid applies to <i>every</i> mode.
                 </p>
                 <img src="Guide Images/Custom Directions.png" style="width: calc(var(--base_size) * 90); height: auto">
                 <p class="img_caption">The directions customization screen, with the up arrow button selected.</p>
@@ -750,8 +817,8 @@
                     On the directions customization screen, you can alter the direction buttons freely. To alter a specific button, click on that button. Once
                     a button is selected, you can fill in the textboxes to change its attributes. When it comes to movement magnitudes, -1 vertical is up,
                     +1 vertical is down, -1 horizontal is left, +1 horizontal is right, +1 vertical and +1 horizontal is southeast, and so on. +2 vertical is downwards
-                    movement that skips every other tile, so tiles jump directly from their current space to the space two tiles below them. The five modifiers with
-                    "(%)" next to them are measured in percentage of the arrows box, where 100% is the entire box. To change which keys on the keyboard correspond to
+                    movement that skips every other tile, so tiles jump directly from their current space to the space two tiles below them (These directions are different on a hexagonal grid).
+                    The five modifiers with "(%)" next to them are measured in percentage of the arrows box, where 100% is the entire box. To change which keys on the keyboard correspond to
                     each direction, click the "Remove Last Key" and "Add New Key" buttons; the former removes the last keyboard key in the list for that direction.
                     The "Add New Key" button, when clicked, becomes "Listening...", indicating that you should press a key on the keyboard; if the key you clicked isn't
                     already assigned to a direction, then it will be added to the currently selected direction. The "Remove This Direction" button does what it says it does.
@@ -807,6 +874,10 @@
                         </li>
                         <li>
                             Automatic moves were inspired by the gravity special mode from <a href="https://cyberzhg.github.io/2048/">2147483648</a>.
+                        </li>
+                        <li>
+                            Tricolor Tiles and the "chance of occurring" automatic moves property were suggested by Michael Darrow,
+                            who's emailed me several ideas for features to add to the 2048 Power Compendium.
                         </li>
                     </ul>
                     All the other modes, as far as I'm aware, are unique to the 2048 Power Compendium. I'll also note that The 2048 Power Compendium was originally
@@ -864,8 +935,17 @@
                     </li>
                     <br>
                     <li>
+                        v1.3.3 (Jul. 9, 2024): Fixed a typo with 2197's rules description.
+                    </li>
+                    <br>
+                    <li>
                         <b>
-                            v1.3.3 (Jul. 9, 2024) [Current Version]: Fixed a typo with 2197's rules description.
+                            v1.4 (Jul. 14, 2024) [Current Version]: Made the hexagonal grid actually look hexagonal, added "triangle made of hexagons" as a grid option,
+                            added the ability to switch between square and hexagonal tiles to the Custom Grid, added a new Page 5 of modifiers (automatic
+                            moves are now on page 6. Page 5 contains Tricolor Tiles and temporary holes), added slippery tiles to the Custom Grid and
+                            gave them a "randomly-placed" modifier, added parameters to Negative Tiles that let you change the spawn ratio between the two signs,
+                            added a modifier that hides the numbers on the tiles, made 2295's behavior with Interacting Negative Tiles more interesting, and
+                            added "Multitile 2048" as an option for one of the mode modifiers in Wildcard 2048.
                         </b>
                     </li>
                 </ul>
