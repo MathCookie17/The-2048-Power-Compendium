@@ -6438,6 +6438,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     let subtile = document.createElement("div");
                     subtile.classList.add("subtile");
                     tile.appendChild(subtile);
+                    if (hexagonal) subtile.classList.add("hexagon_clip");
                     let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
                     if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) subtile.style.setProperty("border-color", "#444");
                     else {
@@ -6447,8 +6448,8 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     }
                     subtile.style.setProperty("width", subtile_size * 100 + "%");
                     subtile.style.setProperty("height", subtile_size * 100 + "%");
-                    subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
-                    subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
                     subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
                     display[4][0] = ["@Literal"].concat(all_factors.slice(1));
                     displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display);
@@ -6581,11 +6582,12 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     let subtile = document.createElement("div");
                     subtile.classList.add("subtile");
                     tile.appendChild(subtile);
+                    if (hexagonal) subtile.classList.add("hexagon_clip");
                     subtile.style.setProperty("border-color", "#fff");
                     subtile.style.setProperty("width", subtile_size * 100 + "%");
                     subtile.style.setProperty("height", subtile_size * 100 + "%");
-                    subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
-                    subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
                     subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
                     display[4][0] = value;
                     displayTile("Subtile", subtile, "None", "None", value, display);
@@ -10529,6 +10531,10 @@ function importSave(code) {
 //Hidden Tile Viewer
 function displayViewerTile() {
     document.getElementById("viewer_number_change").value = screenVars[0];
+    if (hexagonal) {
+        document.getElementById("viewer_tile").classList.add("hexagon_clip");
+    }
+    else document.getElementById("viewer_tile").classList.remove("hexagon_clip");
     if (subScreen == "Wildcard 2048") {
         document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: Wildcard 2048";
         document.getElementById("tile_viewer_scheme").style.setProperty("color", "#f2b179");

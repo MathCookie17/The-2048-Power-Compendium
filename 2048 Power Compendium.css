@@ -1677,6 +1677,9 @@ html {
     align-items: center;
     z-index: 1;
 }
+.subtile.hexagon_clip {
+    border-radius: 100%;
+}
 
 /* Save code screen */
 #save_code {
@@ -1907,6 +1910,9 @@ ul {
     justify-content: center;
     align-items: center;
     position: relative;
+}
+#viewer_tile.hexagon_clip {
+    border-radius: 100%
 }
 #viewer_tile_text {
     z-index: 2;
