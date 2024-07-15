@@ -7223,11 +7223,18 @@ function loadModifiers() {
                     if (startTileSpawns[i][0] == "Box") {
                         let chance = startTileSpawns[i][1];
                         let newSpawn = ["Box", chance];
-                        for (let e = 2; e < startTileSpawns[i].length - 1; e += 2) {
+                        for (let e = 2; e < startTileSpawns[i].length; e++) {
                             let tile = startTileSpawns[i][e];
-                            let amount = startTileSpawns[i][e + 1];
-                            newSpawn.push([...tile, 0], amount, [...tile, 1], amount, [...tile, 2], amount);
-                            if (yellowIncluded) newSpawn.push([...tile, 3], amount);
+                            if (typeof startTileSpawns[i][e + 1] == "number") {
+                                let amount = startTileSpawns[i][e + 1];
+                                newSpawn.push([...tile, 0], amount, [...tile, 1], amount, [...tile, 2], amount);
+                                if (yellowIncluded) newSpawn.push([...tile, 3], amount);
+                                e++;
+                            }
+                            else {
+                                newSpawn.push([...tile, 0], [...tile, 1], [...tile, 2]);
+                                if (yellowIncluded) newSpawn.push([...tile, 3]);
+                            }
                         }
                         startTileSpawns[i] = newSpawn;
                     }
