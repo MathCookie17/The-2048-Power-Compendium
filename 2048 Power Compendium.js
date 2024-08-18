@@ -8361,7 +8361,7 @@ function CalcArrayString(str) {
         if (split.length == 1) {
             let nextv = vcoord + vdir;
             let nexth = hcoord + hdir;
-            while (gri[nextv][nexth] == "@Slippery") {
+            while (gri[nextv] !== undefined && gri[nextv][nexth] == "@Slippery") {
                 nextv += vdir;
                 nexth += hdir;
             }
@@ -8373,7 +8373,7 @@ function CalcArrayString(str) {
                 result.unshift(tile);
                 nextv += vdir;
                 nexth += hdir;
-                while (gri[nextv][nexth] == "@Slippery") {
+                while (gri[nextv] !== undefined && gri[nextv][nexth] == "@Slippery") {
                     nextv += vdir;
                     nexth += hdir;
                 }
@@ -8390,7 +8390,7 @@ function CalcArrayString(str) {
                 nextv += vdir * sign;
                 nexth += hdir * sign;
                 if (gri[nextv] === undefined || gri[nextv][nexth] === undefined) break;
-                while (gri[nextv][nexth] == "@Slippery") {
+                while (gri[nextv] !== undefined && gri[nextv][nexth] == "@Slippery") {
                     nextv += vdir * sign;
                     nexth += hdir * sign;
                 }
@@ -8414,7 +8414,7 @@ function CalcArrayString(str) {
                         nextv += hdir * sign;
                         nexth += -vdir * sign;
                         if (gri[nextv] === undefined || gri[nextv][nexth] === undefined) break;
-                        while (gri[nextv][nexth] == "@Slippery") {
+                        while (gri[nextv] !== undefined && gri[nextv][nexth] == "@Slippery") {
                             nextv += hdir * sign;
                             nexth += -vdir * sign;
                         }
