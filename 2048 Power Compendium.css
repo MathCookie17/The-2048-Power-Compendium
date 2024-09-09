@@ -537,6 +537,9 @@ html {
     .gm_var_container {
         width: 50%;
     }
+    .many_vars > .gm_var_container, .many_vars > .gm_var_switch_container, .many_vars > .gm_var_switchForm_container {
+        width : 50%;
+    }
 }
 @media screen and (max-aspect-ratio: 13/20) {
     #gamemode {
@@ -546,6 +549,9 @@ html {
 @media screen and (max-aspect-ratio: 7/20) {
     .gm_var_container {
         width: 100%;
+    }
+    .many_vars > .gm_var_container, .many_vars > .gm_var_switch_container, .many_vars > .gm_var_switchForm_container {
+        width : 100%;
     }
 }
 
