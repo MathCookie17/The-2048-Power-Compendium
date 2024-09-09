@@ -11,7 +11,7 @@
         <div id="menu">
             <h1 id="compendium_title">The 2048 Power Compendium</h1>
             <p id="menu_subtitle">Click on one of the tiles here to select that game mode.</p>
-            <div id="menu_grid">
+            <div id="menu_grid_storage">
                 <div class="menu_tile hover_grow" style="background-color: #ffc400">2048</div>
                 <div class="menu_tile hover_grow" style="background-color: #ff00d9">2187</div>
                 <div class="menu_tile hover_grow" style="background-color: #ff0000">1024</div>
@@ -37,54 +37,88 @@
                 <div class="menu_tile hover_grow" style="background-color: #ffdf76">2059</div>
                 <div class="menu_tile hover_grow" style="background-color: #829bff">2315</div>
                 <div class="menu_tile hover_grow" style="background-image: linear-gradient(135deg, #a06262 0%, #a06262 27.5%, #626fa0 27.5%, #626fa0 50%, #88a062 50%, #88a062 72.5%, #a0629a 72.5%); background-color: #636363">XXXX</div>
-            </div>
-            <div id="extra_menu_container">
-                <div id="extra_menu_grid">
-                <div class="extra_menu_tile hover_grow" style="background-color: #6637a8">2584</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #ffba7d">2745</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #009900">1705</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#d0ae91, #d58137, #7a4b21); --tile_font_size: 3;">1535 1536 1537</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#ffd54d 0% 15%, #fff 15% 85%, #ffd54d 85% 100%)">3072</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#edcc61 0% 50%, #8cff00); --tile_font_size: 3.35;"><p><sup>256</sup>No</p></div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#ff3030 0%, #ff00d9 25% 75%, #3030ff 100%); --tile_font_size: 2.67;">Bicolor 2187</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#8fba00 0%, #c3ff00 25% 75%, #8fba00 100%); --tile_font_size: 2.67;">Harder 3125</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#ff77eb 0% 50%, #6c005c 50% 100%); --tile_font_size: 2.67;">Partial Absorb 243</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#d18cff 0% 50%, #5c0099 50% 100%); --tile_font_size: 2.67;">Partial Absorb 255</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #990059">1280</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #af8c00; --tile_font_size: 2.5">2216.838</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #ffff4d; --tile_font_size: 5.35;">180</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #00a068">2592</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(90deg, #f9eee3 0% 33.333%, #ede0c8 33.333% 66.666%, #f2b179 66.666% 100%);">2 4 8</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#660000, #664e00, #1d6600, #00664e, #005866, #003366, #050066); --tile_font_size: 5"><p>X<sup>Y</sup></p></div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#30ffff 0%, #6637a8 25% 75%, #ffff30 100%); --tile_font_size: 2.67;">Bicolor 2584</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #deeedd">1321</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#df96d9, #bfff98, #df96d9); --tile_font_size: 2.92;">mod 27</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#4af 0% 33%, #74f 33%, #0bb 66%, #b3f 66%, #40c 100%); --tile_font_size: 2">Directional Merges</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #eace51">2378</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#cdff71, #77b700); --tile_font_size: 3.5;">1093 1094</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#6cffff 0% 20%, #00c3c3)">2310</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(90deg, #ffffac, #d8ffae, #a6ffcd, #aaf8ff, #b7c2ff, #e2bcff, #ffaaff); --tile_font_size: 5.35;">378</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #468">
+                <div class="menu_tile hover_grow" style="background-color: #6637a8">2584</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffba7d">2745</div>
+                <div class="menu_tile hover_grow" style="background-color: #009900">1705</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#d0ae91, #d58137, #7a4b21); --tile_font_size: 3.6;">1535 1536 1537</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ffd54d 0% 15%, #fff 15% 85%, #ffd54d 85% 100%)">3072</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#edcc61 0% 50%, #8cff00); --tile_font_size: 4;"><p><sup>256</sup>No</p></div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff3030 0%, #ff00d9 25% 75%, #3030ff 100%); --tile_font_size: 3.2;">Bicolor 2187</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#8fba00 0%, #c3ff00 25% 75%, #8fba00 100%); --tile_font_size: 3.2;">Harder 3125</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff77eb 0% 50%, #6c005c 50% 100%); --tile_font_size: 3.2;">Partial Absorb 243</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#d18cff 0% 50%, #5c0099 50% 100%); --tile_font_size: 3.2;">Partial Absorb 255</div>
+                <div class="menu_tile hover_grow" style="background-color: #990059">1280</div>
+                <div class="menu_tile hover_grow" style="background-color: #af8c00; --tile_font_size: 3">2216.838</div>
+                <div class="menu_tile hover_grow" style="background-color: #ffff4d; --tile_font_size: 6.4;">180</div>
+                <div class="menu_tile hover_grow" style="background-color: #00a068">2592</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(90deg, #f9eee3 0% 33.333%, #ede0c8 33.333% 66.666%, #f2b179 66.666% 100%);">2 4 8</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#660000, #664e00, #1d6600, #00664e, #005866, #003366, #050066); --tile_font_size: 6"><p>X<sup>Y</sup></p></div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#30ffff 0%, #6637a8 25% 75%, #ffff30 100%); --tile_font_size: 3.2;">Bicolor 2584</div>
+                <div class="menu_tile hover_grow" style="background-color: #deeedd">1321</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#df96d9, #bfff98, #df96d9); --tile_font_size: 3.5;">mod 27</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#4af 0% 33%, #74f 33%, #0bb 66%, #b3f 66%, #40c 100%); --tile_font_size: 2.4">Directional Merges</div>
+                <div class="menu_tile hover_grow" style="background-color: #eace51">2378</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#cdff71, #77b700); --tile_font_size: 4.2;">1093 1094</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#6cffff 0% 20%, #00c3c3)">2310</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(90deg, #ffffac, #d8ffae, #a6ffcd, #aaf8ff, #b7c2ff, #e2bcff, #ffaaff); --tile_font_size: 6.4;">378</div>
+                <div class="menu_tile hover_grow" style="background-color: #468">
                     <div class="primeImage" style="background-image:conic-gradient(#0000 0deg 10deg, #fff 35deg 55deg, #0000 80deg 100deg, #000 125deg 145deg, #0000 170deg 190deg, #fff 215deg 235deg, #0000 260deg 280deg, #000 305deg 325deg, #0000 350deg);opacity:0.5;"></div>
                     <div class="primeImage" style="background-image:radial-gradient(#fff 0%, #0000 19.666% 30.333%, #000 38.888% 44.444%, #0000 53% 63.666%, #fff 72.222% 77.777%, #0000 86.333%, #000 100%);opacity:0.5;"></div>
                     <div class="primeImage" style="background-image:repeating-linear-gradient(#0000 0%, #fff 15%, #0000 30%, #000 45%, #0000 60%);mask-image:repeating-linear-gradient(90deg, #000 0% 14%, #0000 14% 42%);opacity:0.5;"></div>
                     <p style="z-index: 1">DIVE</p>
                 </div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#f67bd5, #994182); --tile_font_size: 3.5;">1365 1366</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #99c857">2583</div>
-                <div class="extra_menu_tile hover_grow" style="background-color: #a92f10">2131</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#ffff77 0% 60%, #75baff)">3888</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#ff77ff 0% 60%, #baff75)">2000</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#77ffff 0% 60%, #ff75ba)">3645</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#4fb54f 0% 70%, #f66, #6f6, #66f)">2700</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(90deg, #daff74 0% 35%, #527000 65% 100%); --tile_font_size: 6;">10</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: radial-gradient(#e1ddee, #ffffff)">1825</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#80ffaa, #80ffaa, #80d5ff, #80d5ff, #f480ff, #f480ff)">2295</div>
-                <div class="extra_menu_tile hover_grow" style="background-image: linear-gradient(#00d800, #00d800, #008f8f, #008f8f, #47008f, #47008f)">3069</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#f67bd5, #994182); --tile_font_size: 4.2;">1365 1366</div>
+                <div class="menu_tile hover_grow" style="background-color: #99c857">2583</div>
+                <div class="menu_tile hover_grow" style="background-color: #a92f10">2131</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#ffff77 0% 60%, #75baff)">3888</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#ff77ff 0% 60%, #baff75)">2000</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#77ffff 0% 60%, #ff75ba)">3645</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#4fb54f 0% 70%, #f66, #6f6, #66f)">2700</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(90deg, #daff74 0% 35%, #527000 65% 100%); --tile_font_size: 8;">10</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#e1ddee, #ffffff)">1825</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#80ffaa, #80ffaa, #80d5ff, #80d5ff, #f480ff, #f480ff)">2295</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#00d800, #00d800, #008f8f, #008f8f, #47008f, #47008f)">3069</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ffb380 0% 50%, #823502 50% 100%); --tile_font_size: 3.2;">Partial Absorb 361</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#b96042 0%, #ff8258 25% 75%, #b96042 100%); --tile_font_size: 3.2;">Harder 3375</div>
+                <div class="menu_tile hover_grow" style="background-image: repeating-linear-gradient(#9aad5d 0%, #c3ff00 15%, #9aad5d 30%); --tile_font_size: 2.25;">Interleaved 3125</div>
+                <div class="menu_tile hover_grow" style="background-image: repeating-linear-gradient(#bb6f56 0%, #ff8258 15%, #bb6f56 30%); --tile_font_size: 2.25;">Interleaved 3375</div>
+                <div class="menu_tile hover_grow" style="background-image: repeating-linear-gradient(#8c5caa 0%, #d48eff 15%, #8c5caa 30%); --tile_font_size: 2.25;">Interleaved 5832</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#b1ff33 0%, #a39600 25% 75%, #b1ff33 100%)">1762</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#c83b3b 0% 70%, #ff6, #6ff, #f6f)">2205</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#a4cf3f, #a4cf3f, #852bd4, #852bd4); --tile_font_size: 2.8;">(232, 240)</div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#ffc400 0% 60%, #ff0000); --tile_font_size: 3.5;">16+16i</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#d6fb00, #f54a00); --tile_font_size: 2.8;">3,188,646</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#61e5ff, #3a0060)">3026</div>
+                <div class="menu_tile hover_grow" style="background-color: #885500;--tile_font_size: 2.8;">
+                    <div class="primeImage" style="background-image:conic-gradient(#0000 0deg 10deg, #fff 35deg 55deg, #0000 80deg 100deg, #000 125deg 145deg, #0000 170deg 190deg, #fff 215deg 235deg, #0000 260deg 280deg, #000 305deg 325deg, #0000 350deg);opacity:0.5;"></div>
+                    <div class="primeImage" style="background-image:repeating-linear-gradient(#0000 0%, #fff 15%, #0000 30%, #000 45%, #0000 60%);mask-image:repeating-linear-gradient(90deg, #000 0% 14%, #0000 14% 42%);opacity:0.5;"></div>
+                    <div class="primeImage" style="background-color:#550000;mask-image:linear-gradient(#0000 0% 25%, #000 75%);"></div>
+                    <p style="z-index: 1">SQUART</p>
+                </div>
+                <div class="menu_tile hover_grow" style="background-image: radial-gradient(#c243c2 0% 50%, #ffdfac 75%); --tile_font_size: 3.2;">
+                    <div class="primeImage" style="background-image: conic-gradient(#0000 0deg 27.5deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 27.5deg, rgba(127.5, 0, 0, 1) 36.25deg 53.75deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 62.5deg, #0000 62.5deg);mask-image:radial-gradient(#000 0% 50%, #0000 75%);"></div>
+                    <div class="primeImage" style="background-image: conic-gradient(#0000 0deg 207.5deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 207.5deg, rgba(0, 127.5, 0, 1) 216.25deg 233.75deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 242.5deg, #0000 242.5deg);mask-image:radial-gradient(#000 0% 50%, #0000 75%);"></div>
+                    <div class="primeImage" style="background-image: conic-gradient(#0000 0deg 117.5deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 117.5deg, rgba(0, 0, 127.5, 1) 126.25deg 143.75deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 152.5deg, #0000 152.5deg);mask-image:radial-gradient(#000 0% 50%, #0000 75%);"></div>
+                    <div class="primeImage" style="background-image: conic-gradient(#0000 0deg 297.5deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 297.5deg, rgba(127.5, 127.5, 0, 1) 306.25deg 323.75deg, rgb(70.83333333333333, 0, 70.83333333333333, 1) 332.5deg, #0000 332.5deg);mask-image:radial-gradient(#000 0% 50%, #0000 75%);"></div>
+                    <p style="z-index: 1">Turatin</p>
+                </div>
+                <div class="menu_tile hover_grow" style="background-color: #990080;">
+                    <div class="primeImage" style="background-color:#660033;width:50%;height:50%;left:0%;top:25%"></div>
+                    <div class="primeImage" style="background-color:#330066;width:50%;height:50%;left:50%;top:25%"></div>
+                    <p style="z-index: 1">3307</p>
                 </div>
             </div>
-            <div id="menu_extra" class="hover_grow menu_button">Go to Extra Modes</div>
-            <div id="menu_extra_return" class="hover_grow menu_button">Return to Main Modes</div>
+            <!-- JavaScript places the menu tiles into their grids -->
+            <div id="menu_grid_1" class="menu_grid">
+
+            </div>
+            <div id="menu_grid_2" class="menu_grid">
+                
+            </div>
+            <div id="menu_grid_3" class="menu_grid">
+                
+            </div>
+            <div id="menu_extra" class="hover_grow menu_button">Switch Pages</div>
             <div id="menu_import" class="hover_grow menu_button">Resume From Save Code</div>
             <div id="menu_to_modifiers" class="hover_grow menu_button">Go to Modifiers</div>
             <div id="menu_to_guide" class="hover_grow menu_button"><p>Go to Guide<br><span id="guide_attraction">(If this is your first time here, click this button first!)</span></p></div>
@@ -188,11 +222,35 @@
                         <p id="180_length_text" class="gm_var_text">Only 2, 3, or 5 of the same tile can merge.</p>
                         <div id="180_length_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                     </div>
+                    <div id="180_randomGoals" class="gm_var_switch_container">
+                        <p id="180_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="180_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="180_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="180_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="180_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="180_firstGoalMinimum_change" name="180_firstGoalMinimum_change">
+                        </form>
+                    </div>
                 </div>
                 <div id="2592_vars" class="gm_var_line">
                     <div id="2592_switch" class="gm_var_switch_container">
                         <p id="2592_switch_text" class="gm_var_text">The merge rules switch after each move.</p>
                         <div id="2592_switch_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                    <div id="2592_randomGoals" class="gm_var_switch_container">
+                        <p id="2592_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2592_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2592_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="2592_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="2592_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="2592_firstGoalMinimum_change" name="2592_firstGoalMinimum_change">
+                        </form>
                     </div>
                 </div>
                 <div id="Wildcard2048_vars" class="gm_var_line">
@@ -230,6 +288,12 @@
                             <div id="1321_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
+                    <div id="1321_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="1321_firstGoalMinimum_title" class="gm_var_title">The first random goal is between 2<sup>n - 1</sup> and 2<sup>n</sup>, n =</p>
+                        <p id="1321_firstGoalMinimum_counter" class="gm_var_counter"></p>
+                        <div id="1321_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="1321_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
                 </div>
                 <div id="2100_vars" class="gm_var_line">
                     <div id="2100_switch" class="gm_var_switch_container">
@@ -252,7 +316,7 @@
                         <div id="378_merge_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                 </div>
-                <div id="DIVE_vars" class="gm_var_line">
+                <div id="DIVE_vars" class="gm_var_line_wrapping many_vars">
                     <div id="DIVE_seeds" class="gm_var_switch_container">
                         <p id="DIVE_seeds_text" class="gm_var_text">Spawning tiles, a.k.a. seeds, can be unlocked and eliminated.</p>
                         <div id="DIVE_seeds_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
@@ -278,18 +342,66 @@
                             <div id="DIVE_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
+                    <div id="DIVE_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="DIVE_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="DIVE_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="DIVE_firstGoalMinimum_change" name="DIVE_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="3888_vars" class="gm_var_line">
+                    <div id="3888_randomGoals" class="gm_var_switch_container">
+                        <p id="3888_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3888_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3888_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="3888_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="3888_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="3888_firstGoalMinimum_change" name="3888_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="2000_vars" class="gm_var_line">
+                    <div id="2000_randomGoals" class="gm_var_switch_container">
+                        <p id="2000_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2000_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2000_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="2000_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="2000_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="2000_firstGoalMinimum_change" name="2000_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="3645_vars" class="gm_var_line">
+                    <div id="3645_randomGoals" class="gm_var_switch_container">
+                        <p id="3645_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3645_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3645_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="3645_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="3645_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="3645_firstGoalMinimum_change" name="3645_firstGoalMinimum_change">
+                        </form>
+                    </div>
                 </div>
                 <div id="2700_vars" class="gm_var_line">
+                    <div id="2700_level3Merges" class="gm_var_switch_container">
+                        <p id="2700_level3Merges_text" class="gm_var_text">The 2 + 1 = 3 merge is enabled, but the 2 + 2 = 4 and 6 + 2 + 1 = 9 merges are not.</p>
+                        <div id="2700_level3Merges_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
                     <div id="2700_level" class="gm_var_switch_container">
                         <p id="2700_level_text" class="gm_var_text">Level 1: The merges are n + 2n, n + 3n, 2n + 3n, and 3n + 5n.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="2700_level_decrease" class="gmSwitchModifier gmDecreaseModifier hover_grow">Decrease Level</div>
                             <div id="2700_level_increase" class="gmSwitchModifier gmIncreaseModifier hover_grow">Increase Level</div>
                         </div>
-                    </div>
-                    <div id="2700_level3Merges" class="gm_var_switch_container">
-                        <p id="2700_level3Merges_text" class="gm_var_text">The 2 + 1 = 3 merge is enabled, but the 2 + 2 = 4 and 6 + 2 + 1 = 9 merges are not.</p>
-                        <div id="2700_level3Merges_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                     </div>
                 </div>
                 <div id="1825_vars" class="gm_var_line">
@@ -299,6 +411,12 @@
                             <div id="1825_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
+                    <div id="1825_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="1825_firstGoalMinimum_title" class="gm_var_title">The first random goal is between 2<sup>n - 1</sup> and 2<sup>n</sup>, n =</p>
+                        <p id="1825_firstGoalMinimum_counter" class="gm_var_counter"></p>
+                        <div id="1825_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="1825_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
                 </div>
                 <div id="3069_vars" class="gm_var_line">
                     <div id="3069_randomGoals" class="gm_var_switch_container">
@@ -307,9 +425,139 @@
                             <div id="3069_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
+                    <div id="3069_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="3069_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="3069_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="3069_firstGoalMinimum_change" name="3069_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="1762_vars" class="gm_var_line">
+                    <div id="1762_randomGoals" class="gm_var_switch_container">
+                        <p id="1762_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="1762_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="1762_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="1762_firstGoalMinimum_title" class="gm_var_title">The first random goal is between 2<sup>n - 1</sup> and 2<sup>n</sup>, n =</p>
+                        <p id="1762_firstGoalMinimum_counter" class="gm_var_counter"></p>
+                        <div id="1762_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="1762_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="2205_vars" class="gm_var_line">
+                    <div id="2205_level" class="gm_var_switch_container">
+                        <p id="2205_level_text" class="gm_var_text">Level 1: The merges are n + n + 3n, n + n + 5n, and n + n + 7n.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2205_level_decrease" class="gmSwitchModifier gmDecreaseModifier hover_grow">Decrease Level</div>
+                            <div id="2205_level_increase" class="gmSwitchModifier gmIncreaseModifier hover_grow">Increase Level</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="3026_vars" class="gm_var_line">
+                    <div id="3026_allMerges" class="gm_var_switch_container">
+                        <p id="3026_allMerges_text" class="gm_var_text">Only Fibonacci-style merges are allowed.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3026_allMerges_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3026_randomGoals" class="gm_var_switch_container">
+                        <p id="3026_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3026_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3026_firstGoalMinimum" class="gm_var_switch_container" style="color:#ac85b7">
+                        <p id="3026_firstGoalMinimum_title" class="gm_var_title">The first random goal is this many merges above 1:</p>
+                        <p id="3026_firstGoalMinimum_counter" class="gm_var_counter"></p>
+                        <div id="3026_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="3026_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="SQUART_vars" class="gm_var_line">
+                    <div id="SQUART_randomGoals" class="gm_var_switch_container">
+                        <p id="SQUART_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="SQUART_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="SQUART_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="SQUART_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="SQUART_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="SQUART_firstGoalMinimum_change" name="SQUART_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="Turatin_vars" class="gm_var_line">
+                    <div id="Turatin_interval" class="gm_var_container" style="color:#ffc4ff;">
+                        <p id="Turatin_interval_title" class="gm_var_title">Turns Between Merge Changes:</p>
+                        <p id="Turatin_interval_counter" class="gm_var_counter"></p>
+                        <div id="Turatin_interval_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="Turatin_interval_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="Turatin_nonIntegerRatio" class="gm_var_switch_container" style="width:25%">
+                        <p id="Turatin_nonIntegerRatio_text" class="gm_var_text">The ratio between merging tiles must be an integer.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="Turatin_nonIntegerRatio_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="3307_vars" class="gm_var_line">
+                    <div id="3307_equalVariant" class="gm_var_switch_container">
+                        <p id="3307_equalVariant_text" class="gm_var_text">Two equal tiles can merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3307_equalVariant_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="GaussianDIVE_vars" class="gm_var_line_wrapping many_vars">
+                    <div id="GaussianDIVE_startSeeds" class="gm_var_switch_container">
+                        <p id="GaussianDIVE_startSeeds_text" class="gm_var_text">The starting seed is 1+i.</p>
+                        <div id="GaussianDIVE_startSeeds_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                    <div id="GaussianDIVE_unlocks" class="gm_var_switch_container">
+                        <p id="GaussianDIVE_unlocks_text" class="gm_var_text">Spawning tiles, a.k.a. seeds, can be unlocked and eliminated.</p>
+                        <div id="GaussianDIVE_unlocks_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                    <div id="GaussianDIVE_seedsFirstQuadrant" class="gm_var_switch_container">
+                        <p id="GaussianDIVE_seedsFirstQuadrant_text" class="gm_var_text">Newly-unlocked seeds are always rotated into the first quadrant.</p>
+                        <div id="GaussianDIVE_seedsFirstQuadrant_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                    <div id="GaussianDIVE_unlockRules" class="gm_var_switch_container">
+                        <p id="GaussianDIVE_unlockRules_text" class="gm_var_text">When deciding what new seed to unlock, seeds are checked largest to smallest.</p>
+                        <div id="GaussianDIVE_unlockRules_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="GaussianDIVE_quadrantSpawnRatios" class="gm_var_line_wrapping many_vars">
+                    <div id="GaussianDIVE_quadrant0SpawnRatio" class="gm_var_container" style="color:hsl(0, 100%, 34%)">
+                        <p id="GaussianDIVE_quadrant0SpawnRatio_title" class="gm_var_title">(Seed * 1) Spawn Ratio:</p>
+                        <form id="GaussianDIVE_quadrant0SpawnRatio_form" class="gm_var_form">
+                            <input type="number" step="any" id="GaussianDIVE_quadrant0SpawnRatio_change" name="GaussianDIVE_quadrant0SpawnRatio_change">
+                        </form>
+                    </div>
+                    <div id="GaussianDIVE_quadrant1SpawnRatio" class="gm_var_container" style="color:hsl(90, 100%, 34%)">
+                        <p id="GaussianDIVE_quadrant1SpawnRatio_title" class="gm_var_title">(Seed * i) Spawn Ratio:</p>
+                        <form id="GaussianDIVE_quadrant1SpawnRatio_form" class="gm_var_form">
+                            <input type="number" step="any" id="GaussianDIVE_quadrant1SpawnRatio_change" name="GaussianDIVE_quadrant1SpawnRatio_change">
+                        </form>
+                    </div>
+                    <div id="GaussianDIVE_quadrant2SpawnRatio" class="gm_var_container" style="color:hsl(180, 100%, 34%)">
+                        <p id="GaussianDIVE_quadrant2SpawnRatio_title" class="gm_var_title">(Seed * -1) Spawn Ratio:</p>
+                        <form id="GaussianDIVE_quadrant2SpawnRatio_form" class="gm_var_form">
+                            <input type="number" step="any" id="GaussianDIVE_quadrant2SpawnRatio_change" name="GaussianDIVE_quadrant2SpawnRatio_change">
+                        </form>
+                    </div>
+                    <div id="GaussianDIVE_quadrant3SpawnRatio" class="gm_var_container" style="color:hsl(270, 100%, 34%)">
+                        <p id="GaussianDIVE_quadrant3SpawnRatio_title" class="gm_var_title">(Seed * -i) Spawn Ratio:</p>
+                        <form id="GaussianDIVE_quadrant3SpawnRatio_form" class="gm_var_form">
+                            <input type="number" step="any" id="GaussianDIVE_quadrant3SpawnRatio_change" name="GaussianDIVE_quadrant3SpawnRatio_change">
+                        </form>
+                    </div>
                 </div>
             </div>
             <div id="gm_return" class="hover_grow">Return to menu</div>
+            <div id="GaussianDIVE_enter_button" class="gmSwitchModifier hover_grow">Enter the Second Dimension</div>
         </div>
 
         <div id="modifiers">
@@ -689,8 +937,9 @@
         <div id="save_code">
             <div id="save_code_heading"></div>
             <textarea id="save_code_box"></textarea>
-            <div id="save_code_button_container">
+            <div id="save_code_button_container_1" class="save_code_button_container">
                 <div id="save_code_import" class="save_code_button hover_grow">Import Save Code</div>
+                <div id="save_code_type" class="save_code_button hover_grow">Code Type: In-Progress Game</div>
                 <div id="save_code_return_menu" class="save_code_button hover_grow">Return to menu</div>
                 <div id="save_code_return_game" class="save_code_button hover_grow">Return to game</div>
             </div>
@@ -702,7 +951,7 @@
             <div id="guide_basics" class="guide_box">
                 <h2>Basics of the 2048 Power Compendium</h2>
                 <p>
-                    The 2048 Power Compendium is a collection of 61 different variations of the game <i>2048</i>.
+                    The 2048 Power Compendium is a collection of 75 different variations of the game <i>2048</i>.
                     You've probably already played, or at least heard of, 2048, but if you haven't, here's a summary:
                 </p>
                 <img src="Guide Images/Standard 2048 Game.png" style="width: calc(var(--base_size) * 80); height: auto">
@@ -742,7 +991,7 @@
             <div id="guide_modes" class="guide_box">
                 <h2>Modes</h2>
                 <img src="Guide Images/Main Modes Grid.png" style="width: calc(var(--base_size) * 60); height: auto">
-                <p class="img_caption">The main 25 modes of the 2048 Power Compendium</p>
+                <p class="img_caption">The first 25 modes of the 2048 Power Compendium</p>
                 <p>
                     Each mode of the 2048 Power Compendium is a 2048 variant with different merge rules, and different tiles that arise from these merge rules.
                     Most of the modes are based on powers of a certain number: 2048 uses powers of 2, 2187 uses powers of 3, 1024 uses powers of 4, and so on.
@@ -754,8 +1003,9 @@
                     for that mode too hard or too easy.
                 </p>
                 <p>
-                    Once you've played some of the regular modes and have a handle on the differences between each mode, you can click the "Go to Extra Modes" button
-                    on the menu, which lets you select among the 36 extra modes. These modes are "extra" for different reasons: some of them aren't related to powers
+                    Once you've played some of the regular modes and have a handle on the differences between each mode, you can click the "Switch Pages" button
+                    on the menu. This lets you switch between the three pages of modes, each of which has 25 modes, for a total of 75.
+                    The latter 50 modes are considered to not be "main modes" for different reasons: some of them aren't related to powers
                     of numbers (Powers of numbers is the core theme of the 2048 Power Compendium, so almost all of the main modes are based on them), some of them are
                     alternate versions of main modes, some of them use weird gimmicks, and a few of them are open-ended modes without a single defined progression.
                     Also, a few of the modes have modifiers, some of which are changed by clicking plus/minus buttons, some of which are changed by clicking
@@ -768,7 +1018,7 @@
             <div id="guide_modifiers" class="guide_box">
                 <h2>Modifiers</h2>
                 <p>
-                    If the 61 modes on their own aren't enough for you, then click "Go to Modifiers" on the menu to access a bunch of different modifiers you can change.
+                    If the 75 modes on their own aren't enough for you, then click "Go to Modifiers" on the menu to access a bunch of different modifiers you can change.
                     These modifiers affect EVERY mode (for the most part), and they allow a pretty good degree of customization. The Modifiers selection screens are
                     split up into six pages - to switch between them, click the blue and orange arrows. With the exception of the Animation Speed Multiplier modifier
                     (which is just aesthetic, and you're encouraged to change this to whatever value you like the best), all of these modifiers alter the gameplay,
@@ -875,9 +1125,14 @@
                         <li>
                             Automatic moves were inspired by the gravity special mode from <a href="https://cyberzhg.github.io/2048/">2147483648</a>.
                         </li>
+                    </ul>
+                    The 2048 Power Compendium has now been around long enough that a couple people have suggested modes or modifiers that have made it into the game:
+                    <ul>
                         <li>
-                            Tricolor Tiles and the "chance of occurring" automatic moves property were suggested by Michael Darrow,
-                            who's emailed me several ideas for features to add to the 2048 Power Compendium.
+                            Tricolor Tiles, the "chance of occurring" automatic moves property, Partial Absorb 361, 3,188,646, 3026, and the "1+1+1=1.5+1.5" variant of 2216.838 were suggested by Michael Darrow.
+                        </li>
+                        <li>
+                            16+16i was suggested by Toni Brown.
                         </li>
                     </ul>
                     All the other modes, as far as I'm aware, are unique to the 2048 Power Compendium. I'll also note that The 2048 Power Compendium was originally
@@ -956,8 +1211,17 @@
                     </li>
                     <br>
                     <li>
+                        v1.4.3 (Aug. 18, 2024): Fixed a bug that caused X^Y and 378 to crash upon moving in a vertical direction.
+                    </li>
+                    <br>
+                    <li>
                         <b>
-                            v1.4.3 (Aug. 18, 2024) [Current Version]: Fixed a bug that caused X^Y and 378 to crash upon moving in a vertical direction.
+                            v1.5 (Sep. 9, 2024) [Current Version]: Split the extra modes into two pages, so there are now three pages of modes:
+                            Page 1 is the main modes, Page 2 is the normal-ish extra modes, and Page 3 is the more wacky extra modes.
+                            Added 6 new Page 2 modes (Harder 3375, Interleaved 3125, Interleaved 3375, Interleaved 5832, 1762, and 2205) and 8 new
+                            Page 3 modes (3026, 3,188,646, 16+16i, (232, 240), Partial Absorb 361, SQUART, 3307, and Turatin). Added the random
+                            goals modifier to 180, 3888, 2000, 3645, and 2592 (1762, 3026, and SQUART also have the random goals modifier),
+                            and gave every mode with random goals another modifier that controls the size of the first random goal. Fixed some bugs with box tiles.
                         </b>
                     </li>
                 </ul>
@@ -982,6 +1246,17 @@
                     <input type="number" step="1" id="viewer_number_change" name="viewer_number_change">
                 </form>
             </div>
+            <div id="viewer_gaussian_number" class="viewer_var_container">
+                <p id="viewer_gaussian_number_text" class="tile_viewer_var_text">Number:</p>
+                <form id="viewer_gaussian_real_form" class="tile_viewer_form">
+                    <input type="number" step="1" id="viewer_gaussian_real_change" name="viewer_gaussian_real_change">
+                </form>
+                <p id="viewer_gaussian_number_plus" class="tile_viewer_var_text">+</p>
+                <form id="viewer_gaussian_imaginary_form" class="tile_viewer_form">
+                    <input type="number" step="1" id="viewer_gaussian_imaginary_change" name="viewer_gaussian_imaginary_change">
+                </form>
+                <p id="viewer_gaussian_number_i" class="tile_viewer_var_text">i</p>
+            </div>
             <div id="viewer_WildcardText_button" class="tile_viewer_button">The text on the tile shows all the possibilities.</div>
             <div id="viewer_primes" class="viewer_var_container">
                 <p id="viewer_primes_text" class="tile_viewer_var_text">Prime Amount:</p>
@@ -996,6 +1271,7 @@
         <div id="css_calculator"></div> <!-- Not an actual element -->
         <div id="announcements"></div>
         <script type="text/javascript" src="mathiasbynens-he/he.js"></script>
+        <script type="text/javascript" src="gaussianBigInt.js"></script>
         <script type="text/javascript" src="2048 Power Compendium.js"></script>
     </body>
 </html>

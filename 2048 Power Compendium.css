@@ -23,7 +23,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color: #bb9e4d /* This is just here so I have an easy place to choose colors from */
+    color : #406666; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -49,7 +49,10 @@ html {
     margin-top: 0vh;
     margin-bottom: 1.5vh;
 }
-#menu_grid {
+#menu_grid_storage {
+    display: none;
+}
+.menu_grid {
     position: relative;
     display: inline-block;
     width: calc(var(--menu_grid_size));
@@ -57,15 +60,7 @@ html {
     background-color: #efecd7;
     margin: auto;
 }
-#extra_menu_grid {
-    position: relative;
-    display: inline-block;
-    width: calc(var(--menu_grid_size));
-    height: calc(var(--menu_grid_size));
-    background-color: #efecd7;
-    margin: auto;
-}
-.menu_tile, .extra_menu_tile {
+.menu_tile {
     width: calc(var(--menu_grid_size) * 13.5 / 75);
     height: calc(var(--menu_grid_size) * 13.5 / 75);
     --tile_font_size: 4.8;
@@ -79,12 +74,6 @@ html {
     box-shadow: none;
     border: calc(var(--menu_grid_size) * 0.4 / 75) solid black;
     box-sizing: border-box;
-}
-.extra_menu_tile {
-    width: calc(var(--menu_grid_size) * 54 / 359);
-    height: calc(var(--menu_grid_size) * 54 / 359);
-    border: calc(var(--menu_grid_size) * 0.335 / 75) solid black;
-    --tile_font_size: 4;
 }
 .menu_button {
     width: 33vh;
@@ -109,13 +98,6 @@ html {
     color: #a48b00;
     background-color: #383838;
     border: 1vh solid #a48b00;
-    right: 75vw;
-    top: 30vh;
-}
-#menu_extra_return {
-    color: #ffff00;
-    background-color: #0099ff;
-    border: 1vh solid #ffff00;
     right: 75vw;
     top: 30vh;
 }
@@ -305,7 +287,7 @@ html {
     margin-bottom: 2vh;
 }
 #mode_vars_line {
-    display: block;
+    display: none;
     width: 100%;
 }
 .gm_var_line {
@@ -313,6 +295,12 @@ html {
     display: none;
     justify-content: space-around;
     flex-wrap: nowrap;
+}
+.gm_var_line_wrapping {
+    width: 100%;
+    display: none;
+    justify-content: space-around;
+    flex-wrap: wrap;
 }
 #gm_size_line {
     display: flex;
@@ -334,6 +322,9 @@ html {
     height: 20vh;
     position: relative;
     width: 100%;
+}
+.many_vars > .gm_var_container, .many_vars > .gm_var_switch_container, .many_vars > .gm_var_switchForm_container {
+    width : 25%;
 }
 #gm_width, #gm_4D_width, #modifiers_customGridWidth {
     color: #060048;
@@ -378,6 +369,17 @@ html {
     background-color: #00ff91;
     color: #00b7ff;
     border: 0.56vh solid #00b7ff;
+    font-weight: bold;
+    margin: auto;
+    padding: 0.75vh;
+    position: relative;
+}
+#GaussianDIVE_enter_button {
+    width: 25vh;
+    font-size: 2.25vh;
+    background-color: #5e6644;
+    color: #333c55;
+    border: 0.56vh solid #333c55;
     font-weight: bold;
     margin: auto;
     padding: 0.75vh;
@@ -432,6 +434,9 @@ html {
 }
 #DIVE_unlockRules {
     color: #b7ff3c;
+}
+.firstGoalMinimum {
+    color: #724e7d;
 }
 #gm_return {
     background-color: var(--grid-color);
@@ -1695,7 +1700,7 @@ html {
     width: 99.5%;
     height: 60vh;
 }
-#save_code_button_container {
+.save_code_button_container {
     width: 100%;
     position: relative;
     display: flex;
@@ -1719,6 +1724,10 @@ html {
 #save_code_import {
     color: #cc5eff;
     background-color: #000000;
+}
+#save_code_type {
+    color: #e8b7ff;
+    background-color: #510076;
 }
 @media screen and (max-aspect-ratio: 7/8) {
     #save_code_heading {
@@ -1919,9 +1928,6 @@ ul {
 }
 .viewer_var_container {
     font-size: calc(var(--secondary_size) * 4);
-}
-.viewer_var_container > * {
-    display: inline-block;
 }
 .viewer_var_container > * {
     display: inline-block;

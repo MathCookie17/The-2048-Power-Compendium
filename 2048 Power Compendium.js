@@ -117,22 +117,64 @@ let statBoxes = [["Score", "@Score"]]; // Which stats are visible on the screen;
 
 //These lists of operators are used by CalcArrayConvert
 let special_operators = ["@repeat", "@if", "@else", "@else-if", "@edit_var", "@add_var", "@insert_var", "@remove_var", "@end-repeat", "@end-if", "@end-else", "@end-else-if", "@end_vars", "@var_retain", "@var_copy", "@include_gvars", "@edit_gvar", "@add_gvar", "@insert_gvar", "@remove_gvar", "@add_score", "@edit_spawn", "@add_spawn", "@insert_spawn", "@remove_spawn", "@replace_tile", "@run-script", "@primesUpdate", "announce"];
-let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "typeof", "output", "CalcArrayParent"];
+let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof", "output", "CalcArrayParent"];
 let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round", "floor", "ceil", "ceiling", "trunc", "abs", "sign", "sin", "cos", "tan", "gcd", "lcm", "factorial", "prime", "expomod", "bit&", "bit|", "bit~", "bit^", "bit<<", "bit>>", "bit>>>", "rand_int", "rand_float", "defaultAbbrev"];
 let string_operators = ["str_char", "str_concat", "str_concat_front", "str_length", "str_slice", "str_substr", "str_replace", "str_indexOf", "str_lastIndexOf", "str_indexOfFrom", "str_lastIndexOfFrom", "str_includes", "str_splice", "str_toUpperCase", "str_toLowerCase", "str_split"];
 let boolean_operators = ["&&", "||", "!"];
-let array_operators = ["arr_copy", "arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "CalcArray"];
-let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "rand_bigint", "defaultAbbrevB", "DIVESeedUnlock"];
-let pop_1_operators = ["abs", "absB", "sign", "signB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "defaultAbbrev", "defaultAbbrevB", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
+let array_operators = ["arr_copy", "arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "arr_binarySearch", "arr_binaryInsert", "CalcArray"];
+let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "rand_bigint", "defaultAbbrevB", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
+let gaussianbigint_operators = ["reGB", "imGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "GaussianDIVESeedUnlock", "gaussianSort"];
+let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "primeGB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
 
-let primes = [2n, 3n, 5n];
+let primes = [2n, 3n, 5n]; // Some modes need a list of prime numbers. The primesUpdate function extends this list to however far is necessary.
+let gaussian_primes = [new GaussianBigInt(1n, 1n), new GaussianBigInt(2n, 1n), new GaussianBigInt(1n, 2n), new GaussianBigInt(3n, 0n)];
+let factorsFor3307 = [ // This array is used for the color scheme for 3307
+    [13n,1n,3n,9n],[19n,4n,6n,9n],[31n,1n,-6n,36n],[37n,9n,12n,16n],[43n,1n,6n,36n],[61n,16n,-36n,81n],[67n,4n,14n,49n],[73n,1n,8n,64n],[79n,9n,21n,49n],[93n,16n,28n,49n],[97n,9n,24n,64n],[103n,4n,18n,81n],[109n,49n,-84n,144n],[127n,36n,42n,49n],[139n,9n,-39n,169n],[151n,81n,-126n,196n],[157n,1n,12n,144n],[163n,9n,-42n,196n],[183n,1n,13n,169n],[193n,49n,63n,81n],[199n,4n,26n,169n],[211n,1n,14n,196n],[217n,9n,39n,169n],[241n,1n,-16n,256n],[271n,81n,-171n,361n],
+    [277n,49n,84n,144n],[283n,36n,78n,169n],[307n,1n,-18n,324n],[313n,9n,48n,256n],[337n,64n,104n,169n],[367n,81n,117n,169n],[373n,16n,-84n,441n],[403n,4n,38n,361n],[417n,49n,112n,256n],[421n,1n,-21n,441n],[427n,9n,57n,361n],[433n,169n,-312n,576n],[453n,16n,76n,361n],[457n,49n,-168n,576n],[463n,1n,21n,441n],[487n,4n,42n,441n],[499n,49n,126n,324n],[523n,81n,-234n,676n],[541n,16n,84n,441n],[543n,49n,133n,361n],[547n,169n,182n,196n],[571n,441n,-546n,676n],[577n,64n,152n,361n],
+    [601n,1n,24n,576n],[607n,9n,-78n,676n],[613n,81n,171n,361n],[673n,64n,168n,441n],[709n,9n,-84n,784n],[727n,169n,234n,324n],[733n,144n,228n,361n],[751n,441n,-651n,961n],[757n,1n,27n,729n],[763n,9n,78n,676n],[787n,4n,54n,729n],[793n,49n,168n,576n],[811n,36n,-186n,961n],[813n,1n,28n,784n],[823n,196n,266n,361n],[853n,16n,108n,729n],[877n,9n,84n,784n],[883n,169n,273n,441n],[907n,49n,182n,676n],[921n,256n,304n,361n],[937n,9n,-96n,1024n],[967n,49n,189n,729n],[991n,81n,234n,676n],[993n,1n,31n,961n],[997n,169n,-468n,1296n],
+    [1009n,64n,216n,729n],[1033n,256n,336n,441n],[1047n,196n,-518n,1369n],[1057n,1n,32n,1024n],[1063n,9n,93n,961n],[1069n,144n,-444n,1369n],[1087n,441n,-798n,1444n],[1093n,49n,-252n,1296n],[1117n,81n,252n,784n],[1129n,9n,96n,1024n],[1137n,64n,-296n,1369n],[1153n,256n,-624n,1521n],[1171n,196n,-546n,1521n],[1201n,361n,399n,441n],[1213n,784n,-1092n,1521n],[1227n,49n,217n,961n],[1237n,16n,-148n,1369n],[1249n,169n,351n,729n],[1267n,9n,-111n,1369n],[1297n,49n,224n,1024n],[1303n,196n,378n,729n],[1317n,169n,364n,784n],
+    [1321n,81n,279n,961n],[1327n,361n,-798n,1764n],[1333n,1n,36n,1296n],[1381n,16n,-156n,1521n],[1399n,324n,-774n,1849n],[1417n,256n,432n,729n],[1423n,961n,-1302n,1764n],[1429n,784n,-1204n,1849n],[1447n,4n,74n,1369n],[1459n,169n,-559n,1849n],[1483n,1n,38n,1444n],[1489n,9n,111n,1369n],[1531n,361n,494n,676n],[1543n,81n,-387n,1849n],[1561n,1n,39n,1521n],[1567n,9n,114n,1444n],[1579n,1369n,-1554n,1764n],[1597n,49n,252n,1296n],[1603n,4n,78n,1521n],[1609n,169n,416n,1024n],[1627n,36n,222n,1369n],[1663n,441n,546n,676n],
+    [1693n,16n,156n,1521n],[1723n,1n,-42n,1764n],[1753n,361n,-912n,2304n],[1759n,49n,266n,1444n],[1777n,961n,-1488n,2304n],[1783n,81n,333n,1369n],[1801n,576n,-1176n,2401n],[1807n,1n,42n,1764n],[1831n,361n,-931n,2401n],[1857n,1024n,-1568n,2401n],[1867n,81n,342n,1444n],[1873n,256n,-784n,2401n],[1893n,1n,43n,1849n],[1897n,64n,312n,1521n],[1933n,169n,468n,1296n],[1983n,1444n,-1862n,2401n],[1987n,9n,129n,1849n],[1993n,361n,608n,1024n],[2011n,1521n,-1911n,2401n],[2017n,49n,-336n,2304n],[2029n,729n,-1404n,2704n],
+    [2053n,441n,651n,961n],[2073n,64n,-392n,2401n],[2083n,196n,518n,1369n],[2089n,1849n,-2064n,2304n],[2137n,441n,672n,1024n],[2143n,36n,258n,1849n],[2203n,961n,-1674n,2916n],[2217n,256n,592n,1369n],[2221n,16n,-196n,2401n],[2251n,361n,-1026n,2916n],[2257n,64n,344n,1849n],[2263n,196n,546n,1521n],[2269n,729n,756n,784n],[2281n,576n,744n,961n],[2287n,1369n,-1998n,2916n],[2307n,4n,-98n,2401n],[2317n,81n,387n,1849n],[2341n,361n,684n,1296n],[2353n,1n,48n,2304n],[2383n,169n,-702n,2916n],[2389n,49n,-364n,2704n],
+    [2433n,361n,703n,1369n],[2437n,784n,-1596n,3249n],[2443n,676n,806n,961n],[2473n,1521n,-2184n,3136n],[2503n,4n,98n,2401n],[2557n,9n,147n,2401n],[2577n,169n,559n,1849n],[2593n,256n,-912n,3249n],[2617n,729n,864n,1024n],[2623n,361n,741n,1521n],[2647n,196n,602n,1849n],[2653n,1n,-52n,2704n],[2671n,2401n,-2646n,2916n],[2677n,169n,-741n,3249n],[2683n,441n,798n,1444n],[2689n,49n,336n,2304n],[2713n,81n,-504n,3136n],[2731n,36n,294n,2401n],[2757n,1n,52n,2704n],[2791n,961n,-1891n,3721n],[2797n,784n,-1708n,3721n],
+    [2803n,729n,-1647n,3721n],[2833n,576n,888n,1369n],[2857n,64n,392n,2401n],[2863n,1521n,-2379n,3721n],[2869n,9n,156n,2704n],[2899n,729n,-1674n,3844n],[2947n,324n,774n,1849n],[2971n,1n,54n,2916n],[2977n,1024n,-2016n,3969n],[3001n,256n,-976n,3721n],[3007n,676n,962n,1369n],[3019n,1444n,-2394n,3969n],[3037n,16n,-228n,3249n],[3063n,196n,-854n,3721n],[3073n,961n,-1984n,4096n],[3097n,169n,624n,2304n],[3109n,1849n,-2709n,3969n],[3117n,49n,364n,2704n],[3121n,1521n,-2496n,4096n],[3133n,144n,588n,2401n],[3189n,784n,1036n,1369n],
+    [3193n,1n,56n,3136n],[3199n,729n,1026n,1444n],[3207n,169n,637n,2401n],[3217n,256n,-1008n,3969n],[3253n,81n,468n,2704n],[3307n,1n,57n,3249n],[3313n,9n,168n,3136n],[3319n,169n,-819n,3969n],[3343n,49n,378n,2916n],[3361n,2401n,-3136n,4096n],[3369n,1024n,-2144n,4489n],[3373n,961n,1116n,1296n],[3391n,36n,-366n,3721n],[3433n,169n,-832n,4096n],[3439n,1764n,-2814n,4489n],[3457n,576n,1032n,1849n],[3529n,64n,-504n,3969n],[3547n,9n,-183n,3721n],[3559n,3249n,-3534n,3844n],[3583n,961n,1178n,1444n],[3607n,324n,882n,2401n],
+    [3643n,676n,1118n,1849n],[3673n,256n,-1072n,4489n],[3691n,961n,1209n,1521n],[3693n,361n,931n,2401n],[3697n,49n,399n,3249n],[3709n,2704n,-3484n,4489n],[3721n,81n,504n,3136n],[3733n,16n,-252n,3969n],[3739n,729n,1161n,1849n],[3769n,64n,456n,3249n],[3793n,1024n,1248n,1521n],[3837n,784n,1204n,1849n],[3847n,4n,122n,3721n],[3873n,3136n,-3752n,4489n],[3889n,1369n,-2664n,5184n],[3907n,1n,62n,3844n],[3919n,3249n,-3819n,4489n],[3967n,81n,-603n,4489n],[3997n,1296n,1332n,1369n],
+    [4003n,1521n,-2847n,5329n],[4027n,961n,1302n,1764n],[4033n,1n,63n,3969n],[4057n,2401n,-3528n,5184n],[4099n,4n,126n,3969n],[4111n,1521n,-2886n,5476n],[4129n,2304n,-3504n,5329n],[4153n,576n,1176n,2401n],[4159n,169n,741n,3249n],[4177n,361n,-1368n,5184n],[4197n,49n,427n,3721n],[4219n,1369n,1406n,1444n],[4237n,16n,252n,3969n],[4243n,196n,798n,3249n],[4249n,1024n,1376n,1849n],[4273n,64n,488n,3721n],[4297n,9n,192n,4096n],
+    [4303n,361n,1026n,2916n],[4327n,49n,434n,3844n],[4333n,1369n,1443n,1521n],[4339n,324n,-1314n,5329n],[4351n,81n,549n,3721n],[4357n,1849n,-3268n,5776n],[4359n,4n,-134n,4489n],[4363n,441n,-1554n,5476n],[4417n,256n,912n,3249n],[4423n,1n,-67n,4489n],[4447n,1444n,1482n,1521n],[4453n,729n,1323n,2401n],[4483n,81n,558n,3844n],[4507n,3249n,-4218n,5476n],[4513n,3721n,-4392n,5184n],[4537n,64n,504n,3969n],[4549n,169n,-949n,5329n],[4561n,361n,1064n,3136n],[4567n,1369n,-2886n,6084n],[4597n,144n,732n,3721n],
+    [4621n,441n,-1596n,5776n],[4627n,4n,134n,4489n],[4647n,3844n,-4526n,5329n],[4663n,2401n,-3822n,6084n],[4687n,1369n,1554n,1764n],[4729n,49n,-504n,5184n],[4783n,3969n,-4662n,5476n],[4813n,784n,-2212n,6241n],[4837n,729n,1404n,2704n],[4861n,3721n,-4636n,5776n],[4863n,676n,-2054n,6241n],[4927n,36n,402n,4489n],[4933n,1369n,-2997n,6561n],[4957n,169n,819n,3969n],[4987n,3249n,-4503n,6241n],[4993n,1024n,1568n,2401n],
+    [5007n,49n,469n,4489n],[5011n,961n,-2511n,6561n],[5023n,441n,-1659n,6241n],[5077n,784n,-2268n,6561n],[5097n,169n,832n,4096n],[5101n,361n,-1501n,6241n],[5113n,1n,-72n,5184n],[5119n,9n,-219n,5329n],[5143n,324n,1098n,3721n],[5161n,3136n,-4536n,6561n],[5173n,81n,603n,4489n],[5233n,256n,1008n,3969n],[5241n,361n,1159n,3721n],[5257n,1n,72n,5184n],[5281n,4096n,-5056n,6241n],[5317n,1369n,-3108n,7056n],[5347n,4489n,-5226n,6084n],[5383n,361n,1178n,3844n],
+    [5403n,1n,73n,5329n],[5407n,676n,1482n,3249n],[5413n,961n,-2604n,7056n],[5419n,1764n,1806n,1849n],[5437n,144n,804n,4489n],[5443n,441n,1281n,3721n],[5449n,1369n,1776n,2304n],[5479n,4n,146n,5329n],[5521n,256n,-1296n,6561n],[5527n,361n,1197n,3969n],[5557n,9n,219n,5329n],[5563n,1521n,-3354n,7396n],[5583n,1369n,1813n,2401n],[5611n,81n,-711n,6241n],[5623n,196n,938n,4489n],[5629n,784n,1596n,3249n],[5637n,16n,292n,5329n],[5653n,3721n,-5124n,7056n],
+    [5673n,361n,1216n,4096n],[5701n,1n,-76n,5776n],[5707n,9n,222n,5476n],[5737n,49n,504n,5184n],[5743n,3249n,-4902n,7396n],[5803n,36n,438n,5329n],[5821n,361n,-1596n,7056n],[5833n,1521n,1911n,2401n],[5853n,1n,76n,5776n],[5881n,441n,1344n,4096n],[5977n,64n,584n,5329n],[5983n,676n,1586n,3721n],[5997n,1369n,1924n,2704n],[6007n,1n,-78n,6084n],[6013n,9n,228n,5776n],[6043n,49n,518n,5476n],[6067n,81n,657n,5329n],[6133n,169n,-1092n,7056n],[6163n,1n,78n,6084n],
+    [6213n,784n,1708n,3721n],[6217n,1849n,2064n,2304n],[6247n,729n,1674n,3844n],[6283n,676n,1638n,3969n],[6289n,169n,936n,5184n],[6301n,1296n,-3276n,8281n],[6337n,441n,1407n,4489n],[6343n,3249n,-5187n,8281n],[6357n,49n,532n,5776n],[6393n,1024n,-2912n,8281n],[6421n,961n,-2821n,8281n],[6451n,3721n,-5551n,8281n],[6481n,1n,-81n,6561n],[6483n,3844n,-5642n,8281n],[6541n,81n,684n,5776n],[6547n,196n,1022n,5329n],[6553n,729n,1728n,4096n],[6577n,1369n,2072n,3136n],
+    [6607n,169n,962n,5476n],[6661n,6241n,-6636n,7056n],[6673n,576n,1608n,4489n],[6679n,49n,546n,6084n],[6697n,1024n,1952n,3721n],[6703n,81n,-774n,7396n],[6727n,4n,162n,6561n],[6753n,256n,1168n,5329n],[6793n,4096n,-5952n,8649n],[6829n,784n,-2604n,8649n],[6841n,1521n,2184n,3136n],[6843n,49n,553n,6241n],[6883n,961n,1953n,3969n],[6907n,676n,1742n,4489n],[6913n,361n,1368n,5184n],[6933n,169n,988n,5776n],[6967n,324n,1314n,5329n],[6991n,6561n,-6966n,7396n],
+    [7009n,1024n,2016n,3969n],[7027n,729n,1809n,4489n],[7041n,961n,1984n,4096n],[7057n,2304n,2352n,2401n],[7069n,2704n,-5044n,9409n],[7087n,1849n,2322n,2916n],[7099n,1764n,-4074n,9409n],[7113n,3136n,-5432n,9409n],[7129n,3249n,-5529n,9409n],[7147n,1521n,-3783n,9409n],[7149n,784n,1876n,4489n],[7177n,49n,567n,6561n],[7201n,961n,-2976n,9216n],[7213n,1296n,2196n,3721n],[7243n,361n,1406n,5476n],[7273n,64n,648n,6561n],[7297n,4096n,-6208n,9409n],
+    [7303n,441n,1533n,5329n],[7333n,144n,948n,6241n],[7357n,5776n,-7068n,8649n],[7393n,1849n,2408n,3136n],[7417n,256n,-1488n,8649n],[7441n,63n,651n,6727n],[7471n,441n,1554n,5476n],[7477n,784n,-2716n,9409n],[7483n,1n,86n,7396n],[7507n,1369n,2294n,3844n],[7537n,5329n,-7008n,9216n],[7543n,196n,1106n,6241n],[7549n,1849n,2451n,3249n],[7563n,676n,-2522n,9409n],[7617n,64n,-728n,8281n],[7621n,1521n,2379n,3721n],[7653n,2401n,2548n,2704n],[7669n,1369n,2331n,3969n],[7687n,729n,-2646n,9604n],
+    [7753n,361n,-1824n,9216n],[7771n,36n,-546n,8281n],[7783n,169n,1053n,6561n],[7833n,1369n,2368n,4096n],[7873n,6241n,-7584n,9216n],[7891n,196n,1134n,6561n],[7927n,361n,1482n,6084n],[7933n,16n,-364n,8281n],[7963n,2401n,2646n,2916n],[7977n,3136n,-5768n,10609n],[7987n,324n,1422n,6241n],[8017n,9n,-273n,8281n],[8047n,49n,602n,7396n],[8089n,3969n,-6489n,10609n],[8121n,2401n,-5096n,10816n],[8157n,784n,2044n,5329n],[8167n,1369n,-3811n,10609n],[8191n,1n,-91n,8281n],
+    [8197n,1296n,2412n,4489n],[8203n,729n,1998n,5476n],[8233n,3969n,-6552n,10816n],[8247n,196n,-1358n,9409n],[8251n,81n,774n,7396n],[8293n,16n,-372n,8649n],[8317n,169n,1092n,7056n],[8337n,1369n,2479n,4489n],[8341n,441n,1659n,6241n],[8359n,1849n,2666n,3844n],[8373n,1n,91n,8281n],[8377n,961n,2232n,5184n],[8389n,144n,-1164n,9409n],[8419n,5329n,-7519n,10609n],[8443n,2401n,2793n,3249n],[8461n,361n,1539n,6561n],[8467n,4n,182n,8281n],[8479n,1444n,2546n,4489n],
+    [8527n,1849n,2709n,3969n],[8553n,961n,2263n,5329n],[8563n,9n,273n,8281n],[8589n,343n,1519n,6727n],[8593n,49n,-672n,9216n],[8617n,81n,-873n,9409n],[8623n,1521n,2613n,4489n],[8661n,16n,364n,8281n],[8683n,169n,1118n,7396n],[8689n,1024n,2336n,5329n],[8697n,1849n,2752n,4096n],[8713n,576n,1896n,6241n],[8731n,961n,2294n,5476n],[8737n,729n,-2808n,10816n],[8761n,8281n,-8736n,9216n],[8779n,49n,-679n,9409n],[8803n,81n,-882n,9604n],[8839n,4n,186n,8649n],
+    [8863n,36n,546n,8281n],[8887n,441n,-2163n,10609n],[8917n,2704n,2964n,3249n],[8937n,9n,279n,8649n],[8941n,2401n,-5341n,11881n],[8953n,2304n,2928n,3721n],[8971n,676n,2054n,6241n],[8983n,3969n,-6867n,11881n],[9001n,4096n,-6976n,11881n],[9013n,361n,1596n,7056n],[9037n,16n,372n,8649n],[9043n,1849n,-4687n,11881n],[9067n,1764n,2814n,4489n],[9103n,729n,2133n,6241n],[9109n,5329n,-7884n,11664n],[9111n,2401n,2989n,3721n],[9127n,9n,-291n,9409n],
+    [9147n,7396n,-8858n,10609n],[9151n,1521n,-4251n,11881n],[9181n,81n,819n,8281n],[9183n,1444n,-4142n,11881n],[9201n,361n,-1976n,10816n],[9217n,1369n,2664n,5184n],[9237n,784n,2212n,6241n],[9241n,3136n,-6216n,12321n],[9247n,567n,1953n,6727n],[9277n,961n,-3348n,11664n],[9283n,2401n,3038n,3844n],[9313n,1n,96n,9216n],[9319n,9n,-294n,9604n],[9343n,676n,2106n,6561n],[9349n,49n,651n,8649n],[9391n,361n,1634n,7396n],[9397n,1849n,-4773n,12321n],
+    [9433n,3721n,-6832n,12544n],[9439n,169n,-1339n,10609n],[9463n,961n,2418n,6084n],[9507n,1n,97n,9409n],[9511n,6241n,-8611n,11881n],[9517n,144n,1092n,8281n],[9547n,1444n,2774n,5329n],[9577n,3136n,3192n,3249n],[9607n,4n,194n,9409n],[9613n,784n,2268n,6561n],[9643n,441n,1806n,7396n],[9661n,5776n,-8436n,12321n],[9679n,8649n,-9579n,10609n],[9697n,1521n,2847n,5329n],[9703n,1n,98n,9604n],[9769n,1369n,-4144n,12544n],[9781n,7056n,-9156n,11881n],
+    [9793n,1024n,2528n,6241n],[9811n,2401n,-5586n,12996n],[9813n,16n,388n,9409n],[9847n,4489n,-7638n,12996n],[9883n,1521n,2886n,5476n],[9903n,7396n,-9374n,11881n],[9907n,9n,294n,9604n],[9931n,2916n,3294n,3721n],[9937n,49n,672n,9216n],[9949n,2704n,3276n,3969n],[9957n,1369n,2812n,5776n],[9973n,361n,-2052n,11664n],[9993n,256n,1456n,8281n],[9997n,784n,-3108n,12321n],[10009n,2304n,3216n,4489n],[10027n,36n,582n,9409n],[10111n,676n,-2886n,12321n],[10137n,49n,679n,9409n],
+    [10147n,196n,1302n,8649n],[10159n,1764n,3066n,5329n],[10171n,361n,-2071n,11881n],[10173n,2401n,3283n,4489n],[10177n,1024n,2592n,6561n],[10243n,324n,1638n,8281n],[10261n,1521n,2964n,5776n],[10273n,3136n,3416n,3721n],[10297n,4096n,-7488n,13689n],[10357n,2401n,-5733n,13689n],[10363n,81n,873n,9409n],[10407n,4n,-206n,10609n],[10429n,169n,-1404n,11664n],[10447n,729n,2322n,7396n],[10477n,5329n,-8541n,13689n],[10501n,8281n,-10101n,12321n],[10513n,9n,-312n,10816n],
+    [10533n,1369n,2923n,6241n],[10551n,196n,-1526n,11881n],[10567n,81n,882n,9604n],[10597n,9409n,-10476n,11664n],[10627n,3249n,3534n,3844n],[10677n,2704n,3484n,4489n],[10687n,1444n,3002n,6241n],[10713n,1n,103n,10609n],[10729n,1369n,-4329n,13689n],[10777n,361n,1767n,8649n],[10819n,4n,206n,10609n],[10839n,169n,1261n,9409n],[10843n,1521n,3081n,6241n],[10893n,1849n,3268n,5776n],[10903n,8281n,-10374n,12996n],[10921n,1n,104n,10816n],[10957n,49n,-756n,11664n],[10993n,3249n,3648n,4096n],
+    [11023n,2916n,3618n,4489n],[11041n,576n,2184n,8281n],[11043n,441n,1953n,8649n],[11047n,169n,1274n,9604n],[11083n,1444n,3078n,6561n],[11113n,2401n,3528n,5184n],[11149n,10609n,-11124n,11664n],[11167n,49n,-763n,11881n],[11197n,784n,-3276n,13689n],[11257n,169n,-1456n,12544n],[11287n,1849n,3354n,6084n],[11347n,3721n,3782n,3844n],[11377n,3136n,3752n,4489n],[11467n,729n,2457n,8281n],[11497n,64n,824n,10609n],[11503n,2401n,3626n,5476n],[11533n,1369n,3108n,7056n],[11541n,12n,366n,11163n],
+    [11593n,49n,728n,10816n],[11617n,81n,927n,10609n],[11683n,169n,-1482n,12996n],[11701n,2401n,-6076n,15376n],[11719n,3844n,3906n,3969n],[11743n,676n,2418n,8649n],[11749n,9409n,-11349n,13689n],[11773n,1n,108n,11664n],[11821n,6241n,-9796n,15376n],[11827n,361n,1862n,9604n],[11829n,2704n,3796n,5329n],[11833n,81n,936n,10816n],[11863n,10609n,-11742n,12996n],[11887n,441n,2037n,9409n],[11889n,729n,2511n,8649n],[11893n,1849n,3483n,6561n],[11901n,2401n,3724n,5776n],[11923n,4489n,-8442n,15876n],
+    [11943n,48n,732n,11163n],[11947n,1369n,3182n,7396n],[11989n,144n,1236n,10609n],[12007n,5329n,-9198n,15876n],[12037n,784n,2604n,8649n],[12063n,961n,2821n,8281n],[12073n,256n,-1872n,13689n],[12097n,3969n,4032n,4096n],[12109n,4489n,-8509n,16129n],[12153n,3136n,-7112n,16129n],[12157n,1369n,-4588n,15376n],[12163n,6241n,-9954n,15876n],[12187n,2916n,3942n,5329n],[12211n,1n,-111n,12321n],[12217n,1024n,2912n,8281n],[12229n,2704n,-6604n,16129n],[12247n,196n,1442n,10609n],
+    [12253n,5776n,-9652n,16129n],[12271n,1521n,3354n,7396n],[12289n,3969n,-8064n,16384n],[12307n,2401n,3822n,6084n],[12373n,8281n,-11284n,15376n],[12433n,1n,111n,12321n],[12487n,3844n,4154n,4489n],[12517n,1849n,3612n,7056n],[12547n,4n,222n,12321n],[12553n,3136n,4088n,5329n],[12559n,1764n,-5334n,16129n],[12577n,6561n,-10368n,16384n],[12583n,1369n,-4662n,15876n],[12603n,7396n,-10922n,16129n],[12607n,676n,2522n,9409n],[12679n,3969n,4221n,4489n],[12693n,49n,763n,11881n],
+    [12697n,1521n,-4953n,16129n],[12739n,3249n,4161n,5329n],[12757n,729n,2619n,9409n],[12763n,441n,-2562n,14884n],[12781n,16n,444n,12321n],[12799n,1369n,-4699n,16129n],[12819n,192n,1464n,11163n],[12853n,1296n,3276n,8281n],[12889n,9n,336n,12544n],[12913n,1521n,-4992n,16384n],[12919n,49n,-819n,13689n],[12927n,361n,1957n,10609n],[12967n,8649n,-11811n,16129n],[12979n,729n,2646n,9604n],[13017n,1369n,3367n,8281n],[13063n,9409n,-12222n,15876n],[13111n,1n,114n,12996n],
+    [13129n,8649n,-11904n,16384n],[13147n,49n,777n,12321n],[13153n,361n,1976n,10816n],[13183n,1444n,3458n,8281n],[13213n,441n,2163n,10609n],[13219n,9409n,-12319n,16129n],[13237n,169n,1404n,11664n],[13273n,64n,888n,12321n],[13297n,3721n,4392n,5184n],[13381n,361n,-2356n,15376n],[13423n,2916n,4266n,6241n],[13441n,441n,2184n,10816n],[13477n,2704n,4212n,6561n],[13503n,3721n,4453n,5329n],[13507n,10609n,-12978n,15876n],[13537n,1024n,3104n,9409n],[13603n,196n,1526n,11881n],
+    [13627n,1444n,3534n,8649n],[13633n,81n,1008n,12544n],[13657n,576n,2472n,10609n],[13663n,12321n,-13542n,14884n],[13711n,3721n,4514n,5476n],[13801n,3136n,4424n,6241n],[13807n,1n,117n,13689n],[13809n,10609n,-13184n,16384n],[13819n,117n,1209n,12493n],[13843n,49n,798n,12996n],[13897n,3969n,4599n,5329n],[13903n,441n,-2667n,16129n],[13933n,169n,1443n,12321n],[13963n,676n,2678n,10609n],[13993n,3249n,4503n,6241n],[14011n,2401n,4214n,7396n],[14023n,11881n,-13734n,15876n],
+    [14043n,1849n,3913n,8281n],[14071n,196n,1554n,12321n],[14077n,361n,2052n,11664n],[14107n,3969n,4662n,5476n],[14119n,729n,2781n,10609n],[14169n,169n,1456n,12544n],[14173n,16n,468n,13689n],[14197n,1296n,3492n,9409n],[14233n,3136n,4536n,6561n],[14277n,784n,2884n,10609n],[14299n,13689n,-14274n,14884n],[14341n,81n,-1116n,15376n],[14353n,256n,1776n,12321n],[14367n,1369n,3589n,9409n],[14371n,3087n,4557n,6727n],[14407n,169n,-1638n,15876n],[14449n,12544n,-14224n,16129n],[14533n,3969n,4788n,5776n],
+    [14557n,49n,819n,13689n],[14563n,3721n,4758n,6084n],[14599n,1369n,3626n,9604n],[14611n,441n,2289n,11881n],[14647n,169n,1482n,12996n],[14689n,64n,936n,13689n],[14709n,4489n,4891n,5329n],[14713n,1521n,3783n,9409n],[14791n,361n,2109n,12321n],[14923n,4489n,4958n,5476n],[14929n,1024n,3296n,10609n],[14947n,1521n,3822n,9604n],[14983n,3844n,4898n,6241n],[15007n,1n,122n,14884n],[15013n,9n,-372n,15376n],[15033n,361n,2128n,12544n],[15073n,576n,2616n,11881n],[15177n,64n,-1016n,16129n],[15187n,3969n,4977n,6241n],
+    [15193n,1849n,4128n,9216n],[15223n,3721n,4941n,6561n],[15253n,1n,-124n,15376n],[15259n,9n,366n,14884n],[15289n,49n,-889n,16129n],[15313n,81n,-1152n,16384n],[15357n,4489n,5092n,5776n],[15391n,676n,2834n,11881n],[15417n,2304n,4464n,8649n],[15427n,3844n,5022n,6561n],[15501n,1n,124n,15376n],[15537n,49n,-896n,16384n],[15547n,3249n,4902n,7396n],[15607n,2401n,4557n,8649n],[15667n,1849n,4214n,9604n],[15723n,1083n,3477n,11163n],[15751n,1n,-126n,15876n],[15769n,5184n,5256n,5329n],[15787n,49n,854n,14884n],
+    [15817n,256n,1872n,13689n],[15901n,3721n,5124n,7056n],[15951n,637n,2821n,12493n],[15967n,1444n,3914n,10609n],[15973n,961n,3348n,11664n],[16003n,1n,126n,15876n],[16033n,1369n,3848n,10816n],[16063n,81n,1098n,14884n],[16111n,2916n,4914n,8281n],[16147n,1521n,4017n,10609n],[16189n,2704n,4836n,8649n],[16213n,784n,3108n,12321n],[16273n,361n,2223n,13689n],[16293n,49n,868n,15376n],[16297n,729n,3024n,12544n],[16321n,2401n,4704n,9216n],[16363n,3721n,5246n,7396n],[16369n,2304n,4656n,9409n],[16477n,4489n,5427n,6561n]
+]
 
     //Bunch of event listeners
 document.getElementById("menu_extra").addEventListener("click", function(){
-    switchScreen("Menu", "Extra");
-});
-document.getElementById("menu_extra_return").addEventListener("click", function(){
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", subScreen % 3 + 1);
 });
 document.getElementById("menu_import").addEventListener("click", function(){
     switchScreen("SaveCode", "Import");
@@ -160,8 +202,8 @@ document.getElementById("gm_height_plus").addEventListener("click", function(){
     gmDisplayVars();
 });
 document.getElementById("gm_return").addEventListener("click", function(){
-    if (gamemode > 25) switchScreen("Menu", "Extra");
-    else switchScreen("Menu", "Main");
+    if (gamemode % 1 != 0) switchScreen("Menu", 3);
+    else switchScreen("Menu", Math.floor(modes_order.indexOf(gamemode) / 25) + 1)
 });
 document.getElementById("return_button").addEventListener("click", function(){
     if (gamemode == 0) {
@@ -172,7 +214,7 @@ document.getElementById("return_button").addEventListener("click", function(){
             createCustomArrows();
         }
     }
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", 1);
 });
 document.getElementById("new_game_button").addEventListener("click", function(){
     PlayAgain();
@@ -211,15 +253,36 @@ document.getElementById("Isotopic256_halfLife_change").addEventListener("change"
     gmDisplayVars();
 });
 document.getElementById("ThreeHalves_mode_button").addEventListener("click", function(){
-    mode_vars[0] = (mode_vars[0] + 1) % 2;
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    loadGridSize(37, mode_vars);
     gmDisplayVars();
 });
 document.getElementById("180_length_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
 });
+document.getElementById("180_randomGoals_button").addEventListener("click", function(){
+    mode_vars[1] = (mode_vars[1] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("180_firstGoalMinimum_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (!isFinite(v) || v < 2) v = 2;
+    mode_vars[2] = v;
+    gmDisplayVars();
+});
 document.getElementById("2592_switch_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("2592_randomGoals_button").addEventListener("click", function(){
+    mode_vars[1] = (mode_vars[1] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("2592_firstGoalMinimum_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (!isFinite(v) || v < 2) v = 2;
+    mode_vars[2] = v;
     gmDisplayVars();
 });
 document.getElementById("Wildcard2048_add_button").addEventListener("click", function(){
@@ -256,6 +319,14 @@ document.getElementById("1321_evensOnly_button").addEventListener("click", funct
 });
 document.getElementById("1321_randomGoals_button").addEventListener("click", function(){
     mode_vars[1] = (mode_vars[1] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("1321_firstGoalMinimum_plus").addEventListener("click", function(){
+    mode_vars[2]++;
+    gmDisplayVars();
+});
+document.getElementById("1321_firstGoalMinimum_minus").addEventListener("click", function(){
+    mode_vars[2]--;
     gmDisplayVars();
 });
 document.getElementById("2100_difficulty_decrease").addEventListener("click", function(){
@@ -306,12 +377,56 @@ document.getElementById("DIVE_randomGoals_button").addEventListener("click", fun
     mode_vars[3] = (mode_vars[3] + 1) % 3;
     gmDisplayVars();
 });
+document.getElementById("DIVE_firstGoalMinimum_change").addEventListener("change", function() {
+    let v;
+    try {
+        v = BigInt(this.value);
+    }
+    catch {
+        v = 0n;
+    }
+    if (v < 4n) v = 4n;
+    mode_vars[4] = v;
+    gmDisplayVars();
+});
+document.getElementById("3888_randomGoals_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("3888_firstGoalMinimum_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (!isFinite(v) || v < 16) v = 16;
+    mode_vars[1] = v;
+    gmDisplayVars();
+});
+document.getElementById("2000_randomGoals_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("2000_firstGoalMinimum_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (!isFinite(v) || v < 25) v = 25;
+    mode_vars[1] = v;
+    gmDisplayVars();
+});
+document.getElementById("3645_randomGoals_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("3645_firstGoalMinimum_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (!isFinite(v) || v < 75) v = 75;
+    mode_vars[1] = v;
+    gmDisplayVars();
+});
 document.getElementById("2700_level_decrease").addEventListener("click", function(){
     mode_vars[0] -= 1;
+    loadGridSize(57, mode_vars);
     gmDisplayVars();
 });
 document.getElementById("2700_level_increase").addEventListener("click", function(){
     mode_vars[0] += 1;
+    loadGridSize(57, mode_vars);
     gmDisplayVars();
 });
 document.getElementById("2700_level3Merges_button").addEventListener("click", function(){
@@ -319,12 +434,148 @@ document.getElementById("2700_level3Merges_button").addEventListener("click", fu
     if (mode_vars[1] > 3) mode_vars[1] = 1;
     gmDisplayVars();
 });
+document.getElementById("2205_level_decrease").addEventListener("click", function(){
+    mode_vars[0] -= 1;
+    gmDisplayVars();
+});
+document.getElementById("2205_level_increase").addEventListener("click", function(){
+    mode_vars[0] += 1;
+    gmDisplayVars();
+});
 document.getElementById("1825_randomGoals_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
 });
+document.getElementById("1825_firstGoalMinimum_plus").addEventListener("click", function(){
+    mode_vars[1]++;
+    gmDisplayVars();
+});
+document.getElementById("1825_firstGoalMinimum_minus").addEventListener("click", function(){
+    mode_vars[1]--;
+    gmDisplayVars();
+});
 document.getElementById("3069_randomGoals_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("3069_firstGoalMinimum_change").addEventListener("change", function() {
+    let v;
+    try {
+        v = BigInt(this.value);
+    }
+    catch {
+        v = 0n;
+    }
+    if (v < 4n) v = 4n;
+    mode_vars[1] = v;
+    gmDisplayVars();
+});
+document.getElementById("1762_randomGoals_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("1762_firstGoalMinimum_plus").addEventListener("click", function(){
+    mode_vars[1]++;
+    gmDisplayVars();
+});
+document.getElementById("1762_firstGoalMinimum_minus").addEventListener("click", function(){
+    mode_vars[1]--;
+    gmDisplayVars();
+});
+document.getElementById("3026_allMerges_button").addEventListener("click", function(){
+    mode_vars[0] = !(mode_vars[0]);
+    gmDisplayVars();
+});
+document.getElementById("3026_randomGoals_button").addEventListener("click", function(){
+    mode_vars[1] = (mode_vars[1] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("3026_firstGoalMinimum_plus").addEventListener("click", function(){
+    mode_vars[2]++;
+    gmDisplayVars();
+});
+document.getElementById("3026_firstGoalMinimum_minus").addEventListener("click", function(){
+    mode_vars[2]--;
+    gmDisplayVars();
+});
+document.getElementById("SQUART_randomGoals_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 4;
+    gmDisplayVars();
+});
+document.getElementById("SQUART_firstGoalMinimum_change").addEventListener("change", function() {
+    let v;
+    try {
+        v = BigInt(this.value);
+    }
+    catch {
+        v = 0n;
+    }
+    if (v < 6n) v = 6n;
+    mode_vars[1] = v;
+    gmDisplayVars();
+});
+document.getElementById("Turatin_interval_minus").addEventListener("click", function(){
+    mode_vars[0] -= 1;
+    gmDisplayVars();
+});
+document.getElementById("Turatin_interval_plus").addEventListener("click", function(){
+    mode_vars[0] += 1;
+    gmDisplayVars();
+});
+document.getElementById("Turatin_nonIntegerRatio_button").addEventListener("click", function(){
+    mode_vars[1] = !(mode_vars[1]);
+    gmDisplayVars();
+});
+document.getElementById("3307_equalVariant_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_startSeeds_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 6;
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_unlocks_button").addEventListener("click", function(){
+    mode_vars[1] = !mode_vars[1]
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_seedsFirstQuadrant_button").addEventListener("click", function(){
+    mode_vars[2] = !mode_vars[2]
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_unlockRules_button").addEventListener("click", function(){
+    mode_vars[4] = (mode_vars[4] + 1) % 4;
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_quadrant0SpawnRatio_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (isFinite(v)) mode_vars[3][0] = Math.abs(v);
+    if (eqPrimArrays(mode_vars[3], [0, 0, 0, 0])) {
+        mode_vars[3] = [1, 0, 0, 0]
+    }
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_quadrant1SpawnRatio_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (isFinite(v)) mode_vars[3][1] = Math.abs(v);
+    if (eqPrimArrays(mode_vars[3], [0, 0, 0, 0])) {
+        mode_vars[3] = [1, 0, 0, 0]
+    }
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_quadrant2SpawnRatio_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (isFinite(v)) mode_vars[3][2] = Math.abs(v);
+    if (eqPrimArrays(mode_vars[3], [0, 0, 0, 0])) {
+        mode_vars[3] = [1, 0, 0, 0]
+    }
+    gmDisplayVars();
+});
+document.getElementById("GaussianDIVE_quadrant3SpawnRatio_change").addEventListener("change", function() {
+    let v = Number(this.value);
+    if (isFinite(v)) mode_vars[3][3] = Math.abs(v);
+    if (eqPrimArrays(mode_vars[3], [0, 0, 0, 0])) {
+        mode_vars[3] = [1, 0, 0, 0]
+    }
     gmDisplayVars();
 });
 document.getElementById("start_game").addEventListener("click", startGame);
@@ -346,6 +597,10 @@ document.addEventListener("keydown", (event) => {
     }
 });
 window.addEventListener("resize", function(){
+    if (currentScreen == "Menu") {
+        if ((window.screen.width / window.screen.height) <= 3/5) document.getElementById("menu_extra").innerHTML = "Switch Pages (" + subScreen + " / 3)" 
+        else document.getElementById("menu_extra").innerHTML = "Switch Pages<br>(" + subScreen + " / 3)"; 
+    }
     if (currentScreen == "Gameplay" && inputAvailable) {
         displayGrid();
     }
@@ -386,10 +641,15 @@ document.getElementById("save_code_return_game").addEventListener("click", funct
     switchScreen("Gameplay", "Main");
 });
 document.getElementById("save_code_return_menu").addEventListener("click", function(){
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", 1);
+});
+document.getElementById("save_code_type").addEventListener("click", function(){
+    screenVars[0] = (screenVars[0] + 1) % 2;
+    displaySaveCodeMode(screenVars[0])
+    exportSave(screenVars[0] == 0);
 });
 document.getElementById("modifiers_return").addEventListener("click", function(){
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", 1);
 });
 document.getElementById("modifiers_previous_page").addEventListener("click", function(){
     if (modifiers[5] == "Custom") {
@@ -957,13 +1217,13 @@ document.getElementById("modifiers_AutoMoves_probability_change").addEventListen
     displayModifiers(6);
 });
 document.getElementById("guide_return").addEventListener("click", function(){
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", 1);
 });
 document.getElementById("tile_viewer_return").addEventListener("click", function(){
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", 1);
 });
 document.getElementById("tile_viewer_return").addEventListener("click", function(){
-    switchScreen("Menu", "Main");
+    switchScreen("Menu", 1);
 });
 document.getElementById("tile_viewer_next").addEventListener("click", function(){
     if (subScreen == "Wildcard 2048") {
@@ -985,8 +1245,24 @@ document.getElementById("tile_viewer_next").addEventListener("click", function()
         screenVars[1] = 96;
         switchScreen("Tile Viewer", "3069");
     }
+    else if (subScreen == "3069") {
+        screenVars[1] = 168;
+        switchScreen("Tile Viewer", "SQUART");
+    }
+    else if (subScreen == "SQUART") {
+        switchScreen("Tile Viewer", "Turatin");
+    }
+    else if (subScreen == "Turatin") {
+        switchScreen("Tile Viewer", "3307");
+    }
+    else if (subScreen == "3307") {
+        screenVars[1] = 1232;
+        screenVars[0] = new GaussianBigInt(screenVars[0], 0n);
+        switchScreen("Tile Viewer", "Gaussian DIVE");
+    }
     else {
         screenVars[1] = true;
+        screenVars[0] = screenVars[0].real;
         switchScreen("Tile Viewer", "Wildcard 2048");
     }
 });
@@ -1006,9 +1282,25 @@ document.getElementById("tile_viewer_previous").addEventListener("click", functi
     else if (subScreen == "3069") {
         switchScreen("Tile Viewer", "2295");
     }
-    else if (subScreen == "Wildcard 2048") {
+    else if (subScreen == "SQUART") {
         screenVars[1] = 96;
         switchScreen("Tile Viewer", "3069");
+    }
+    else if (subScreen == "Turatin") {
+        screenVars[1] = 168;
+        switchScreen("Tile Viewer", "SQUART");
+    }
+    else if (subScreen == "3307") {
+        switchScreen("Tile Viewer", "Turatin");
+    }
+    else if (subScreen == "Gaussian DIVE") {
+        screenVars[0] = screenVars[0].real;
+        switchScreen("Tile Viewer", "3307");
+    }
+    else if (subScreen == "Wildcard 2048") {
+        screenVars[1] = 1232;
+        screenVars[0] = new GaussianBigInt(screenVars[0], 0n);
+        switchScreen("Tile Viewer", "Gaussian DIVE");
     }
     else {
         screenVars[1] = true;
@@ -1022,6 +1314,26 @@ document.getElementById("viewer_number_change").addEventListener("change", funct
     }
     catch {
         screenVars[0] = 0n;
+    }
+    displayViewerTile();
+});
+document.getElementById("viewer_gaussian_real_change").addEventListener("change", function() {
+    try {
+        let v = BigInt(this.value);
+        screenVars[0].real = v;
+    }
+    catch {
+        screenVars[0].real = 0n;
+    }
+    displayViewerTile();
+});
+document.getElementById("viewer_gaussian_imaginary_change").addEventListener("change", function() {
+    try {
+        let v = BigInt(this.value);
+        screenVars[0].imaginary = v;
+    }
+    catch {
+        screenVars[0].imaginary = 0n;
     }
     displayViewerTile();
 });
@@ -1045,17 +1357,24 @@ for (f of document.getElementsByTagName("form")) {
 }
 
 let currentScreen = "Menu";
-let subScreen = "Main";
+let subScreen = 1;
 let screenVars = [];
-switchScreen("Menu", "Main");
-for (let t = 0; t < 25; t++) { //Adding event listeners to the main mode tiles on the menu
-    let mtile = document.getElementById("menu_grid").children[t];
-    mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((t % 5) * 14.75 + 1.25) + " / 75)");
-    mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor(t / 5)) * 14.75 + 1.25) + " / 75)");
-    mtile.id = "menu_tile_" + (t + 1);
+switchScreen("Menu", 1);
+let modes_order = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
+    26, 27, 28, 46, 52, 33, 63, 64, 65, 66, 53, 29, 47, 51, 30, 48, 32, 42, 38, 67, 54, 55, 56, 57, 68,
+    31, 58, 72, 61, 40, 71, 43, 59, 70, 69, 34, 35, 36, 37, 62, 39, 60, 45, 73, 75, 41, 49, 74, 50, 44
+]
+for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the main mode tiles on the menu
+    let mtile = document.getElementById("menu_grid_storage").firstElementChild;
+    let position = modes_order.indexOf(t);
+    document.getElementById("menu_grid_" + (Math.floor(position/25) + 1)).appendChild(mtile);
+    mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((position % 5) * 14.75 + 1.25) + " / 75)");
+    mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor((position % 25) / 5)) * 14.75 + 1.25) + " / 75)");
+    mtile.id = "menu_tile_" + t;
     if (mtile.innerHTML != "TBA") {
         mtile.addEventListener("click", function(){
-            loadMode(t + 1);
+            loadMode(t);
             document.getElementById("gm_big_tile").style.setProperty("background-color", getComputedStyle(this).getPropertyValue("background-color"));
             document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
             document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
@@ -1063,64 +1382,82 @@ for (let t = 0; t < 25; t++) { //Adding event listeners to the main mode tiles o
         });
     }
 }
-let extra_modes_order = [26, 27, 28, 46, 53, 52, 33, 32, 42, 30, 31, 40, 29, 47, 51, 38, 48, 58, 54, 55, 56, 57, 43, 59, 34, 35, 36, 37, 39, 60, 41, 49, 61, 50, 44, 45];
-for (let t = 0; t < document.getElementById("extra_menu_grid").children.length; t++) { //Adding event listeners to the extra mode tiles on the menu
-    let mtile = document.getElementById("extra_menu_grid").children[t];
-    let position = extra_modes_order.indexOf(t + 26);
-    mtile.style.setProperty("left", "calc(var(--menu_grid_size) * " + ((position % 6) * 59 + 5) + " / 359)");
-    mtile.style.setProperty("top", "calc(var(--menu_grid_size) * " + ((Math.floor(position / 6)) * 59 + 5) + " / 359)");
-    mtile.id = "menu_tile_" + (t + 26);
-    if (mtile.innerHTML != "TBA") {
-        mtile.addEventListener("click", function(){
-            loadMode(t + 26);
-            document.getElementById("gm_big_tile").style.setProperty("background-color", getComputedStyle(this).getPropertyValue("background-color"));
-            document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
-            document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
-            document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", getComputedStyle(this).getPropertyValue("--tile_font_size") * 1.5);
-        });
-    }
-}
+document.getElementById("GaussianDIVE_enter_button").addEventListener("click", function(){
+    loadMode(50.1);
+});
 let inputAvailable = true;
 // window.addEventListener('keydown', (e) => {
-//     if (e.key == "o") {
+//     if (e.key == "o" && currentScreen == "Gameplay") {
 //         output(Grid);
 //     }
 // }
 // )
-
-// loadMode(60);
-// height = 8; width = 8;
-// startGame();
-// for (let h = 0; h < height; h++) {
-//     for (let w = 0; w < width; w++) {
-//         let g = h * width + w;
-//         let cycle = [1, -1];
-//         Grid[h][w] = [Math.floor(g / 2) + 1, cycle[g % 2]];
+// window.addEventListener('keydown', (e) => {
+//     if (e.key == "v" && currentScreen == "Gameplay") {
+//         output(game_vars);
 //     }
 // }
+// )
+// window.addEventListener('keydown', (e) => {
+//     if (e.key == "t" && currentScreen == "Gameplay") {
+//         output(TileTypes);
+//     }
+// }
+// )
+// window.addEventListener('keydown', (e) => {
+//     if (e.key == "m" && currentScreen == "Gameplay") {
+//         output(MergeRules);
+//     }
+// }
+// )
+
+// loadMode(71);
+// // width = 10; height = 10;
+// startGame();
+// // for (let h = 0; h < height; h++) {
+// //     for (let w = 0; w < width; w++) {
+// //         let g = h * width + w;
+// //         let cycle = [2, 4];
+// //         Grid[h][w] = [Math.floor(g / cycle.length), cycle[g % cycle.length]];
+// //     }
+// // }
 // displayGrid();
 
 //Basic functions
 function eqPrimArrays(a1, a2) { //"Equal Primitive Arrays"; tests if two arrays are equal. Only works if the arrays being compared do not contain non-array objects themselves, but works on nested arrays.
-    if (!(Array.isArray(a1) && Array.isArray(a2))) return (a1 === a2);
-    if (a1.length != a2.length) return false;
+    if (!(Array.isArray(a1) && Array.isArray(a2))) {
+        if (a1 instanceof GaussianBigInt && a2 instanceof GaussianBigInt) return GaussianBigInt.eq(a1, a2);
+        else if (a1 instanceof GaussianBigInt || a2 instanceof GaussianBigInt) return false;
+        else return (a1 === a2);
+    }
+    else if (a1.length != a2.length) return false;
     else for (let i = 0; i < a1.length; i++) {
-        if (a1[i] != a2[i]) {
-            if (!(Array.isArray(a1[i]) && Array.isArray(a2[i])) || !eqPrimArrays(a1[i], a2[i])) return false;
-        }
+        if (!eqPrimArrays(a1[i], a2[i])) return false;
     }
     return true;
 }
 
 function indexOfPrimArray(inner, outer) {//Checks for the index of inner within outer; works even when inner is itself an array, and can be used on other things with a length property (like strings)
     if (!("length" in outer) || outer.length == 0) return -1;
+    let from = 0;
+    if (arguments.length > 2) from = arguments[2];
     for (let i = 0; i < outer.length; i++) {
         if (eqPrimArrays(outer[i], inner)) return i;
     }
     return -1;
 }
 
-function indexOfNestedPrimArray(inner, outer) {//Checks for the index of inner within outer; wworks even when inner is itself an array, and can be used on other things with a length property (like strings). Can find indexes of subarrays; for example, if inner is outer[1][5], then this function will return [1, 5]
+function lastIndexOfPrimArray(inner, outer) {//Checks for the index of inner within outer; works even when inner is itself an array, and can be used on other things with a length property (like strings)
+    if (!("length" in outer) || outer.length == 0) return -1;
+    let from = outer.length - 1;
+    if (arguments.length > 2) from = arguments[2];
+    for (let i = outer.length - 1; i >= 0; i--) {
+        if (eqPrimArrays(outer[i], inner)) return i;
+    }
+    return -1;
+}
+
+function indexOfNestedPrimArray(inner, outer) {//Checks for the index of inner within outer; works even when inner is itself an array, and can be used on other things with a length property (like strings). Can find indexes of subarrays; for example, if inner is outer[1][5], then this function will return [1, 5]
     if (!("length" in outer) || outer.length == 0) return -1;
     for (let i = 0; i < outer.length; i++) {
         if (eqPrimArrays(outer[i], inner)) return i;
@@ -1153,6 +1490,7 @@ function getRndBigInt(min, max) {
     min = BigInt(min);
     max = BigInt(max);
     if (max < min) return getRndBigInt(max, min);
+    if (min < 0n) return getRndBigInt(0n, max - min) + min;
     max++
     let randInt = BigInt(Math.round(Math.random() * Number.MAX_SAFE_INTEGER));
     return (min * BigInt(Number.MAX_SAFE_INTEGER) + (max - min) * randInt) / BigInt(Number.MAX_SAFE_INTEGER);
@@ -1170,7 +1508,7 @@ function orders(num) { //Returns an array containing every permutation of "num" 
     let result = [];
     for (let pos = num - 1; pos >= 0; pos--) {
         for (let e = 0; e < prev.length; e++) {
-            let entry = structuredClone(prev[e]);
+            let entry = compendiumStructuredClone(prev[e]);
             entry.splice(pos, 0, num - 1);
             result.push(entry);
         }
@@ -1265,6 +1603,56 @@ function primesUpdate(max) {
     }
 }
 
+function gaussianSort(a, b) {
+    //Sort by norm
+    if (a.norm() > b.norm()) return 1;
+    if (a.norm() < b.norm()) return -1;
+    // If norms are equal, sort by quadrant
+    if (a.quadrant() > b.quadrant()) return 1;
+    if (a.quadrant() < b.quadrant()) return -1;
+    //If quadrants are also equal, sort by taxicab distance
+    if (a.real + a.imaginary > b.real + b.imaginary) return 1;
+    if (a.real + a.imaginary < b.real + b.imaginary) return -1;
+    //If that's equal too, we're looking at a+bi and b+ai. Sort by imaginary part, because I want 2+i to come before 1+2i
+    if (a.imaginary > b.imaginary) return 1;
+    if (a.imaginary < b.imaginary) return -1;
+    //If those are equal then the two numbers are equal.
+    return 0;
+}
+
+function gaussianPrimesUpdate(maxNorm) {
+    while (gaussian_primes[gaussian_primes.length - 1].norm()**2n < maxNorm) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() ** 2n - 1n);
+    let arr = [];
+    for (let r = 0; r <= maxNorm; r++) {
+        arr.push([]);
+        for (let i = 0; r**2 + i**2 <= maxNorm; i++) arr[r].push(true);
+    }
+    arr[0][0] = false;
+    arr[1][0] = false;
+    arr[0][1] = false;
+    for (let p = 0n; p < gaussian_primes.length && gaussian_primes[p].norm() <= maxNorm; p++) {
+        let gp = gaussian_primes[p];
+        let thisnorm = gp.norm();
+        for (let r = 1n; r * gp.real < arr.length; r++) {
+            for (let i = (r == 1n) ? 1n : 0n; (r**2n + i**2n) * thisnorm <= maxNorm; i++) {
+                let [fr, fi] = gp.mul([r, i]).toFirstQuadrant().toArrayPair().map(Number)
+                if (arr[fr] === undefined || arr[fr][fi] === undefined) continue;
+                arr[fr][fi] = false;
+            }
+        }
+    }
+    let newprimes = [];
+    // Start at r = 1 so 3i isn't counted as a separate prime
+    for (let r = 1; r < arr.length; r++) {
+        for (let i = 0; arr[r][i] !== undefined; i++) {
+            if (arr[r][i]) {
+                newprimes.push(new GaussianBigInt(BigInt(r), BigInt(i)));
+            }
+        }
+    }
+    gaussian_primes = newprimes.sort(gaussianSort);
+}
+
 function prime(n) {//Returns the nth prime; uses numbers or BigInts depending on the type of the input. prime(-n) is the negative of the nth prime.
     while (primes.length < n) primesUpdate(primes[primes.length - 1] * 2n);
     if ((typeof n == "number") && (n % 1 != 0)) return undefined;
@@ -1278,14 +1666,43 @@ function prime(n) {//Returns the nth prime; uses numbers or BigInts depending on
     else return undefined;
 }
 
+function gaussian_prime(n) {//Returns the nth gaussian prime.
+    while (primes.length < n) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+    if ((typeof n == "number") && (n % 1 != 0)) return undefined;
+    let an = Math.abs(Number(n));
+    let answer = 0n;
+    if (n < 0) return undefined;
+    if (n == 0) answer = new GaussianBigInt(1n, 0n);
+    else answer = gaussian_primes[an - 1];
+    return answer;
+}
+
 function expomod(n, m) { //How many factors of m are in n? 7 expomod 2 is 0, 6 expomod 2 is 1, 12 expomod 2 is 2, 1250 expomod 5 is 4, and so on. Returns -1 for invalid inputs. Works on numbers and bigints; n and m must have matching types. Only works on whole numbers.
     if (typeof n != typeof m || (typeof n != "number" && typeof n != "bigint")) return -1;
     if (typeof n == "number" && (n % 1 != 0 || m % 1 != 0)) return -1;
     if (typeof n == "number" && (n == 0 || m == 1)) return Infinity;
     if (typeof n == "bigint" && (n == 0n || m == 1n)) return -1;
-    let result = 0;
+    let result = 0n;
     while (n % m == 0) {
         n /= m;
+        result++;
+    }
+    if (typeof n == "number") return Number(result)
+    return result;
+}
+
+function expomodGaussian(n, m) { //Same as expomod, but for GaussianBigInts
+    try {
+        n = GaussianBigInt(n);
+        m = GaussianBigInt(m);
+    }
+    catch {
+        return -1n;
+    }
+    if (n.eq([0n, 0n]) || m.norm().eq(1n)) return -1n;
+    let result = 0n;
+    while (n.mod(m).eq([0n, 0n])) {
+        n = n.div(m);
         result++;
     }
     return result;
@@ -1366,6 +1783,37 @@ function arrayDepth(array) { // A flat array has a depth of 1, an array containi
         if (Array.isArray(array[i])) result = Math.max(result, arrayDepth(array[i]) + 1);
     }
     return result;
+}
+
+function binarySearch(array, element) {
+    let start = 0; let end = array.length - 1;
+    let midpoint;
+    while (end != start) {
+        midpoint = Math.floor((end + start)/2);
+        if (array[midpoint] == element) return element;
+        else if (array[midpoint] < element) start = midpoint + 1;
+        else if (array[midpoint] > element) end = midpoint;
+        else return -1; // Non-comparable elements, like NaN, mean the array isn't sorted
+    }
+    if (array[start] == element) return element;
+    else return -1;
+}
+
+function binaryInsert(array, element) { // Yes, I know splice means this runs in O(n) anyway, but this is better than having to sort the array later
+    let start = 0; let end = array.length - 1;
+    let midpoint;
+    while (end != start) {
+        midpoint = Math.floor((end + start)/2);
+        if (array[midpoint] == element) {
+            array.splice(midpoint, 0, element);
+            return array;
+        }
+        else if (array[midpoint] < element) start = midpoint + 1;
+        else if (array[midpoint] > element) end = midpoint;
+    }
+    if (array[start] >= element) array.splice(start, 0, element);
+    else array.splice(start + 1, 0, element);
+    return array;
 }
 
 async function announce(message, ms) { // Makes a message appear on the screen for a certain number of milliseconds
@@ -1460,6 +1908,16 @@ function abbreviateNumber(num, system, decimals, commas, ...more) {
         if (negative) result = "-" + result;
         return result;
     }
+    else if (system == "GaussianBigInt") {
+        if (num.imaginary == 0n)
+            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more);
+        else if (num.real == 0n)
+            return abbreviateNumber(num.imaginary, "BigInt", decimals, commas, ...more) + "i";
+        else if (num.imaginary < 0n)
+            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more) + "-" + abbreviateNumber(num.imaginary * -1n, "BigInt", decimals, commas, ...more) + "i";
+        else
+            return abbreviateNumber(num.real, "BigInt", decimals, commas, ...more) + "+" + abbreviateNumber(num.imaginary, "BigInt", decimals, commas, ...more) + "i";
+    }
 }
 
 
@@ -1479,22 +1937,26 @@ function switchScreen(screen, subscreen) {
         document.getElementById("save_code").style.setProperty("display", "none");
         document.getElementById("guide").style.setProperty("display", "none");
         document.getElementById("tile_viewer").style.setProperty("display", "none");
-        if (subScreen == "Extra") {
-            document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #787800, #004675)");
-            document.getElementById("menu_grid").style.setProperty("display", "none");
-            document.getElementById("extra_menu_container").style.setProperty("display", "inline-block");
-            document.getElementById("menu_extra").style.setProperty("display", "none");
-            document.getElementById("menu_extra_return").style.setProperty("display", "flex");
-            document.getElementById("menu_subtitle").innerHTML = "Extra Modes";
+        if (subScreen == 3) {
+            document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #7e7e00, #003f69)");
+            document.getElementById("menu_grid_1").style.setProperty("display", "none");
+            document.getElementById("menu_grid_2").style.setProperty("display", "none");
+            document.getElementById("menu_grid_3").style.setProperty("display", "inline-block");
+        }
+        else if (subScreen == 2) {
+            document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #b3b300, #005d9c)");
+            document.getElementById("menu_grid_1").style.setProperty("display", "none");
+            document.getElementById("menu_grid_2").style.setProperty("display", "inline-block");
+            document.getElementById("menu_grid_3").style.setProperty("display", "none");
         }
         else {
             document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #ffff00, #0099ff)");
-            document.getElementById("menu_grid").style.setProperty("display", "inline-block");
-            document.getElementById("extra_menu_container").style.setProperty("display", "none");
-            document.getElementById("menu_extra").style.setProperty("display", "flex");
-            document.getElementById("menu_extra_return").style.setProperty("display", "none");
-            document.getElementById("menu_subtitle").innerHTML = "Click on one of the tiles here to select that game mode.";
+            document.getElementById("menu_grid_1").style.setProperty("display", "inline-block");
+            document.getElementById("menu_grid_2").style.setProperty("display", "none");
+            document.getElementById("menu_grid_3").style.setProperty("display", "none");
         }
+        if ((window.screen.width / window.screen.height) <= 3/5) document.getElementById("menu_extra").innerHTML = "Switch Pages (" + subScreen + " / 3)" 
+        else document.getElementById("menu_extra").innerHTML = "Switch Pages<br>(" + subScreen + " / 3)"; 
     }
     else if (screen == "Gamemode") {
         document.getElementById("menu").style.setProperty("display", "none");
@@ -1588,14 +2050,15 @@ function switchScreen(screen, subscreen) {
         document.getElementById("guide").style.setProperty("display", "none");
         document.getElementById("tile_viewer").style.setProperty("display", "none");
         document.documentElement.style.setProperty("background-image", "linear-gradient(#5b0085, #ae00ff, #5b0085)");
+        screenVars = [0];
         if (subscreen == "Export") {
-            displayRules("save_code_heading", ["h2", "Export Save Code"], ["p", 'Copy this save code, then if you want to resume your game at a later time, click the "Resumed Saved Game" button on the menu and paste the code there.']);
+            displaySaveCodeMode(0);
             document.getElementById("save_code_return_game").style.setProperty("display", "inline-block");
             document.getElementById("save_code_return_menu").style.setProperty("display", "none");
             document.getElementById("save_code_import").style.setProperty("display", "none");
         }
         else {
-            displayRules("save_code_heading", ["h2", "Import Save Code"], ["p", 'Paste your save code in the text box below, then click "Import Save Code" to resume your saved game.']);
+            displaySaveCodeMode(-1);
             document.getElementById("save_code_return_game").style.setProperty("display", "none");
             document.getElementById("save_code_return_menu").style.setProperty("display", "inline-block");
             document.getElementById("save_code_import").style.setProperty("display", "inline-block");
@@ -1640,12 +2103,8 @@ function loadMode(mode) {
     forcedSpawns = [];
     document.getElementById("mode_vars_line").style.setProperty("display", "none");
     for (let c of document.getElementById("mode_vars_line").children) c.style.setProperty("display", "none");
-    if (modifiers[5] == "Custom") { //Part 1 of forcing the custom grid past the modes' width and height changes
-        modifiers[6] = width;
-        modifiers[7] = height;
-    }
     if (mode == 1) { // 2048
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#776e65"], [[1], 2, "#f9eee3", "#776e65"], [[2], 4, "#ede0c8", "#776e65"], [[3], 8, "#f2b179", "#f9f6f2"],
         [[4], 16, "#f59563", "#f9f6f2"], [[5], 32, "#f67c5f", "#f9f6f2"], [[6], 64, "#f65e3b", "#f9f6f2"], [[7], 128, "#edcf72", "#f9f6f2"],
@@ -1671,7 +2130,7 @@ function loadMode(mode) {
         document.getElementById("2048_vars").style.setProperty("display", "flex");
     }
     else if (mode == 2) { // 2187
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#584153"], [[0, 2], 2, "#999999", "#f6ebf4"], [[1, 1], 3, "#ffffa2", "#584153"], [[1, 2], 6, "#e6e600", "#f6ebf4"],
         [[2, 1], 9, "#ff8181", "#584153"], [[2, 2], 18, "#ff0000", "#f6ebf4"], [[3, 1], 27, "#ffb96f", "#584153"], [[3, 2], 54, "#ff8400", "#f6ebf4"],
@@ -1699,7 +2158,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
     else if (mode == 3) { // 1024
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#564040"], [[0, 3], 3, "#777777", "#f4ecec"], [[1, 1], 4, "#00ff00", "#564040"], [[1, 3], 12, "#008a00", "#f4ecec"],
         [[2, 1], 16, "#bbff00", "#564040"], [[2, 3], 48, "#78a400", "#f4ecec"], [[3, 1], 64, "#ffc800", "#564040"], [[3, 3], 192, "#997800", "#f4ecec"],
@@ -1727,7 +2186,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 3 (10%), 4 (5%)"]);
     }
     else if (mode == 4) { // 3125
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#505246"], [[0, 2], 2, "#c6c6c6", "#505246"], [[0, 3], 3, "#898989", "#f4f7e9"], [[0, 4], 4, "#5f5f5f", "#f4f7e9"],
         [[1, 1], 5, "#ff9f9f", "#505246"], [[1, 2], 10, "#ff7272", "#505246"], [[1, 3], 15, "#ff3a3a", "#f4f7e9"], [[1, 4], 20, "#d50000", "#f4f7e9"],
@@ -1766,7 +2225,7 @@ function loadMode(mode) {
         document.getElementById("3125_vars").style.setProperty("display", "flex");
     }
     else if (mode == 5) { // 1296
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#464d52"], [[0, 2], 2, "#ffc4c4", "#464d52"], [[0, 3], 3, "#fffec4", "#464d52"],
         [[1, 1], 6, "#c300ff", "#464d52"], [[1, 2], 12, "#8000ff", "#464d52"], [[1, 3], 18, "#f200ff", "#464d52"],
@@ -1798,7 +2257,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (80%), 2 (12%), 3 (6%), 6 (2%)"]);
     }
     else if (mode == 6) { // 2401
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#d7d7d7", "#524b46"], [[0, 2], 2, "#afafaf", "#f1ebe7"], [[0, 3], 3, "#ffffff", "#6d6a67"], [[0, 4], 4, "#787878", "#f1ebe7"],
         [[1, 1], 7, "#00ff73", "#524b46"], [[1, 2], 14, "#00be55", "#f1ebe7"], [[1, 3], 21, "#78ffb5", "#6d6a67"], [[1, 4], 28, "#00893e", "#f1ebe7"],
@@ -1834,7 +2293,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (80%), 2 (10%), 3 (5%), 4 (5%)"]);
     }
     else if (mode == 7) { // 4096
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#484652"], [[0, 2], 2, "#c6c6c6", "#484652"], [[0, 3], 3, "#898989", "#e8e6f3"], [[0, 5], 5, "#5f5f5f", "#e8e6f3"],
         [[1, 1], 8, "#ff4646", "#484652"], [[1, 2], 16, "#ff0a0a", "#484652"], [[1, 3], 24, "#c50000", "#e8e6f3"], [[1, 5], 40, "#860000", "#e8e6f3"],
@@ -1867,7 +2326,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (5%), 5 (2%)"]);
     }
     else if (mode == 8) { // 6561
-        width = 6; height = 6; min_dim = 4;
+        // width = 6; height = 6;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#465252"], [[0, 4], 4, "#828282", "#e2e9e9"], [[1, 1], 9, "#ff52b1", "#465252"], [[1, 4], 36, "#c2006b", "#e2e9e9"],
         [[2, 1], 81, "#df53ff", "#465252"], [[2, 4], 324, "#9000b0", "#e2e9e9"], [[3, 1], 729, "#6e4aff", "#465252"], [[3, 4], 2916, "#2500b7", "#e2e9e9"],
@@ -1894,7 +2353,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (95%), 4 (5%)"]);
     }
     else if (mode == 9) { // 1000
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#524946"], [[0, 2], 2, "#cacaca", "#524946"], [[0, 5], 5, "#7e7e7e", "#524946"],
         [[1, 1], 10, "#94cbff", "#524946"], [[1, 2], 20, "#54acff", "#524946"], [[1, 5], 50, "#0084ff", "#524946"],
@@ -1927,7 +2386,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 5 (3%)"]);
     }
     else if (mode == 10) { // 1331
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#485246"], [[0, 2], 2, "#c6c6c6", "#485246"], [[0, 3], 3, "#898989", "#e1edde"], [[0, 6], 6, "#5f5f5f", "#e1edde"],
         [[1, 1], 11, "#ff5454", "#485246"], [[1, 2], 22, "#ff0000", "#485246"], [[1, 3], 33, "#cb0000", "#e1edde"], [[1, 6], 66, "#950000", "#e1edde"],
@@ -1961,7 +2420,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (80%), 2 (12%), 3 (6%), 6 (2%)"]);
     }
     else if (mode == 11) { // 1728
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#aaff00", "#584e59"], [[0, 2], 2, "#84c503", "#f4edf6"], [[0, 3], 3, "#dbff93", "#2d292e"],
         [[0, 4], 4, "#5c8a00", "#f4edf6"], [[0, 6], 6, "#a9e03c", "#584e59"],
@@ -2006,7 +2465,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (80%), 2 (10%), 3 (5%), 4 (5%)"]);
     }
     else if (mode == 12) { // 2047
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 1;
         TileTypes = [[[1], 1, "#ffffff", "#746577"], [[2], 3, "#d8ffb6", "#746577"], [[3], 7, "#a7ff5a", "#746577"],
         [[4], 15, "#77ff00", "#746577"], [[5], 31, "#00ff33", "#746577"], [[6], 63, "#00ff9d", "#746577"], [[7], 127, "#00ffd9", "#746577"],
@@ -2029,7 +2488,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
     }
     else if (mode == 13) { // 2186
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#46524c"], [[1, 1], 2, "#a2a2ff", "#46524c"], [[1, 2], 5, "#0000e6", "#ebf6f1"],
         [[2, 1], 8, "#81ffff", "#46524c"], [[2, 2], 17, "#00ffff", "#ebf6f1"], [[3, 1], 26, "#6fb5ff", "#46524c"], [[3, 2], 53, "#007bff", "#ebf6f1"],
@@ -2058,7 +2517,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (92%), 2 (7%), 5 (1%)"]);
     }
     else if (mode == 14) { // 2049
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         document.documentElement.style.setProperty("background-image", "radial-gradient(#ff0073 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#ffdae7");
         document.documentElement.style.setProperty("--grid-color", "#c7a7bb");
@@ -2120,7 +2579,7 @@ function loadMode(mode) {
         }
     }
     else if (mode == 15) { // 5040
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[1, 1], 1, "#ffd900", "#776e65"],
         [[2, 1], 2, "#ff5ae6", "#584153"], [[2, 2], 4, "#d600b6", "#f6ebf4"],
@@ -2198,7 +2657,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (100%)"]);
     }
     else if (mode == 16) { // 2197
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
         [[0, 1], 1, "#305300", "#f7eaf4"], [[0, 2], 2, "#528d00", "#f7eaf4"], [[0, 3], 3, "#72c400", "#f7eaf4"],
@@ -2242,7 +2701,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (5%), 4 (2%)"]);
     }
     else if (mode == 17) { // 3375
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
         [[0, 1], 1, "#ffffff", "#665b57"], [[0, 2], 2, "#f3ceff", "#665b57"], [[0, 4], 4, "#e69bff", "#665b57"],
@@ -2288,7 +2747,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
     }
     else if (mode == 18) { // 4913
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#ffffff", "#3d443c"], [[0, 3], 3, "#c1c1ff", "#3d443c"], [[0, 5], 5, "#9090ff", "#f1faef"], [[0, 11], 11, "#6363ff", "#f1faef"],
@@ -2324,7 +2783,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 3 (7%), 5 (3%)"]);
     }
     else if (mode == 19) { // 8000
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#460046", "#dcd9ec"], [[0, 2], 2, "#7e007e", "#dcd9ec"], [[0, 6], 6, "#bd00bd", "#dcd9ec"], [[0, 12], 12, "#ff00ff", "#dcd9ec"],
@@ -2357,7 +2816,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 2 (9%), 6 (1%)"]);
     }
     else if (mode == 20) { // 9261
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#aaffaa", "#554051"], [[0, 3], 3, "#72ff72", "#554051"], [[0, 6], 6, "#00ff00", "#554051"],
@@ -2398,7 +2857,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (95%), 3 (4%), 6 (1%)"]);
     }
     else if (mode == 21) { // 625
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 0], 1, "#ff8c00", "#515a5a"], [[0, 1], 2, "#c76d00", "#eef9f9"], [[0, 2], 4, "#904f00", "#eef9f9"], [[0, 3], 8, "#633700", "#eef9f9"],
@@ -2438,7 +2897,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 2 (5%), 3 (5%)"]);
     }
     else if (mode == 22) { // 900
-        width = 7; height = 7; min_dim = 5;
+        // width = 7; height = 7;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#000000", "#ffffff"], [[0, 2], 2, "radial-gradient(#000000 0% 33%, #f00)", "#ffffff"], [[0, 3], 3, "radial-gradient(#000000 0% 33%, #0f0)", "#ffffff"],
@@ -2489,7 +2948,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (100%)"]);
     }
     else if (mode == 23) { // 2059
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[1, 1], 1, "#ffffff", "#33312c"], [[1, 2], 2, "#808080", "#f9f5ee"], [[1, 3], 3, "#c4c4c4", "#33312c"],
@@ -2528,7 +2987,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 2 (6%), 3 (4%)"]);
     }
     else if (mode == 24) { // 2315
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#808080", "#d9e3f4"], [[0, 2], 2, "#dddddd", "#333943"],
@@ -2565,7 +3024,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 2 (6%), 3 (4%)"]);
     }
     else if (mode == 25) { // XXXX
-        width = 6; height = 6; min_dim = 3;
+        // width = 6; height = 6;
         TileNumAmount = 2;
         TileTypes = [[[1, 0], 1, "#ffffff", "#000000"],
         [[["@This 0", ">", 1], "&&", ["@This 1", "<", 5]], ["@This 0", "^", "@This 1"], ["@HSLA", [222.49223595, "*", "@This 0", "-", 444.9844719], 100, [100, "-", ["@This 1", "*", 12.5]], 1], "#000000"],
@@ -2593,7 +3052,7 @@ function loadMode(mode) {
         document.getElementById("XXXX_vars").style.setProperty("display", "flex");
     }
     else if (mode == 26) { // 2584
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#2d2b31"], [[1], 2, "#b3ffe8", "#2d2b31"], [[2], 3, "#52ffcb", "#2d2b31"], [[3], 5, "#00ff99", "#2d2b31"],
         [[4], 8, "#00c777", "#2d2b31"], [[5], 13, "#008b53", "#2d2b31"], [[6], 21, "#008b00", "#2d2b31"], [[7], 34, "#00e200", "#2d2b31"],
@@ -2620,7 +3079,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
     else if (mode == 27) { // 2745
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1;
         TileTypes = [
             [[-1], 1, "#003655", "#ebd9cd"], [[0], 2, "#005b90", "#ebd9cd"], [[1], 3, "#0088d6", "#ebd9cd"], [[2], 4, "#00a2ff", "#796c64"],
@@ -2660,7 +3119,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
     else if (mode == 28) { // 1705
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#2b352a"], [[1], 2, "#fff7c9", "#2b352a"], [[2], 4, "#fff098", "#2b352a"], [[3], 7, "#ffe75f", "#2b352a"],
         [[4], 13, "#ffdd1c", "#2b352a"], [[5], 24, "#cfb000", "#e5eee4"], [[6], 44, "#8e7900", "#e5eee4"], [[7], 81, "#aeffae", "#2b352a"],
@@ -2688,7 +3147,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
     }
     else if (mode == 29) { // 1535, 1536, 1537
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
             [[0, -1], 2, "#ffffff", "#742020"], [[0, 0], 3, "#cecece", "#18571a"], [[0, 1], 4, "#919191", "#171a51"],
@@ -2726,7 +3185,7 @@ function loadMode(mode) {
         statBoxes = [["Score", "@Score"], ["Discovered Winning Tiles", ["@DiscWinning", "arr_length"]]];
     }
     else if (mode == 30) { // 3072
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1;
         TileTypes = [
             [[-1], 1, "#30cbff", "#ffffff"], [[-2], 2, "#ff5462", "#ffffff"],
@@ -2752,7 +3211,7 @@ function loadMode(mode) {
         ["p", 'Note: This is not a full recreation of Threes!, as moves still work like they do in 2048. To get a better recreation, go to Modifiers, change "Maximum Spaces per Move" to 1, change "Visible Next Spawned Tiles" to 1, change "Tiles Spawned at the Start" to 9, and change the location of tile spawns to be only on the edge you moved away from.']);
     }
     else if (mode == 31) { // Isotopic 256
-        width = 3; height = 3; min_dim = 2;
+        // width = 3; height = 3;
         mode_vars = [0.75]; //Lifespan multiplier
         document.documentElement.style.setProperty("background-image", "radial-gradient(#edcc61 0% 40%, #d6ff63 90%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#fff5da 0% 50%, #edffbb)");
@@ -2859,7 +3318,7 @@ function loadMode(mode) {
         }
     }
     else if (mode == 32) { // Bicolor 2187
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#584153"], [[0, 2], 2, "#999999", "#f6ebf4"],
         [[1, 1], 3, ["@linear-gradient", "#ff3030", 0, "#ffffa2", 25, 75, "#ff3030", 100], "#584153"],
@@ -2921,7 +3380,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), Red 3 (2.5%), Blue 3 (2.5%)"]);
     }
     else if (mode == 33) { // Harder 3125
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#505246"], [[0, 3], 3, "#898989", "#f4f7e9"],
         [[1, 1], 5, "#ff9f9f", "#505246"], [[1, 3], 15, "#ff3a3a", "#f4f7e9"],
@@ -2955,7 +3414,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
     }
     else if (mode == 34) { // Partial Absorb 243 (yes, I'm aware that the partial absorb modes aren't good, sorry)
-        width = 5; height = 5; min_dim = 2;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [[[0, 1], 1, "#ffffff", "#584153"], [[0, 2], 2, "#999999", "#f6ebf4"],
         [[1, 1], 3, "#ffffa2", "#584153"], [[1, 2], 4, "#e6e600", "#584153"], [[1, 3], 6, "#a1a100", "#f6ebf4"],
@@ -2996,7 +3455,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
     else if (mode == 35) { // Partial Absorb 255
-        width = 6; height = 6; min_dim = 3;
+        // width = 6; height = 6;
         TileNumAmount = 1;
         TileTypes = [[[1], 1, "#ffffff", "#746577"], [[2], 3, "#d8ffb6", "#746577"], [[3], 7, "#a7ff5a", "#746577"],
         [[4], 15, "#77ff00", "#746577"], [[5], 31, "#00ff33", "#746577"], [[6], 63, "#00ff9d", "#746577"], [[7], 127, "#00ffd9", "#746577"],
@@ -3022,7 +3481,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
     }
     else if (mode == 36) { // 1280
-        width = 8; height = 8; min_dim = 3;
+        // width = 8; height = 8;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 2], 2, "#79ff94", "#3b3338"], [[0, 3], 3, "#00ff33", "#3b3338"], [[0, 5], 5, "#00a120", "#f1e1eb"],
@@ -3065,7 +3524,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 2 (85%), 3 (15%)"]);
     }
     else if (mode == 37) { // 2216.8378200531005859375
-        width = 5; height = 5; min_dim = 2;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [["Div2", "@Signless"], "&#247;2", ["@linear-gradient", "#cccccc", "#444444"], "#765c8f"],
@@ -3115,8 +3574,9 @@ function loadMode(mode) {
         document.getElementById("ThreeHalves_vars").style.setProperty("display", "flex");
     }
     else if (mode == 38) { // 180
-        width = 7; height = 7; min_dim = 5;
-        mode_vars = [0]; // 0 means merges are between 2, 3 or 5 of the same tile, 1 allows any prime merge length, and 2 allows any merge length
+        // width = 7; height = 7;
+        mode_vars = [0, 0, 6]; // For the first entry, 0 means merges are between 2, 3 or 5 of the same tile, 1 allows any prime merge length, and 2 allows any merge length. The second entry controls the random goals, and the third entry is the minimum of the first random goal.
+        start_game_vars = [2n, 0, false, 0, 0, 6] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth and fifth entries are used to randomize the random goals, and the sixth entry is the minimum of the first random goal.
         TileNumAmount = 3;
         TileTypes = [
             [[0, 0, 0], 1, "#000000", "#ffffff"],
@@ -3147,8 +3607,10 @@ function loadMode(mode) {
         document.getElementById("180_vars").style.setProperty("display", "flex");
     }
     else if (mode == 39) { // 2592
-        width = 6; height = 6; min_dim = 3;
+        // width = 6; height = 6;
         TileNumAmount = 2;
+        mode_vars = [0, 0, 4]; // The first entry controls when the merge rules switch, the second entry controls the random goals, and the third entry is the minimum of the first random goal.
+        start_game_vars = [[0, 0], 0, false, 0, 4] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum of the first random goal.
         TileTypes = [[true, [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["@HSVA", [["@This 0", "%", 8, "-", 3.5, "abs", "*", -15], "+", ["@This 1", "*", 149], "+", 300], [0.75, "^", ["@This 1", "floor", 5, "/", 5], "*", 100], [0.8, "^", ["@This 0", "floor", 4, "/", 4], "*", 100], 1], "#ffffff"]];
         MergeRules = [
             [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@Moves", "%", 2, "=", 1]], true, [["@This 0", ["@This 1", "+", 1]]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", 3], [false, true, true]],
@@ -3157,7 +3619,6 @@ function loadMode(mode) {
         startTileSpawns = [[[0, 0], 90], [[1, 0], 5], [[0, 1], 5]];
         winConditions = [[5, 4]];
         winRequirement = 1;
-        mode_vars = [0]; //Controls when the merge rules switch
         document.documentElement.style.setProperty("background-image", "radial-gradient(#00a068 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#c3e3d6");
         document.documentElement.style.setProperty("--grid-color", "#7eaa9d");
@@ -3172,7 +3633,7 @@ function loadMode(mode) {
         document.getElementById("2592_vars").style.setProperty("display", "flex");
     }
     else if (mode == 40) { // Wildcard 2048
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         mode_vars = [0, false]; //If mode_vars[0] is 1, all possibilities of wildcards merge rather than just the shared ones. If mode_vars[0] is 2, the wildcards are "multitiles" instead. If mode_vars[1] is true, all tile spawns are crazy combinations.
         document.documentElement.style.setProperty("background-image", "linear-gradient(#f2b179, #ede0c8, #f9eee3, #ffffff, #f9eee3, #ede0c8, #f2b179)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#f2b179, #ede0c8, #f9eee3, #ffffff, #f9eee3, #ede0c8, #f2b179)");
@@ -3228,7 +3689,7 @@ function loadMode(mode) {
         }
     }
     else if (mode == 41) { // X^Y
-        width = 5; height = 5; min_dim = 4;
+        // width = 5; height = 5;
         mode_vars = [Infinity, 4]; //mode_vars[0] is the maximum prime power, mode_vars[1] is the maximum merge length
         document.documentElement.style.setProperty("background-image", "linear-gradient(#660000, #664e00, #1d6600, #00664e, #005866, #003366, #050066, #3f0066)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#000000, #4c0000, #775800, #3ca400, #00d4c9, #0020f2 110%)");
@@ -3285,7 +3746,7 @@ function loadMode(mode) {
         }
     }
     else if (mode == 42) { // Bicolor 2584
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
         [[0, 0], 1, "#ffffff", "#2d2b31"], [[1, 0], 2, "#b3ffe8", "#2d2b31"],
@@ -3353,10 +3814,10 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), Cyan 3 (2.5%), Yellow 3 (2.5%)"]);
     }
     else if (mode == 43) { // 1321
-        width = 5; height = 5; min_dim = 2;
+        // width = 5; height = 5;
         TileNumAmount = 2;
-        mode_vars = [false, 0]; // If mode_vars[0] is true, +1s can only merge with even numbers. mode_vars[1] controls the random goals.
-        start_game_vars = [2, 0, false] // The first entry is the current random goal, the second entry is the amount of random goals met so far, and the third entry is whether a random goal has been met this turn.
+        mode_vars = [false, 0, 3]; // If mode_vars[0] is true, +1s can only merge with even numbers. mode_vars[1] controls the random goals, mode_vars[2] controls the size of the first random goal
+        start_game_vars = [2n, 0, false, 3] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, and the fourth entry controls the size of the first random goal
         if (modifiers[13] == "None") {
             TileTypes = [
                 [[1, 0], 1, "#ffffff", "#2f332f"],
@@ -3421,7 +3882,7 @@ function loadMode(mode) {
         document.getElementById("1321_vars").style.setProperty("display", "flex");
     }
     else if (mode == 44) { // mod 27
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         start_game_vars = [3]; // The modulus
         if (modifiers[13] == "None") {
             TileNumAmount = 1;
@@ -3461,7 +3922,7 @@ function loadMode(mode) {
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Modulus", "@GVar 0"], ["1s Created", "@Score"]];
     }
     else if (mode == 45) { // Directional Merges
-        width = 6; height = 6; min_dim = 2;
+        // width = 6; height = 6;
         TileNumAmount = 6;
         mode_vars = [2]; // The difficulty; different difficulties have different merge rules, meaning they're essentially different gamemodes
         TileTypes = [
@@ -3482,7 +3943,7 @@ function loadMode(mode) {
         document.getElementById("2100_vars").style.setProperty("display", "flex");
     }
     else if (mode == 46) { // 2378
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 1;
         TileTypes = [
             [[1], 1, "#ffffff", "#403f3a"], [[2], 2, "#d5ddea", "#403f3a"], [[3], 5, "#aabcd8", "#403f3a"], [[4], 12, "#7892bc", "#403f3a"],
@@ -3509,7 +3970,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 5 (3%)"]);
     }
     else if (mode == 47) { // 1093 1094
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
             [[1, -1], 1, "#ffffff", "#656a5c"], [[1, 1], 2, "#919191", "#dde3d0"], [[1, 0], 3, "#cecece", "#333b24"],
@@ -3544,7 +4005,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: Pulls from a \"box\" that starts with three 1s, three 2s, and one 3, and only refills once it's empty."]);
     }
     else if (mode == 48) { // 2310
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 0], 1, "#ffffff", "#1a2727"],
@@ -3570,7 +4031,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
     }
     else if (mode == 49) { // 378
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5; 
         start_game_vars = [3, false]; // The 0th entry is the goal tile, the 1st entry is whether a goal tile was made this turn
         mode_vars = [true, 3]; // The 0th entry is whether a goal tile exists, the 1st entry is the maximum merge length
         if (modifiers[13] == "None") {
@@ -3632,10 +4093,10 @@ function loadMode(mode) {
         statBoxes = [["Goal Tile", ["@GVar 0", "+", 1, "*", "@GVar 0", "/", 2]], ["Score", "@Score"]];
     }
     else if (mode == 50) { // DIVE
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1;
-        mode_vars = [0, false, 0, 0]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry controls random goals.
-        start_game_vars = [[2n], [2n], [], [], 0, 4n, 0, false, false] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry matches the third entry of mode_vars, the sixth entry is the current random goal, the seventh entry is the amount of random goals met so far, and the eighth entry is whether a random goal has been met this turn. The ninth entry is used when tile text is hidden to replace the announcement numbers with question marks.
+        mode_vars = [0, false, 0, 0, 4n]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated, and a positive number does away with the seeds system and just makes the spawning tiles the first n primes. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry controls random goals, and the fifth entry is the minimum for the first random goal.
+        start_game_vars = [[2n], [2n], [], [], 0, 4n, 0, false, false, 4n] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry matches the third entry of mode_vars, the sixth entry is the current random goal, the seventh entry is the amount of random goals met so far, and the eighth entry is whether a random goal has been met this turn. The ninth entry is used when tile text is hidden to replace the announcement numbers with question marks. The tenth entry is the minimum for the first random goal.
         TileTypes = [
             [true, "@This 0", "@ColorScheme", "DIVE", ["@This 0"]]
         ];
@@ -3680,7 +4141,7 @@ function loadMode(mode) {
         document.getElementById("DIVE_vars").style.setProperty("display", "flex");
     }
     else if (mode == 51) { // 1365 1366
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#ffffff", "#493243"], [[0, 2], 2, "#b4b4b4", "#f5dfef"],
@@ -3721,7 +4182,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
     else if (mode == 52) { // 2583
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 1;
         TileTypes = [[[1], 1, "#ffffff", "#373a30"], [[2], 2, "#ffa4bf", "#373a30"], [[3], 4, "#ff769f", "#373a30"],
         [[4], 7, "#ff2a6a", "#373a30"], [[5], 12, "#ee0047", "#373a30"], [[6], 20, "#bd0039", "#373a30"], [[7], 33, "#d1007e", "#373a30"],
@@ -3748,7 +4209,7 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (93%), 2 (5%), 4 (2%)"]);
     }
     else if (mode == 53) { // 2131
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
         TileTypes = [
             [[0, 1], 1, "#ffffff", "#2c1610"], [[0, 3], 2, "#a9a9a9", "#cff4d1"],
@@ -3784,8 +4245,10 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
     }
     else if (mode == 54) { // 3888
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 2;
+        mode_vars = [0, 16]; // The first entry controls the random goals, the second entry is the minimum for the first random goal
+        start_game_vars = [[0, 0], 0, false, 0, 16] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum for the first random goal
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
             [["@This 0", "+", "@This 1", "<", 4], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"]], ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"]], 100, ["@This 0", "+", "@This 1", "*", 12.5], 1], "#ffffff"],
@@ -3809,10 +4272,14 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 2 Times Powers of 3"], ["h1", "3888"], ["p", "Two 1s can merge into a 2, and merges occur between any tile and a tile that's exactly double that tile or triple that tile. Get to the 3888 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("3888_vars").style.setProperty("display", "flex");
     }
     else if (mode == 55) { // 2000
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
+        mode_vars = [0, 25]; // The first entry controls the random goals, the second entry is the minimum for the first random goal
+        start_game_vars = [[0, 0], 0, false, 0, 25] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum for the first random goal
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
             [["@This 0", "+", "@This 1", "<", 4], [[2, "^", "@This 0"], "*", [5, "^", "@This 1"]], ["@HSLA", [300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"], "-", 60], 100, ["@This 0", "+", "@This 1", "*", 12.5], 1], "#ffffff"],
@@ -3837,10 +4304,14 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 2 Times Powers of 5"], ["h1", "2000"], ["p", "Two 1s can merge into a 2 and two 2s can merge into a 4. Merges occur between any tile and a tile that's exactly quadruple that tile, or between any tile, a tile that's double that tile, and a tile that's quintuple that tile. Get to the 2000 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("2000_vars").style.setProperty("display", "flex");
     }
     else if (mode == 56) { // 3645
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
+        mode_vars = [0, 75]; // The first entry controls the random goals, the second entry is the minimum for the first random goal
+        start_game_vars = [[0, 0], 0, false, 0, 75] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is a random number used to randomize the random goals, and the fifth entry is the minimum for the first random goal
         TileTypes = [
             [[0, 0], 1, "#000000", "#ffffff"],
             [["@This 0", "+", "@This 1", "<", 4], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"]], ["@HSLA", [-300, "*", "@This 1", "/", ["@This 0", "+", "@This 1"], "+", 120], 100, ["@This 0", "+", "@This 1", "*", 12.5], 1], "#ffffff"],
@@ -3864,11 +4335,13 @@ function loadMode(mode) {
         displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5"], ["h1", "3645"], ["p", "Three 1s can merge into a 3. Merges occur between two equal tiles and a tile that's triple those tiles, or between any tile, a tile that's triple that tile, and a tile that's quintuple that tile. Get to the 3645 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
         statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("3645_vars").style.setProperty("display", "flex");
     }
     else if (mode == 57) { // 2700
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 3;
-        mode_vars = [1, 1]; // First entry is the level, second entry controls the allowed special merges on Level 3
+        mode_vars = [1, 1, 0]; // First entry is the level, second entry controls the allowed special merges on Level 3
         TileTypes = [
             [[0, 0, 0], 1, "#000000", "#ffffff"],
             [[["@This 0", "=", "@This 1"], "&&", ["@This 0", "=", "@This 2"]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", [5, "^", "@This 2"]], ["@HSLA", 0, 0, [0, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", 10, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", -45, "+", 95, "@end-else"], 1], ["@HSLA", ["@This 0", "+", "@This 1", "+", "@This 2", "%", 2, "*", 120], 100, [85, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", 15, "@end-if"], 1]],
@@ -3900,7 +4373,7 @@ function loadMode(mode) {
         document.getElementById("2700_vars").style.setProperty("display", "flex");
     }
     else if (mode == 58) { // 10
-        width = 5; height = 5; min_dim = 3;
+        // width = 5; height = 5;
         TileNumAmount = 2;
         TileTypes = [
             [[1, 1], 1, "#ff6767", "#313625"], [[1, -1], -1, "#990000", "#ecf1e0"],
@@ -3941,10 +4414,10 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (50%), -1 (50%)"]);
     }
     else if (mode == 59) { // 1825
-        width = 5; height = 5; min_dim = 2;
+        // width = 5; height = 5;
         TileNumAmount = 2;
-        mode_vars = [0]; // Random goals
-        start_game_vars = [2, 0, false] // The first entry is the current random goal, the second entry is the amount of random goals met so far, and the third entry is whether a random goal has been met this turn.
+        mode_vars = [0, 3]; // The first entry controls the random goals, the second entry controls the size of the first random goal
+        start_game_vars = [2, 0, false, 3] // The first entry is the current random goal, the second entry is the amount of random goals met so far, and the third entry is whether a random goal has been met this turn.
         TileTypes = [
             [[1, 1], 1, ["@radial-gradient", "#ffffff", "#ffffff"], "#323136"],
             [[["@This 0", "expomod", 2, "<", 5], "&&", ["@This 1", "=", 1]], "@This 0", ["@radial-gradient", ["@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], ["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 90], 1], "#ffffff"], ["#323136", "@if", ["@This 0", "expomod", 2, ">=", 2], "2nd", "#625893", "@end-if"]],
@@ -3976,7 +4449,7 @@ function loadMode(mode) {
         document.getElementById("1825_vars").style.setProperty("display", "flex");
     }
     else if (mode == 60) { // 2295
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1;
         start_game_vars = [1] // The merge ratio
         TileTypes = [
@@ -4018,10 +4491,10 @@ function loadMode(mode) {
         ];
     }
     else if (mode == 61) { // 3069
-        width = 4; height = 4; min_dim = 2;
+        // width = 4; height = 4;
         TileNumAmount = 1; // This is kind of a lie. Tiles in this mode do only have one entry, but that entry is itself an array.
-        mode_vars = [0] // mode_vars[0] is the random goals setting
-        start_game_vars = [["@Literal"], [1n], 0, false] // game_vars[0] is a storage used to make merges more efficient, game_vars[1] is the current random goal, game_vars[2] is the amount of random goals completed, and game_vars[3] is whether the goal was finished this turn
+        mode_vars = [0, 4n] // mode_vars[0] is the random goals setting, mode_vars[1] is the minimum of the first random goal
+        start_game_vars = [["@Literal"], [1n], 0, false, 4n] // game_vars[0] is a storage used to make merges more efficient, game_vars[1] is the current random goal, game_vars[2] is the amount of random goals completed, game_vars[3] is whether the goal was finished this turn, and game_vars[4] is the minimum of the first random goal
         TileTypes = [
             [true, ["@This 0", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@ColorScheme", "3069", [["@This 0", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]]]]
         ];
@@ -4045,20 +4518,685 @@ function loadMode(mode) {
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("3069_vars").style.setProperty("display", "flex");
     }
-    if (modifiers[5] == "Diamond" || modifiers[5] == "Hexagon") modifiers[6] = min_dim;
-    if (modifiers[5] == "HexaTriangle") modifiers[6] = Math.floor(width * Math.sqrt(2));
+    else if (mode == 62) { // Partial Absorb 361
+        // width = 5; height = 5;
+        TileNumAmount = 1;
+        TileTypes = [
+            [[1], 1, "#000000", "#f8e2db"],
+            [[1.5], 2, "#666666", "#f8e2db"],
+            [true, ["@This 0", "^", 2], ["@radial-gradient", ["@HSLA", [-38, "*", "@This 0", "+", 30], ["@This 0", "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "%", 81, "-", 40, "abs", "*", -1.5, "+", 80], 1], ["@HSLA", [-38, "*", "@This 0", "*", 0.99, "+", 30], ["@This 0", "*", 0.99, "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "*", 0.99, "%", 81, "-", 40, "abs", "*", -1.5, "+", 80], 1], ["@HSLA", [-38, "*", "@This 0", "*", 0.9899, "+", 30], ["@This 0", "*", 0.9899, "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "*", 0.9899, "%", 81, "-", 40, "abs", "*", -1.5, "+", 80], 1]], "#000000"]
+        ];
+        MergeRules = [
+            // [4, [["@This 0", "=", 1], "&&", ["@Next 1 0", "=", 1], "&&", ["@Next 2 0", "=", 1], "&&", ["@Next 3 0", "=", 1]], true, [[2]], 4, [false, true, true, true]],
+            [2, [["@This 0", "=", 1], "&&", ["@Next 1 0", "=", 1]], true, [[1.5]], 2, [false, true]],
+            [2, [["@This 0", "=", 1.5], "&&", ["@Next 1 0", "=", 1.5]], true, [[2]], 4, [false, true]],
+            [3, [["@This 0", "=", 2], "&&", ["@Next 1 0", "=", 1], "&&", ["@Next 2 0", "=", 2]], false, [[3]], 9, [false, true, true]],
+            [3, [["@This 0", "=", 2], "&&", ["@Next 1 0", "-", 1, "=", "@Next 2 0"]], false, [[["@Next 1 0", "+", 1]], [["@Next 2 0", "-", 1]]], [["@Next 1 0", "^", 2], "+", ["@Next 2 0", "^", 2], "+", 4], [false, false, true]]
+        ];
+        startTileSpawns = [[[1], 85], [[1.5], 10], [[2], 5]];
+        winConditions = [[19]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(#ff9a60 0%, #000 150%)");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(#ffe1cd, #936d61)");
+        document.documentElement.style.setProperty("--grid-color", "#eeb765");
+        document.documentElement.style.setProperty("--tile-color", "#e67d49");
+        document.documentElement.style.setProperty("--text-color", "#483027");
+        // displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between four 1s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
+        // ["p", "Spawning tiles: 1 (90%), 4 (10%)"]);
+        // displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between four 1s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
+        // ["p", "Spawning tiles: 1 (90%), 4 (10%)"]);
+        displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between two 1s, between two 2s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+        displayRules("gm_rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between two 1s, between two 2s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+    }
+    else if (mode == 63) { // Harder 3375
+        // width = 5; height = 5;
+        TileNumAmount = 2;
+        TileTypes = [
+        [[0, 1], 1, "#ffffff", "#665b57"], [[0, 3], 3, "#ecb3ff", "#665b57"], [[0, 7], 7, "#dd76ff", "#665b57"],
+        [[1, 1], 15, "#c5f9ff", "#665b57"], [[1, 3], 45, "#71f1ff", "#665b57"], [[1, 7], 105, "#00e5ff", "#665b57"],
+        [[2, 1], 225, "#f1ffb8", "#665b57"], [[2, 3], 675, "#e3ff71", "#665b57"], [[2, 7], 1575, "#ccff00", "#665b57"],
+        [[3, 1], 3375, "#ffb096", "#665b57"], [[3, 3], 10125, "#ff855d", "#665b57"], [[3, 7], 23625, "#ff5821", "#665b57"],
+        [[4, 1], 50625, "#9d9dff", "#665b57"], [[4, 3], 151875, "#5f5fff", "#665b57"], [[4, 7], 354375, "#1a1aff", "#665b57"],
+        [[5, 1], 759375, "#fff5b5", "#665b57"], [[5, 3], 2278125, "#ffeb6c", "#665b57"], [[5, 7], 5315625, "#ffe015", "#665b57"],
+        [[6, 1], 11390625, "#ffb7ff", "#665b57"], [[6, 3], 34171875, "#ff7bff", "#665b57"], [[6, 7], 79734375, "#ff00ff", "#665b57"],
+        [["@This 1", "=", 1], [15, "^", "@This 0"], ["@HSVA", [-97, "*", "@This 0", "+", 889], 30, [0.9, "^", ["@This 0", "-", 6], "*", 100], 1], "#f0dfd8"],
+        [["@This 1", "=", 3], [15, "^", "@This 0", "*", 3], ["@HSVA", [-97, "*", "@This 0", "+", 889], 60, [0.9, "^", ["@This 0", "-", 6], "*", 100], 1], "#f0dfd8"],
+        [["@This 1", "=", 7], [15, "^", "@This 0", "*", 7], ["@HSVA", [-97, "*", "@This 0", "+", 889], 100, [0.9, "^", ["@This 0", "-", 6], "*", 100], 1], "#f0dfd8"],
+        ]
+        MergeRules = [
+            [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 1], "&&", ["@Next 1 1", "=", 1], "&&", ["@This 1", "=", 1]], false, [["@This 0", 3]], [15, "^", "@This 0", "*", 3], [false, true, true]],
+            [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 3], "&&", ["@Next 1 1", "=", 3], "&&", ["@This 1", "=", 1]], false, [["@This 0", 7]], [15, "^", "@This 0", "*", 7], [false, true, true]],
+            [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", 7], "&&", ["@Next 1 1", "=", 7], "&&", ["@This 1", "=", 1]], false, [[["@This 0", "+", 1], 1]], [15, "^", "@This 0", "*", 15], [false, true, true]]
+        ]
+        startTileSpawns = [[[0, 1], 92], [[0, 3], 8]];
+        winConditions = [[3, 1]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(#df7855 0%, #fff 150%)");
+        document.documentElement.style.setProperty("--background-color", "#f3d0c9");
+        document.documentElement.style.setProperty("--grid-color", "#dfb09d");
+        document.documentElement.style.setProperty("--tile-color", "#f1cec0");
+        document.documentElement.style.setProperty("--text-color", "#665b57");
+        displayRules("rules_text", ["h1", "Harder 3375"], ["p","Merges occur between a power of 15 and two equal tiles that are equal to, three times, or seven times that power of 15. Get to the 3375 tile to win!"],
+        ["p", "Spawning tiles: 1 (92%), 3 (8%)"]);
+        displayRules("gm_rules_text", ["h1", "Harder 3375"], ["p","Merges occur between a power of 15 and two equal tiles that are equal to, three times, or seven times that power of 15. Get to the 3375 tile to win!"],
+        ["p", "Spawning tiles: 1 (92%), 3 (8%)"]);
+    }
+    else if (mode == 64) { // Interleaved 3125
+        // width = 4; height = 4;
+        TileNumAmount = 2;
+        TileTypes = [
+        [[-1, 5], 1, "#ffffff", "#505246"], [[-1, 10], 2, "#c6c6c6", "#505246"], [[-1, 15], 3, "#787878", "#505246"],
+        [[0, 5], 5, "#ff9f9f", "#505246"], [[0, 7], 7, "#ff7272", "#505246"], [[0, 8], 8, "#ff3a3a", "#505246"],
+        [[0, 10], 10, "#d50000", "#f4f7e9"], [[0, 15], 15, "#980000", "#f4f7e9"],
+        [[1, 5], 25, "#9fa2ff", "#505246"], [[1, 7], 35, "#5e64ff", "#505246"], [[1, 8], 40, "#0d15ff", "#505246"],
+        [[1, 10], 50, "#0006be", "#f4f7e9"], [[1, 15], 75, "#00058b", "#f4f7e9"],
+        [[2, 5], 125, "#fffa9f", "#505246"], [[2, 7], 175, "#fff53f", "#505246"], [[2, 8], 200, "#ebdf00", "#505246"],
+        [[2, 10], 250, "#b3aa00", "#f4f7e9"], [[2, 15], 375, "#878000", "#f4f7e9"],
+        [[3, 5], 625, "#df9fff", "#505246"], [[3, 7], 875, "#cf6fff", "#505246"], [[3, 8], 1000, "#bc35ff", "#505246"],
+        [[3, 10], 1250, "#9900e5", "#f4f7e9"], [[3, 15], 1875, "#650098", "#f4f7e9"],
+        [[4, 5], 3125, "#e9ff9f", "#505246"], [[4, 7], 4375, "#dafe65", "#505246"], [[4, 8], 5000, "#c9ff16", "#505246"],
+        [[4, 10], 6250, "#abe000", "#f4f7e9"], [[4, 15], 9375, "#87af00", "#f4f7e9"],
+        [[5, 5], 15625, "#ff9fda", "#505246"], [[5, 7], 21875, "#ff69c5", "#505246"], [[5, 8], 25000, "#ff23ab", "#505246"],
+        [[5, 10], 31250, "#eb0091", "#f4f7e9"], [[5, 15], 46875, "#ad006a", "#f4f7e9"],
+        [[6, 5], 78125, "#9fffbf", "#505246"], [[6, 7], 109375, "#5aff91", "#505246"], [[6, 8], 125000, "#0aff5c", "#505246"],
+        [[6, 10], 156250, "#00d547", "#f4f7e9"], [[6, 15], 234375, "#009f35", "#f4f7e9"],
+        [[7, 5], 390625, "#ffc19f", "#505246"], [[7, 7], 546875, "#ff9a63", "#505246"], [[7, 8], 625000, "#ff772e", "#505246"],
+        [[7, 10], 781250, "#ff5900", "#f4f7e9"], [[7, 15], 1171875, "#c14400", "#f4f7e9"],
+        [[8, 5], 1953125, "#9ff4ff", "#505246"], [[8, 7], 2734375, "#63edff", "#505246"], [[8, 8], 3125000, "#00e1ff", "#505246"],
+        [[8, 10], 3906250, "#00c7e1", "#f4f7e9"], [[8, 15], 5859375, "#009aae", "#f4f7e9"],
+        [[9, 5], 9765625, "#ffe79f", "#505246"], [[9, 7], 13671875, "#ffd65d", "#505246"], [[9, 8], 15625000, "#ffcd36", "#505246"],
+        [[9, 10], 19531250, "#ebb000", "#f4f7e9"], [[9, 15], 29296875, "#b28600", "#f4f7e9"],
+        [[10, 5], 48828125, "#9fc2ff", "#505246"], [[10, 7], 68359375, "#659eff", "#505246"], [[10, 8], 78125000, "#1e71ff", "#505246"],
+        [[10, 10], 97656250, "#0058ef", "#f4f7e9"], [[10, 15], 146484375, "#003ca4", "#f4f7e9"],
+        [["@This 1", "=", 5], [5, "^", "@This 0", "*", 5], ["@HSLA", [23.5, "*", ["@This 0", "+", 1], "-", 212, "+", ["@This 0", "+", 1, "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 11], "*", 75], 70, 1], "#505246"],
+        [["@This 1", "=", 7], [5, "^", "@This 0", "*", 7], ["@HSLA", [23.5, "*", ["@This 0", "+", 1], "-", 212, "+", ["@This 0", "+", 1, "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 11], "*", 75], 60, 1], "#505246"],
+        [["@This 1", "=", 8], [5, "^", "@This 0", "*", 8], ["@HSLA", [23.5, "*", ["@This 0", "+", 1], "-", 212, "+", ["@This 0", "+", 1, "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 11], "*", 75], 50, 1], "#505246"],
+        [["@This 1", "=", 10], [5, "^", "@This 0", "*", 10], ["@HSLA", [23.5, "*", ["@This 0", "+", 1], "-", 212, "+", ["@This 0", "+", 1, "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 11], "*", 75], 40, 1], "#f4f7e9"],
+        [["@This 1", "=", 15], [5, "^", "@This 0", "*", 15], ["@HSLA", [23.5, "*", ["@This 0", "+", 1], "-", 212, "+", ["@This 0", "+", 1, "%", 2, "*", 156.5]], [0.95, "^", ["@This 0", "-", 11], "*", 75], 30, 1], "#f4f7e9"]
+        ];
+        MergeRules = [
+            [2, [["@Next 1 0", "=", -1], "&&", ["@This 0", "=", -1], "&&", ["@This 1", "=", 5], "&&", ["@Next 1 1", "=", 10]], false, [["@This 0", 15]], 3, [false, true]],
+            [2, [["@Next 1 0", "+", 1, "=", "@This 0"], "&&", ["@This 1", "=", 5], "&&", ["@Next 1 1", "=", 10]], false, [["@This 0", 7]], [5, "^", "@This 0", "*", 7, "round", 1], [false, true]],
+            [2, [["@Next 1 0", "+", 1, "=", "@This 0"], "&&", ["@This 1", "=", 5], "&&", ["@Next 1 1", "=", 15]], false, [["@This 0", 8]], [5, "^", "@This 0", "*", 8, "round", 1], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 5], "&&", ["@Next 1 1", "=", 5]], false, [["@This 0", 10]], [5, "^", "@This 0", "*", 10, "round", 1], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 7], "&&", ["@Next 1 1", "=", 8]], false, [["@This 0", 15]], [5, "^", "@This 0", "*", 15, "round", 1], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 10], "&&", ["@Next 1 1", "=", 15]], false, [[["@This 0", "+", 1], 5]], [5, "^", "@This 0", "*", 25, "round", 1], [false, true]]
+        ]
+        startTileSpawns = [[[-1, 5], 85], [[-1, 10], 10], [[-1, 15], 5]];
+        winConditions = [[4, 5]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(90deg, #e5ff91 0%, #b9cf73 20%, #e5ff91 40%)");
+        document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#f2ffc7 0%, #c7d599 15%, #f2ffc7 30%)");
+        document.documentElement.style.setProperty("--grid-color", "#cadb80");
+        document.documentElement.style.setProperty("--tile-color", "#9faf58");
+        document.documentElement.style.setProperty("--text-color", "#505246");
+        displayRules("rules_text", ["h1", "Interleaved 3125"], ["p","Two 1s can merge into a 2, and a 2 and a 1 can merge into a 3. Merges occur between a tile that's double a power of five and a tile that's triple that power of five, between a tile that's five times a power of five and a tile that's double, triple, or five times that power of five, or between a tile that's seven times a power of five and a tile that's eight times that power of five. Get to the 3125 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+        displayRules("gm_rules_text", ["h1", "Interleaved 3125"], ["p","Two 1s can merge into a 2, and a 2 and a 1 can merge into a 3. Merges occur between a tile that's double a power of five and a tile that's triple that power of five, between a tile that's five times a power of five and a tile that's double, triple, or five times that power of five, or between a tile that's seven times a power of five and a tile that's eight times that power of five. Get to the 3125 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+    }
+    else if (mode == 65) { // Interleaved 3375
+        // width = 5; height = 5;
+        TileNumAmount = 2;
+        TileTypes = [
+        [[-1, 15], 1, "#ffffff", "#665b57"], [[-1, 30], 2, "#ecb3ff", "#665b57"], [[-1, 60], 4, "#dd76ff", "#f0dfd8"], [[-1, 75], 5, "#bf00ff", "#f0dfd8"],
+        [[0, 15], 15, "#c5f9ff", "#665b57"], [[0, 20], 20, "#71f1ff", "#665b57"], [[0, 60], 60, "#00d3eb", "#f0dfd8"], [[0, 75], 75, "#00b1c5", "#f0dfd8"],
+        [[1, 15], 225, "#f1ffb8", "#665b57"], [[1, 20], 300, "#e3ff71", "#665b57"], [[1, 60], 900, "#b2df00", "#f0dfd8"], [[1, 75], 1125, "#90b301", "#f0dfd8"],
+        [[2, 15], 3375, "#ffb096", "#665b57"], [[2, 20], 4500, "#ff855d", "#665b57"], [[2, 60], 13500, "#ff4000", "#f0dfd8"], [[2, 75], 16875, "#ca3300", "#f0dfd8"],
+        [[3, 15], 50625, "#9d9dff", "#665b57"], [[3, 20], 67500, "#5f5fff", "#665b57"], [[3, 60], 202500, "#0000ff", "#f0dfd8"], [[3, 75], 253125, "#0000c2", "#f0dfd8"],
+        [[4, 15], 759375, "#fff5b5", "#665b57"], [[4, 20], 1012500, "#ffeb6c", "#665b57"], [[4, 60], 3037500, "#ebcc00", "#f0dfd8"], [[4, 75], 3796875, "#bba200", "#f0dfd8"],
+        [[5, 15], 11390625, "#ffb7ff", "#665b57"], [[5, 20], 15187500, "#ff7bff", "#665b57"], [[5, 60], 45562500, "#e100e1", "#f0dfd8"], [[5, 75], 56953125, "#b000b0", "#f0dfd8"],
+        [["@This 1", "=", 15], [15, "^", "@This 0", "*", 15], ["@HSLA", [-97, "*", "@This 0", "+", 792], [0.9, "^", ["@This 0", "-", 5], "*", 100], 75, 1], "#665b57"],
+        [["@This 1", "=", 20], [15, "^", "@This 0", "*", 20], ["@HSLA", [-97, "*", "@This 0", "+", 792], [0.9, "^", ["@This 0", "-", 5], "*", 100], 60, 1], "#665b57"],
+        [["@This 1", "=", 60], [15, "^", "@This 0", "*", 60], ["@HSLA", [-97, "*", "@This 0", "+", 792], [0.9, "^", ["@This 0", "-", 5], "*", 100], 45, 1], "#f0dfd8"],
+        [["@This 1", "=", 75], [15, "^", "@This 0", "*", 75], ["@HSLA", [-97, "*", "@This 0", "+", 792], [0.9, "^", ["@This 0", "-", 5], "*", 100], 30, 1], "#f0dfd8"],
+        ]
+        MergeRules = [
+            [2, [["@This 0", "=", -1], "&&", ["@Next 1 0", "=", -1], "&&", ["@This 1", "=", 15], "&&", ["@Next 1 1", "=", 15]], true, [[-1, 30]], 2, [false, true]],
+            [2, [["@This 0", "=", -1], "&&", ["@Next 1 0", "=", -1], "&&", ["@This 1", "=", 30], "&&", ["@Next 1 1", "=", 30]], true, [[-1, 60]], 4, [false, true]],
+            [2, [["@Next 1 0", "+", 1, "=", "@This 0"], "&&", ["@This 1", "=", 15], "&&", ["@Next 1 1", "=", 75]], false, [["@This 0", 20]], [15, "^", "@This 0", "*", 20, "round", 1], [false, true]],
+            [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 20], "&&", ["@Next 1 1", "=", 20], "&&", ["@Next 2 1", "=", 20]], false, [["@This 0", 60]], [15, "^", "@This 0", "*", 60, "round", 1], [false, true, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 60], "&&", ["@Next 1 1", "=", 15]], false, [["@This 0", 75]], [15, "^", "@This 0", "*", 75, "round", 1], [false, true]],
+            [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 75], "&&", ["@Next 1 1", "=", 75], "&&", ["@Next 2 1", "=", 75]], false, [[["@This 0", "+", 1], 15]], [15, "^", "@This 0", "*", 225, "round", 1], [false, true, true]]
+        ]
+        startTileSpawns = [[[-1, 15], 85], [[-1, 30], 12], [[-1, 60], 3]];
+        winConditions = [[3, 1]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(90deg, #f59879 0%, #ba7862 20%, #f59879 40%)");
+        document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#f9dcd7 0%, #e1aea5 15%, #f9dcd7 30%)");
+        document.documentElement.style.setProperty("--grid-color", "#e7b9a7");
+        document.documentElement.style.setProperty("--tile-color", "#cc9079");
+        document.documentElement.style.setProperty("--text-color", "#665b57");
+        displayRules("rules_text", ["h1", "Interleaved 3375"], ["p","Two 1s can merge into a 2, and two 2s can merge into a 4. Merges occur between a tile that's a power of fifteen and a tile that's either four times that power of fifteen or a third of that power of fifteen, or between three equal tiles that are five times a power of fifteen or twenty times a power of fifteen. Get to the 3375 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
+        displayRules("gm_rules_text", ["h1", "Interleaved 3375"], ["p","Two 1s can merge into a 2, and two 2s can merge into a 4. Merges occur between a tile that's a power of fifteen and a tile that's either four times that power of fifteen or a third of that power of fifteen, or between three equal tiles that are five times a power of fifteen or twenty times a power of fifteen. Get to the 3375 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
+    }
+    else if (mode == 66) { // Interleaved 5832
+        // width = 4; height = 4;
+        TileNumAmount = 2;
+        TileTypes = [
+        [[0, 1], 1, "#a4ffd9", "#372e3a"], [[0, 2], 2, "#a4fff1", "#372e3a"], [[0, 3], 3, "#a4edff", "#372e3a"], [[0, 6], 6, "#a4d5ff", "#372e3a"], [[0, 9], 9, "#a4b3ff", "#372e3a"],
+        [[1, 1], 18, "#ffffa4", "#372e3a"], [[1, 1.5], 27, "#e7ffa4", "#372e3a"], [[1, 3], 54, "#cbffa4", "#372e3a"], [[1, 4.5], 81, "#afffa4", "#372e3a"], [[1, 9], 162, "#a4ffbe", "#372e3a"],
+        [[2, 1], 324, "#ffa4a4", "#372e3a"], [[2, 1.5], 486, "#ffbba4", "#372e3a"], [[2, 3], 972, "#ffd0a4", "#372e3a"], [[2, 4.5], 1458, "#ffdea4", "#372e3a"], [[2, 9], 2916, "#ffeaa4", "#372e3a"],
+        [[3, 1], 5832, "#dca4ff", "#372e3a"], [[3, 1.5], 8748, "#eea4ff", "#372e3a"], [[3, 3], 17496, "#ffa4fa", "#372e3a"], [[3, 4.5], 26244, "#ffa4df", "#372e3a"], [[3, 9], 52488, "#ffa4c8", "#372e3a"],
+        [[4, 1], 104976, "#46ffb2", "#372e3a"], [[4, 1.5], 157464, "#41ffe3", "#372e3a"], [[4, 3], 314928, "#3dd8ff", "#372e3a"], [[4, 4.5], 472392, "#3aa3ff", "#372e3a"], [[4, 9], 944784, "#2f52ff", "#372e3a"],
+        [[5, 1], 1889568, "#ffff2c", "#372e3a"], [[5, 1.5], 2834352, "#c8ff2f", "#372e3a"], [[5, 3], 5668704, "#8eff37", "#372e3a"], [[5, 4.5], 8503056, "#56ff3f", "#372e3a"], [[5, 9], 17006112, "#30ff6b", "#372e3a"],
+        [[6, 1], 34012224, "#ff2c2c", "#372e3a"], [[6, 1.5], 51018336, "#ff602b", "#372e3a"], [[6, 3], 102036672, "#ff9028", "#372e3a"], [[6, 4.5], 153055008, "#ffb22d", "#372e3a"], [[6, 9], 306110016, "#ffd034", "#372e3a"],
+        [[7, 1], 612220032, "#b133ff", "#372e3a"], [[7, 1.5], 918330048, "#db3aff", "#372e3a"], [[7, 3], 1836660096, "#ff2df4", "#372e3a"], [[7, 4.5], 2754990144, "#ff35b8", "#372e3a"], [[7, 9], 5509980288, "#ff2f82", "#372e3a"],
+        [["@This 1", "=", 1], [18, "^", "@This 0", "*", 1], ["@HSLA", [-90, "*", "@This 0", "+", 155], 100, [0.7, "^", ["@This 0", "-", 8, "floor", 4, "/", 4], "*", 40], 1], "#ebe0ef"],
+        [["@This 1", "=", 1.5], [18, "^", "@This 0", "*", 3, "/", 2], ["@HSLA", [-90, "*", "@This 0", "+", 173], 100, [0.7, "^", ["@This 0", "-", 8, "floor", 4, "/", 4], "*", 40], 1], "#ebe0ef"],
+        [["@This 1", "=", 3], [18, "^", "@This 0", "*", 3], ["@HSLA", [-90, "*", "@This 0", "+", 191], 100, [0.7, "^", ["@This 0", "-", 8, "floor", 4, "/", 4], "*", 40], 1], "#ebe0ef"],
+        [["@This 1", "=", 4.5], [18, "^", "@This 0", "*", 9, "/", 2], ["@HSLA", [-90, "*", "@This 0", "+", 209], 100, [0.7, "^", ["@This 0", "-", 8, "floor", 4, "/", 4], "*", 40], 1], "#ebe0ef"],
+        [["@This 1", "=", 9], [18, "^", "@This 0", "*", 9], ["@HSLA", [-90, "*", "@This 0", "+", 227], 100, [0.7, "^", ["@This 0", "-", 8, "floor", 4, "/", 4], "*", 40], 1], "#ebe0ef"]
+        ]
+        MergeRules = [
+            [2, [["@This 0", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 1]], false, [[0, 2]], 2, [false, true]],
+            [2, [["@This 0", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 1]], false, [[0, 3]], 3, [false, true]],
+            [2, [["@This 0", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@This 1", "=", 3], "&&", ["@Next 1 1", "=", 3]], false, [[0, 6]], 6, [false, true]],
+            [2, [["@This 0", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@This 1", "=", 6], "&&", ["@Next 1 1", "=", 3]], false, [[0, 9]], 9, [false, true]],
+            [2, [["@Next 1 0", "+", 1, "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 9]], false, [["@This 0", 1.5]], [18, "^", "@This 0", "*", 3, "/", 2], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 1.5], "&&", ["@Next 1 1", "=", 1.5]], false, [["@This 0", 3]], [18, "^", "@This 0", "*", 3], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 3], "&&", ["@Next 1 1", "=", 1.5]], false, [["@This 0", 4.5]], [18, "^", "@This 0", "*", 9, "/", 2], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 4.5], "&&", ["@Next 1 1", "=", 4.5]], false, [["@This 0", 9]], [18, "^", "@This 0", "*", 9], [false, true]],
+            [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 9], "&&", ["@Next 1 1", "=", 9]], false, [[["@This 0", "+", 1], 1]], [18, "^", "@This 0", "*", 18], [false, true]],
+        ]
+        startTileSpawns = [[[0, 1], 85], [[0, 2], 9], [[0, 3], 6]];
+        winConditions = [[3, 1]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(90deg, #b083cc 0%, #d99bff 20%, #b083cc 40%)");
+        document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#cbaadf 0%, #efd4ff 15%, #cbaadf 30%)");
+        document.documentElement.style.setProperty("--grid-color", "#be86e0");
+        document.documentElement.style.setProperty("--tile-color", "#a35dce");
+        document.documentElement.style.setProperty("--text-color", "#372e3a");
+        displayRules("rules_text", ["h1", "Interleaved 5832"], ["p","Two 1s can merge into a 2, a 2 and a 1 can merge into a 3, two 3s can merge into a 6, and a 6 and a 3 can merge into a 9. For tiles 9 and above, if that tile is a power of 18 or triple a power of eighteen, it merges with a tile that's half of itself. Otherwise, it merges with a tile equal to itself. Get to the 5832 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (9%), 3 (6%)"]);
+        displayRules("gm_rules_text", ["h1", "Interleaved 5832"], ["p","Two 1s can merge into a 2, a 2 and a 1 can merge into a 3, two 3s can merge into a 6, and a 6 and a 3 can merge into a 9. For tiles 9 and above, if that tile is a power of 18 or triple a power of eighteen, it merges with a tile that's half of itself. Otherwise, it merges with a tile equal to itself. Get to the 5832 tile to win!"],
+        ["p", "Spawning tiles: 1 (85%), 2 (9%), 3 (6%)"]);
+    }
+    else if (mode == 67) { // 1762
+        // width = 4; height = 4;
+        TileNumAmount = 1;
+        mode_vars = [0, 11n]; // mode_vars[0] controls the random goals, mode_vars[1] is the tier of tile that the first random goal is
+        start_game_vars = [2n, 0, false, 11n] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, and the fourth entry is the tier of tile that the first random goal is
+        TileTypes = [
+        [[1n], 1, "#ffffff", "#46370d"], [[2n], 2, "#ffe4b8", "#46370d"],
+        [["@This 0", "<=", 4n], ["@This 0"], ["@linear-gradient", ["@HSLA", [4, "-", "@This 0", "*", 300, "/", 1], 100, 60, 1], 0, "#ffc76c", 25, 75, ["@HSLA", [4, "-", "@This 0", "*", 300, "/", 1], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 8n], ["@This 0"], ["@linear-gradient", ["@HSLA", [8, "-", "@This 0", "*", 300, "/", 3], 100, 60, 1], 0, "#ff9d00", 25, 75, ["@HSLA", [8, "-", "@This 0", "*", 300, "/", 3], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 16n], ["@This 0"], ["@linear-gradient", ["@HSLA", [16, "-", "@This 0", "*", 300, "/", 7], 100, 60, 1], 0, "#ff6f00", 25, 75, ["@HSLA", [16, "-", "@This 0", "*", 300, "/", 7], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 32n], ["@This 0"], ["@linear-gradient", ["@HSLA", [32, "-", "@This 0", "*", 300, "/", 15], 100, 60, 1], 0, "#ff3300", 25, 75, ["@HSLA", [32, "-", "@This 0", "*", 300, "/", 15], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 64n], ["@This 0"], ["@linear-gradient", ["@HSLA", [64, "-", "@This 0", "*", 300, "/", 31], 100, 60, 1], 0, "#ff0051", 25, 75, ["@HSLA", [64, "-", "@This 0", "*", 300, "/", 31], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 128n], ["@This 0"], ["@linear-gradient", ["@HSLA", [128, "-", "@This 0", "*", 300, "/", 63], 100, 60, 1], 0, "#fff8ae", 25, 75, ["@HSLA", [128, "-", "@This 0", "*", 300, "/", 63], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 256n], ["@This 0"], ["@linear-gradient", ["@HSLA", [256, "-", "@This 0", "*", 300, "/", 127], 100, 60, 1], 0, "#fff26b", 25, 75, ["@HSLA", [256, "-", "@This 0", "*", 300, "/", 127], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 512n], ["@This 0"], ["@linear-gradient", ["@HSLA", [512, "-", "@This 0", "*", 300, "/", 255], 100, 60, 1], 0, "#ffea00", 25, 75, ["@HSLA", [512, "-", "@This 0", "*", 300, "/", 255], 100, 60, 1], 100], "#46370d"],
+        [["@This 0", "<=", 1024n], ["@This 0"], ["@linear-gradient", ["@HSLA", [1024, "-", "@This 0", "*", 300, "/", 511], 100, 60, 1], 0, "#d4c300", 25, 75, ["@HSLA", [1024, "-", "@This 0", "*", 300, "/", 511], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 2048n], ["@This 0"], ["@linear-gradient", ["@HSLA", [2048, "-", "@This 0", "*", 300, "/", 1023], 100, 60, 1], 0, "#a39600", 25, 75, ["@HSLA", [2048, "-", "@This 0", "*", 300, "/", 1023], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 4096n], ["@This 0"], ["@linear-gradient", ["@HSLA", [4096, "-", "@This 0", "*", 300, "/", 2047], 100, 60, 1], 0, "#f6b9ff", 25, 75, ["@HSLA", [4096, "-", "@This 0", "*", 300, "/", 2047], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 8192n], ["@This 0"], ["@linear-gradient", ["@HSLA", [8192, "-", "@This 0", "*", 300, "/", 4095], 100, 60, 1], 0, "#eb75fd", 25, 75, ["@HSLA", [8192, "-", "@This 0", "*", 300, "/", 4095], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 16384n], ["@This 0"], ["@linear-gradient", ["@HSLA", [16384, "-", "@This 0", "*", 300, "/", 8191], 100, 60, 1], 0, "#e229ff", 25, 75, ["@HSLA", [16384, "-", "@This 0", "*", 300, "/", 8191], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 32768n], ["@This 0"], ["@linear-gradient", ["@HSLA", [32768, "-", "@This 0", "*", 300, "/", 16383], 100, 60, 1], 0, "#b200ce", 25, 75, ["@HSLA", [32768, "-", "@This 0", "*", 300, "/", 16383], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 65536n], ["@This 0"], ["@linear-gradient", ["@HSLA", [65536, "-", "@This 0", "*", 300, "/", 32767], 100, 60, 1], 0, "#770089", 25, 75, ["@HSLA", [65536, "-", "@This 0", "*", 300, "/", 32767], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 131072n], ["@This 0"], ["@linear-gradient", ["@HSLA", [131072, "-", "@This 0", "*", 300, "/", 65535], 100, 60, 1], 0, "#635ef5", 25, 75, ["@HSLA", [131072, "-", "@This 0", "*", 300, "/", 65535], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 262144n], ["@This 0"], ["@linear-gradient", ["@HSLA", [262144, "-", "@This 0", "*", 300, "/", 131071], 100, 60, 1], 0, "#2c26e1", 25, 75, ["@HSLA", [262144, "-", "@This 0", "*", 300, "/", 131071], 100, 60, 1], 100], "#fff7de"],
+        [["@This 0", "<=", 524288n], ["@This 0"], ["@linear-gradient", ["@HSLA", [524288, "-", "@This 0", "*", 300, "/", 262143], 100, 60, 1], 0, "#120e93", 25, 75, ["@HSLA", [524288, "-", "@This 0", "*", 300, "/", 262143], 100, 60, 1], 100], "#fff7de"],
+        [true, ["@This 0"], ["@linear-gradient", ["@HSLA", [[2, "^", ["@This 0", "-B", 1n, "logB", 2n], "*", 2], "-", "@This 0", "*", 300, "/", [2, "^", ["@This 0", "-B", 1n, "logB", 2n], "-", 1]], 100, 60, 1], 0, ["@HSLA", [-34, "*", ["@This 0", "-B", 1n, "logB", 2n], "+", 495], 100, [0.95, "^", ["@This 0", "-B", 1n, "logB", 2n, "-", 19], "*", 36], 1], 25, 75, ["@HSLA", [[2, "^", ["@This 0", "-B", 1n, "logB", 2n], "*", 2], "-", "@This 0", "*", 300, "/", [2, "^", ["@This 0", "-B", 1n, "logB", 2n], "-", 1]], 100, 60, 1], 100], "#fff7de"]
+        ];
+        MergeRules = [
+            [2, ["@Next 1 0", "-B", "@This 0", "absB", "<=", 1n], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+        ];
+        startTileSpawns = [[[1n], 90], [[2n], 10]];
+        winConditions = [[1762n]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "linear-gradient(#adff2a 0%, #b3a61d 15% 85%, #adff2a 100%");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(90deg, #b2f14c 0%, #cfc558 12% 88%, #b2f14c 100%)");
+        document.documentElement.style.setProperty("--grid-color", "#d7ca38");
+        document.documentElement.style.setProperty("--tile-color", "#daea5d");
+        document.documentElement.style.setProperty("--text-color", "#46370d");
+        displayRules("rules_text", ["h1", "1762"], ["p", "Merges occur between two equal tiles or between two tiles with a difference of 1. Get to the 1762 tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+        ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+        displayRules("gm_rules_text", ["h1", "1762"], ["p", "Merges occur between two equal tiles or between two tiles with a difference of 1. Get to the 1762 tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+        ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("1762_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 68) { // 2205
+        // width = 5; height = 5;
+        TileNumAmount = 3;
+        mode_vars = [1] // First entry is the level
+        TileTypes = [
+            [[0, 0, 0], 1, "#ffffff", "#000000"],
+            [[["@This 0", "=", "@This 1"], "&&", ["@This 0", "=", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"]], ["@HSLA", 0, 0, [0, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", -10, "+", 100, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", 45, "+", 5, "@end-else"], 1], ["#000000", "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", "#ffffff", "@end-if"]],
+            [[["@This 2", "<=", "@This 0"], "&&", ["@This 2", "<=", "@This 1"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"]], ["@HSLA", [120, "*", ["@This 1", "-", "@This 2"], "/", ["@This 2", "*", -2, "+", "@This 0", "+", "@This 1"], "+", 60], [0.7, "^", "@This 2", "*", 100], [100, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", -10, "+", 100, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", 45, "+", 5, "@end-else"], 1], ["#000000", "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", "#ffffff", "@end-if"]],
+            [[["@This 1", "<=", "@This 0"], "&&", ["@This 1", "<=", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"]], ["@HSLA", [120, "*", ["@This 0", "-", "@This 1"], "/", ["@This 1", "*", -2, "+", "@This 0", "+", "@This 2"], "+", 300], [0.7, "^", "@This 1", "*", 100], [100, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", -10, "+", 100, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", 45, "+", 5, "@end-else"], 1], ["#000000", "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", "#ffffff", "@end-if"]],
+            [[["@This 0", "<=", "@This 1"], "&&", ["@This 0", "<=", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"]], ["@HSLA", [120, "*", ["@This 2", "-", "@This 0"], "/", ["@This 0", "*", -2, "+", "@This 1", "+", "@This 2"], "+", 180], [0.7, "^", "@This 0", "*", 100], [100, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", -10, "+", 100, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", 45, "+", 5, "@end-else"], 1], ["#000000", "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", "#ffffff", "@end-if"]]
+        ];
+        MergeRules = [
+            [3, [["@This 0", "=", 0], "&&", ["@This 1", "=", 0], "&&", ["@This 2", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@Next 1 1", "=", 0], "&&", ["@Next 1 2", "=", 0], "&&", ["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 0], "&&", ["@Next 2 2", "=", 0]], true, [[1, 0, 0]], 3, [false, true, true]],
+            [3, [["@This 0", "+", 1, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", ["@This 1", "+", 1], "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 5], [false, true, true]],
+            [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 1, "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", "@This 1", ["@This 2", "+", 1]]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 7], [false, true, true]],
+            [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "+", 1, "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [[["@This 0", "+", 2], "@This 1", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 9], [false, true, true]]
+        ];
+        startTileSpawns = [[[0, 0, 0], 100]];
+        winConditions = [[2, 1, 2]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "linear-gradient(#fff, #fbf, #9ff, #ff7, #ffdc5c 10%, #baba35, #ffdc5c 90%, #ff7, #9ff, #fbf, #fff)");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(#fff, #fdf, #bff, #ffa, #ffe78f 10%, #dddd57, #ffe78f 90%, #ffa, #bff, #fdf, #fff)");
+        document.documentElement.style.setProperty("--grid-color", "#781f78");
+        document.documentElement.style.setProperty("--tile-color", "#a1d1d1");
+        document.documentElement.style.setProperty("--text-color", "#333300");
+        displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 1)"], ["p", "Merges occur between three 1s, or between any tile and two equal tiles that are each a third, a fifth, or a seventh of the larger tile. Get to the 2205 tile to win!"],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 1)"], ["p", "Merges occur between three 1s, or between any tile and two equal tiles that are each a third, a fifth, or a seventh of the larger tile. Get to the 2205 tile to win!"],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("2205_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 69) { // (232, 240)
+        // width = 4; height = 4;
+        if (modifiers[13] == "None") {
+            TileNumAmount = 2;
+            TileTypes = [
+                [true, ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"], "#ffffff"],
+            ];
+            MergeRules = [
+                [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"]], true, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "+", "@Next 1 0", "^", 2], "+", ["@This 1", "+", "@Next 1 1", "^", 2], "^", 1/2], [false, true]],
+            ];
+            startTileSpawns = [[[1n, 0n], 1], [[0n, 1n], 1], [[1n, 1n], 1]];
+            winConditions = [[232n, 240n]];
+            winRequirement = 1;
+            displayRules("rules_text", ["h1", "(232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they're equal in at least one of their two slots (but they must be equal in the same position; the first number of one tile being equal to the second number of the other tile doesn't count!). Get to the (232, 240) tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+            ["p", "Spawning tiles: (1, 0) (33.33%), (0, 1) (33.33%), (1, 1) (33.33%)"]);
+            displayRules("gm_rules_text", ["h1", "(232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they're equal in at least one of their two slots (but they must be equal in the same position; the first number of one tile being equal to the second number of the other tile doesn't count!). Get to the (232, 240) tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+            ["p", "Spawning tiles: (1, 0) (33.33%), (0, 1) (33.33%), (1, 1) (33.33%)"]);
+        }
+        else if (modifiers[13] == "Non-Interacting") {
+            TileNumAmount = 2;
+            TileTypes = [
+                [[["@This 0", ">", 0n], "||", ["@This 1", ">", 0n]], ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"], "#ffffff"],
+                [[["@This 0", "<", 0n], "||", ["@This 1", "<", 0n]], ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"], "#000000"],
+            ];
+            MergeRules = [
+                [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "&&", [[[["@This 0", ">=", 0n], "&&", ["@This 1", ">=", 0n], "&&", ["@Next 1 0", ">=", 0n], "&&", ["@Next 1 1", ">=", 0n]]], "||", [[["@This 0", "<=", 0n], "&&", ["@This 1", "<=", 0n], "&&", ["@Next 1 0", "<=", 0n], "&&", ["@Next 1 1", "<=", 0n]]]]], true, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "+", "@Next 1 0", "^", 2], "+", ["@This 1", "+", "@Next 1 1", "^", 2], "^", 1/2], [false, true]],
+            ];
+            startTileSpawns = [[[1n, 0n], modifiers[22]], [[0n, 1n], modifiers[22]], [[1n, 1n], modifiers[22]], [[-1n, 0n], modifiers[23]], [[0n, -1n], modifiers[23]], [[-1n, -1n], modifiers[23]]];
+            winConditions = [[232n, 240n], [-232n, -240n]];
+            winRequirement = 1;
+            displayRules("rules_text", ["h1", "(232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they're equal in at least one of their two slots (but they must be equal in the same position; the first number of one tile being equal to the second number of the other tile doesn't count!). Get to the (232, 240) tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+            ["p", "Spawning tiles: (1, 0) (16.67%), (0, 1) (16.67%), (1, 1) (16.67%), (-1, 0) (16.67%), (0, -1) (16.67%), (-1, -1) (16.67%)"]);
+            displayRules("gm_rules_text", ["h1", "(232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they're equal in at least one of their two slots (but they must be equal in the same position; the first number of one tile being equal to the second number of the other tile doesn't count!). Get to the (232, 240) tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+            ["p", "Spawning tiles: (1, 0) (16.67%), (0, 1) (16.67%), (1, 1) (16.67%), (-1, 0) (16.67%), (0, -1) (16.67%), (-1, -1) (16.67%)"]);
+        }
+        else {
+            TileNumAmount = 2;
+            TileTypes = [
+                [
+                    true, ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"],
+                    ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@if", ["@This 0", "<", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@CalcArray", "@Parent -2"]], "@end-if", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@if", ["@This 1", "<", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@CalcArray", "@Parent -2"]], "@end-if", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"],
+                    ["@CalcArray", "#000000", "@if", [["@This 0", ">", 0n], "&&", ["@This 1", ">", 0n]], "2nd", "#ff0000", "@end-if", "@if", [["@This 0", "<", 0n], "&&", ["@This 1", ">", 0n]], "2nd", "#ff8000", "@end-if", "@if", [["@This 0", "<", 0n], "&&", ["@This 1", "<", 0n]], "2nd", "#00ffff", "@end-if", "@if", [["@This 0", ">", 0n], "&&", ["@This 1", "<", 0n]], "2nd", "#8000ff", "@end-if", "@if", [["@This 0", ">", 0n], "&&", ["@This 1", "=", 0n]], "2nd", "#ff00bf", "@end-if", "@if", [["@This 0", "=", 0n], "&&", ["@This 1", ">", 0n]], "2nd", "#ffbf00", "@end-if", "@if", [["@This 0", "<", 0n], "&&", ["@This 1", "=", 0n]], "2nd", "#00ff40", "@end-if", "@if", [["@This 0", "=", 0n], "&&", ["@This 1", "<", 0n]], "2nd", "#0040ff", "@end-if"],
+                    "0px 0px 5px #000000"
+                ],
+            ];
+            MergeRules = [
+                [2, [["@This 0", "*B", -1n, "=", "@Next 1 0"], "&&", ["@This 1", "*B", -1n, "=", "@Next 1 1"]], true, [], 0, [true, true]],
+                [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "||", ["@This 0", "*B", -1n, "=", "@Next 1 0"], "||", ["@This 1", "*B", -1n, "=", "@Next 1 1"]], true, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "+", "@Next 1 0", "^", 2], "+", ["@This 1", "+", "@Next 1 1", "^", 2], "^", 1/2], [false, true]]
+            ];
+            startTileSpawns = [[[1n, 0n], modifiers[22] * modifiers[22]], [[0n, 1n], modifiers[22] * modifiers[22]], [[1n, 1n], modifiers[22] * modifiers[22]], [[-1n, 0n], modifiers[22] * modifiers[23]], [[0n, -1n], modifiers[22] * modifiers[23]], [[1n, -1n], modifiers[22] * modifiers[23]], [[-1n, 1n], modifiers[22] * modifiers[23]], [[-1n, -1n], modifiers[23] * modifiers[23]]];
+            winConditions = [[232n, 240n]];
+            winRequirement = 1;
+            displayRules("rules_text", ["h1", "(232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they're equal or opposite in at least one of their two slots (but they must be equal in the same position; the first number of one tile being equal to the second number of the other tile doesn't count!). Get to the (232, 240) tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+            ["p", "Spawning tiles: (1, 0) (12.5%), (0, 1) (12.5%), (1, 1) (12.5%), (-1, 0) (12.5%), (0, -1) (12.5%), (-1, -1) (12.5%), (1, -1) (12.5%), (-1, 1) (12.5%)"]);
+            displayRules("gm_rules_text", ["h1", "(232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they're equal or opposite in at least one of their two slots (but they must be equal in the same position; the first number of one tile being equal to the second number of the other tile doesn't count!). Get to the (232, 240) tile to win (your first task is figuring out how to get there...), or just play and see what tiles you end up making!"],
+            ["p", "Spawning tiles: (1, 0) (12.5%), (0, 1) (12.5%), (1, 1) (12.5%), (-1, 0) (12.5%), (0, -1) (12.5%), (-1, -1) (12.5%), (1, -1) (12.5%), (-1, 1) (12.5%)"]);
+        }
+        document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #cbf270, #9c54db)");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(#dbf2a5, #ab79d6)");
+        document.documentElement.style.setProperty("--grid-color", "#829060");
+        document.documentElement.style.setProperty("--tile-color", "#cab6dc");
+        document.documentElement.style.setProperty("--text-color", "#220839");
+        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+    }
+    else if (mode == 70) { // 16+16i
+        // width = 5; height = 5;
+        TileNumAmount = 2;
+        TileTypes = [
+        [[0, 0], "1", ["@radial-gradient", "#000000", 0, 60, "#ff0000"], "#fff8e3"], [[0, 1], "1i", ["@radial-gradient", "#000000", 0, 60, "#80ff00"], "#fff8e3"],
+        [[0, 2], "-1", ["@radial-gradient", "#000000", 0, 60, "#00ffff"], "#fff8e3"], [[0, 3], "-1i", ["@radial-gradient", "#000000", 0, 60, "#8000ff"], "#fff8e3"],
+        [[1, 0], "1+1i", ["@radial-gradient", "#040031", 0, 60, "#ff0000"], "#fff8e3"], [[1, 1], "-1+1i", ["@radial-gradient", "#040031", 0, 60, "#80ff00"], "#fff8e3"],
+        [[1, 2], "-1-1i", ["@radial-gradient", "#040031", 0, 60, "#00ffff"], "#fff8e3"], [[1, 3], "1-1i", ["@radial-gradient", "#040031", 0, 60, "#8000ff"], "#fff8e3"],
+        [[2, 0], "2i", ["@radial-gradient", "#300049", 0, 60, "#ff0000"], "#fff8e3"], [[2, 1], "-2", ["@radial-gradient", "#300049", 0, 60, "#80ff00"], "#fff8e3"],
+        [[2, 2], "-2i", ["@radial-gradient", "#300049", 0, 60, "#00ffff"], "#fff8e3"], [[2, 3], "2", ["@radial-gradient", "#300049", 0, 60, "#8000ff"], "#fff8e3"],
+        [[3, 0], "-2+2i", ["@radial-gradient", "#49004d", 0, 60, "#ff0000"], "#fff8e3"], [[3, 1], "-2-2i", ["@radial-gradient", "#49004d", 0, 60, "#80ff00"], "#fff8e3"],
+        [[3, 2], "2-2i", ["@radial-gradient", "#49004d", 0, 60, "#00ffff"], "#fff8e3"], [[3, 3], "2+2i", ["@radial-gradient", "#49004d", 0, 60, "#8000ff"], "#fff8e3"],
+        [[4, 0], "-4", ["@radial-gradient", "#6e0054", 0, 60, "#ff0000"], "#fff8e3"], [[4, 1], "-4i", ["@radial-gradient", "#6e0054", 0, 60, "#80ff00"], "#fff8e3"],
+        [[4, 2], "4", ["@radial-gradient", "#6e0054", 0, 60, "#00ffff"], "#fff8e3"], [[4, 3], "4i", ["@radial-gradient", "#6e0054", 0, 60, "#8000ff"], "#fff8e3"],
+        [[5, 0], "-4-4i", ["@radial-gradient", "#930139", 0, 60, "#ff0000"], "#fff8e3"], [[5, 1], "4-4i", ["@radial-gradient", "#930139", 0, 60, "#80ff00"], "#fff8e3"],
+        [[5, 2], "4+4i", ["@radial-gradient", "#930139", 0, 60, "#00ffff"], "#fff8e3"], [[5, 3], "-4+4i", ["@radial-gradient", "#930139", 0, 60, "#8000ff"], "#fff8e3"],
+        [[6, 0], "-8i", ["@radial-gradient", "#bc1000", 0, 60, "#ff0000"], "#fff8e3"], [[6, 1], "8", ["@radial-gradient", "#bc1000", 0, 60, "#80ff00"], "#fff8e3"],
+        [[6, 2], "8i", ["@radial-gradient", "#bc1000", 0, 60, "#00ffff"], "#fff8e3"], [[6, 3], "-8", ["@radial-gradient", "#bc1000", 0, 60, "#8000ff"], "#fff8e3"],
+        [[7, 0], "8-8i", ["@radial-gradient", "#d15700", 0, 60, "#ff0000"], "#fff8e3"], [[7, 1], "8+8i", ["@radial-gradient", "#d15700", 0, 60, "#80ff00"], "#fff8e3"],
+        [[7, 2], "-8+8i", ["@radial-gradient", "#d15700", 0, 60, "#00ffff"], "#fff8e3"], [[7, 3], "-8-8i", ["@radial-gradient", "#d15700", 0, 60, "#8000ff"], "#fff8e3"],
+        [[8, 0], "16", ["@radial-gradient", "#de9400", 0, 60, "#ff0000"], "#fff8e3"], [[8, 1], "16i", ["@radial-gradient", "#de9400", 0, 60, "#80ff00"], "#fff8e3"],
+        [[8, 2], "-16", ["@radial-gradient", "#de9400", 0, 60, "#00ffff"], "#fff8e3"], [[8, 3], "-16i", ["@radial-gradient", "#de9400", 0, 60, "#8000ff"], "#fff8e3"],
+        [[9, 0], "16+16i", ["@radial-gradient", "#ffc400", 0, 60, "#ff0000"], "#fff8e3"], [[9, 1], "-16+16i", ["@radial-gradient", "#ffc400", 0, 60, "#80ff00"], "#fff8e3"],
+        [[9, 2], "-16-16i", ["@radial-gradient", "#ffc400", 0, 60, "#00ffff"], "#fff8e3"], [[9, 3], "16-16i", ["@radial-gradient", "#ffc400", 0, 60, "#8000ff"], "#fff8e3"],
+        [[10, 0], "32i", ["@radial-gradient", "#ffff36", 0, 60, "#ff0000"], "#201806"], [[10, 1], "-32", ["@radial-gradient", "#ffff36", 0, 60, "#80ff00"], "#201806"],
+        [[10, 2], "-32i", ["@radial-gradient", "#ffff36", 0, 60, "#00ffff"], "#201806"], [[10, 3], "32", ["@radial-gradient", "#ffff36", 0, 60, "#8000ff"], "#201806"],
+        [[11, 0], "-32+32i", ["@radial-gradient", "#b6ff56", 0, 60, "#ff0000"], "#201806"], [[11, 1], "-32-32i", ["@radial-gradient", "#b6ff56", 0, 60, "#80ff00"], "#201806"],
+        [[11, 2], "32-32i", ["@radial-gradient", "#b6ff56", 0, 60, "#00ffff"], "#201806"], [[11, 3], "32+32i", ["@radial-gradient", "#b6ff56", 0, 60, "#8000ff"], "#201806"],
+        [[12, 0], "-64", ["@radial-gradient", "#8aff78", 0, 60, "#ff0000"], "#201806"], [[12, 1], "-64i", ["@radial-gradient", "#8aff78", 0, 60, "#80ff00"], "#201806"],
+        [[12, 2], "64", ["@radial-gradient", "#8aff78", 0, 60, "#00ffff"], "#201806"], [[12, 3], "64i", ["@radial-gradient", "#8aff78", 0, 60, "#8000ff"], "#201806"],
+        [[13, 0], "-64-64i", ["@radial-gradient", "#94ffcd", 0, 60, "#ff0000"], "#201806"], [[13, 1], "64-64i", ["@radial-gradient", "#94ffcd", 0, 60, "#80ff00"], "#201806"],
+        [[13, 2], "64+64i", ["@radial-gradient", "#94ffcd", 0, 60, "#00ffff"], "#201806"], [[13, 3], "-64+64i", ["@radial-gradient", "#94ffcd", 0, 60, "#8000ff"], "#201806"],
+        [[14, 0], "-128i", ["@radial-gradient", "#aeffff", 0, 60, "#ff0000"], "#201806"], [[14, 1], "128", ["@radial-gradient", "#aeffff", 0, 60, "#80ff00"], "#201806"],
+        [[14, 2], "128i", ["@radial-gradient", "#aeffff", 0, 60, "#00ffff"], "#201806"], [[14, 3], "-128", ["@radial-gradient", "#aeffff", 0, 60, "#8000ff"], "#201806"],
+        [[15, 0], "128-128i", ["@radial-gradient", "#c9edff", 0, 60, "#ff0000"], "#201806"], [[15, 1], "128+128i", ["@radial-gradient", "#c9edff", 0, 60, "#80ff00"], "#201806"],
+        [[15, 2], "-128+128i", ["@radial-gradient", "#c9edff", 0, 60, "#00ffff"], "#201806"], [[15, 3], "-128-128i", ["@radial-gradient", "#c9edff", 0, 60, "#8000ff"], "#201806"],
+        [[16, 0], "256", ["@radial-gradient", "#e3e6ff", 0, 60, "#ff0000"], "#201806"], [[16, 1], "256i", ["@radial-gradient", "#e3e6ff", 0, 60, "#80ff00"], "#201806"],
+        [[16, 2], "-256", ["@radial-gradient", "#e3e6ff", 0, 60, "#00ffff"], "#201806"], [[16, 3], "-256i", ["@radial-gradient", "#e3e6ff", 0, 60, "#8000ff"], "#201806"],
+        [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 0]], [[2, "^", ["@This 0", "/", 2], "defaultAbbrev"]], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 1]], [[2, "^", ["@This 0", "/", 2], "defaultAbbrev"], "str_concat", "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 2]], ["-", "str_concat", [2, "^", ["@This 0", "/", 2], "defaultAbbrev"]], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 3]], ["-", "str_concat", [2, "^", ["@This 0", "/", 2], "defaultAbbrev"], "str_concat", "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 1], "&&", ["@This 0", "-", 1, "/", 2, "+", "@This 1", "%", 4, "=", 0]], [[2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "+", "str_concat", [2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 1], "&&", ["@This 0", "-", 1, "/", 2, "+", "@This 1", "%", 4, "=", 1]], ["-", "str_concat", [2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "+", "str_concat", [2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 1], "&&", ["@This 0", "-", 1, "/", 2, "+", "@This 1", "%", 4, "=", 2]], ["-", "str_concat",[2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "-", "str_concat", [2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 1], "&&", ["@This 0", "-", 1, "/", 2, "+", "@This 1", "%", 4, "=", 3]], [[2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "-", "str_concat", [2, "^", ["@This 0", "-", 1, "/", 2], "defaultAbbrev"], "str_concat", "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        ]
+        MergeRules = [
+            [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 1, "%", 4, "=", "@Next 1 1"]], false, [[["@This 0", "+", 1], "@This 1"]], [2, "^", "@This 0", "*", 2], [false, true]],
+        ];
+        if (modifiers[13] == "Interacting") MergeRules.push([2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 2, "%", 4, "=", "@Next 1 1"]], false, [], 0, [false, true]])
+        startTileSpawns = [["Box", 1, [0, 0], 1, [0, 1], 1, [0, 2], 1, [0, 3], 1]];
+        winConditions = [[9, 0], [9, 1], [9, 2], [9, 3]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "radial-gradient(#ffc400 0% 60%, #ff0000)");
+        document.documentElement.style.setProperty("--background-color", "radial-gradient(#ffd752 0% 60%, #ff6b6b)");
+        document.documentElement.style.setProperty("--grid-color", "#dbb228");
+        document.documentElement.style.setProperty("--tile-color", "#ffb0b0");
+        document.documentElement.style.setProperty("--text-color", "#7f3018");
+        displayRules("rules_text", ["h2", "Powers of 1 + i"], ["h1", "16 + 16i"], ["p","Two tiles can merge if one of them is i times the other one. Get to the 16+16i tile (or any of its other unit multiples) to win! (Score increases by the norm, i.e. the squared absolute value, of the result tile)"],
+        ["p", "Spawning tiles: Pulls from a \"box\" that starts with one 1, one i, one -1, and one -i, and only refills once it's empty."]);
+        displayRules("gm_rules_text", ["h2", "Powers of 1 + i"], ["h1", "16 + 16i"], ["p","Two tiles can merge if one of them is i times the other one. Get to the 16+16i tile (or any of its other unit multiples) to win! (Score increases by the norm, i.e. the squared absolute value, of the result tile)"],
+        ["p", "Spawning tiles: Pulls from a \"box\" that starts with one 1, one i, one -1, and one -i, and only refills once it's empty."]);
+    }
+    else if (mode == 71) { // 3,188,646
+        // width = 5; height = 5;
+        if (modifiers[13] == "None") {
+            TileNumAmount = 2;
+            TileTypes = [
+                [["Multiply", "@Signless"], "&#215;", ["@radial-gradient", "#ff6f00", 0, 25, "#ffc800"], "#ff2200"],
+                [["@This 1", "=", 2], [3, "^", "@This 0", "*", 2], ["@linear-gradient", ["@HSVA", ["@This 0", "*", 23, "+", 131], 100, 100, 1], ["@HSVA", ["@This 0", "*", 19, "+", 131], 100, [0.997, "^", "@This 0", "*", 100], 1]], "#f5ffba"],
+                [["@This 1", "=", 4], [3, "^", "@This 0", "*", 4], ["@linear-gradient", ["@HSVA", ["@This 0", "*", 23, "+", 131], 60, 100, 1], ["@HSVA", ["@This 0", "*", 19, "+", 131], 60, [0.997, "^", "@This 0", "*", 100], 1]], "#2d3500"]
+            ];
+            MergeRules = [
+                [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 2]], [3, "^", "@This 0", "*", 6], [false, true]],
+                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4]], 0, [false, true]],
+                [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless"]], 0, [true, true]]
+            ];
+            startTileSpawns = [[[0, 2], 50], [["Multiply", "@Signless"], 50]];
+            winConditions = [[13, 2]];
+            winRequirement = 1;
+        }
+        else {
+            TileNumAmount = 3;
+            TileTypes = [
+                [["Multiply", "@Signless", 0], "&#215;", ["@radial-gradient", "#ff6f00", 0, 25, "#ffc800"], "#ff2200"],
+                [[["@This 1", "=", 2], "&&", ["@This 2", "=", 1]], [3, "^", "@This 0", "*", 2], ["@linear-gradient", ["@HSVA", ["@This 0", "*", 23, "+", 131], 100, 100, 1], ["@HSVA", ["@This 0", "*", 19, "+", 131], 100, [0.997, "^", "@This 0", "*", 100], 1]], "#f5ffba"],
+                [[["@This 1", "=", 4], "&&", ["@This 2", "=", 1]], [3, "^", "@This 0", "*", 4], ["@linear-gradient", ["@HSVA", ["@This 0", "*", 23, "+", 131], 60, 100, 1], ["@HSVA", ["@This 0", "*", 19, "+", 131], 60, [0.997, "^", "@This 0", "*", 100], 1]], "#2d3500"],
+                [[["@This 1", "=", 2], "&&", ["@This 2", "=", -1]], [3, "^", "@This 0", "*", -2], ["@rotate", 180, true, ["@linear-gradient", ["@HSVA", ["@This 0", "*", 23, "+", 131], 100, 100, 1], ["@HSVA", ["@This 0", "*", 19, "+", 131], 100, [0.997, "^", "@This 0", "*", 100], 1]]], "#0a0045"],
+                [[["@This 1", "=", 4], "&&", ["@This 2", "=", -1]], [3, "^", "@This 0", "*", -4], ["@rotate", 180, true, ["@linear-gradient", ["@HSVA", ["@This 0", "*", 23, "+", 131], 60, 100, 1], ["@HSVA", ["@This 0", "*", 19, "+", 131], 60, [0.997, "^", "@This 0", "*", 100], 1]]], "#d2caff"]
+            ];
+            MergeRules = [
+                [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 2", "=", "@This 2"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 2, "@This 2"]], [3, "^", "@This 0", "*", 6], [false, true]],
+                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4, ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
+                [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless", 0]], 0, [true, true]]
+            ];
+            if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
+            startTileSpawns = [[[0, 2, 1], 25], [[0, 2, -1], 25], [["Multiply", "@Signless", 0], 50]];
+            winConditions = [[13, 2, 1], [13, 2, -1]];
+            winRequirement = 2;
+        }
+        document.documentElement.style.setProperty("background-image", "linear-gradient(90deg, #e0ff33, #ff6726)");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(#edff86, #ff793f)");
+        document.documentElement.style.setProperty("--grid-color", "#cae91e");
+        document.documentElement.style.setProperty("--tile-color", "#f88250");
+        document.documentElement.style.setProperty("--text-color", "#493500");
+        displayRules("rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile in the middle, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
+        ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+        displayRules("gm_rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile in the middle, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
+        ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+    }
+    else if (mode == 72) { // 3026
+        // width = 4; height = 4;
+        TileNumAmount = 2;
+        mode_vars = [false, 0, 4]; // If mode_vars[0] is true, any merge that adds to a valid tile is valid. mode_vars[1] controls the random goals, and mode_vars[2] controls the size of the first random goal.
+        start_game_vars = [[1n, 2n], 0, 0, 1, [1, 1], 0, false, 0.5, 4] // The first four of these are only used in the "any valid tile" mode: game_vars[0] is a list of Fibonacci numbers, game_vars[1], [2], and [3] store the values of the resulting tile for a merge. [4], [5], and [6] are the random goals variables, and [7] is a random variable between 0 and 1 used to make the random goals more random in the "build upon" case. [8] controls the size of the first random goal.
+        TileTypes = [
+            [
+                true, 
+                [[[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1], "*", [[((1 + Math.sqrt(5))/2), "^", ["@This 1", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 1", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1]],
+                ["@linear-gradient", ["@HSLA", ["@This 0", "*", 23, "+", 53], [0.8, "^", ["@This 1", "/", 30, "floor", 1], "*", 100], ["@This 0", "%", 10, "*", -6, "+", 85], 1], 0, 33, ["@HSLA", ["@This 1", "*", 23, "+", 53], [0.8, "^", ["@This 1", "/", 30, "floor", 1], "*", 100], ["@This 1", "%", 10, "*", -6, "+", 85], 1], 66, 100], 
+                "#19202e", "none", 2.5, 0,
+                ["Innerscript", [[[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1, "defaultAbbrev"], "str_concat", " &#215; ", "str_concat", [[((1 + Math.sqrt(5))/2), "^", ["@This 1", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 1", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1, "defaultAbbrev"]], "bottom-center", 6, 0]
+            ]
+        ]
+        MergeRules = [
+            [2, [["@This 0", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@Next 1 1", "=", 0], "&&", ["@This 1", "=", 0]], true, [[0, 1]], 2, [false, true]],
+            [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@Next 1 1", "=", 0], "&&", ["@This 1", "=", 0]], true, [["@This 0", 1]], [2, "*", [[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1]], [false, true]],
+            [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@Next 1 0", "=", 0], "&&", ["@This 0", "=", 0]], true, [[1, "@This 1"]], [2, "*", [[((1 + Math.sqrt(5))/2), "^", ["@This 1", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 1", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1]], [false, true]],
+            [2, [["@This 0", "=", "@This 1"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@Next 1 0", "+", 1, "=", "@This 0"]], false, [["@This 0", ["@This 1", "+", 1]]], [[[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1], "*", [[((1 + Math.sqrt(5))/2), "^", ["@This 1", "+", 3]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 1", "*", -1, "-", 3]], "/", Math.sqrt(5), "round", 1]], [false, true]],
+            [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@Next 1 1", "+", 1, "=", "@This 1"]], false, [["@This 0", ["@This 1", "+", 1]]], [[[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1], "*", [[((1 + Math.sqrt(5))/2), "^", ["@This 1", "+", 3]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 1", "*", -1, "-", 3]], "/", Math.sqrt(5), "round", 1]], [false, true]],
+            [2, [["@This 1", "=", "@Next 1 1"], "&&", ["@Next 1 0", "+", 1, "=", "@This 0"]], false, [[["@This 0", "+", 1], "@This 1"]], [[[((1 + Math.sqrt(5))/2), "^", ["@This 0", "+", 3]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1, "-", 3]], "/", Math.sqrt(5), "round", 1], "*", [[((1 + Math.sqrt(5))/2), "^", ["@This 1", "+", 2]], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 1", "*", -1, "-", 2]], "/", Math.sqrt(5), "round", 1]], [false, true]]
+        ];
+        startTileSpawns = [[[0, 0], 90], [[0, 1], 10]];
+        winConditions = [[7, 9]];
+        winRequirement = 1;
+        document.documentElement.style.setProperty("background-image", "linear-gradient(#77e8ff, #3e0a8b)");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(#baf4ff, #6224bd)");
+        document.documentElement.style.setProperty("--grid-color", "#4da5e5");
+        document.documentElement.style.setProperty("--tile-color", "#7357e5");
+        document.documentElement.style.setProperty("--text-color", "#19202e");
+        displayRules("rules_text", ["h1", "3026"], ["p", "Tiles are products of two Fibonacci numbers. Two tiles can merge if they share one Fibonacci number in common, and either the other Fibonacci number is 1 for both of them or one tile's other Fibonacci number is the Fibonacci number right before the other tile's other Fibonacci number. For example, 5 &#215; 8 and 5 &#215; 13 can merge to make 5 &#215; 21. Get to the 3026 (34 &#215; 89) tile to win!"],
+        ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+        displayRules("gm_rules_text", ["h1", "3026"], ["p", "Tiles are products of two Fibonacci numbers. Two tiles can merge if they share one Fibonacci number in common, and either the other Fibonacci number is 1 for both of them or one tile's other Fibonacci number is the Fibonacci number right before the other tile's other Fibonacci number. For example, 5 &#215; 8 and 5 &#215; 13 can merge to make 5 &#215; 21. Get to the 3026 (34 &#215; 89) tile to win!"],
+        ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("3026_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 73) { // SQUART
+        // width = 4; height = 4;
+        TileNumAmount = 1;
+        mode_vars = [0, 1536n]; // Random goals: first entry is the random goals setting, second entry is the first goal minimum
+        start_game_vars = [1n, 0, false, [1n, 2n, 4n], 1536n] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is an array of possible tiles found by the random goals so far, and the fifth entry is the first goal minimum.
+        TileTypes = [
+            [true, "@This 0", "@ColorScheme", "SQUART", ["@This 0"]]
+        ];
+        if (modifiers[13] == "None") {
+            MergeRules = [
+                [2, [["@This 0", ">=", "@Next 1 0"], "&&", ["@Next 1 0", "^B", 2, "%B", ["@This 0", "@if", ["@This 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+            ];
+            startTileSpawns = [[[1n], 100]];
+        }
+        else {
+            startTileSpawns = [[[1n], modifiers[22]], [[-1n], modifiers[23]]];
+            if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [2, [[["@This 0", ">", 0n], "=", ["@Next 1 0", ">", 0n]], "&&", [["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@Next 1 0", "^B", 2, "%B", ["@This 0", "@if", ["@This 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0", "abs"], [false, true]]
+                ];
+            }
+            else {
+                MergeRules = [
+                    [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0, [true, true]],
+                    [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@Next 1 0", "^B", 2, "%B", ["@This 0", "@if", ["@This 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0", "abs"], [false, true]]
+                ];
+            }
+        }
+        winRequirement = false;
+        document.documentElement.style.setProperty("background-image", "linear-gradient(#0000, #770000), conic-gradient(#0000 0deg 10deg, #fff8 35deg 55deg, #0000 80deg 100deg, #0008 125deg 145deg, #0000 170deg 190deg, #fff8 215deg 235deg, #0000 260deg 280deg, #0008 305deg 325deg, #0000 350deg), linear-gradient(#ce8f23, #ce8f23)");
+        document.documentElement.style.setProperty("--background-color", "linear-gradient(#0000, #ad2727), conic-gradient(#0000 0deg 10deg, #fff8 35deg 55deg, #0000 80deg 100deg, #0008 125deg 145deg, #0000 170deg 190deg, #fff8 215deg 235deg, #0000 260deg 280deg, #0008 305deg 325deg, #0000 350deg), radial-gradient(#e2a53b, #e2a53b)");
+        document.documentElement.style.setProperty("--grid-color", "#956108");
+        document.documentElement.style.setProperty("--tile-color", "#953737");
+        document.documentElement.style.setProperty("--text-color", "#441802");
+        displayRules("rules_text", ["h1", "SQUART"], ["p", 'Two tiles can merge if they are equal or if the square of the smaller tile is a multiple of the larger tile. For example, 6 and 9 can merge because 6<sup>2</sup> = 36 is a multiple of 9. (Another way of thinking about it is "two tiles can merge if both tiles are integer multiples of the ratio between the two": for example, 9 and 6\'s ratio is 1.5, and 9 and 6 are both multiples of 1.5. This rule is equivalent to the "square of the smaller one" rule). This mode has a lot of possible tiles, so it doesn\'t have a win condition. If you want some goals to strive for, then here are some handpicked ones, from (hopefully) easiest to hardest: 2520, 2310, 1890, 2184, 2380, 2618. Alternatively, turn on random goals and aim for whatever goal it gives you!'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        displayRules("gm_rules_text", ["h1", "SQUART"], ["p", 'Two tiles can merge if they are equal or if the square of the smaller tile is a multiple of the larger tile. For example, 6 and 9 can merge because 6<sup>2</sup> = 36 is a multiple of 9. (Another way of thinking about it is "two tiles can merge if both tiles are integer multiples of the ratio between the two": for example, 9 and 6\'s ratio is 1.5, and 9 and 6 are both multiples of 1.5. This rule is equivalent to the "square of the smaller one" rule). This mode has a lot of possible tiles, so it doesn\'t have a win condition. If you want some goals to strive for, then here are some handpicked ones, from (hopefully) easiest to hardest: 2520, 2310, 1890, 2184, 2380, 2618. Alternatively, turn on random goals and aim for whatever goal it gives you!'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("SQUART_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 74) { // Turatin
+        // width = 4; height = 4;
+        TileNumAmount = 1;
+        mode_vars = [4, false] // mode_vars[0] is the amount of turns between merge changes, mode_vars[1] allows non-integer ratios if true
+        start_game_vars = [1n, 4, 4] // game_vars[0] is the merge number, game_vars[1] is the amount of turns until the next merge change, and game_vars[2] is the amount of turns between merge changes
+        TileTypes = [
+            [true, "@This 0", "@ColorScheme", "Turatin", ["@This 0"]]
+        ];
+        if (modifiers[13] == "None") {
+            MergeRules = [
+                [2, [["@This 0", ">=", "@Next 1 0"], "&&", ["@This 0", "%B", ["@Next 1 0", "@if", ["@Next 1 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "=", 0n], "&&", [["@This 0", "/B", ["@Next 1 0", "@if", ["@Next 1 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"]], "@end_vars", false, "@if", ["@var_retain", "@Var 0", "!=", 0n], "2nd", "@GVar 0", "%B", "@Var 0", "@end-if", "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0"], [false, true]]
+            ]
+            startTileSpawns = [[[1n], 1]];
+        }
+        else {
+            startTileSpawns = [[[1n], modifiers[22]], [[-1n], modifiers[23]]];
+            if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [2, [[["@This 0", ">", 0n], "=", ["@Next 1 0", ">", 0n]], "&&", [["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@This 0", "%B", ["@Next 1 0", "@if", ["@Next 1 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "=", 0n], "&&", [[["@This 0", "absB"], "/B", [["@Next 1 0", "@if", ["@Next 1 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "absB"]], "@end_vars", false, "@if", ["@var_retain", "@Var 0", "!=", 0n], "2nd", "@GVar 0", "%B", "@Var 0", "@end-if", "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0", "abs"], [false, true]]
+                ]
+            }
+            else {
+                MergeRules = [
+                    [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0, [true, true]],
+                    [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@This 0", "%B", ["@Next 1 0", "@if", ["@Next 1 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "=", 0n], "&&", [[["@This 0", "absB"], "/B", [["@Next 1 0", "@if", ["@Next 1 0", "BigInt", "=", 0n], "2nd", 1n, "@end-if"], "absB"]], "@end_vars", false, "@if", ["@var_retain", "@Var 0", "!=", 0n], "2nd", "@GVar 0", "%B", "@Var 0", "@end-if", "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0", "abs"], [false, true]]
+                ]
+            }
+        }
+        winRequirement = false;
+        document.documentElement.style.setProperty("background-image", "conic-gradient(#0000 0deg 35deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 35deg, rgba(127.5, 0, 0, 0.75) 40deg 50deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 55deg, #0000 55deg), conic-gradient(#0000 0deg 215deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 215deg, rgba(0, 127.5, 0, 0.75) 220deg 230deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 235deg, #0000 235deg), conic-gradient(#0000 0deg 125deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 125deg, rgba(0, 0, 127.5, 0.75) 130deg 140deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 145deg, #0000 145deg), conic-gradient(#0000 0deg 305deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 305deg, rgba(127.5, 127.5, 0, 0.75) 310deg 320deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.75) 325deg, #0000 325deg), radial-gradient(#8e008e 0% 33%, #ffc76c)");
+        document.documentElement.style.setProperty("--background-color", "conic-gradient(#0000 0deg 35deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 35deg, rgba(127.5, 0, 0, 0.5) 40deg 50deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 55deg, #0000 55deg), conic-gradient(#0000 0deg 215deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 215deg, rgba(0, 127.5, 0, 0.5) 220deg 230deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 235deg, #0000 235deg), conic-gradient(#0000 0deg 125deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 125deg, rgba(0, 0, 127.5, 0.5) 130deg 140deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 145deg, #0000 145deg), conic-gradient(#0000 0deg 305deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 305deg, rgba(127.5, 127.5, 0, 0.5) 310deg 320deg, rgb(70.83333333333333, 0, 70.83333333333333, 0.5) 325deg, #0000 325deg), radial-gradient(#c243c2 0% 33%, #ffdfac)");
+        document.documentElement.style.setProperty("--grid-color", "#630063");
+        document.documentElement.style.setProperty("--tile-color", "#d1b27f");
+        document.documentElement.style.setProperty("--text-color", "#815612");
+        displayRules("rules_text", ["h1", "Turatin"], ["p", 'The "merge number" starts at 1 and increases by 1 every 4 turns. Two tiles can merge if the ratio between the larger tile and the smaller tile is a factor of the current merge number. This mode has no win condition - your goal is just to survive as long as you can! (When two tiles merge, the score gained is the larger tile divided by the smaller tile, so if you want to go for high score, you\'ll need to make trickier merges!)'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        displayRules("gm_rules_text", ["h1", "Turatin"], ["p", 'The "merge number" starts at 1 and increases by 1 every 4 turns. Two tiles can merge if the ratio between the larger tile and the smaller tile is a factor of the current merge number. This mode has no win condition - your goal is just to survive as long as you can! (When two tiles merge, the score gained is the larger tile divided by the smaller tile, so if you want to go for high score, you\'ll need to make trickier merges!)'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        statBoxes = [["Turns Until Merge Change", "@GVar 1"], ["Merge Number", "@GVar 0", false, false, "Tile", "Turatin"], ["Score", "@Score"]];
+        scripts = [
+            [[0, "@edit_gvar", 1, ["@GVar 1", "-", 1], "@if", ["@GVar 1", "=", 0], "@edit_gvar", 0, ["@GVar 0", "+B", 1n], "@edit_gvar", 1, "@GVar 2", "@end-if"], "EndTurn"]
+        ];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("Turatin_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 75) { // 3307
+        // width = 5; height = 5;
+        TileNumAmount = 1;
+        mode_vars = [0]; // mode_vars[0] controls the variant we're in: 0 is 3307 (two equal tiles), 1 is 3379 (three equal tiles), 2 is 2667 (both)
+        TileTypes = [
+            [true, "@This 0", "@ColorScheme", "3307", ["@This 0"]]
+        ];
+        MergeRules = [
+            [2, ["@This 0", "=", "@Next 1 0"], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2], [false, true]],
+            [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"], "&&", ["@This 0", "!=", "@Next 1 0"]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0"], [false, true, true]]
+        ];
+        if (modifiers[13] == "None") { startTileSpawns = [[[1n], 100]]; winRequirement = 1; }
+        else { startTileSpawns = [[[1n], modifiers[22]], [[-1n], modifiers[23]]]; winRequirement = 2; }
+        winConditions = [[3307n]];
+        document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(#990080 0% 6%, #660033 6% 9%, #990080 9% 15%, #330066 15% 18%)");
+        document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#dc6fca 0% 6%, #ba3979 6% 9%, #dc6fca 9% 15%, #7b41b6 15% 18%)");
+        document.documentElement.style.setProperty("--grid-color", "#620051");
+        document.documentElement.style.setProperty("--tile-color", "#a12e68");
+        document.documentElement.style.setProperty("--text-color", "#190032");
+        displayRules("rules_text", ["h1", "3307"], ["p", 'Merges occur between two equal tiles, or between three different tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 3307 tile to win, or see what other tiles you can make!'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        displayRules("gm_rules_text", ["h1", "3307"], ["p", 'Merges occur between two equal tiles, or between three different tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 3307 tile to win, or see what other tiles you can make!'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"]];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("3307_vars").style.setProperty("display", "flex");
+    }
+    else if (mode == 50.1) { // Gaussian DIVE
+        // width = 4; height = 4;
+        TileNumAmount = 1;
+        mode_vars = [0, true, true, [1, 0, 0, 0], 0]; // The first entry controls the starting seeds (1+i, 1+i and 1-i, all four associates of 1+i, 1 and i, all four associates of 1, 1), the second entry is whether seeds can be eliminated, the third entry is whether seeds are rotated into the first quadrant, the fourth entry is the four quadrant spawn ratios, the fifth entry controls how the seeds are checked.
+        start_game_vars = [[new GaussianBigInt(1n, 1n)], [new GaussianBigInt(1n, 1n)], [], [], 0, false] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. I somehow skipped the fifth entry, but I don't feel like changing code to make the sixth entry into the fifth, so maybe I'll add something that uses the fifth entry in a later update. The sixth entry is used when tile text is hidden to replace the announcement numbers with question marks.
+        TileTypes = [
+            [true, "@This 0", "@ColorScheme", "Gaussian DIVE", ["@This 0"]]
+        ];
+        MergeRules = [
+            [2, ["@This 0", "*GB", -1n, "=", "@Next 1 0"], true, [], 0],
+            [2, [["@Next 1 0", "modGB", ["@This 0", "@if", ["@This 0", "GaussianBigInt", "=", new GaussianBigInt(0n, 0n)], "2nd", new GaussianBigInt(1n, 0n), "@end-if"], "=", new GaussianBigInt(0n, 0n)], "&&", ["@This 0", "typeof", "=", "gaussianbigint"], "&&", ["@Next 1 0", "typeof", "=", "gaussianbigint"]], false, [[["@This 0", "+GB", "@Next 1 0"]]], [["@This 0", "normGB", "^", 1/2], "min", ["@Next 1 0", "normGB", "^", 1/2]], [false, true]]
+        ];
+        startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], 1]];
+        winRequirement = false;
+        document.documentElement.style.setProperty("background-image", "conic-gradient(at 50% -10%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), conic-gradient(from 180deg at 50% 110%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), conic-gradient(from 90deg at 110% 50%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), conic-gradient(from 270deg at -10% 50%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), linear-gradient(#485988, #485988, #7b894f, #7b894f)");
+        document.documentElement.style.setProperty("--background-color", "conic-gradient(at 50% -10%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), conic-gradient(from 180deg at 50% 110%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), conic-gradient(from 90deg at 110% 50%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), conic-gradient(from 270deg at -10% 50%, #0000 0% 35%, #0008 40% 45%, #fff8 47.5% 52.5%, #0008 55% 60%, #0000 65%), linear-gradient(#5c78c8, #5c78c8, #a3be49, #a3be49)");
+        document.documentElement.style.setProperty("--grid-color", "#406666");
+        document.documentElement.style.setProperty("--tile-color", "#a7b579");
+        document.documentElement.style.setProperty("--text-color", "#181e31");
+        displayRules("rules_text", ["h1", "Gaussian DIVE"], ["p", "DIVE, but the tiles are complex integers instead of just real integers."],
+        ["p", "At first, only 1+1i tiles spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is not a unit, that leftover value (rotated into the first quadrant) is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points based on its value."]);
+        displayRules("gm_rules_text", ["h1", "Gaussian DIVE"], ["p", "DIVE, but the tiles are complex integers instead of just real integers."],
+        ["p", "At first, only 1+1i tiles spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is not a unit, that leftover value (rotated into the first quadrant) is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points based on its value."]);
+        statBoxes = [["Score", "@Score"], ["Seeds", "@GVar 0", false, false, "TileArray", "Gaussian DIVE"], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "Gaussian DIVE"]];
+        scripts = [
+            [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "GaussianDIVESeedUnlock", "@GVar 0", "@GVar 4", true, "@if", [["@Parent -3", "normGB", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
+            [["@GVar 0", 0, new GaussianBigInt(0n, 0n), "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "gaussianbigint", "&&", ["@var_retain", "@Var 1", "!=", new GaussianBigInt(0n, 0n)]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "modGB", "@Var 2", "=", new GaussianBigInt(0n, 0n)], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
+            [[0, new GaussianBigInt(0n, 0n), "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "gaussianSort", "@Var -1"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1", "normGB", "^", 1/2], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
+        ];
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("GaussianDIVE_vars").style.setProperty("display", "flex");
+        document.getElementById("GaussianDIVE_quadrantSpawnRatios").style.setProperty("display", "flex");
+    }
+    if (modifiers[5] != "Custom") loadGridSize(mode, mode_vars);
+    gmDisplayVars();
+}
+
+function loadGridSize(mode, mvars = []) {
+    let size3 = [31];
+    let size4 = [1, 2, 4, 7, 16, 17, 26, 27, 29, 30, 32, 40, 42, 47, 48, 50, 51, 53, 54, 60, 61, 64, 66, 67, 69, 72, 73, 74, 50.1];
+    let size5 = [3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 23, 24, 28, 33, 34, 35, 41, 43, 44, 46, 49, 52, 55, 56, 58, 59, 62, 63, 65, 68, 70, 71, 75];
+    let size6 = [8, 25, 39, 45];
+    let size7 = [22, 38];
+    let size8 = [36];
+    let defaultSize;
+    if (size3.indexOf(mode) != -1) defaultSize = 3;
+    else if (size4.indexOf(mode) != -1) defaultSize = 4;
+    else if (size5.indexOf(mode) != -1) defaultSize = 5;
+    else if (size6.indexOf(mode) != -1) defaultSize = 6;
+    else if (size7.indexOf(mode) != -1) defaultSize = 7;
+    else if (size8.indexOf(mode) != -1) defaultSize = 8;
+    else if (mode == 37) { // 2216.8378200531005859375
+        if (mvars[0] == 0) defaultSize = 8;
+        else if (mvars[0] == 1) defaultSize = 5;
+        else defaultSize = 6;
+    }
+    else if (mode == 57) { // 2700
+        if (mvars[0] == 1) defaultSize = 4;
+        else defaultSize = 5;
+    }
+    else defaultSize = 4; // Error-handling case
+    if (modifiers[5] == "Diamond" || modifiers[5] == "Hexagon") modifiers[6] = defaultSize - 2;
+    if (modifiers[5] == "HexaTriangle") modifiers[6] = Math.floor(defaultSize * Math.sqrt(2));
     else if (modifiers[5] == "4D") {
-        modifiers[6] = min_dim;
-        modifiers[7] = min_dim;
-        modifiers[8] = min_dim;
-        if (min_dim == 2) modifiers[9] = 2;
+        let default4Size = Math.max(defaultSize - 2, 2);
+        modifiers[6] = default4Size;
+        modifiers[7] = default4Size;
+        modifiers[8] = default4Size;
+        if (defaultSize == 4) modifiers[9] = 2;
         else modifiers[9] = 1;
     }
-    else if (modifiers[5] == "Custom") { //Part 2 of forcing the custom grid past the modes' width and height changes
-        width = modifiers[6];
-        height = modifiers[7];
+    else {
+        width = defaultSize;
+        height = defaultSize;
     }
-    gmDisplayVars();
 }
 
 function gmDisplayVars() {
@@ -4116,6 +5254,12 @@ function gmDisplayVars() {
         else document.getElementById("gm_width_plus").style.setProperty("display", "none");
         if (height < 9999) document.getElementById("gm_height_plus").style.setProperty("display", "inline-block");
         else document.getElementById("gm_height_plus").style.setProperty("display", "none");
+    }
+    if (gamemode == 50 && modifiers[13] == "Interacting") {
+        document.getElementById("GaussianDIVE_enter_button").style.setProperty("display", "block");
+    }
+    else {
+        document.getElementById("GaussianDIVE_enter_button").style.setProperty("display", "none");
     }
     if (gamemode == 1) { // 2048
         if (mode_vars[0]) {
@@ -4188,6 +5332,14 @@ function gmDisplayVars() {
             displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p", "Merges occur between a tile that's a power of 1.5 and a tile that's half of that power of 1.5, or between two equal tiles that are not a power of 1.5. There are also &#247;2 tiles, which can merge with any power of 1.5 (or with themselves to reduce clutter). Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
             ["p", "Spawning tiles: 1 (50%), &#247;2 (50%)"]);
         }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("ThreeHalves_mode_text").innerHTML = "Three of the same power of 1.5 merge into two of the next power of 1.5.";
+            document.getElementById("ThreeHalves_mode_text").style.setProperty("color", "#b53353");
+            displayRules("rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p", "Three equal tiles merge into two of the next tile. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+            ["p", "Spawning tiles: 1 (72%), 1.5 (16%), 2.25 (8%), 3.375 (4%)"])
+            displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p", "Three equal tiles merge into two of the next tile. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+            ["p", "Spawning tiles: 1 (72%), 1.5 (16%), 2.25 (8%), 3.375 (4%)"]);
+        }
     }
     else if (gamemode == 38) { // 180
         if (mode_vars[0] == 0) {
@@ -4214,6 +5366,20 @@ function gmDisplayVars() {
             displayRules("gm_rules_text", ["h2", "Supermerging"], ["h1", "180"], ["p", "Merges occur between any amount of the same tile. Get to the 180 tile to win, or see how many different tiles you can discover!"],
             ["p", "Spawning tiles: 1 (100%)"]);
         }
+        if (mode_vars[1] == 0) {
+            document.getElementById("180_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("180_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[1] == 1) {
+            document.getElementById("180_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("180_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[1] == 2) {
+            document.getElementById("180_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("180_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        document.getElementById("180_firstGoalMinimum").style.setProperty("display", (mode_vars[1] == 0) ? "none" : "block");
+        document.getElementById("180_firstGoalMinimum_change").value = mode_vars[2];
     }
     else if (gamemode == 39) { // 2592
         if (mode_vars[0] == 0) {
@@ -4240,6 +5406,20 @@ function gmDisplayVars() {
             displayRules("gm_rules_text", ["h2", "3-Smooth Numbers"], ["h1", "2592"], ["p", "The merge rules switch based on the amount of merges that have happened in the game thus far. If the amount of merges is even, merges occur between two equal tiles. If the amount of merges is odd, merges occur between three equal tiles. The merge count only updates after each move, so the merge rules won't change in the middle of a move. Get to the 2592 tile to win!"],
             ["p", "Spawning tiles: 1 (90%), 2 (5%), 3 (5%)"]);
         }
+        if (mode_vars[1] == 0) {
+            document.getElementById("2592_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("2592_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[1] == 1) {
+            document.getElementById("2592_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("2592_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[1] == 2) {
+            document.getElementById("2592_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("2592_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        document.getElementById("2592_firstGoalMinimum").style.setProperty("display", (mode_vars[1] == 0) ? "none" : "block");
+        document.getElementById("2592_firstGoalMinimum_change").value = mode_vars[2];
     }
     else if (gamemode == 40) { // Wildcard 2048
         if (mode_vars[0] == 1) {
@@ -4320,6 +5500,15 @@ function gmDisplayVars() {
         else if (mode_vars[1] == 2) {
             document.getElementById("1321_randomGoals_text").innerHTML = "Random goals are entirely random.";
             document.getElementById("1321_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        if (mode_vars[1] == 0) {
+            document.getElementById("1321_firstGoalMinimum").style.setProperty("display", "none");
+        }
+        else {
+            document.getElementById("1321_firstGoalMinimum").style.setProperty("display", "block");
+            document.getElementById("1321_firstGoalMinimum_counter").innerHTML = mode_vars[2];
+            if (mode_vars[2] < 3) document.getElementById("1321_firstGoalMinimum_minus").style.setProperty("display", "none");
+            else document.getElementById("1321_firstGoalMinimum_minus").style.setProperty("display", "inline-block");
         }
     }
     else if (gamemode == 45) { // Directional Merges
@@ -4858,18 +6047,10 @@ function gmDisplayVars() {
             if (mode_vars[0] == 0) {
                 document.getElementById("DIVE_seeds_text").innerHTML = "Spawning tiles, a.k.a. seeds, can be unlocked and eliminated.";
                 document.getElementById("DIVE_seeds_text").style.setProperty("color", "#060");
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
             }
             else if (mode_vars[0] == -1) {
                 document.getElementById("DIVE_seeds_text").innerHTML = "Spawning tiles, a.k.a. seeds, are unlocked permanently.";
                 document.getElementById("DIVE_seeds_text").style.setProperty("color", "#400");
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile."]);
             }
         }
         if (mode_vars[1]) {
@@ -4901,48 +6082,35 @@ function gmDisplayVars() {
             document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#58c2dc");
             seedCheckDescription = " (Seeds are checked in the order they were unlocked.) "
         }
+        let seedSpawnDescription = "";
         if (mode_vars[0] == 0) {
             if (mode_vars[1]) {
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                seedSpawnDescription = "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value.";
             }
             else {
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."]);
+                seedSpawnDescription = "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is added as a new spawning tile." + seedCheckDescription + "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."
             }
         }
         else if (mode_vars[0] == -1) {
             if (mode_vars[1]) {
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
+                seedSpawnDescription = "At first, only 1s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription
             }
             else {
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription]);
+                seedSpawnDescription = "At first, only 2s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription;
             }
         }
         else {
             if (mode_vars[1]) {
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
+                seedSpawnDescription = "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."
             }
             else {
-                displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "The spawning tiles are the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
-                displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
-                ["p", "The spawning tiles are the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."]);
+                seedSpawnDescription = "The spawning tiles are the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."
             }
         }
+        displayRules("rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+        ["p", seedSpawnDescription]);
+        displayRules("gm_rules_text", ["h1", "DIVE"], ["p", "Tiles merge with their divisors. When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!"],
+        ["p", seedSpawnDescription]);
         if (mode_vars[3] == 0) {
             document.getElementById("DIVE_randomGoals_text").innerHTML = "Random goals are disabled.";
             document.getElementById("DIVE_randomGoals_text").style.setProperty("color", "#22002d");
@@ -4955,7 +6123,71 @@ function gmDisplayVars() {
             document.getElementById("DIVE_randomGoals_text").innerHTML = "Random goals are entirely random.";
             document.getElementById("DIVE_randomGoals_text").style.setProperty("color", "#ba77d0");
         }
+        document.getElementById("DIVE_firstGoalMinimum").style.setProperty("display", (mode_vars[3] == 0) ? "none" : "block");
+        document.getElementById("DIVE_firstGoalMinimum_change").value = mode_vars[4];
     }
+    else if (gamemode == 54) { // 3888
+        if (mode_vars[0] == 0) {
+            document.getElementById("3888_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("3888_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("3888_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("3888_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("3888_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("3888_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        document.getElementById("3888_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
+        document.getElementById("3888_firstGoalMinimum_change").value = mode_vars[1];
+    }
+    else if (gamemode == 55) { // 2000
+        if (mode_vars[0] == 0) {
+            document.getElementById("2000_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("2000_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("2000_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("2000_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("2000_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("2000_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        document.getElementById("2000_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
+        document.getElementById("2000_firstGoalMinimum_change").value = mode_vars[1];
+    }
+    else if (gamemode == 56) { // 3645
+        if (mode_vars[0] == 0) {
+            document.getElementById("3645_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("3645_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("3645_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("3645_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("3645_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("3645_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        document.getElementById("3645_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
+        document.getElementById("3645_firstGoalMinimum_change").value = mode_vars[1];
+    }
+    // else if (gamemode == 54) { // 3888
+    //     if (mode_vars[0] == 0) {
+    //         document.getElementById("180_randomGoals_text").innerHTML = "Random goals are disabled.";
+    //         document.getElementById("180_randomGoals_text").style.setProperty("color", "#22002d");
+    //     }
+    //     else if (mode_vars[0] == 1) {
+    //         document.getElementById("180_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+    //         document.getElementById("180_randomGoals_text").style.setProperty("color", "#732a8b");
+    //     }
+    //     else if (mode_vars[0] == 2) {
+    //         document.getElementById("180_randomGoals_text").innerHTML = "Random goals are entirely random.";
+    //         document.getElementById("180_randomGoals_text").style.setProperty("color", "#ba77d0");
+    //     }
+    // }
     else if (gamemode == 57) { // 2700
         if (mode_vars[0] == 1) { // Level 1
             document.getElementById("2700_level_text").innerHTML = "Level 1: The merges are n + 2n, n + 3n, 2n + 3n, and 3n + 5n.";
@@ -5088,6 +6320,15 @@ function gmDisplayVars() {
             document.getElementById("1825_randomGoals_text").innerHTML = "Random goals are entirely random.";
             document.getElementById("1825_randomGoals_text").style.setProperty("color", "#ba77d0");
         }
+        if (mode_vars[0] == 0) {
+            document.getElementById("1825_firstGoalMinimum").style.setProperty("display", "none");
+        }
+        else {
+            document.getElementById("1825_firstGoalMinimum").style.setProperty("display", "block");
+            document.getElementById("1825_firstGoalMinimum_counter").innerHTML = mode_vars[1];
+            if (mode_vars[1] < 3) document.getElementById("1825_firstGoalMinimum_minus").style.setProperty("display", "none");
+            else document.getElementById("1825_firstGoalMinimum_minus").style.setProperty("display", "inline-block");
+        }
     }
     else if (gamemode == 61) { // 3069
         if (mode_vars[0] == 0) {
@@ -5102,6 +6343,359 @@ function gmDisplayVars() {
             document.getElementById("3069_randomGoals_text").innerHTML = "Random goals are entirely random.";
             document.getElementById("3069_randomGoals_text").style.setProperty("color", "#ba77d0");
         }
+        document.getElementById("3069_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
+        document.getElementById("3069_firstGoalMinimum_change").value = mode_vars[1];
+    }
+    else if (gamemode == 67) { // 1762
+        if (mode_vars[0] == 0) {
+            document.getElementById("1762_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("1762_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("1762_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("1762_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("1762_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("1762_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        if (mode_vars[0] == 0) {
+            document.getElementById("1762_firstGoalMinimum").style.setProperty("display", "none");
+        }
+        else {
+            document.getElementById("1762_firstGoalMinimum").style.setProperty("display", "block");
+            document.getElementById("1762_firstGoalMinimum_counter").innerHTML = mode_vars[1];
+            if (mode_vars[1] < 3) document.getElementById("1762_firstGoalMinimum_minus").style.setProperty("display", "none");
+            else document.getElementById("1762_firstGoalMinimum_minus").style.setProperty("display", "inline-block");
+        }
+    }
+    else if (gamemode == 68) { // 2205
+        if (mode_vars[0] == 1) {
+            document.getElementById("2205_level_text").innerHTML = "Level 1: The merges are n + n + 3n, n + n + 5n, and n + n + 7n.";
+            document.getElementById("2205_level_text").style.setProperty("color", "#474700");
+            document.getElementById("2205_level_decrease").style.setProperty("display", "none");
+            document.getElementById("2205_level_increase").style.setProperty("display", "block");
+            MergeRules = [
+                [3, [["@This 0", "=", 0], "&&", ["@This 1", "=", 0], "&&", ["@This 2", "=", 0], "&&", ["@Next 1 0", "=", 0], "&&", ["@Next 1 1", "=", 0], "&&", ["@Next 1 2", "=", 0], "&&", ["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 0], "&&", ["@Next 2 2", "=", 0]], true, [[1, 0, 0]], 3, [false, true, true]],
+                [3, [["@This 0", "+", 1, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", ["@This 1", "+", 1], "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 5], [false, true, true]],
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 1, "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", "@This 1", ["@This 2", "+", 1]]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 7], [false, true, true]],
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "+", 1, "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [[["@This 0", "+", 2], "@This 1", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 9], [false, true, true]]
+            ];
+            document.documentElement.style.setProperty("background-image", "linear-gradient(#fff, #fbf, #9ff, #ff7, #ffdc5c 10%, #baba35, #ffdc5c 90%, #ff7, #9ff, #fbf, #fff)");
+            document.documentElement.style.setProperty("--background-color", "linear-gradient(#fff, #fdf, #bff, #ffa, #ffe78f 10%, #dddd57, #ffe78f 90%, #ffa, #bff, #fdf, #fff)");
+            displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 1)"], ["p", "Merges occur between three 1s, or between any tile and two equal tiles that are each a third, a fifth, or a seventh of the larger tile. Get to the 2205 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 1)"], ["p", "Merges occur between three 1s, or between any tile and two equal tiles that are each a third, a fifth, or a seventh of the larger tile. Get to the 2205 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("2205_level_text").innerHTML = "Level 2: The merges are n + n + n, n + n + 3n, n + n + 5n and n + 7n + 7n.";
+            document.getElementById("2205_level_text").style.setProperty("color", "#004747");
+            document.getElementById("2205_level_decrease").style.setProperty("display", "block");
+            document.getElementById("2205_level_increase").style.setProperty("display", "block");
+            MergeRules = [
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], true, [[["@This 0", "+", 1], "@This 1", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 3], [false, true, true]],
+                [3, [["@This 0", "+", 1, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", ["@This 1", "+", 1], "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 5], [false, true, true]],
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "+", 1, "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", "@This 1", ["@This 2", "+", 1]]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 7], [false, true, true]],
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "+", 1, "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "+", 1, "=", "@Next 2 2"]], false, [[["@This 0", "+", 1], ["@This 1", "+", 1], "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 15], [false, true, true]]
+            ];
+            document.documentElement.style.setProperty("background-image", "linear-gradient(#fff, #fbf, #9ff, #ff7, #5cffe1 10%, #438db0, #5cffe1 90%, #ff7, #9ff, #fbf, #fff)");
+            document.documentElement.style.setProperty("--background-color", "linear-gradient(90deg, #fff, #fdf, #bff, #ffa, #8fffea 10%, #60a8ca, #8fffea 90%, #ffa, #bff, #fdf, #fff)");
+            displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 2)"], ["p", "Merges occur between three equal tiles, or between any tile and two equal tiles that are each a third or a fifth of the larger tile, or between two equal tiles and a tile that's a seventh of the other two tiles. Get to the 2205 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 2)"], ["p", "Merges occur between three equal tiles, or between any tile and two equal tiles that are each a third or a fifth of the larger tile, or between two equal tiles and a tile that's a seventh of the other two tiles. Get to the 2205 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else if (mode_vars[0] == 3) {
+            document.getElementById("2205_level_text").innerHTML = "Level 3: The merges are n + n + n, n + n + 3n, n + 3n + 3n, n + n + 7n, and n + 7n + 7n.";
+            document.getElementById("2205_level_text").style.setProperty("color", "#470047");
+            document.getElementById("2205_level_decrease").style.setProperty("display", "block");
+            document.getElementById("2205_level_increase").style.setProperty("display", "none");
+            MergeRules = [
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], true, [[["@This 0", "+", 1], "@This 1", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 3], [false, true, true]],
+                [3, [["@This 0", "+", 1, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", ["@This 1", "+", 1], "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 5], [false, true, true]],
+                [3, [["@This 0", "+", 1, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"], "&&", ["@This 0", "+", 1, "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [["@This 0", "@This 1", ["@This 2", "+", 1]]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 7], [false, true, true]],
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "+", 1, "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "=", "@Next 2 2"]], false, [[["@This 0", "+", 2], "@This 1", "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 9], [false, true, true]],
+                [3, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "+", 1, "=", "@Next 1 2"], "&&", ["@This 0", "=", "@Next 2 0"], "&&", ["@This 1", "=", "@Next 2 1"], "&&", ["@This 2", "+", 1, "=", "@Next 2 2"]], false, [[["@This 0", "+", 1], ["@This 1", "+", 1], "@This 2"]], [[3, "^", "@This 0"], "*", [5, "^", "@This 1"], "*", [7, "^", "@This 2"], "*", 15], [false, true, true]]
+            ];
+            document.documentElement.style.setProperty("background-image", "linear-gradient(#fff, #fbf, #9ff, #ff7, #f15cff 10%, #ba359d, #f15cff 90%, #ff7, #9ff, #fbf, #fff)");
+            document.documentElement.style.setProperty("--background-color", "linear-gradient(#fff, #fdf, #bff, #ffa, #f695ff 10%, #c758af, #f695ff 90%, #ffa, #bff, #fdf, #fff)");
+            displayRules("rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 3)"], ["p", "Merges occur between three equal tiles, or between three tiles such that there are two types of tile in the merge and the larger type is three times or seven times the smaller type. Get to the 2205 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h2", "Powers of 3 Times Powers of 5 Times Powers of 7"], ["h1", "2205 (Level 3)"], ["p", "Merges occur between three equal tiles, or between three tiles such that there are two types of tile in the merge and the larger type is three times or seven times the smaller type. Get to the 2205 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+    }
+    if (gamemode == 72) { // 3026
+        if (mode_vars[0]) {
+            document.getElementById("3026_allMerges_text").innerHTML = "Any two tiles that add to a product of two Fibonacci numbers can merge.";
+            document.getElementById("3026_allMerges_text").style.setProperty("color", "#fff6b3");
+            displayRules("rules_text", ["h1", "3026"], ["p", "Tiles are products of two Fibonacci numbers, and any two tiles can merge if their sum can be expressed as such a product (thanks to relations between Fibonacci numbers, this allows for more merges than you may expect!). Get to the 3026 (34 &#215; 89) tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+            displayRules("gm_rules_text", ["h1", "3026"], ["p", "Tiles are products of two Fibonacci numbers, and any two tiles can merge if their sum can be expressed as such a product (thanks to relations between Fibonacci numbers, this allows for more merges than you may expect!). Get to the 3026 (34 &#215; 89) tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+        }
+        else {
+            document.getElementById("3026_allMerges_text").innerHTML = "Only Fibonacci-style merges are allowed.";
+            document.getElementById("3026_allMerges_text").style.setProperty("color", "#1d0056");
+            displayRules("rules_text", ["h1", "3026"], ["p", "Tiles are products of two Fibonacci numbers. Two tiles can merge if they share one Fibonacci number in common, and either the other Fibonacci number is 1 for both of them or one tile's other Fibonacci number is the Fibonacci number right before the other tile's other Fibonacci number. For example, 5 &#215; 8 and 5 &#215; 13 can merge to make 5 &#215; 21. Get to the 3026 (34 &#215; 89) tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+            displayRules("gm_rules_text", ["h1", "3026"], ["p", "Tiles are products of two Fibonacci numbers. Two tiles can merge if they share one Fibonacci number in common, and either the other Fibonacci number is 1 for both of them or one tile's other Fibonacci number is the Fibonacci number right before the other tile's other Fibonacci number. For example, 5 &#215; 8 and 5 &#215; 13 can merge to make 5 &#215; 21. Get to the 3026 (34 &#215; 89) tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
+        }
+        if (mode_vars[1] == 0) {
+            document.getElementById("3026_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("3026_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[1] == 1) {
+            document.getElementById("3026_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("3026_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[1] == 2) {
+            document.getElementById("3026_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("3026_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        if (mode_vars[1] == 0) {
+            document.getElementById("3026_firstGoalMinimum").style.setProperty("display", "none");
+        }
+        else {
+            document.getElementById("3026_firstGoalMinimum").style.setProperty("display", "block");
+            document.getElementById("3026_firstGoalMinimum_counter").innerHTML = mode_vars[2];
+            if (mode_vars[2] < 3) document.getElementById("3026_firstGoalMinimum_minus").style.setProperty("display", "none");
+            else document.getElementById("3026_firstGoalMinimum_minus").style.setProperty("display", "inline-block");
+        }
+    }
+    else if (gamemode == 73) { // SQUART
+        if (mode_vars[0] == 0) {
+            document.getElementById("SQUART_randomGoals_text").innerHTML = "Random goals are disabled.";
+            document.getElementById("SQUART_randomGoals_text").style.setProperty("color", "#22002d");
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("SQUART_randomGoals_text").innerHTML = "Random goals build upon the previous goals.";
+            document.getElementById("SQUART_randomGoals_text").style.setProperty("color", "#732a8b");
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("SQUART_randomGoals_text").innerHTML = "Each random goal builds upon the previous goal, but not necessarily the ones before.";
+            document.getElementById("SQUART_randomGoals_text").style.setProperty("color", "#a01acd");
+        }
+        else if (mode_vars[0] == 3) {
+            document.getElementById("SQUART_randomGoals_text").innerHTML = "Random goals are entirely random.";
+            document.getElementById("SQUART_randomGoals_text").style.setProperty("color", "#ba77d0");
+        }
+        document.getElementById("SQUART_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
+        document.getElementById("SQUART_firstGoalMinimum_change").value = mode_vars[1];
+    }
+    else if (gamemode == 74) { // Turatin
+        document.getElementById("Turatin_interval_counter").innerHTML = mode_vars[0];
+        if (mode_vars[0] < 2) document.getElementById("Turatin_interval_minus").style.setProperty("display", "none");
+        else document.getElementById("Turatin_interval_minus").style.setProperty("display", "inline-block");
+        document.getElementById("Turatin_interval_plus").style.setProperty("display", "inline-block");
+        let mergeNumberText, ratioText, title;
+        if (mode_vars[0] == 1) {
+            mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every turn. '
+        }
+        else {
+            mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every ' + mode_vars[0] + ' turns.'
+        }
+        if (mode_vars[1]) {
+            ratioText = ' Two tiles can merge if the current merge number is a multiple of the ratio between the larger tile and the smaller tile (even if that ratio is not an integer!). '
+            document.getElementById("Turatin_nonIntegerRatio_text").innerHTML = "The ratio between merging tiles doesn't have to be an integer.";
+            document.getElementById("Turatin_nonIntegerRatio_text").style.setProperty("color", "#25a39d");
+            title = "Turatin (Extra Fluid)"
+        }
+        else {
+            ratioText = ' Two tiles can merge if the ratio between the larger tile and the smaller tile is a factor of the current merge number. '
+            document.getElementById("Turatin_nonIntegerRatio_text").innerHTML = "The ratio between merging tiles must be an integer.";
+            document.getElementById("Turatin_nonIntegerRatio_text").style.setProperty("color", "#005551");
+            title = "Turatin";
+        }
+        displayRules("rules_text", ["h1", title], ["p", mergeNumberText + ratioText + 'This mode has no win condition - your goal is just to survive as long as you can! (When two tiles merge, the score gained is the larger tile divided by the smaller tile, so if you want to go for high score, you\'ll need to make trickier merges!)'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+        displayRules("gm_rules_text", ["h1", title], ["p", mergeNumberText + ratioText + 'This mode has no win condition - your goal is just to survive as long as you can! (When two tiles merge, the score gained is the larger tile divided by the smaller tile, so if you want to go for high score, you\'ll need to make trickier merges!)'],
+        ["p", "Spawning tiles: 1 (100%)"]);
+    }
+    else if (gamemode == 75) { // 3307
+        if (mode_vars[0] == 0) { // 3307 (two equal tiles)
+            if (modifiers[13] == "None") {
+                MergeRules = [
+                    [2, ["@This 0", "=", "@Next 1 0"], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2], [false, true]],
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"], "&&", ["@This 0", "!=", "@Next 1 0"]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0"], [false, true, true]]
+                ];
+            }
+            else if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [2, ["@This 0", "=", "@Next 1 0"], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2, "abs"], [false, true]],
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"], "&&", [["@This 0", "absB"], "!=", ["@Next 1 0", "absB"]], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0", "abs"], [false, true, true]]
+                ];
+            }
+            else {
+                MergeRules = [
+                    [2, ["@This 0", "*B", -1, "=", "@Next 1 0"], true, [], 0, [true, true]],
+                    [2, ["@This 0", "=", "@Next 1 0"], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2, "abs"], [false, true]],
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"], "&&", [["@This 0", "absB"], "!=", ["@Next 1 0", "absB"]]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0", "abs"], [false, true, true]]
+                ]; 
+            }
+            winConditions = [[3307n]];
+            document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(#990080 0% 6%, #660033 6% 9%, #990080 9% 15%, #330066 15% 18%)");
+            document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#dc6fca 0% 6%, #ba3979 6% 9%, #dc6fca 9% 15%, #7b41b6 15% 18%)");
+            document.documentElement.style.setProperty("--grid-color", "#620051");
+            document.documentElement.style.setProperty("--tile-color", "#a12e68");
+            document.documentElement.style.setProperty("--text-color", "#190032");
+            displayRules("rules_text", ["h1", "3307"], ["p", 'Merges occur between two equal tiles, or between three different tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 3307 tile to win, or see what other tiles you can make!'],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h1", "3307"], ["p", 'Merges occur between two equal tiles, or between three different tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 3307 tile to win, or see what other tiles you can make!'],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            document.getElementById("3307_equalVariant_text").innerHTML = "Two equal tiles can merge.";
+            document.getElementById("3307_equalVariant_text").style.setProperty("color", "#e77000");
+        }
+        else if (mode_vars[0] == 1) { // 2379 (three equal tiles)
+            if (modifiers[13] == "None") {
+                MergeRules = [
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0"], [false, true, true]]
+                ];
+            }
+            else if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0", "abs"], [false, true, true]]
+                ];
+            }
+            else {
+                MergeRules = [
+                    [2, ["@This 0", "*B", -1, "=", "@Next 1 0"], true, [], 0, [true, true]],
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0", "abs"], [false, true, true]]
+                ]; 
+            }
+            winConditions = [[2379n]];
+            document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(#006a37 0% 6%, #d98026 6% 9%, #006a37 9% 15%, #ffff85 15% 18%)");
+            document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#13aa61 0% 6%, #f0b478 6% 9%, #13aa61 9% 15%, #ffffb4 15% 18%)");
+            document.documentElement.style.setProperty("--grid-color", "#2b895c");
+            document.documentElement.style.setProperty("--tile-color", "#bbbb6b");
+            document.documentElement.style.setProperty("--text-color", "#36200a");
+            displayRules("rules_text", ["h1", "2379"], ["p", 'Merges occur between three tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 2379 tile to win, or see what other tiles you can make!'],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h1", "2379"], ["p", 'Merges occur between three tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 2379 tile to win, or see what other tiles you can make!'],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            document.getElementById("3307_equalVariant_text").innerHTML = "Three equal tiles can merge.";
+            document.getElementById("3307_equalVariant_text").style.setProperty("color", "#00e768");
+        }
+        else if (mode_vars[0] == 2) { // 2667 (both)
+            // [2, ["@This 0", "=", "@Next 1 0", "&&", ["@NextNE -1 0", "!=", "@This 0"]], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2], [false, true]]
+            if (modifiers[13] == "None") {
+                MergeRules = [
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0"], [false, true, true]],
+                    [2, ["@This 0", "=", "@Next 1 0", "&&", ["@NextNE -1 0", "!=", "@This 0"]], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2], [false, true]]
+                ];
+            }
+            else if (modifiers[13] == "Non-Interacting") {
+                MergeRules = [
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0", "abs"], [false, true, true]],
+                    [2, ["@This 0", "=", "@Next 1 0", "&&", ["@NextNE -1 0", "!=", "@This 0"]], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2, "abs"], [false, true]]
+                ];
+            }
+            else {
+                MergeRules = [
+                    [2, ["@This 0", "*B", -1, "=", "@Next 1 0"], true, [], 0, [true, true]],
+                    [3, [["@This 0", "^B", 2], "=", ["@Next 1 0", "*B", "@Next 2 0"]], false, [[["@This 0", "+B", "@Next 1 0", "+B", "@Next 2 0"]]], ["@This 0", "+", "@Next 1 0", "+", "@Next 2 0", "abs"], [false, true, true]],
+                    [2, ["@This 0", "=", "@Next 1 0", "&&", ["@NextNE -1 0", "!=", "@This 0"]], true, [[["@This 0", "*B", 2]]], ["@This 0", "*", 2, "abs"], [false, true]]
+                ]; 
+            }
+            winConditions = [[2667n]];
+            document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(#004f9d 0% 6%, #4d4d4d 6% 9%, #004f9d 9% 15%, #330066 15% 18%)");
+            document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#4087ce 0% 6%, #b7b7b7 6% 9%, #4087ce 9% 15%, #8948ca 15% 18%)");
+            document.documentElement.style.setProperty("--grid-color", "#2062a3");
+            document.documentElement.style.setProperty("--tile-color", "#543475");
+            document.documentElement.style.setProperty("--text-color", "#373737");
+            displayRules("rules_text", ["h1", "2667"], ["p", 'Merges occur between two equal tiles, or between three tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 2667 tile to win, or see what other tiles you can make!'],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h1", "2667"], ["p", 'Merges occur between two equal tiles, or between three tiles such that the ratio between the middle-sized tile and the smallest tile is the same as the ratio between the largest tile and the middle-sized tile. Get to the 2667 tile to win, or see what other tiles you can make!'],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            document.getElementById("3307_equalVariant_text").innerHTML = "Two or three equal tiles can merge.";
+            document.getElementById("3307_equalVariant_text").style.setProperty("color", "#8000ea");
+        }
+    }
+    else if (gamemode == 50.1) { // Gaussian DIVE
+        let seedCheckDescription = "";
+        let seedSpawnDescription = "";
+        let startingSeedsDescription = "";
+        let firstQuadrantRotateDescription = "";
+        if (mode_vars[0] == 0) {
+            document.getElementById("GaussianDIVE_startSeeds_text").innerHTML = "The starting seed is 1+i.";
+            document.getElementById("GaussianDIVE_startSeeds_text").style.setProperty("color", "#ff9393");
+            startingSeedsDescription = "1+i tiles";
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("GaussianDIVE_startSeeds_text").innerHTML = "The starting seeds are 1+i and 1-i.";
+            document.getElementById("GaussianDIVE_startSeeds_text").style.setProperty("color", "#c9ff94");
+            startingSeedsDescription = "1+i and 1-i tiles";
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("GaussianDIVE_startSeeds_text").innerHTML = "The starting seeds are 1+i, 1-i, -1-i, and -1+i.";
+            document.getElementById("GaussianDIVE_startSeeds_text").style.setProperty("color", "#c994ff");
+            startingSeedsDescription = "1+i, 1-i, -1-i, and -1+i tiles";
+        }
+        else if (mode_vars[0] == 3) {
+            document.getElementById("GaussianDIVE_startSeeds_text").innerHTML = "The starting seeds are 1 and i.";
+            document.getElementById("GaussianDIVE_startSeeds_text").style.setProperty("color", "#366b00");
+            startingSeedsDescription = "1 and i tiles";
+        }
+        else if (mode_vars[0] == 4) {
+            document.getElementById("GaussianDIVE_startSeeds_text").innerHTML = "The starting seeds are 1, i, -1, and -i.";
+            document.getElementById("GaussianDIVE_startSeeds_text").style.setProperty("color", "#36006b");
+            startingSeedsDescription = "1, i, -1, and -1 tiles";
+        }
+        else if (mode_vars[0] == 5) {
+            document.getElementById("GaussianDIVE_startSeeds_text").innerHTML = "The starting seed is 1.";
+            document.getElementById("GaussianDIVE_startSeeds_text").style.setProperty("color", "#6b0000");
+            startingSeedsDescription = "1 tiles";
+        }
+        if (mode_vars[1]) {
+            document.getElementById("GaussianDIVE_unlocks_text").innerHTML = "Spawning tiles, a.k.a. seeds, can be unlocked and eliminated.";
+            document.getElementById("GaussianDIVE_unlocks_text").style.setProperty("color", "#060");
+        }
+        else {
+            document.getElementById("GaussianDIVE_unlocks_text").innerHTML = "Spawning tiles, a.k.a. seeds, are unlocked permanently.";
+            document.getElementById("GaussianDIVE_unlocks_text").style.setProperty("color", "#400");
+        }
+        if (mode_vars[2]) {
+            document.getElementById("GaussianDIVE_seedsFirstQuadrant_text").innerHTML = "Newly-unlocked seeds are always rotated into the first quadrant.";
+            document.getElementById("GaussianDIVE_seedsFirstQuadrant_text").style.setProperty("color", "#d25931");
+            firstQuadrantRotateDescription = "(rotated into the first quadrant) "
+        }
+        else {
+            document.getElementById("GaussianDIVE_seedsFirstQuadrant_text").innerHTML = "Newly-unlocked seeds are left as is, even if some components are negative.";
+            document.getElementById("GaussianDIVE_seedsFirstQuadrant_text").style.setProperty("color", "#5e76c4");
+            firstQuadrantRotateDescription = "";
+        }
+        if (mode_vars[4] == 0) {
+            document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked largest to smallest.";
+            document.getElementById("GaussianDIVE_unlockRules_text").style.setProperty("color", "#b7ff3c");
+            seedCheckDescription = " (Seeds are checked largest to smallest.) "
+        }
+        else if (mode_vars[4] == 1) {
+            document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, the minimum possibility is always chosen, as in the original DIVE. (This may be laggy.)";
+            document.getElementById("GaussianDIVE_unlockRules_text").style.setProperty("color", "#e3ae79");
+            seedCheckDescription = " (Seeds are checked in a way that gives the minimum possible outcome.) "
+        }
+        else if (mode_vars[4] == 2) {
+            document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked smallest to largest.";
+            document.getElementById("GaussianDIVE_unlockRules_text").style.setProperty("color", "#fa6756");
+            seedCheckDescription = " (Seeds are checked smallest to largest.) "
+        }
+        else {
+            document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked in the order they were unlocked.";
+            document.getElementById("GaussianDIVE_unlockRules_text").style.setProperty("color", "#58c2dc");
+            seedCheckDescription = " (Seeds are checked in the order they were unlocked.) "
+        }
+        document.getElementById("GaussianDIVE_quadrant0SpawnRatio_change").value = mode_vars[3][0];
+        document.getElementById("GaussianDIVE_quadrant1SpawnRatio_change").value = mode_vars[3][1];
+        document.getElementById("GaussianDIVE_quadrant2SpawnRatio_change").value = mode_vars[3][2];
+        document.getElementById("GaussianDIVE_quadrant3SpawnRatio_change").value = mode_vars[3][3];
+        seedSpawnDescription = "At first, only " + startingSeedsDescription + " spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value " + firstQuadrantRotateDescription + "is permanently added as a new spawning tile." + seedCheckDescription;
+        if (mode_vars[1]) seedSpawnDescription += "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."
+        displayRules("rules_text", ["h1", "Gaussian DIVE"], ["p", "DIVE, but the tiles are complex integers instead of just real integers."],
+        ["p", seedSpawnDescription]);
+        displayRules("gm_rules_text", ["h1", "Gaussian DIVE"], ["p", "DIVE, but the tiles are complex integers instead of just real integers."],
+        ["p", seedSpawnDescription]);
     }
 }
 
@@ -5183,7 +6777,7 @@ function displayModifiers(page) {
             document.getElementById("modifiers_spawnLocation_text").style.setProperty("color", "#c6af00");
         }
         if (modifiers[15] == "Simple") {
-            document.getElementById("modifiers_simpleSpawns_text").innerHTML = "Only the first spawnable tile type in each mode can spawn. (In 3072 and 1093 1094, this gets rid of spawning 3s and bonus tiles, keeping only 1s and 2s in the box. Does not affect 2049, 1535 1536 1537, Wildcard 2048, versions of 2216.838 with &#247;2 tiles, 1321, DIVE, 10, 1825, or any mode that already only spawns one tile)";
+            document.getElementById("modifiers_simpleSpawns_text").innerHTML = "Only the first spawnable tile type in each mode can spawn. (In 3072 and 1093 1094, this gets rid of spawning 3s and bonus tiles, keeping only 1s and 2s in the box. Does not affect 2049, 1535 1536 1537, Wildcard 2048, versions of 2216.838 with &#247;2 tiles, 1321, DIVE, 10, 1825, (232, 240), 16+16i, 3,188,646, or any mode that already only spawns one tile)";
             document.getElementById("modifiers_simpleSpawns_text").style.setProperty("color", "#d3c480");
         }
         else if (modifiers[15] == "Equal") {
@@ -5508,54 +7102,14 @@ function startGame() {
     visibleNextTiles = [];
     if (gamemode != 0) nextTiles = modifiers[14]; //This isn't part of loadModifiers because it needs to happen before createGrid
     createGrid((gamemode != 0));
-    Grid = structuredClone(startingGrid);
+    Grid = compendiumStructuredClone(startingGrid);
     loadModifiers();
     loadResettingModifiers();
     createArrows();
     createStatBoxes();
-    let exrule = 0;
-    while (exrule < MergeRules.length) { //This script expands the multi-length merge rules into several single-length merge rules
-        let exm = structuredClone(MergeRules[exrule]);
-        let vars = [];
-        if (exm[0] === "@var_retain" || exm[0] == "@var_copy") {
-            vars.push(exm[0]);
-            exm.shift();
-        }
-        if (exm[0] === "@include_gvars") {
-            vars.push(exm[0]);
-            exm.shift();
-        }
-        if (exm.indexOf("@end_vars") > -1) {
-            let newvars = exm.slice(0, exm.indexOf("@end_vars"));
-            vars = vars.concat(newvars);
-            exm.splice(0, exm.indexOf("@end_vars") + 1);
-        }
-        if (exm[0] == 0) break;
-        if (exm.length > 9 && exm[9] > exm[0]) {
-            let arbrule = exm;
-            let length = exm[6];
-            let maxlength = exm[9];
-            let iterations = 0;
-            while (length <= maxlength) {
-                let crule = structuredClone(arbrule);
-                crule[0] = length;
-                crule[9] = length;
-                crule = evaluateMergeRule(crule);
-                if (length >= exm[0]) {
-                    iterations++;
-                    if (vars.length > 0) MergeRules.splice(exrule + 1, 0, vars.concat("@end_vars", crule));
-                    else MergeRules.splice(exrule + 1, 0, crule);
-                }
-                length += crule[8];
-            }
-            MergeRules.splice(exrule, 1);
-            exrule += iterations;
-        }
-        else exrule++;
-    }
-    TileSpawns = structuredClone(startTileSpawns);
-    game_vars = structuredClone(start_game_vars);
-    modifier_vars = structuredClone(start_modifier_vars);
+    TileSpawns = compendiumStructuredClone(startTileSpawns);
+    game_vars = compendiumStructuredClone(start_game_vars);
+    modifier_vars = compendiumStructuredClone(start_modifier_vars);
     SpawnBoxes = [];
     for (let i = 0; i < TileSpawns.length; i++) {
         SpawnBoxes.push([]);
@@ -5620,8 +7174,8 @@ function createGrid() {
                 else if (modifiers[5] == "4D" && ((row + 1) % (modifiers[7] + 1) == 0 || (column + 1) % (modifiers[6] + 1) == 0)) startingGrid[row].push("@Void");
                 else startingGrid[row].push("@Empty");
             }
-            if (modifiers[5] == "Custom" && startingGrid[row][column] == "@BlackBox") {
-                startingGrid[row][column] = BlackBox;
+            if (modifiers[5] == "Custom" && startingGrid[row][column] == "@BlackBox" || (Array.isArray(startingGrid[row][column]) && startingGrid[row][column][0] == "BlackBox")) {
+                startingGrid[row][column] = compendiumStructuredClone(BlackBox);
             }
             if ((row + column + (height - 1)/2) % 2 == 0 || !hexagonal) {
                 let newEmpty = document.createElement("div");
@@ -5764,6 +7318,16 @@ function defaultAbbreviate(n) { // Tiles whose text values are of type number (w
         if (abs(n) < 10000) return String(n);
         else return abbreviateNumber(n, "BigInt", 0, true);
     }
+    else if (n instanceof GaussianBigInt) {
+        if (n.imaginary == 0n)
+            return defaultAbbreviate(n.real);
+        else if (n.real == 0n)
+            return defaultAbbreviate(n.imaginary) + "i";
+        else if (n.imaginary < 0n)
+            return defaultAbbreviate(n.real) + "-" +  defaultAbbreviate(n.imaginary * -1n) + "i";
+        else
+            return defaultAbbreviate(n.real) + "+" +  defaultAbbreviate(n.imaginary) + "i";
+    }
     else return n;
 }
 
@@ -5811,7 +7375,7 @@ function displayGrid() {
         let box = document.getElementById("stat_counter_" + b);
         if (statBoxes[b].length > 4 && (statBoxes[b][4] == "Tile" || statBoxes[b][4] == "TileArray")) {
             while (box.lastElementChild) box.removeChild(box.lastElementChild);
-            let tiles = structuredClone(CalcArray(statBoxes[b][1]));
+            let tiles = compendiumStructuredClone(CalcArray(statBoxes[b][1]));
             if (statBoxes[b][4] == "Tile") tiles = [tiles];
             for (let t = 0; t < tiles.length; t++) {
                 let newTile = document.createElement("div");
@@ -5848,6 +7412,7 @@ function displayGrid() {
 
 function displayTile(dType, tile, vcoord, hcoord, container, location) {
     let sizeExpression = 0;
+    tile.style.setProperty("background-image", "none");
     if (location == "@Empty" || location == "@Void" || location == "@Slippery") {tile.style.setProperty("display", "none");}
     else {
         if (dType != "Subtile") {
@@ -5867,9 +7432,9 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
             display = ["@TemporaryHole", Number(location.slice(15)), ["@radial-gradient", "#0004", "#0000", 75], faint_color, "none", 3, -1.05]
         }
         else if (dType == "Subtile" || dType == "Score" || dType == "ScoreArray" || dType == "Viewer") {
-            display = structuredClone(location);
+            display = compendiumStructuredClone(location);
             if (display[0] === "@include_gvars") {
-                let newvars = structuredClone(game_vars);
+                let newvars = compendiumStructuredClone(game_vars);
                 for (let v = 0; v < newvars.length; v++) {
                     newvars[v] = CalcArrayConvert(newvars[v], "=", "None", "None", 0, 0, [1, Infinity, 0], container, [], vars);
                     if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -5888,9 +7453,9 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
             }
         }
         else while (!displayfound && displaynum < TileTypes.length) {
-            display = structuredClone(TileTypes[displaynum]);
+            display = compendiumStructuredClone(TileTypes[displaynum]);
             if (display[0] === "@include_gvars") {
-                let newvars = structuredClone(game_vars);
+                let newvars = compendiumStructuredClone(game_vars);
                 for (let v = 0; v < newvars.length; v++) {
                     newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
                     if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -5961,11 +7526,14 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
             }
         }
         else {
-            let value = CalcArray(display[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+            let value;
             let params = [];
             if (display[4].length > 0) {
                 value = CalcArray(display[4][0], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
                 params = display[4].slice(1);
+            }
+            else {
+                value = CalcArray(display[1], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars)
             }
             if (display[3] == "Wildcard 2048") {
                 value = Number(value);
@@ -5992,7 +7560,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     NextValueFinder: {
                         for (let i = 0; i < values.length; i++) {
                             if (Array.isArray(values[i])) {
-                                let allowanceArray = structuredClone(values[i][0]);
+                                let allowanceArray = compendiumStructuredClone(values[i][0]);
                                 let vpos = 0;
                                 if (allowanceArray.indexOf("@end_vars") > -1) {
                                     vpos = allowanceArray.indexOf("@end_vars") - 1;
@@ -6003,7 +7571,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                                     allowanceArray.splice(vpos, 0, remaining, "@end_vars");
                                 }
                                 if (CalcArray(allowanceArray, vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars)) {
-                                    let valueArray = structuredClone(values[i][1]);
+                                    let valueArray = compendiumStructuredClone(values[i][1]);
                                     let vpos = 0;
                                     if (valueArray.indexOf("@end_vars") > -1) {
                                         vpos = valueArray.indexOf("@end_vars") - 1;
@@ -6024,7 +7592,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                             }
                         }
                     }
-                    let color = structuredClone(colors[nextentry]);
+                    let color = compendiumStructuredClone(colors[nextentry]);
                     if (negative) color = ["@rotate", 180, true, color];
                     if (Array.isArray(color)) {
                         let vpos = 0;
@@ -6115,14 +7683,12 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     tile.style.setProperty("text-shadow", "none");
                 }
             }
-            else if (display[3] == "180" || display[3] == "DIVE") {
+            else if (display[3] == "180") {
                 let scheme = display[3];
                 let prime_amount = 48;
-                if (scheme == "DIVE") prime_amount = 168;
                 if (params.length > 0) prime_amount = params[0];
                 while (primes.length < prime_amount && primes[primes.length - 1] < abs(value)) primesUpdate(primes[primes.length - 1] * 2n);
-                let subtile_size = 0.5;
-                if (scheme == "180") subtile_size = 0.6;
+                let subtile_size = 0.6;
                 let all_factors = [];
                 let negative = false;
                 if (Array.isArray(value)) {
@@ -6143,15 +7709,9 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     }
                     if (value == 0n) {
                         tile.style.setProperty("color", "#888");
-                        if (scheme == "DIVE") {
-                            while (primes.length < 73) primesUpdate(primes[primes.length - 1] * 2n);
-                            all_factors = [([7, 4, 3]).concat(Array(70).fill(2))];
-                        }
-                        else {
-                            tile.style.setProperty("background-color", "#444");
-                            tile.style.setProperty("text-shadow", "0px 0px 5px #222");
-                            return;
-                        }
+                        tile.style.setProperty("background-color", "#444");
+                        tile.style.setProperty("text-shadow", "0px 0px 5px #222");
+                        return;
                     }
                     else all_factors = factor(value, prime_amount);
                 }
@@ -6159,274 +7719,329 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 while (factors[factors.length - 1] === 0) factors.pop();
                 while (factors.length < 3) factors.push(0);
                 tile.style.setProperty("background-image", "none");
-                if (scheme == "180") {
-                    tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative));
-                    if (negative) tile.style.setProperty("color", threeFactorColor(factors.slice(0, 3), scheme));
-                }
+                tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative));
+                if (negative) tile.style.setProperty("color", threeFactorColor(factors.slice(0, 3), scheme));
                 else tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme));
                 let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
                 if (getComputedStyle(tile).getPropertyValue("border-style") != "none") borderWidth = getComputedStyle(tile).getPropertyValue("border-width");
                 if (factors.length > 3) {
-                    if (scheme == "DIVE") {
-                        for (let p = 3; p < factors.length; p++) {
-                            if (factors[p] > 0) {
+                    let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
+                    let rcol = "#444";
+                    if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) rcol = "#444";
+                    else {
+                        bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
+                        rcol = ArraytoRGB(bcol);
+                    }
+                    for (let p = 3; p < factors.length && p < 12; p++) {
+                        if (factors[p] > 0) {
+                            let primePower = factor(factors[p], 3);
+                            if (p == 3) {
+                                for (let p = 0; p < primePower.length; p++) {
+                                    let icol = threeFactorColor(primePower[p], scheme);
+                                        let pImage = document.createElement("div");
+                                        pImage.classList.add("primeImage");
+                                        tile.appendChild(pImage);
+                                        if (defactor(primePower[p]) == 1n) pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 56%, #0000 56%)");
+                                        else pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 50%, " + icol + " 50% 54%, " + rcol + " 54% 56%, #0000 56%)");
+                                        if (primePower.length > 1) {
+                                            if (p == 0) pImage.style.setProperty("mask-image", "conic-gradient(#000 0deg " + 360/primePower.length * 0.49 + "deg, #0000 " + 360/primePower.length * 0.49 + "deg " + (360 - 360/primePower.length * 0.49) + "deg, #000 " + (360 - 360/primePower.length * 0.49) + "deg)");
+                                            else pImage.style.setProperty("mask-image", "conic-gradient(#0000 0deg " + 360/primePower.length * (p - 0.49) + "deg, #000 " + 360/primePower.length * (p - 0.49) + "deg " + 360/primePower.length * (p + 0.49) + "deg, #0000 " + 360/primePower.length * (p + 0.49) + "deg)");
+                                    }
+                                }
+                            }
+                            else if (p < 12) {
                                 let pImage = document.createElement("div");
-                                pImage.classList.add("primeImage");
                                 tile.appendChild(pImage);
-                                if (p == 3) pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg 10deg, #fff 35deg 55deg, #0000 80deg 100deg, #000 125deg 145deg, #0000 170deg 190deg, #fff 215deg 235deg, #0000 260deg 280deg, #000 305deg 325deg, #0000 350deg");
-                                else if (p == 4) {
-                                    if (hexagonal) pImage.style.setProperty("background-image", "radial-gradient(#fff 0%, #0000 15% 25%, #000 32% 36%, #0000 43% 52%, #fff 58% 63%, #0000 70%, #000 80%)");
-                                    else pImage.style.setProperty("background-image", "radial-gradient(#fff 0%, #0000 19.666% 30.333%, #000 38.888% 44.444%, #0000 53% 63.666%, #fff 72.222% 77.777%, #0000 86.333%, #000 100%)");
-                                } 
-                                else if (p == 5) { // 13 in the original DIVE uses the same generation rules as the rest of the primes above 11, but my version looks good for the rest of the primes but not 13, so I'm setting 13 manually to retain its iconic look
-                                    if (hexagonal) {
-                                        pImage.style.setProperty("background-image", "repeating-linear-gradient(#0000 6.69%, #fff 19.689%, #0000 32.679%, #000 45.67%, #0000 58.66%)");
-                                        pImage.style.setProperty("mask-image", "repeating-linear-gradient(90deg, #000 6.69% 18.823%, #0000 18.823% 43.072%");
-                                    }
-                                    else {
-                                        pImage.style.setProperty("background-image", "repeating-linear-gradient(#0000 0%, #fff 15%, #0000 30%, #000 45%, #0000 60%)");
-                                        pImage.style.setProperty("mask-image", "repeating-linear-gradient(90deg, #000 0% 14%, #0000 14% 42%");
+                                if (p == 4) {
+                                    pImage.classList.add("VSideBox");
+                                    pImage.style.setProperty("left", "25%");
+                                    pImage.style.setProperty("top", "0%");
+                                }
+                                else if (p == 5) {
+                                    pImage.classList.add("VSideBox");
+                                    pImage.style.setProperty("left", "25%");
+                                    pImage.style.setProperty("bottom", "0%");
+                                }
+                                else if (p == 6) {
+                                    pImage.classList.add("HSideBox");
+                                    pImage.style.setProperty("left", "0%");
+                                    pImage.style.setProperty("top", "25%");
+                                }
+                                else if (p == 7) {
+                                    pImage.classList.add("HSideBox");
+                                    pImage.style.setProperty("right", "0%");
+                                    pImage.style.setProperty("top", "25%");
+                                }
+                                else if (p == 8) {
+                                    pImage.classList.add("cornerBox");
+                                    pImage.style.setProperty("left", "0%");
+                                    pImage.style.setProperty("top", "0%");
+                                }
+                                else if (p == 9) {
+                                    pImage.classList.add("cornerBox");
+                                    pImage.style.setProperty("right", "0%");
+                                    pImage.style.setProperty("top", "0%");
+                                }
+                                else if (p == 10) {
+                                    pImage.classList.add("cornerBox");
+                                    pImage.style.setProperty("left", "0%");
+                                    pImage.style.setProperty("bottom", "0%");
+                                }
+                                else if (p == 11) {
+                                    pImage.classList.add("cornerBox");
+                                    pImage.style.setProperty("right", "0%");
+                                    pImage.style.setProperty("bottom", "0%");
+                                }
+                                pImage.style.setProperty("background-color", rcol);
+                                let subimage = document.createElement("div");
+                                subimage.classList.add("subBox");
+                                pImage.appendChild(subimage);
+                                let icol = threeFactorColor(primePower[0], scheme);
+                                subimage.style.setProperty("background-color", icol);
+                                if (primePower.length > 1) {
+                                    for (let layer = 1; layer < primePower.length; layer++) {
+                                        pImage = subimage;
+                                        let rcol = RGBtoArray(getComputedStyle(pImage).getPropertyValue("background-color"));
+                                        if (rcol[0] == 0 && rcol[1] == 0 && rcol[2] == 0) rcol = "#444";
+                                        else {
+                                        rcol[0] *= 0.5; rcol[1] *= 0.5; rcol[2] *= 0.5;
+                                        rcol = ArraytoRGB(rcol);
+                                        }
+                                        subimage = document.createElement("div");
+                                        subimage.classList.add("subBox");
+                                        pImage.appendChild(subimage);
+                                        subimage.style.setProperty("background-color", rcol);
+                                        pImage = subimage;
+                                        subimage = document.createElement("div");
+                                        subimage.classList.add("subBox");
+                                        pImage.appendChild(subimage);
+                                        icol = threeFactorColor(primePower[layer], scheme);
+                                        subimage.style.setProperty("background-color", icol);
                                     }
                                 }
-                                else {
-                                    let prime = primes[p];
-                                    let basenum = (prime + 1n)/2n;
-                                    let basefactors = (factor(basenum, 4))[0];
-                                    while (basefactors.length < 4) basefactors.push(0);
-                                    let basecolor = threeFactorColor(basefactors.slice(0, 3), "DIVE_primeGrey");
-                                    let residuenum = basenum / defactor(basefactors);
-                                    let residueList = DIVEresidueFactor(residuenum, 4, prime_amount);
-                                    let layerDepth = arrayDepth(residueList) / 2;
-                                    let layerNum = 1;
-                                    let width = 110 / Math.sqrt(Number(prime));
-                                    let direction = 45 + 291.246118 * (p - 3);
-                                    if (residuenum == 1n) {
-                                        if (basefactors[3] == 0) { // No sevens
-                                            pImage.style.setProperty("background-image", "linear-gradient(" + (direction + 90) + "deg, #000, " + basecolor + ", #000)");
-                                        }
-                                        else { // Sevens
-                                            let sevensWidth = 40 / basefactors[3];
-                                            let bottomcolor = "#000";
-                                            pImage.style.setProperty("background-image", "repeating-linear-gradient(" + (direction + 90) + "deg, " + bottomcolor + " 0% " + (sevensWidth / 12) + "%, " + basecolor + " " + (sevensWidth / 4) + "%, #fff " + (5 * sevensWidth / 12) + "% " + (7 * sevensWidth/ 12) + "%, " + basecolor + " " + (sevensWidth * 3/4) + "%, " + bottomcolor + " " + (11 * sevensWidth / 12) + "% " + sevensWidth + "%)");
-                                        }
-                                    }
-                                    else {
-                                        let longBar = ((residueList.length > 2) || (residueList[1][2].length > 1) || (residueList[1][2][0][3] > 0));
-                                        let outercolor = threeFactorColor(basefactors.slice(0, 3), "DIVE_primeGrey", false, 0.5);
-                                        let innermax = residueList.slice(1).reduce(
-                                            function(total, value) {
-                                                return max(total, value[1] ** BigInt(value[0]));
-                                            }, 0n
-                                        );
-                                        let length = 100 / Math.sqrt(Number(innermax)) / (residueList.length - 1);
-                                        let innercolors = [];
-                                        for (let i = 1; i < residueList.length; i++) {
-                                            innercolors.push([residueList[i][1], residueList[i][2][0], residueList[i][0]]);
-                                        }
-                                        let result = "repeating-linear-gradient(" + (direction + 90) + "deg";
-                                        let innerBars = [];
-                                        let length_to_add = 0;
-                                        let length_thus_far = 0;
-                                        let iteration_length = 0;
-                                        for (let b = 0; b < innercolors.length * 2; b++) {
-                                            let inner_color = innercolors[b % innercolors.length];
-                                            if (longBar) length_to_add = length / 2;
-                                            else length_to_add = length * 2/3;
-                                            if (basefactors[3] == 0) {
-                                                result += (", " + outercolor + " " + length_thus_far + "% " + (length_thus_far + length_to_add) + "%, ");
-                                            }
-                                            else {
-                                                result += ", ";
-                                                for (let s = 0; s < basefactors[3] * 2; s++) {
-                                                    if ((b + s) % 2 == 0) result += outercolor;
-                                                    else result += "#fff";
-                                                    result += " " + (length_thus_far + length_to_add*s/(basefactors[3] * 2 - 1)) + "%, "
-                                                }
-                                            }
-                                            length_thus_far += length_to_add;
-                                            if (longBar) length_to_add = length / 2;
-                                            else length_to_add = length/3;
-                                            length_to_add *= Math.sqrt(Number(inner_color[0]) ** inner_color[2] / Number(innermax));
-                                            result += DIVERenderInnerBar(inner_color[1], length_thus_far, length_to_add, layerNum, layerDepth);
-                                            if (b < innercolors.length) innerBars.push([[b + 1], length_thus_far, length_to_add]);
-                                            length_thus_far += length_to_add;
-                                            if (b == innercolors.length - 1) iteration_length = length_thus_far;
-                                        }
-                                        result += ")";
-                                        pImage.style.setProperty("background-image", result);
-                                        while (innerBars.length > 0) {
-                                            layerNum++;
-                                            let layerLength = innerBars.length;
-                                            let layerBars = [];
-                                            for (let b = 0; b < layerLength; b++) {
-                                                let target = nestedElement(residueList, innerBars[0][0])[2];
-                                                if (target.length > 1) {
-                                                    let deepmax = target.slice(1).reduce(
-                                                        function(total, value) {
-                                                            return max(total, value[1] ** BigInt(value[0]));
-                                                        }, 0n
-                                                    );
-                                                    let segments = [];
-                                                    length_thus_far = 0;
-                                                    length_to_add = 0;
-                                                    for (let t = 1; t < target.length; t++) {
-                                                        length_to_add = 1;
-                                                        segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
-                                                        length_thus_far += length_to_add;
-                                                        length_to_add = Math.sqrt(Number(target[t][1]) ** target[t][0] / Number(deepmax));
-                                                        segments.push([target[t][2][0], length_thus_far, length_thus_far + length_to_add]);
-                                                        length_thus_far += length_to_add;
-                                                    }
-                                                    length_to_add = 1;
-                                                    segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
-                                                    length_thus_far += length_to_add;
-                                                    for (let s = 1; s < segments.length; s += 2) {
-                                                        layerBars.push([DIVERenderInnerBar(segments[s][0], innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far, layerNum, layerDepth), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][1] + innerBars[0][2] * segments[s][2]/length_thus_far]);
-                                                        innerBars.push([innerBars[0][0].concat(2, (s + 1)/2), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far]);
-                                                    }
-                                                }
-                                                innerBars.shift();
-                                            }
-                                            if (layerBars.length > 0) {
-                                                let layerImage = document.createElement("div");
-                                                layerImage.classList.add("primeImage");
-                                                pImage.appendChild(layerImage);
-                                                let layerBackground = "repeating-linear-gradient(" + (direction + 90) + "deg";
-                                                let previousend = 0;
-                                                for (let b = 0; b < layerBars.length; b++) {
-                                                    layerBackground += ", #0000 " + previousend + "% " + layerBars[b][1] + "%, " + layerBars[b][0];
-                                                    previousend = layerBars[b][2];
-                                                }
-                                                layerBackground += ", #0000 " + previousend + "% " + iteration_length + "%)";
-                                                layerImage.style.setProperty("background-image", layerBackground);
-                                                layerImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
-                                            }
-                                        }
-                                    }
-                                    pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
-                                }
-                                pImage.style.setProperty("opacity", 0.5 * factors[p]);
                             }
                         }
                     }
-                    if (scheme == "180") {
-                        let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
-                        let rcol = "#444";
-                        if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) rcol = "#444";
-                        else {
-                            bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
-                            rcol = ArraytoRGB(bcol);
-                            }
-                        for (let p = 3; p < factors.length && p < 12; p++) {
-                            if (factors[p] > 0) {
-                                let primePower = factor(factors[p], 3);
-                                if (p == 3) {
-                                    for (let p = 0; p < primePower.length; p++) {
-                                        let icol = threeFactorColor(primePower[p], scheme);
-                                            let pImage = document.createElement("div");
-                                            pImage.classList.add("primeImage");
-                                            tile.appendChild(pImage);
-                                            if (defactor(primePower[p]) == 1n) pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 56%, #0000 56%)");
-                                            else pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 50%, " + icol + " 50% 54%, " + rcol + " 54% 56%, #0000 56%)");
-                                            if (primePower.length > 1) {
-                                                if (p == 0) pImage.style.setProperty("mask-image", "conic-gradient(#000 0deg " + 360/primePower.length * 0.49 + "deg, #0000 " + 360/primePower.length * 0.49 + "deg " + (360 - 360/primePower.length * 0.49) + "deg, #000 " + (360 - 360/primePower.length * 0.49) + "deg)");
-                                                else pImage.style.setProperty("mask-image", "conic-gradient(#0000 0deg " + 360/primePower.length * (p - 0.49) + "deg, #000 " + 360/primePower.length * (p - 0.49) + "deg " + 360/primePower.length * (p + 0.49) + "deg, #0000 " + 360/primePower.length * (p + 0.49) + "deg)");
-                                        }
-                                    }
-                                }
-                                else if (p < 12) {
-                                    let pImage = document.createElement("div");
-                                    tile.appendChild(pImage);
-                                    if (p == 4) {
-                                        pImage.classList.add("VSideBox");
-                                        pImage.style.setProperty("left", "25%");
-                                        pImage.style.setProperty("top", "0%");
-                                    }
-                                    else if (p == 5) {
-                                        pImage.classList.add("VSideBox");
-                                        pImage.style.setProperty("left", "25%");
-                                        pImage.style.setProperty("bottom", "0%");
-                                    }
-                                    else if (p == 6) {
-                                        pImage.classList.add("HSideBox");
-                                        pImage.style.setProperty("left", "0%");
-                                        pImage.style.setProperty("top", "25%");
-                                    }
-                                    else if (p == 7) {
-                                        pImage.classList.add("HSideBox");
-                                        pImage.style.setProperty("right", "0%");
-                                        pImage.style.setProperty("top", "25%");
-                                    }
-                                    else if (p == 8) {
-                                        pImage.classList.add("cornerBox");
-                                        pImage.style.setProperty("left", "0%");
-                                        pImage.style.setProperty("top", "0%");
-                                    }
-                                    else if (p == 9) {
-                                        pImage.classList.add("cornerBox");
-                                        pImage.style.setProperty("right", "0%");
-                                        pImage.style.setProperty("top", "0%");
-                                    }
-                                    else if (p == 10) {
-                                        pImage.classList.add("cornerBox");
-                                        pImage.style.setProperty("left", "0%");
-                                        pImage.style.setProperty("bottom", "0%");
-                                    }
-                                    else if (p == 11) {
-                                        pImage.classList.add("cornerBox");
-                                        pImage.style.setProperty("right", "0%");
-                                        pImage.style.setProperty("bottom", "0%");
-                                    }
-                                    pImage.style.setProperty("background-color", rcol);
-                                    let subimage = document.createElement("div");
-                                    subimage.classList.add("subBox");
-                                    pImage.appendChild(subimage);
-                                    let icol = threeFactorColor(primePower[0], scheme);
-                                    subimage.style.setProperty("background-color", icol);
-                                    if (primePower.length > 1) {
-                                        for (let layer = 1; layer < primePower.length; layer++) {
-                                            pImage = subimage;
-                                            let rcol = RGBtoArray(getComputedStyle(pImage).getPropertyValue("background-color"));
-                                            if (rcol[0] == 0 && rcol[1] == 0 && rcol[2] == 0) rcol = "#444";
-                                            else {
-                                            rcol[0] *= 0.5; rcol[1] *= 0.5; rcol[2] *= 0.5;
-                                            rcol = ArraytoRGB(rcol);
-                                            }
-                                            subimage = document.createElement("div");
-                                            subimage.classList.add("subBox");
-                                            pImage.appendChild(subimage);
-                                            subimage.style.setProperty("background-color", rcol);
-                                            pImage = subimage;
-                                            subimage = document.createElement("div");
-                                            subimage.classList.add("subBox");
-                                            pImage.appendChild(subimage);
-                                            icol = threeFactorColor(primePower[layer], scheme);
-                                            subimage.style.setProperty("background-color", icol);
-                                        }
-                                    }
-                                }
-                            }
+                    if (factors.length >= 13) {
+                        while (factors.length % 3 != 0) factors.push(0);
+                        let post37colors = [];
+                        for (let p = 12; p < factors.length; p += 3) {
+                            post37colors.push(threeFactorColor([factors[p], factors[p + 1], factors[p + 2]], scheme));
                         }
-                        if (factors.length >= 13) {
-                            while (factors.length % 3 != 0) factors.push(0);
-                            let post37colors = [];
-                            for (let p = 12; p < factors.length; p += 3) {
-                                post37colors.push(threeFactorColor([factors[p], factors[p + 1], factors[p + 2]], scheme));
-                            }
-                            let width = 240 / Math.max(4, post37colors.length);
-                            for (let c = 0; c < post37colors.length; c++) {
-                                let center = 360 / post37colors.length * c;
-                                let pImage = document.createElement("div");
-                                pImage.classList.add("primeImage");
-                                tile.appendChild(pImage);
-                                if (c == 0) pImage.style.setProperty("background-image", "conic-gradient(" + post37colors[c] + " 0deg " + (width / 4) + "deg, " + rcol + " " + (width / 2) + "deg, #0000 " + (width / 2) + "deg " + (360 - width / 2) + "deg, " + rcol + " " + (360 - width / 2) + "deg, " + post37colors[c] + " " + (360 - width / 4) + "deg 360deg)")
-                                else pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg " + (center - width / 2) + "deg, " + rcol + " " + (center - width / 2) + "deg, " + post37colors[c] + " " + (center - width / 4) + "deg " + (center + width / 4) + "deg, " + rcol + " " + (center + width / 2) + "deg, #0000 " + (center + width / 2) + "deg)");
-                                pImage.style.setProperty("mask-image", "radial-gradient(#000, #0000)");
-                            }
+                        let width = 240 / Math.max(4, post37colors.length);
+                        for (let c = 0; c < post37colors.length; c++) {
+                            let center = 360 / post37colors.length * c;
+                            let pImage = document.createElement("div");
+                            pImage.classList.add("primeImage");
+                            tile.appendChild(pImage);
+                            if (c == 0) pImage.style.setProperty("background-image", "conic-gradient(" + post37colors[c] + " 0deg " + (width / 4) + "deg, " + rcol + " " + (width / 2) + "deg, #0000 " + (width / 2) + "deg " + (360 - width / 2) + "deg, " + rcol + " " + (360 - width / 2) + "deg, " + post37colors[c] + " " + (360 - width / 4) + "deg 360deg)")
+                            else pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg " + (center - width / 2) + "deg, " + rcol + " " + (center - width / 2) + "deg, " + post37colors[c] + " " + (center - width / 4) + "deg " + (center + width / 4) + "deg, " + rcol + " " + (center + width / 2) + "deg, #0000 " + (center + width / 2) + "deg)");
+                            pImage.style.setProperty("mask-image", "radial-gradient(#000, #0000)");
                         }
                     }
                 }
-                if (negative && scheme == "DIVE") {
+                if (all_factors.length > 1) {
+                    let subtile = document.createElement("div");
+                    subtile.classList.add("subtile");
+                    tile.appendChild(subtile);
+                    if (hexagonal) subtile.classList.add("hexagon_clip");
+                    let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
+                    if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) subtile.style.setProperty("border-color", "#444");
+                    else {
+                        bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
+                        bcol = ArraytoRGB(bcol);
+                        subtile.style.setProperty("border-color", bcol);
+                    }
+                    subtile.style.setProperty("width", subtile_size * 100 + "%");
+                    subtile.style.setProperty("height", subtile_size * 100 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+                    display[4][0] = ["@Literal"].concat(all_factors.slice(1));
+                    displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display);
+                }
+            }
+            else if (display[3] == "DIVE" || display[3] == "SQUARTSingle") {
+                let scheme = display[3];
+                let prime_amount = 168;
+                if (params.length > 0) prime_amount = params[0];
+                while (primes.length < prime_amount && (Array.isArray(value) || primes[primes.length - 1] < abs(value))) primesUpdate(primes[primes.length - 1] * 2n);
+                let subtile_size = 0.5;
+                let all_factors = [];
+                let negative = false;
+                if (Array.isArray(value)) {
+                    all_factors = value;
+                }
+                else {
+                    try {
+                        value = BigInt(value);
+                    }
+                    catch {
+                        value = 0n;
+                    }
+                    tile.style.setProperty("color", "#fff");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #000");
+                    if (value < 0n) {
+                        value *= -1n;
+                        negative = true;
+                    }
+                    if (value == 0n) {
+                        tile.style.setProperty("color", "#888");
+                        while (primes.length < 73) primesUpdate(primes[primes.length - 1] * 2n);
+                        all_factors = [([7, 4, 3]).concat(Array(70).fill(2))];
+                    }
+                    else all_factors = factor(value, prime_amount);
+                }
+                let factors = compendiumStructuredClone(all_factors[0]);
+                while (factors[factors.length - 1] === 0) factors.pop();
+                while (factors.length < 3) factors.push(0);
+                tile.style.setProperty("background-image", "none");
+                tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme));
+                let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
+                if (getComputedStyle(tile).getPropertyValue("border-style") != "none") borderWidth = getComputedStyle(tile).getPropertyValue("border-width");
+                if (factors.length > 3) {
+                    for (let p = 3; p < factors.length; p++) {
+                        if (factors[p] > 0) {
+                            let pImage = document.createElement("div");
+                            pImage.classList.add("primeImage");
+                            tile.appendChild(pImage);
+                            if (p == 3) pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg 10deg, #fff 35deg 55deg, #0000 80deg 100deg, #000 125deg 145deg, #0000 170deg 190deg, #fff 215deg 235deg, #0000 260deg 280deg, #000 305deg 325deg, #0000 350deg");
+                            else if (p == 4) {
+                                if (hexagonal) pImage.style.setProperty("background-image", "radial-gradient(#fff 0%, #0000 15% 25%, #000 32% 36%, #0000 43% 52%, #fff 58% 63%, #0000 70%, #000 80%)");
+                                else pImage.style.setProperty("background-image", "radial-gradient(#fff 0%, #0000 19.666% 30.333%, #000 38.888% 44.444%, #0000 53% 63.666%, #fff 72.222% 77.777%, #0000 86.333%, #000 100%)");
+                            } 
+                            else if (p == 5) { // 13 in the original DIVE uses the same generation rules as the rest of the primes above 11, but my version looks good for the rest of the primes but not 13, so I'm setting 13 manually to retain its iconic look
+                                if (hexagonal) {
+                                    pImage.style.setProperty("background-image", "repeating-linear-gradient(#0000 6.69%, #fff 19.689%, #0000 32.679%, #000 45.67%, #0000 58.66%)");
+                                    pImage.style.setProperty("mask-image", "repeating-linear-gradient(90deg, #000 6.69% 18.823%, #0000 18.823% 43.072%");
+                                }
+                                else {
+                                    pImage.style.setProperty("background-image", "repeating-linear-gradient(#0000 0%, #fff 15%, #0000 30%, #000 45%, #0000 60%)");
+                                    pImage.style.setProperty("mask-image", "repeating-linear-gradient(90deg, #000 0% 14%, #0000 14% 42%");
+                                }
+                            }
+                            else {
+                                let prime = primes[p];
+                                let basenum = (prime + 1n)/2n;
+                                let basefactors = (factor(basenum, 4))[0];
+                                while (basefactors.length < 4) basefactors.push(0);
+                                let basecolor = threeFactorColor(basefactors.slice(0, 3), scheme + "_primeGrey");
+                                let residuenum = basenum / defactor(basefactors);
+                                let residueList = DIVEresidueFactor(residuenum, 4, prime_amount);
+                                let layerDepth = arrayDepth(residueList) / 2;
+                                let layerNum = 1;
+                                let width = 110 / Math.sqrt(Number(prime));
+                                let direction = 45 + 291.246118 * (p - 3);
+                                if (residuenum == 1n) {
+                                    if (basefactors[3] == 0) { // No sevens
+                                        pImage.style.setProperty("background-image", "linear-gradient(" + (direction + 90) + "deg, #000, " + basecolor + ", #000)");
+                                    }
+                                    else { // Sevens
+                                        let sevensWidth = 40 / basefactors[3];
+                                        let bottomcolor = "#000";
+                                        pImage.style.setProperty("background-image", "repeating-linear-gradient(" + (direction + 90) + "deg, " + bottomcolor + " 0% " + (sevensWidth / 12) + "%, " + basecolor + " " + (sevensWidth / 4) + "%, #fff " + (5 * sevensWidth / 12) + "% " + (7 * sevensWidth/ 12) + "%, " + basecolor + " " + (sevensWidth * 3/4) + "%, " + bottomcolor + " " + (11 * sevensWidth / 12) + "% " + sevensWidth + "%)");
+                                    }
+                                }
+                                else {
+                                    let longBar = ((residueList.length > 2) || (residueList[1][2].length > 1) || (residueList[1][2][0][3] > 0));
+                                    let outercolor = threeFactorColor(basefactors.slice(0, 3), scheme + "_primeGrey", false, 0.5);
+                                    let innermax = residueList.slice(1).reduce(
+                                        function(total, value) {
+                                            return max(total, value[1] ** BigInt(value[0]));
+                                        }, 0n
+                                    );
+                                    let length = 100 / Math.sqrt(Number(innermax)) / (residueList.length - 1);
+                                    let innercolors = [];
+                                    for (let i = 1; i < residueList.length; i++) {
+                                        innercolors.push([residueList[i][1], residueList[i][2][0], residueList[i][0]]);
+                                    }
+                                    let result = "repeating-linear-gradient(" + (direction + 90) + "deg";
+                                    let innerBars = [];
+                                    let length_to_add = 0;
+                                    let length_thus_far = 0;
+                                    let iteration_length = 0;
+                                    for (let b = 0; b < innercolors.length * 2; b++) {
+                                        let inner_color = innercolors[b % innercolors.length];
+                                        if (longBar) length_to_add = length / 2;
+                                        else length_to_add = length * 2/3;
+                                        if (basefactors[3] == 0) {
+                                            result += (", " + outercolor + " " + length_thus_far + "% " + (length_thus_far + length_to_add) + "%, ");
+                                        }
+                                        else {
+                                            result += ", ";
+                                            for (let s = 0; s < basefactors[3] * 2; s++) {
+                                                if ((b + s) % 2 == 0) result += outercolor;
+                                                else result += "#fff";
+                                                result += " " + (length_thus_far + length_to_add*s/(basefactors[3] * 2 - 1)) + "%, "
+                                            }
+                                        }
+                                        length_thus_far += length_to_add;
+                                        if (longBar) length_to_add = length / 2;
+                                        else length_to_add = length/3;
+                                        length_to_add *= Math.sqrt(Number(inner_color[0]) ** inner_color[2] / Number(innermax));
+                                        result += DIVERenderInnerBar(inner_color[1], length_thus_far, length_to_add, layerNum, layerDepth, scheme);
+                                        if (b < innercolors.length) innerBars.push([[b + 1], length_thus_far, length_to_add]);
+                                        length_thus_far += length_to_add;
+                                        if (b == innercolors.length - 1) iteration_length = length_thus_far;
+                                    }
+                                    result += ")";
+                                    pImage.style.setProperty("background-image", result);
+                                    while (innerBars.length > 0) {
+                                        layerNum++;
+                                        let layerLength = innerBars.length;
+                                        let layerBars = [];
+                                        for (let b = 0; b < layerLength; b++) {
+                                            let target = nestedElement(residueList, innerBars[0][0])[2];
+                                            if (target.length > 1) {
+                                                let deepmax = target.slice(1).reduce(
+                                                    function(total, value) {
+                                                        return max(total, value[1] ** BigInt(value[0]));
+                                                    }, 0n
+                                                );
+                                                let segments = [];
+                                                length_thus_far = 0;
+                                                length_to_add = 0;
+                                                for (let t = 1; t < target.length; t++) {
+                                                    length_to_add = 1;
+                                                    segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
+                                                    length_thus_far += length_to_add;
+                                                    length_to_add = Math.sqrt(Number(target[t][1]) ** target[t][0] / Number(deepmax));
+                                                    segments.push([target[t][2][0], length_thus_far, length_thus_far + length_to_add]);
+                                                    length_thus_far += length_to_add;
+                                                }
+                                                length_to_add = 1;
+                                                segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
+                                                length_thus_far += length_to_add;
+                                                for (let s = 1; s < segments.length; s += 2) {
+                                                    layerBars.push([DIVERenderInnerBar(segments[s][0], innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far, layerNum, layerDepth, scheme), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][1] + innerBars[0][2] * segments[s][2]/length_thus_far]);
+                                                    innerBars.push([innerBars[0][0].concat(2, (s + 1)/2), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far]);
+                                                }
+                                            }
+                                            innerBars.shift();
+                                        }
+                                        if (layerBars.length > 0) {
+                                            let layerImage = document.createElement("div");
+                                            layerImage.classList.add("primeImage");
+                                            pImage.appendChild(layerImage);
+                                            let layerBackground = "repeating-linear-gradient(" + (direction + 90) + "deg";
+                                            let previousend = 0;
+                                            for (let b = 0; b < layerBars.length; b++) {
+                                                layerBackground += ", #0000 " + previousend + "% " + layerBars[b][1] + "%, " + layerBars[b][0];
+                                                previousend = layerBars[b][2];
+                                            }
+                                            layerBackground += ", #0000 " + previousend + "% " + iteration_length + "%)";
+                                            layerImage.style.setProperty("background-image", layerBackground);
+                                            layerImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
+                                        }
+                                    }
+                                }
+                                pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
+                            }
+                            pImage.style.setProperty("opacity", 0.5 * factors[p]);
+                        }
+                    }
+                }
+                if (negative) {
                     let pImage = document.createElement("div");
                     tile.appendChild(pImage);
                     pImage.classList.add("primeImage");
@@ -6493,7 +8108,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     ];
                     for (let p = powerPlusFactors.length - 1; p >= 0; p--) {
                         let powerNum = 2n**BigInt(Math.abs(powerPlusFactors[p][0])) + BigInt(Math.sign(powerPlusFactors[p][0]));
-                        let amount = expomod(value, powerNum);
+                        let amount = Number(expomod(value, powerNum));
                         if (amount != 0) {
                             let powerBackground = ["@HSLA", powerPlusFactors[p][1], powerPlusFactors[p][2], 0.75**(amount - 1) * 75, 1];
                             if (powerPlusFactors[p][0] > 0) background.push(powerBackground, powerBackground);
@@ -6503,19 +8118,19 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     }
                     // Skip 2^3 + 1 because it's just two factors of 3
                     if (value % 5n == 0n) {
-                        let fivesColor = expomod(value, 5n);
+                        let fivesColor = Number(expomod(value, 5n));
                         let fivesBackground = ["@HSLA", 200, 100, 0.75**(fivesColor - 1) * 75, 1];
                         background.push(fivesBackground, fivesBackground);
                         value /= 5n**BigInt(fivesColor);
                     }
                     if (value % 3n == 0n) {
-                        let threesColor = expomod(value, 3n) - 1;
+                        let threesColor = Number(expomod(value, 3n)) - 1;
                         let threesBackground = ["@HSLA", [80, 120, 140][threesColor % 3], 100, 0.75**(Math.floor(threesColor/3)) * 75, 1];
                         background.push(threesBackground, threesBackground);
                         value /= 3n**BigInt(threesColor + 1);
                     }
                     if (value % 2n == 0n) {
-                        let twosColor = expomod(value, 2n) - 1;
+                        let twosColor = Number(expomod(value, 2n)) - 1;
                         let twosBackground = ["@HSLA", [320, 340, 0, 13, 26, 40][twosColor % 6], 100, 0.75**(Math.floor(twosColor/6)) * 75, 1];
                         background.push(twosBackground, twosBackground);
                         value /= 2n**BigInt(twosColor + 1);
@@ -6542,7 +8157,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     while (value > 1n && p < prime_amount) {
                         while (primes.length < p + 1) primesUpdate(primes[primes.length - 1] * 2n);
                         let prime = primes[p];
-                        let amount = expomod(value, prime);
+                        let amount = Number(expomod(value, prime));
                         if (amount != 0) {
                             let hue;
                             let colorLayer = 0;
@@ -6591,6 +8206,479 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
                     display[4][0] = value;
                     displayTile("Subtile", subtile, "None", "None", value, display);
+                }
+            }
+            else if (display[3] == "SQUART") {
+                let prime_amount = 168;
+                if (params.length > 0) prime_amount = params[0];
+                while (primes.length < prime_amount && primes[primes.length - 1] < abs(value)) primesUpdate(primes[primes.length - 1] * 2n);
+                let subtile_size = 0.5;
+                let all_factors = [];
+                let negative = false;
+                if (Array.isArray(value)) {
+                    all_factors = value;
+                }
+                else {
+                    try {
+                        value = BigInt(value);
+                    }
+                    catch {
+                        value = 0n;
+                    }
+                    tile.style.setProperty("color", "#fff");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #000");
+                    if (value < 0n) {
+                        value *= -1n;
+                        negative = true;
+                    }
+                    if (value == 0n) {
+                        while (primes.length < 73) primesUpdate(primes[primes.length - 1] * 2n);
+                        all_factors = [([10, 6, 4]).concat(Array(70).fill(4))];
+                    }
+                    else all_factors = factor(value, prime_amount);
+                }
+                let factors = all_factors[0];
+                while (factors[factors.length - 1] === 0) factors.pop();
+                let lowerFactors = factors.map(f => Math.floor(f / 2));
+                let upperFactors = factors.map(f => Math.ceil(f / 2));
+                let upperImage = document.createElement("div");
+                upperImage.classList.add("primeImage");
+                tile.appendChild(upperImage);
+                let lowerImage = document.createElement("div");
+                lowerImage.classList.add("primeImage");
+                tile.appendChild(lowerImage);
+                let singleDisplay = compendiumStructuredClone(display);
+                singleDisplay[3] = "SQUARTSingle";
+                singleDisplay[4][0] = ["@Literal", upperFactors];
+                displayTile("Subtile", upperImage, "None", "None", upperFactors, singleDisplay);
+                singleDisplay[4][0] = ["@Literal", lowerFactors]
+                displayTile("Subtile", lowerImage, "None", "None", lowerFactors, singleDisplay);
+                lowerImage.style.setProperty("mask-image", "linear-gradient(#0000 0% 25%, #000 75%)")
+                if (negative) {
+                    let pImage = document.createElement("div");
+                    tile.appendChild(pImage);
+                    pImage.classList.add("primeImage");
+                    pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + threeFactorColor(lowerFactors.slice(0, 3), "SQUARTSingle", true) + ")");
+                    tile.style.setProperty("color", "black");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
+                }
+                if (all_factors.length > 1) {
+                    let subtile = document.createElement("div");
+                    subtile.classList.add("subtile");
+                    tile.appendChild(subtile);
+                    let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
+                    if (hexagonal) subtile.classList.add("hexagon_clip");
+                    let upperBCol = RGBtoArray(getComputedStyle(upperImage).getPropertyValue("background-color"));
+                    if (upperBCol[0] == 0 && upperBCol[1] == 0 && upperBCol[2] == 0) upperBCol = "#444";
+                    else {
+                        upperBCol[0] *= 0.5; upperBCol[1] *= 0.5; upperBCol[2] *= 0.5;
+                        upperBCol = ArraytoRGB(upperBCol);
+                    }
+                    let lowerBCol = RGBtoArray(getComputedStyle(lowerImage).getPropertyValue("background-color"));
+                    if (lowerBCol[0] == 0 && lowerBCol[1] == 0 && lowerBCol[2] == 0) lowerBCol = "#444";
+                    else {
+                        lowerBCol[0] *= 0.5; lowerBCol[1] *= 0.5; lowerBCol[2] *= 0.5;
+                        lowerBCol = ArraytoRGB(lowerBCol);
+                    }
+                    subtile.style.setProperty("border-image-source", "linear-gradient(" + upperBCol + " 0% 25%, " + lowerBCol + " 75%)");
+                    subtile.style.setProperty("border-image-slice", 1);
+                    subtile.style.setProperty("width", subtile_size * 100 + "%");
+                    subtile.style.setProperty("height", subtile_size * 100 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+                    display[4][0] = ["@Literal"].concat(all_factors.slice(1));
+                    displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display);
+                }
+            }
+            else if (display[3] == "Turatin") {
+                while (primes.length < 40 && primes[primes.length - 1] < abs(value)) primesUpdate(primes[primes.length - 1] * 2n);
+                let all_factors = [];
+                let negative = false;
+                if (Array.isArray(value)) {
+                    all_factors = value;
+                }
+                else {
+                    try {
+                        value = BigInt(value);
+                    }
+                    catch {
+                        value = 0n;
+                    }
+                    tile.style.setProperty("color", "#fff");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #000");
+                    if (value < 0n) {
+                        value *= -1n;
+                        negative = true;
+                        tile.style.setProperty("color", "#000");
+                        tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
+                    }
+                    if (value == 0n) {
+                        tile.style.setProperty("color", "#888");
+                        tile.style.setProperty("background-color", "#444");
+                        tile.style.setProperty("background-image", "none");
+                        tile.style.setProperty("text-shadow", "0px 0px 5px #222");
+                        return;
+                    }
+                    else all_factors = factor(value, 40);
+                }
+                let images = [];
+                let p2colors = ["#ffffff", "#ffe4b8", "#ffc76c", "#ff9d00", "#ff6f00", "#ff3300", "#ff0051", "#fff8ae", "#fff26b", "#ffea00", "#d4c300", "#a39600", "#f6b9ff", "#eb75fd", "#e229ff", "#b200ce", "#770089", "#635ef5", "#2c26e1", "#120e93"]
+                for (let a = 0; a < all_factors.length; a++) {
+                    let factors = all_factors[a];
+                    while (factors.length < 40) factors.push(0);
+                    let twosImage = document.createElement("div");
+                    twosImage.classList.add("primeImage");
+                    images.push(twosImage);
+                    if (factors[0] < 20) twosImage.style.setProperty("background-color", p2colors[factors[0]]);
+                    else twosImage.style.setProperty("background-color", evaluateColor(["@HSLA", [-34, "*", factors, "+", 495], 100, [0.95, "^", [factors[0], "-", 19], "*", 36], 1]));
+                    if (a == 0 && negative) {
+                        let negaColor;
+                        if (factors[0] < 20) negaColor = evaluateColor(rotateColor(p2colors[factors[0]], 180, true));
+                        else negaColor = evaluateColor(["@rotate", 180, true, ["@HSLA", [-34, "*", factors, "+", 495], 100, [0.95, "^", [factors[0], "-", 19], "*", 36], 1]]);
+                        let negaImage = document.createElement("div");
+                        negaImage.classList.add("primeImage");
+                        twosImage.appendChild(negaImage);
+                        negaImage.style.setProperty("background-image", "conic-gradient(#0000 0deg 40deg, " + negaColor + " 40deg 50deg, #0000 50deg 130deg, " + negaColor + " 130deg 140deg, #0000 140deg 220deg, " + negaColor + " 220deg 230deg, #0000 230deg 310deg, " + negaColor + " 310deg 320deg, #0000 320deg");
+                    }
+                    let higherImage = document.createElement("div");
+                    higherImage.classList.add("primeImage");
+                    images.push(higherImage);
+                    let bcol = threeFactorColor(factors.slice(1, 4), "Turatin");
+                    higherImage.style.setProperty("background-color", bcol);
+                    bcol = RGBtoArray(bcol);
+                    bcol[0] = bcol[0].slice(1);
+                    bcol[1] = bcol[1].slice(0, bcol[1].length - 1);
+                    bcol[2] = bcol[2].slice(0, bcol[2].length - 1);
+                    bcol.unshift("@HSLA")
+                    bcol = convertColor(bcol, "@RGBA");
+                    bcol.shift();
+                    let rcol = "#444";
+                    if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) rcol = "#444";
+                    else {
+                        bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
+                        rcol = ArraytoRGB(bcol);
+                    }
+                    for (let p = 4; p < 40; p += 3) {
+                        if (factors[p] > 0 || factors[p + 1] > 0 || factors[p + 2] > 0) {
+                            let conecolor = threeFactorColor([factors[p], factors[p + 1], factors[p + 2]], "TuratinInner");
+                            let width = (p < 16) ? 35 : 15;
+                            let center = [0, 180, 90, 270, 35, 55, 125, 145, 215, 235, 305, 325][(p - 4)/3];
+                            let pImage = document.createElement("div");
+                            pImage.classList.add("primeImage");
+                            higherImage.appendChild(pImage);
+                            if (p == 4) {
+                                pImage.style.setProperty("background-image", "conic-gradient(" + conecolor + " 0deg " + (width / 4) + "deg, " + rcol + " " + (width / 2) + "deg, #0000 " + (width / 2) + "deg " + (360 - width / 2) + "deg, " + rcol + " " + (360 - width / 2) + "deg, " + conecolor + " " + (360 - width / 4) + "deg 360deg)")
+                            }
+                            else {
+                                pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg " + (center - width / 2) + "deg, " + rcol + " " + (center - width / 2) + "deg, " + conecolor + " " + (center - width / 4) + "deg " + (center + width / 4) + "deg, " + rcol + " " + (center + width / 2) + "deg, #0000 " + (center + width / 2) + "deg)");
+                            }
+                            // pImage.style.setProperty("mask-image", "radial-gradient(#000, #0000)");
+                        }
+                    }
+                }
+                tile.appendChild(images[0]);
+                tile.appendChild(images[1]);
+                images[1].style.setProperty("mask-image", "radial-gradient(#000 0% 50%, #0000 75%)");
+                for (i = 2; i < images.length; i += 2) {
+                    tile.appendChild(images[i]);
+                    let imageStart, imageEnd;
+                    imageStart = 40 - (40 * (i * 3 - 5)/(images.length * 3 - 6));
+                    imageEnd = 40 - (40 * (i * 3 - 6)/(images.length * 3 - 6))
+                    images[i].style.setProperty("mask-image", "radial-gradient(#000 0% " + imageStart + "%, #0000 " + imageEnd + "%)");
+                    tile.appendChild(images[i + 1]);
+                    imageStart = 40 - (40 * (i * 3 - 3)/(images.length * 3 - 6));
+                    imageEnd = 40 - (40 * (i * 3 - 5)/(images.length * 3 - 6))
+                    images[i + 1].style.setProperty("mask-image", "radial-gradient(#000 0% " + imageStart + "%, #0000 " + imageEnd + "%)");
+                }
+            }
+            else if (display[3] == "3307" || display[3] == "2379") {
+                let scheme = display[3];
+                let basefactors = [2n, 3n, 7n].concat(factorsFor3307.map(f => f[0]));
+                let all_factors = [];
+                let negative = false;
+                let subtile_size = 0.6;
+                if (Array.isArray(value)) {
+                    all_factors = value;
+                }
+                else {
+                    try {
+                        value = BigInt(value);
+                    }
+                    catch {
+                        value = 0n;
+                    }
+                    tile.style.setProperty("color", "#fff");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #000");
+                    if (value < 0n) {
+                        value *= -1n;
+                        negative = true;
+                        tile.style.setProperty("color", "#000");
+                        tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
+                    }
+                    if (value == 0n) {
+                        tile.style.setProperty("color", "#888");
+                        tile.style.setProperty("background-image", "linear-gradient(#f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)");
+                        tile.style.setProperty("text-shadow", "0px 0px 5px #222");
+                        return;
+                    }
+                    else all_factors = factor(value, basefactors, true);
+                }
+                let factors = all_factors[0];
+                while (factors[factors.length - 1] === 0) factors.pop();
+                tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), "3307"));
+                let extrafactors = [];
+                for (let f = 3; f < factors.length; f++) {
+                    for (let i = 0; i < factors[f]; i++) {
+                        extrafactors.push(factorsFor3307[f - 3]);
+                    }
+                }
+                for (let e = 0; e < extrafactors.length; e++) {
+                    let leftImage = document.createElement("div");
+                    leftImage.classList.add("primeImage");
+                    tile.appendChild(leftImage);
+                    leftImage.style.setProperty("width", "50%");
+                    leftImage.style.setProperty("height", (200 / (extrafactors.length * 3 + 1)) + "%");
+                    leftImage.style.setProperty("left", "0%");
+                    leftImage.style.setProperty("top", (100 / (extrafactors.length * 3 + 1) * (e * 3 + 1)) + "%");
+                    let leftDisplay = compendiumStructuredClone(display);
+                    leftDisplay[4][0] = extrafactors[e][2];
+                    displayTile("Subtile", leftImage, "None", "None", extrafactors[e][2], leftDisplay);
+                    let rightImage = document.createElement("div");
+                    rightImage.classList.add("primeImage");
+                    tile.appendChild(rightImage);
+                    rightImage.style.setProperty("width", "50%");
+                    rightImage.style.setProperty("height", (200 / (extrafactors.length * 3 + 1)) + "%");
+                    rightImage.style.setProperty("left", "50%");
+                    rightImage.style.setProperty("top", (100 / (extrafactors.length * 3 + 1) * (e * 3 + 1)) + "%");
+                    let rightDisplay = compendiumStructuredClone(display);
+                    rightDisplay[4][0] = extrafactors[e][3];
+                    displayTile("Subtile", rightImage, "None", "None", extrafactors[e][3], rightDisplay);
+                }
+                if (negative) {
+                    let pImage = document.createElement("div");
+                    tile.appendChild(pImage);
+                    pImage.classList.add("primeImage");
+                    pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + threeFactorColor(factors.slice(0, 3), "3307", true) + ")");
+                    tile.style.setProperty("color", "black");
+                    tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
+                }
+                if (all_factors.length > 1) {
+                    let subtile = document.createElement("div");
+                    subtile.classList.add("subtile");
+                    tile.appendChild(subtile);
+                    let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
+                    if (hexagonal) subtile.classList.add("hexagon_clip");
+                    let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
+                    if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) subtile.style.setProperty("border-color", "#444");
+                    else {
+                        bcol[0] *= 0.5; bcol[1] *= 0.5; bcol[2] *= 0.5;
+                        bcol = ArraytoRGB(bcol);
+                        subtile.style.setProperty("border-color", bcol);
+                    }
+                    subtile.style.setProperty("width", subtile_size * 100 + "%");
+                    subtile.style.setProperty("height", subtile_size * 100 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
+                    subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+                    display[4][0] = ["@Literal"].concat(all_factors.slice(1));
+                    displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display);
+                }
+            }
+            else if (display[3] == "Gaussian DIVE") {
+                let prime_amount = 1232;
+                if (params.length > 0) prime_amount = params[0];
+                let subtile_size = 0.5;
+                let all_factors = [];
+                if (Array.isArray(value)) {
+                    all_factors = value;
+                    leftover = gaussian_defactor(value);
+                    while (gaussian_primes.length < prime_amount) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+                }
+                else {
+                    try {
+                        value = new GaussianBigInt(value);
+                    }
+                    catch {
+                        value = new GaussianBigInt(0n, 0n);
+                    }
+                    while (gaussian_primes.length < prime_amount && gaussian_primes[gaussian_primes.length - 1].norm() < value.norm()) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+                    leftover = value;
+                    let leftoverhue = leftover.quadrant();
+                    tile.style.setProperty("color", "white");
+                    if (leftoverhue == 0n) tile.style.setProperty("color", "hsla(0, 100%, 75%, 1)");
+                    if (leftoverhue == 1n) tile.style.setProperty("color", "hsla(90, 100%, 75%, 1)");
+                    if (leftoverhue == 2n) tile.style.setProperty("color", "hsla(180, 100%, 75%, 1)");
+                    if (leftoverhue == 3n) tile.style.setProperty("color", "hsla(270, 100%, 75%, 1)");
+                    tile.style.setProperty("--shadow-color", "black");
+                    if (value.eq([0n, 0n])) {
+                        tile.style.setProperty("color", "#888");
+                        tile.style.setProperty("background-color", "#444");
+                        return;
+                    }
+                    else all_factors = gaussian_factor(value, prime_amount);
+                }
+                let factors = all_factors[0];
+                while (factors[factors.length - 1] == 0) factors.pop();
+                while (factors.length < 6) factors.push(0);
+                tile.style.setProperty("background-image", "linear-gradient(" + threeFactorColor(factors.slice(0, 3), "GaussianDIVE1") + "0% 33.333%, " + threeFactorColor(factors.slice(3, 6), "GaussianDIVE2") + " 66.666% 100%)");
+                if (factors.length > 6) {
+                    for (let p = 6; p < factors.length; p++) {
+                        if (factors[p] > 0) {
+                            let pImage = document.createElement("div");
+                            pImage.classList.add("primeImage");
+                            tile.appendChild(pImage);
+                            if (p == 6) {
+                                pImage.style.setProperty("background-image", "conic-gradient(at 50% -10%, #0000 0% 35%, #000 40% 45%, #fff 47.5% 52.5%, #000 55% 60%, #0000 65%)");
+                                pImage.style.setProperty("mask-image", "radial-gradient(at 50% 0%, #000, #0000 50%)")
+                            }
+                            else if (p == 7) {
+                                pImage.style.setProperty("background-image", "conic-gradient(from 180deg at 50% 110%, #0000 0% 35%, #000 40% 45%, #fff 47.5% 52.5%, #000 55% 60%, #0000 65%)");
+                                pImage.style.setProperty("mask-image", "radial-gradient(at 50% 100%, #000, #0000 50%)")
+                            }
+                            else if (p == 8) {
+                                pImage.style.setProperty("background-image", "conic-gradient(from 90deg at 110% 50%, #0000 0% 35%, #000 40% 45%, #fff 47.5% 52.5%, #000 55% 60%, #0000 65%)");
+                                pImage.style.setProperty("mask-image", "radial-gradient(at 100% 50%, #000, #0000 50%)")
+                            }
+                            else if (p == 9) {
+                                pImage.style.setProperty("background-image", "conic-gradient(from 270deg at -10% 50%, #0000 0% 35%, #000 40% 45%, #fff 47.5% 52.5%, #000 55% 60%, #0000 65%)");
+                                pImage.style.setProperty("mask-image", "radial-gradient(at 0% 50%, #000, #0000 50%)")
+                            }
+                            else {
+                                let prime = gaussian_primes[p];
+                                let reversedTerms = (prime.real < prime.imaginary);
+                                let direction = 45 + 291.246118 * (Number(prime.norm()) - 3) + 90 * reversedTerms;
+                                if (reversedTerms) prime = new GaussianBigInt(prime.imaginary, prime.real);
+                                let basenum;
+                                basenum = prime.add([0n, 1n]).div([1n, -1n]);
+                                let bfCombined = gaussian_factor(basenum, 6);
+                                let basefactors = bfCombined[0];
+                                let baseunit = bfCombined[1]
+                                while (basefactors.length < 6) basefactors.push(0);
+                                let basecolor1 = threeFactorColor(basefactors.slice(0, 3), "GaussianDIVE1_primeGrey");
+                                let basecolor2 = threeFactorColor(basefactors.slice(3, 6), "GaussianDIVE2_primeGrey");
+                                let residuenum = basenum.div(gaussian_defactor([basefactors, baseunit]));
+                                let residueList = GaussianDIVEresidueFactor(residuenum, 6, prime_amount);
+                                let layerDepth = arrayDepth(residueList) / 2;
+                                let layerNum = 1;
+                                let width = 80 / Math.pow(Number(prime.norm()), 1/4);
+                                if (residuenum.norm() == 1n) {
+                                    pImage.style.setProperty("background-image", "repeating-linear-gradient(" + (direction + 90) + "deg, " + basecolor1 + " " + (width * 0) + "% " + (width * 1/4) + "%, " + basecolor2 + " " + (width * 1/2) + "% " + (width * 3/4) + "%, " + basecolor1 + " " + (width * 1) + "%)");
+                                }
+                                else {
+                                    let longBar = ((residueList.length > 3) || (residueList[2][2].length > 2));
+                                    let outercolor1 = threeFactorColor(basefactors.slice(0, 3), "GaussianDIVE1_primeGrey", false, 0.75);
+                                    let outercolor2 = threeFactorColor(basefactors.slice(3, 6), "GaussianDIVE2_primeGrey", false, 0.75)
+                                    let innermax = residueList.slice(2).reduce(
+                                        function(total, value) {
+                                            return max(total, value[1].norm() ** BigInt(value[0]));
+                                        }, 0n
+                                    );
+                                    let length = 80 / Math.pow(Number(innermax), 1/4) / (residueList.length - 2);
+                                    let innercolors = [];
+                                    for (let i = 2; i < residueList.length; i++) {
+                                        innercolors.push([residueList[i][1], residueList[i][2][0], residueList[i][0]]);
+                                    }
+                                    let result = "repeating-linear-gradient(" + (direction + 90) + "deg";
+                                    let innerBars = [];
+                                    let length_to_add = 0;
+                                    let length_thus_far = 0;
+                                    let iteration_length = 0;
+                                    for (let b = 0; b < innercolors.length * 2; b++) {
+                                        let inner_color = innercolors[b % innercolors.length];
+                                        if (longBar) length_to_add = length / 2;
+                                        else length_to_add = length * 2/3;
+                                        if (b % 2 == 1) result += (", " + outercolor2 + " " + length_thus_far + "% " + (length_thus_far + length_to_add * 1/4) + "%, " + outercolor1 + " " + (length_thus_far + length_to_add * 3/4) + "% " + (length_thus_far + length_to_add) + "%, ");
+                                        else result += (", " + outercolor1 + " " + length_thus_far + "% " + (length_thus_far + length_to_add * 1/4) + "%, " + outercolor2 + " " + (length_thus_far + length_to_add * 3/4) + "% " + (length_thus_far + length_to_add) + "%, ");
+                                        length_thus_far += length_to_add;
+                                        if (longBar) length_to_add = length / 2;
+                                        else length_to_add = length/3;
+                                        length_to_add *= Math.pow(Number(inner_color[0].norm()) ** inner_color[2] / Number(innermax), 1/4);
+                                        result += GaussianDIVERenderInnerBar(inner_color[1], length_thus_far, length_to_add, layerNum, layerDepth);
+                                        if (b < innercolors.length) innerBars.push([[b + 2], length_thus_far, length_to_add]);
+                                        length_thus_far += length_to_add;
+                                        if (b == innercolors.length - 1) iteration_length = length_thus_far;
+                                    }
+                                    result += ")";
+                                    pImage.style.setProperty("background-image", result);
+                                    while (innerBars.length > 0) {
+                                        layerNum++;
+                                        let layerLength = innerBars.length;
+                                        let layerBars = [];
+                                        for (let b = 0; b < layerLength; b++) {
+                                            let target = nestedElement(residueList, innerBars[0][0])[2];
+                                            if (target.length > 1) {
+                                                let deepmax = target.slice(2).reduce(
+                                                    function(total, value) {
+                                                        return max(total, value[1].norm() ** BigInt(value[0]));
+                                                    }, 0n
+                                                );
+                                                let segments = [];
+                                                length_thus_far = 0;
+                                                length_to_add = 0;
+                                                for (let t = 2; t < target.length; t++) {
+                                                    length_to_add = 1;
+                                                    segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
+                                                    length_thus_far += length_to_add;
+                                                    length_to_add = Math.pow(Number(target[t][1].norm()) ** target[t][0] / Number(deepmax), 1/3);
+                                                    segments.push([target[t][2][0], length_thus_far, length_thus_far + length_to_add]);
+                                                    length_thus_far += length_to_add;
+                                                }
+                                                length_to_add = 1;
+                                                segments.push(["#0000", length_thus_far, length_thus_far + length_to_add]);
+                                                length_thus_far += length_to_add;
+                                                for (let s = 1; s < segments.length; s += 2) {
+                                                    layerBars.push([GaussianDIVERenderInnerBar(segments[s][0], innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far, layerNum, layerDepth), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][1] + innerBars[0][2] * segments[s][2]/length_thus_far]);
+                                                    innerBars.push([innerBars[0][0].concat(2, (s + 3)/2), innerBars[0][1] + innerBars[0][2] * segments[s][1]/length_thus_far, innerBars[0][2] * (segments[s][2] - segments[s][1])/length_thus_far]);
+                                                }
+                                            }
+                                            innerBars.shift();
+                                        }
+                                        if (layerBars.length > 0) {
+                                            let layerImage = document.createElement("div");
+                                            layerImage.classList.add("primeImage");
+                                            pImage.appendChild(layerImage);
+                                            let layerBackground = "repeating-linear-gradient(" + (direction + 90) + "deg";
+                                            let previousend = 0;
+                                            for (let b = 0; b < layerBars.length; b++) {
+                                                layerBackground += ", #0000 " + previousend + "% " + layerBars[b][1] + "%, " + layerBars[b][0];
+                                                previousend = layerBars[b][2];
+                                            }
+                                            layerBackground += ", #0000 " + previousend + "% " + iteration_length + "%)";
+                                            layerImage.style.setProperty("background-image", layerBackground);
+                                            layerImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/8) + "%, #0000 " + (width * 1/8) + "% " + (width * 7/8) + "%, #000 " + (width * 7/8) + "% " + width + "%)");
+                                        }
+                                    }
+                                }
+                                pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/8) + "%, #0000 " + (width * 1/8) + "% " + (width * 7/8) + "%, #000 " + (width * 7/8) + "% " + width + "%)");
+                            }
+                            pImage.style.setProperty("opacity", 0.5 * factors[p]);
+                        }
+                    }
+                }
+                // let quadrant = all_factors[1];
+                // if (!eqPrimArrays(quadrant, [0n, 0n])) {
+                //     let quadrantHue = 0;
+                //     if (eqPrimArrays(quadrant, [0n, 1n])) quadrantHue = 90;
+                //     if (eqPrimArrays(quadrant, [-1n, 0n])) quadrantHue = 180;
+                //     if (eqPrimArrays(quadrant, [0n, -1n])) quadrantHue = 270;
+                //     let pImage = document.createElement("div");
+                //     tile.appendChild(pImage);
+                //     pImage.classList.add("primeImage");
+                //     pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 80%, " + ("hsla(" + quadrantHue + ", 100%, 70%, 0.5)") + ", " + ("hsla(" + quadrantHue + ", 100%, 30%, 1)") + ")");
+                // }
+                if (all_factors.length > 2) {
+                    let subtile = document.createElement("div");
+                    subtile.classList.add("subtile");
+                    tile.appendChild(subtile);
+                    if (all_factors[2] == true) subtile.style.setProperty("border-color", "#fff");
+                    else subtile.style.setProperty("border-color", "#000");
+                    subtile.style.setProperty("width", subtile_size * 100 + "%");
+                    subtile.style.setProperty("height", subtile_size * 100 + "%");
+                    subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
+                    subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
+                    subtile.style.setProperty("border-width", "calc(" + getComputedStyle(tile).getPropertyValue("border-width") + " * " + subtile_size + ")");
+                    displayTile("Subtile", subtile, "None", "None", [all_factors.slice(3)], display);
                 }
             }
             else {
@@ -6645,7 +8733,8 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     else if (innerdisplay[3] < 0) fontmax = innerscript.textContent.length * innerdisplay[3];
                 }
                 if (dType == "Grid") sizeExpression = (tsize / 100 / Math.max(fontmin, fontmax));
-                else if (dType == "NextTiles") sizeExpression = (4/33 / Math.max(fontmin, fontmax));
+                else if (dType == "Score" || dType == "ScoreSelf") sizeExpression = (6/33 / Math.max(fontmin, fontmax));
+                else sizeExpression = (4/33 / Math.max(fontmin, fontmax));
                 innerscript.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + sizeExpression + ")");
                 if (innerdisplay.length > 4) innerscript.style.setProperty("color", (evaluateColor(innerdisplay[4], vcoord, hcoord, container, vars)));
                 if (innerdisplay.length > 5) {
@@ -6764,6 +8853,12 @@ function loadModifiers() {
                 ];
                 startTileSpawns = [[[0, 1], 50], [["Div2", "@Signless"], 50]];
             }
+            else if (mode_vars[0] == 2) {
+                MergeRules = [
+                    [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 1", "=", "@This 1"]], true, [[["@This 0", "+", 1], 1], [["@This 0", "+", 1], 1]], [1.5, "^", "@This 0", "*", 3], [false, false, true]]
+                ]
+                startTileSpawns = [[[0, 1], 72], [[1, 1], 16], [[2, 1], 8], [[3, 1], 4]];
+            }
         }
         else if (gamemode == 38) { // 180
             if (mode_vars[0] != 0) {
@@ -6789,6 +8884,31 @@ function loadModifiers() {
                     winRequirement = 2;
                     if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0]);
                 }
+                if (mode_vars[1] > 0) {
+                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                    if (mode_vars[1] == 1) {
+                        scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "rand_float", 1, "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_gvar", 0, ["@GVar 0", "*B", 2n], "@end-if", "@else-if", ["@Parent -2", "<", "@GVar 4"], "@edit_gvar", 0, ["@GVar 0", "*B", 3n], "@end-else-if", "@else", "@edit_gvar", 0, ["@GVar 0", "*B", 5n], "@end-else", "@end-if"], "EndTurn"])
+                    }
+                    else {
+                        scripts.push([[1n, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, "rand_float", 1, "@repeat", ["@var_retain", "@Var 0", "<=", "@GVar 0"], "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_var", 0, ["@var_retain", "@Var 0", "*B", 2n], "@end-if", "@else-if", ["@Parent -2", "<", "@GVar 4"], "@edit_var", 0, ["@var_retain", "@Var 0", "*B", 3n], "@end-else-if", "@else", "@edit_var", 0, ["@var_retain", "@Var 0", "*B", 5n], "@end-else", "@end-repeat", "2nd", "@Var 0"], "@end-if"], "EndTurn"])
+                    }
+                    statBoxes.push(["Current Goal", "@GVar 0", false, false, "Tile", "180"], ["Goals Reached", "@GVar 1"]);
+                }
+            }
+            else if (mode_vars[1] > 0) {
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 3, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[1] == 1) {
+                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "rand_float", 1, "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2]], "@end-if", "@else-if", ["@Parent -2", "<", "@GVar 4"], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2]], "@end-else-if", "@else", "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2, "+", 1]], "@end-else", "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[[[2, "^", ["@GVar 0", "arr_elem", 0]], "*", [3, "^", ["@GVar 0", "arr_elem", 1]], "*", [5, "^", ["@GVar 0", "arr_elem", 2]]], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, 0, 0, "@end_vars", 0, "rand_float", 1, "@repeat", ["@var_retain", ["@var_retain", 2, "^", "@Var 1"], "*", ["@var_retain", 3, "^", "@Var 2"], "*", ["@var_retain", 5, "^", "@Var 3"], "<=", "@Var 0"], "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-if", "@else-if", ["@Parent -2", "<", "@GVar 4"], "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@end-else-if", "@else", "@edit_var", 3, ["@var_retain", "@Var 3", "+", 1], "@end-else", "@end-repeat", "2nd", ["@Literal"], "arr_push", "@Var 1", "arr_push", "@Var 2", "arr_push", "@Var 3"], "@end-if"], "EndTurn"])
+                }
+                if (mode_vars[13] == "None") {
+                    statBoxes.push(["Current Goal", "@GVar 0", false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                }
+                else {
+                    statBoxes.push(["Current Goal", ["@GVar 0", "arr_push", 1], false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                }
             }
         }
         else if (gamemode == 39) { // 2592
@@ -6811,6 +8931,21 @@ function loadModifiers() {
                 statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"]], ["Score", "@Score"], ["Merges", "@Merges"]];
                 MergeRules[0][1][8][0] = "@Merges";
                 MergeRules[1][1][4][0] = "@Merges";
+            }
+            if (mode_vars[1] > 0) {
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[1] == 1) {
+                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "rand_float", 1, "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1]], "@end-if", "@else", "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-else", "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[[[2, "^", ["@GVar 0", "arr_elem", 0]], "*", [3, "^", ["@GVar 0", "arr_elem", 1]]], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, 0, "@end_vars", 0, "rand_float", 1, "@repeat", ["@var_retain", ["@var_retain", 2, "^", "@Var 1"], "*", ["@var_retain", 3, "^", "@Var 2"], "<=", "@Var 0"], "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@end-else", "@end-repeat", "2nd", ["@Literal"], "arr_push", "@Var 1", "arr_push", "@Var 2"], "@end-if"], "EndTurn"])
+                }
+                if (mode_vars[13] == "None") {
+                    statBoxes.push(["Current Goal", "@GVar 0", false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                }
+                else {
+                    statBoxes.push(["Current Goal", ["@GVar 0", "arr_push", 1], false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                }
             }
         }
         else if (gamemode == 40) { // Wildcard 2048
@@ -6876,14 +9011,18 @@ function loadModifiers() {
                 }
             }
             if (mode_vars[1] > 0) {
+                start_game_vars[3] = mode_vars[2];
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
-                if (mode_vars[0] == 1) {
+                if (mode_vars[1] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*", 2, "+", [0, "rand_int", 1]], "@end-if"], "EndTurn"])
                 }
                 else {
-                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2, "^", ["@GVar 1", "+", 2]], "rand_int", [2, "^", ["@GVar 1", "+", 3], "-", 1]], "@end-if"], "EndTurn"])
+                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2, "^", ["@GVar 1", "+", "@GVar 3", "-", 1]], "rand_int", [2, "^", ["@GVar 1", "+", "@GVar 3"], "-", 1]], "@end-if"], "EndTurn"])
                 }
-                statBoxes.push(["Current Goal", ["@Literal", ["@CalcArray", "@GVar 0"], 0], false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                let sBox = ["@Literal", ["@CalcArray", "@GVar 0"], 0];
+                if (modifiers[13] != "None") sBox.push(1);
+                if (modifiers[24]) sBox.push(1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
         }
         else if (gamemode == 44) { // mod 27
@@ -6924,41 +9063,235 @@ function loadModifiers() {
             }
             start_game_vars[4] = mode_vars[2];
             if (mode_vars[3] > 0) {
+                start_game_vars[9] = mode_vars[4];
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 5"], "@edit_gvar", 7, true, "@end-if"], "Merge"]);
                 scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "=", "@GVar 5"], "@edit_gvar", 7, true, "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "PostSpawn"]);
                 if (mode_vars[3] == 1) {
                     scripts.push([[0, "@if", "@GVar 7", "@edit_gvar", 6, ["@var_retain", "@GVar 6", "+", 1], "@edit_gvar", 7, false, "@edit_gvar", 5, ["@GVar 5", "+B", [0, "rand_bigint", ["@GVar 5", "logB", 2n]], "*B", [0, "rand_float", 1, "@if", ["@Parent -2", "=", 0], "2nd", 1, "@end-if", "log", 2, "*", -1, "floor", 1, "+", 2, "BigInt"]], "@end-if"], "EndTurn"])
                 }
                 else {
-                    scripts.push([[0, "@if", "@GVar 7", "@edit_gvar", 6, ["@var_retain", "@GVar 6", "+", 1], "@edit_gvar", 7, false, "@edit_gvar", 5, [[2n, "^B", ["@GVar 6", "+", 2, "BigInt"]], "rand_bigint", [2n, "^B", ["@GVar 6", "+", 3, "BigInt"], "-B", 1n]], "@end-if"], "EndTurn"])
+                    scripts.push([[0, "@if", "@GVar 7", "@edit_gvar", 6, ["@var_retain", "@GVar 6", "+", 1], "@edit_gvar", 7, false, "@edit_gvar", 5, [[2n, "^B", ["@GVar 6", "BigInt"], "*B", "@GVar 9"], "rand_bigint", [2n, "^B", ["@GVar 6", "+", 1, "BigInt"], "*B", "@GVar 9", "-B", 1n]], "@end-if"], "EndTurn"])
                 }
                 statBoxes.push(["Current Goal", "@GVar 5", false, false, "Tile", "DIVE"], ["Goals Reached", "@GVar 6"]);
             }
-            start_game_vars[9] = modifiers[21];
+            start_game_vars[8] = modifiers[21];
         }
+        else if (gamemode == 54) { // 3888
+            if (mode_vars[0] > 0) {
+                start_game_vars[4] = mode_vars[1];
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[0] == 1) {
+                    scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 2], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[[[2, "^", ["@GVar 0", "arr_elem", 0]], "*", [3, "^", ["@GVar 0", "arr_elem", 1]]], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, 0, "@end_vars", 0, "@repeat", ["@var_retain", ["@var_retain", 2, "^", "@Var 1"], "*", ["@var_retain", 3, "^", "@Var 2"], "<=", "@Var 0"], "@if", [0, "rand_float", 1, "<", "@GVar 3"], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@end-else", "@end-repeat", "2nd", ["@Literal"], "arr_push", "@Var 1", "arr_push", "@Var 2"], "@end-if"], "EndTurn"])
+                }
+                let sBox = ["@GVar 0"];
+                if (modifiers[13] != "None") sBox.push("arr_push", 1);
+                if (modifiers[24]) sBox.push("arr_push", 1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+            }
+        }
+        else if (gamemode == 55) { // 2000
+            if (mode_vars[0] > 0) {
+                start_game_vars[4] = mode_vars[1];
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[0] == 1) {
+                    scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 1], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 2], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 3], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[[[2, "^", ["@GVar 0", "arr_elem", 0]], "*", [5, "^", ["@GVar 0", "arr_elem", 1]]], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, 0, "@end_vars", 0, "@repeat", ["@var_retain", ["@var_retain", 2, "^", "@Var 1"], "*", ["@var_retain", 5, "^", "@Var 2"], "<=", "@Var 0"], "@if", [0, "rand_float", 1, "<", "@GVar 3"], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@end-else", "@end-repeat", "2nd", ["@Literal"], "arr_push", "@Var 1", "arr_push", "@Var 2"], "@end-if"], "EndTurn"])
+                }
+                let sBox = ["@GVar 0"];
+                if (modifiers[13] != "None") sBox.push("arr_push", 1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+            }
+        }
+        else if (gamemode == 56) { // 3645
+            if (mode_vars[0] > 0) {
+                start_game_vars[4] = mode_vars[1];
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[0] == 1) {
+                    scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 2], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[[[3, "^", ["@GVar 0", "arr_elem", 0]], "*", [5, "^", ["@GVar 0", "arr_elem", 1]]], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, 0, "@end_vars", 0, "@repeat", ["@var_retain", ["@var_retain", 3, "^", "@Var 1"], "*", ["@var_retain", 5, "^", "@Var 2"], "<=", "@Var 0"], "@if", [0, "rand_float", 1, "<", "@GVar 3"], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@end-else", "@end-repeat", "2nd", ["@Literal"], "arr_push", "@Var 1", "arr_push", "@Var 2"], "@end-if"], "EndTurn"])
+                }
+                let sBox = ["@GVar 0"];
+                if (modifiers[13] != "None") sBox.push("arr_push", 1);
+                if (modifiers[24]) sBox.push("arr_push", 1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+            }
+        }
+        // else if (gamemode == 57) { // 2700
+        //     if (mode_vars[2] > 0) {
+        //         scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 3, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+        //         if (mode_vars[2] == 1) {
+        //             scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "@if", ["@GVar 0", "arr_elem", 2, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 2], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else-if", ["@var_retain", "@Var 0", "arr_length", "=", 2], "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 4"], "2nd", 2, "@end-if", "@else-if", ["@Parent -4", "<", "@GVar 5"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 2], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 3], ["@CalcArray", "@GVar 0", "arr_elem", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
+        //         }
+        //         else {
+        //             scripts.push([[[[2, "^", ["@GVar 0", "arr_elem", 0]], "*", [3, "^", ["@GVar 0", "arr_elem", 1]], "*", [5, "^", ["@GVar 0", "arr_elem", 2]]], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, 0, 0, "@end_vars", 0, "rand_float", 1, "@repeat", ["@var_retain", ["@var_retain", 2, "^", "@Var 1"], "*", ["@var_retain", 3, "^", "@Var 2"], "*", ["@var_retain", 5, "^", "@Var 3"], "<=", "@Var 0"], "@if", ["@Parent -2", "<", "@GVar 4"], "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-if", "@else-if", ["@Parent -2", "<", "@GVar 5"], "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@end-else-if", "@else", "@edit_var", 3, ["@var_retain", "@Var 3", "+", 1], "@end-else", "@end-repeat", "2nd", ["@Literal"], "arr_push", "@Var 1", "arr_push", "@Var 2"], "@end-if"], "EndTurn"])
+        //         }
+        //         if (mode_vars[13] == "None") {
+        //             statBoxes.push(["Current Goal", "@GVar 0", false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+        //         }
+        //         else {
+        //             statBoxes.push(["Current Goal", ["@GVar 0", "arr_push", 1], false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+        //         }
+        //     }
+        // }
         else if (gamemode == 59) { // 1825
             if (mode_vars[0] > 0) {
+                start_game_vars[3] = mode_vars[1];
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*", [2, "^", [2, "-", ["@GVar 0", "expomod", 2]]], "-", [1, "rand_int", ["@GVar 0", "^", 0.5, "floor", 1], "@if", ["@Parent -2", "%", 4, "=", 0], "-", 1, "@end-if"]], "@end-if"], "EndTurn"])
                 }
                 else {
-                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2, "^", ["@GVar 1", "+", 2]], "rand_int", [2, "^", ["@GVar 1", "+", 3], "-", 1]], "@end-if"], "EndTurn"])
+                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2, "^", ["@GVar 1", "+", "@GVar 3", "-", 1]], "rand_int", [2, "^", ["@GVar 1", "+", "@GVar 3"], "-", 1]], "@end-if"], "EndTurn"])
                 }
-                statBoxes.push(["Current Goal", ["@Literal", ["@CalcArray", "@GVar 0"], 1], false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                let sBox = ["@Literal", ["@CalcArray", "@GVar 0"], 1];
+                if (modifiers[24]) sBox.push(1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
         }
         else if (gamemode == 61) { // 3069
             if (mode_vars[0] > 0) {
+                start_game_vars[4] = mode_vars[1];
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@add_var", ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@add_var", ["@var_retain", "@Var -1", "arr_copy"], "@if", ["@GVar 2", "%", 3, "=", 1], "@edit_gvar", 1, ["@GVar 1", "arr_unshift", 1n], "@edit_gvar", 1, [[0, "rand_int", ["@GVar 1", "arr_length", "-", 1]], "@end_vars", "@GVar 1", "arr_edit_elem", "@Var 0", ["@var_retain", "@GVar 1", "arr_elem", "@Var 0", "+B", 1n]], "@end-if", "@else", "@repeat", ["@var_retain", "@Var -2", "*B", 3n, "/B", 2n, ">", "@Var -1"], "@edit_gvar", 1, [[0, "rand_int", ["@GVar 1", "arr_length", "-", 1]], "@end_vars", "@GVar 1", "arr_edit_elem", "@Var 0", ["@var_retain", "@GVar 1", "arr_elem", "@Var 0", "+B", 1n]], "@edit_var", -1, ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@end-repeat", "@end-else", "@edit_gvar", 1, ["@GVar 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if"], "EndTurn"])
                 }
                 else {
-                    scripts.push([[0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@add_var", 1n, "@add_var", 2n, "@add_var", [[2n, "^B", ["@GVar 2", "+", 2, "BigInt"]], "rand_bigint", [2n, "^B", ["@GVar 2", "+", 3], "BigInt", "-B", 1n]], "@edit_gvar", 1, ["@Literal"], "@repeat", ["@var_retain", "@Var -1", ">", 1n], "@repeat", ["@var_retain", "@Var -1", "%B", "@Var -2", "=", 0n], "@edit_var", -1, ["@var_retain", "@Var -1", "/B", "@Var -2"], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var -3"], "@end-repeat", "@edit_var", -3, ["@var_retain", "@Var -3", "+B", 1n], "@edit_var", -2, ["@var_retain", "@Var -3", "prime"], "@end-repeat", "@end-if"], "EndTurn"])
+                    scripts.push([[0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@add_var", 1n, "@add_var", 2n, "@add_var", [[2n, "^B", ["@GVar 2", "BigInt"], "*B", "@GVar 4"], "rand_bigint", [2n, "^B", ["@GVar 2", "+", 1], "BigInt", "*B", "@GVar 4", "-B", 1n]], "@edit_gvar", 1, ["@Literal"], "@repeat", ["@var_retain", "@Var -1", ">", 1n], "@repeat", ["@var_retain", "@Var -1", "%B", "@Var -2", "=", 0n], "@edit_var", -1, ["@var_retain", "@Var -1", "/B", "@Var -2"], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var -3"], "@end-repeat", "@edit_var", -3, ["@var_retain", "@Var -3", "+B", 1n], "@edit_var", -2, ["@var_retain", "@Var -3", "prime"], "@end-repeat", "@end-if"], "EndTurn"])
                 }
-                statBoxes.push(["Current Goal", ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], false, false, "Tile", "3069"], ["Goals Reached", "@GVar 2"]);
+                let sBox = ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]];
+                if (modifiers[13] != "None") sBox.push("arr_push", 1);
+                if (modifiers[24]) sBox.push("arr_push", 1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "3069"], ["Goals Reached", "@GVar 2"]);
             }
+        }
+        else if (gamemode == 67) { // 1762
+            if (mode_vars[0] > 0) {
+                start_game_vars[3] = mode_vars[1];
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[0] == 1) {
+                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*B", 2n, "+B", [-1n, "rand_bigint", 1n]], "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2n, "^B", ["@GVar 1", "+B", "@GVar 3", "-B", 1n], "+B", 1n], "rand_bigint", [2n, "^B", ["@GVar 1", "+B", "@GVar 3"]]], "@end-if"], "EndTurn"])
+                }
+                let sBox = ["@Literal", ["@CalcArray", "@GVar 0"], 0];
+                if (modifiers[13] != "None") sBox.push(1);
+                if (modifiers[24]) sBox.push(1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+            }
+        }
+        else if (gamemode == 72) { // 3026
+            if (mode_vars[0]) {
+                TileTypes = [
+                    [
+                        [true, "@repeat", ["@GVar 0", "arr_length", "<=", "@This 1"], "@edit_gvar", 0, ["@GVar 0", "arr_push", [["@GVar 0", "arr_elem", -1], "+B", ["@GVar 0", "arr_elem", -2]]], "@end-repeat"], 
+                        [["@GVar 0", "arr_elem", "@This 0"], "*B", ["@GVar 0", "arr_elem", "@This 1"]],
+                        ["@linear-gradient", ["@HSLA", ["@This 0", "*", 23, "+", 53], [0.8, "^", ["@This 1", "/", 30, "floor", 1], "*", 100], ["@This 0", "%", 10, "*", -6, "+", 85], 1], 0, 33, ["@HSLA", ["@This 1", "*", 23, "+", 53], [0.8, "^", ["@This 1", "/", 30, "floor", 1], "*", 100], ["@This 1", "%", 10, "*", -6, "+", 85], 1], 66, 100], 
+                        "#19202e", "none", 2.5, 0,
+                        ["Innerscript", [["@GVar 0", "arr_elem", "@This 0", "defaultAbbrevB"], "str_concat", " &#215; ", "str_concat", ["@GVar 0", "arr_elem", "@This 1", "defaultAbbrevB"]], "bottom-center", 6, 0]
+                    ]
+                ]
+                if (modifiers[13] == "Interacting") {
+                    MergeRules = [
+                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"], "&&", ["@This 2", "!=", "@Next 1 2"]], true, [], 0, [true, true]],
+                        [
+                        2, [
+                            [[["@GVar 0", "arr_elem", "@This 0"], "*B", ["@GVar 0", "arr_elem", "@This 1"], "*B", "@This 2"], "+B", [["@GVar 0", "arr_elem", "@Next 1 0"], "*B", ["@GVar 0", "arr_elem", "@Next 1 1"], "*B", "@Next 1 2"]], false, "@end_vars", 0, "@repeat", ["@var_retain", "@GVar 0", "arr_elem", -1, "<=", ["@var_retain", "@Var 0", "absB"]], "@edit_gvar", 0, ["@GVar 0", "arr_push", [["@GVar 0", "arr_elem", -1], "+B", ["@GVar 0", "arr_elem", -2]]], "@end-repeat",
+                            "@repeat", ["@var_retain", "@GVar 0", "arr_elem", "@Parent -2", "<=", ["@var_retain", "@Var 0", "absB"]], "+", 1, "@end-repeat", "-", 1, "max", 0, "@add_var", "@Parent -1", "@add_var", "@Parent -1",
+                            "@repeat", ["@var_retain", ["@var_retain", "@Var 2", ">=", 0], "&&", ["@var_retain", "@Var 1", "!"]], "@if", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var 2"], "*B", ["@var_retain", "@GVar 0", "arr_elem", "@Var 3"], "=", ["@var_retain", "@Var 0", "absB"]], "@edit_var", 1, true, "@end-if", "@else", "@edit_var", 3, ["@var_retain", "@Var 3", "-", 1], "@if", ["@var_retain", "@Var 3", "<", 0], "@edit_var", 2, ["@var_retain", "@Var 2", "-", 1], "@edit_var", 3, "@Var 2", "@end-if", "@end-else", "@end-repeat",
+                            "@edit_gvar", 1, "@Var 3", "@edit_gvar", 2, "@Var 2", "@edit_gvar", 3, ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", "<", 0n], "2nd", -1], "2nd", "@Var 1"
+                        ], true, [["@GVar 1", "@GVar 2", "@GVar 3"]], [["@GVar 0", "arr_elem", "@GVar 1"], "*B", ["@GVar 0", "arr_elem", "@GVar 2"]], [false, true]
+                        ]
+                    ]
+                }
+                else {
+                    MergeRules = [[
+                        2, [
+                            [[["@GVar 0", "arr_elem", "@This 0"], "*B", ["@GVar 0", "arr_elem", "@This 1"]], "+B", [["@GVar 0", "arr_elem", "@Next 1 0"], "*B", ["@GVar 0", "arr_elem", "@Next 1 1"]]], false, "@end_vars", 0, "@repeat", ["@var_retain", "@GVar 0", "arr_elem", -1, "<=", "@Var 0"], "@edit_gvar", 0, ["@GVar 0", "arr_push", [["@GVar 0", "arr_elem", -1], "+B", ["@GVar 0", "arr_elem", -2]]], "@end-repeat",
+                            "@repeat", ["@var_retain", "@GVar 0", "arr_elem", "@Parent -2", "<=", "@Var 0"], "+", 1, "@end-repeat", "-", 1, "max", 0, "@add_var", "@Parent -1", "@add_var", "@Parent -1",
+                            "@repeat", ["@var_retain", ["@var_retain", "@Var 2", ">=", 0], "&&", ["@var_retain", "@Var 1", "!"]], "@if", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var 2"], "*B", ["@var_retain", "@GVar 0", "arr_elem", "@Var 3"], "=", "@Var 0"], "@edit_var", 1, true, "@end-if", "@else", "@edit_var", 3, ["@var_retain", "@Var 3", "-", 1], "@if", ["@var_retain", "@Var 3", "<", 0], "@edit_var", 2, ["@var_retain", "@Var 2", "-", 1], "@edit_var", 3, "@Var 2", "@end-if", "@end-else", "@end-repeat",
+                            "@edit_gvar", 1, "@Var 3", "@edit_gvar", 2, "@Var 2", "2nd", "@Var 1"
+                        ], true, [["@GVar 1", "@GVar 2"]], [["@GVar 0", "arr_elem", "@GVar 1"], "*B", ["@GVar 0", "arr_elem", "@GVar 2"]], [false, true]
+                    ]]
+                }
+            }
+            if (mode_vars[1] > 0) {
+                start_game_vars[8] = mode_vars[2];
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 4"], "@edit_gvar", 6, true, "@end-if"], "Merge"]);
+                if (mode_vars[1] == 1) {
+                    scripts.push([[0, "@if", "@GVar 6", "@edit_gvar", 5, ["@var_retain", "@GVar 5", "+", 1], "@edit_gvar", 6, false, "@edit_gvar", 4, [["@Literal", 2, 2], "@if", [[["@GVar 4", "arr_elem", 0], "=", ["@GVar 4", "arr_elem", 1]], "||", [0, "rand_float", 1, "<", "@GVar 7"]], "2nd", ["@Literal", ["@CalcArray", "@GVar 4", "arr_elem", 0], ["@CalcArray", "@GVar 4", "arr_elem", 1, "+", 1]], "@end-if", "@else", "2nd", ["@Literal", ["@CalcArray", "@GVar 4", "arr_elem", 0, "+", 1], ["@CalcArray", "@GVar 4", "arr_elem", 1]]], "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[0, "@if", "@GVar 6", "@edit_gvar", 5, ["@var_retain", "@GVar 5", "+", 1], "@edit_gvar", 6, false, "@edit_gvar", 4, [["@Literal"], "arr_push", [0, "rand_int", ["@GVar 5", "+", "@GVar 8", "floor", 2, "/", 2]], "arr_push", ["@var_retain", "@GVar 5", "+", "@GVar 8", "-", ["@Parent -3", "arr_elem", 0]]], "@end-if"], "EndTurn"])
+                }
+                let sBox = ["@GVar 4"];
+                if (modifiers[13] != "None") sBox.push("arr_push", 1);
+                if (modifiers[24]) sBox.push("arr_push", 1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 5"]);
+            }
+        }
+        else if (gamemode == 73) { // SQUART
+            if (mode_vars[0] > 0) {
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                if (mode_vars[0] == 1) {
+                    scripts.push([[["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@var_retain", "@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", "@GVar 0", "=", 0n], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "2nd", ["@var_retain", "@GVar 0", "+B", ["@var_retain", "@Var 0", "arr_elem", ["@var_retain", "@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
+                }
+                else if (mode_vars[0] == 2) {
+                    scripts.push([[["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@var_retain", "@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", "@GVar 0", "=", 0n], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", "+B", "@GVar 0"]], "@end-else-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "@edit_gvar", 0, ["@var_retain", "@Var 0", "arr_elem", ["@var_retain", "@Var 0", "arr_length", "-", 1, "rand_int", 0]], "@edit_var", 1, 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@GVar 3", "arr_indexOf", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "=", -1], "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_binaryInsert", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"]], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[["@Literal"], 0, 0n, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_var", 2, ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1, "rand_int", 0]], "@repeat", ["@var_retain", "@Var 2", "<=", "@GVar 0"], "@edit_var", 1, 0, "@repeat", ["@var_retain", "@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", ">", "@Var 2"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", "@Var 2", "=", 0n], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", ["@var_retain", "@GVar 3", "arr_elem", "@Var 1", "+B", "@Var 2"]], "@end-else-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", ["@var_retain", "@Var 0", "arr_length", "-", 1, "rand_int", 0]], "@edit_var", 1, 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@GVar 3", "arr_indexOf", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "=", -1], "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_binaryInsert", ["@var_retain", "@Var 0", "arr_elem", "@Var 1"]], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat", "@edit_var", 0, ["@Literal"], "@end-repeat", "@edit_gvar", 0, "@Var 2", "@end-if"], "EndTurn"])
+                }
+                let sBox = ["@Literal", ["@CalcArray", "@GVar 0"], 0];
+                if (modifiers[13] != "None") sBox.push(1);
+                if (modifiers[24]) sBox.push(1);
+                statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
+                start_game_vars[4] = mode_vars[1];
+            }
+        }
+        else if (gamemode == 74) { // Turatin
+            start_game_vars[1] = mode_vars[0];
+            start_game_vars[2] = mode_vars[0];
+            if (mode_vars[1]) {
+                if (modifiers[13] == "None") {
+                    MergeRules = [
+                        [2, [["@This 0", ">=", "@Next 1 0"], "&&", ["@GVar 0", "%B", ["@This 0", "/B", ["@This 0", "gcdB", "@Next 1 0"]], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0"], [false, true]]
+                    ]
+                }
+                else {
+                    if (modifiers[13] == "Non-Interacting") {
+                        MergeRules = [
+                            [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@GVar 0", "%B", [["@This 0", "absB"], "/B", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"]]], "=", 0n], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0"], [false, true]]
+                        ]
+                    }
+                    else {
+                        MergeRules = [
+                            [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0, [true, true]],
+                            [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@GVar 0", "%B", [["@This 0", "absB"], "/B", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"]]], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0"], [false, true]]
+                        ]
+                    }
+                }
+            }
+        }
+        else if (gamemode == 50.1) { // Gaussian DIVE
+            if (mode_vars[0] == 0) start_game_vars[0] = [new GaussianBigInt(1n, 1n)];
+            else if (mode_vars[0] == 1) start_game_vars[0] = [new GaussianBigInt(1n, 1n), new GaussianBigInt(1n, -1n)];
+            else if (mode_vars[0] == 2) start_game_vars[0] = [new GaussianBigInt(1n, 1n), new GaussianBigInt(1n, -1n), new GaussianBigInt(-1n, 1n), new GaussianBigInt(-1n, -1n)];
+            else if (mode_vars[0] == 3) start_game_vars[0] = [new GaussianBigInt(1n, 0n), new GaussianBigInt(0n, 1n)];
+            else if (mode_vars[0] == 4) start_game_vars[0] = [new GaussianBigInt(1n, 0n), new GaussianBigInt(0n, 1n), new GaussianBigInt(-1n, 0n), new GaussianBigInt(0n, -1n)];
+            else if (mode_vars[0] == 5) start_game_vars[0] = [new GaussianBigInt(1n, 0n)];
+            start_game_vars[1] = compendiumStructuredClone(start_game_vars[0]);
+            scripts[0] = [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "GaussianDIVESeedUnlock", "@GVar 0", mode_vars[4], mode_vars[2], "@if", [["@Parent -3", "normGB", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"];
+            startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*GB", new GaussianBigInt(1n, 0n)]], mode_vars[3][0]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*GB", new GaussianBigInt(0n, 1n)]], mode_vars[3][1]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*GB", new GaussianBigInt(-1n, 0n)]], mode_vars[3][2]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*GB", new GaussianBigInt(0n, -1n)]], mode_vars[3][3]]];
+            start_game_vars[5] = modifiers[21];
+            if (!mode_vars[1]) scripts = [scripts[0], scripts[2]];
         }
         randomTileAmount = modifiers[1];
         startTileAmount = modifiers[2];
@@ -7035,7 +9368,7 @@ function loadModifiers() {
                 else directions.push([[0, 0, 0, 0, [1, true, true, true]], "&#8226;", 5/33, 5/33, 3/33, 14/33, 14/33, ["Space"], 0]);
             }
         }
-        if (modifiers[15] == "Simple" && gamemode != 14 && (gamemode != 37 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 43 && gamemode != 50 && gamemode != 58 && gamemode != 59) { // 2049, Wildcard 2048, 2216.838, 1321, DIVE, 10, and 1825 ignore the simple spawns: 2049, 10, and 1825 need both 1s and -1s, 2216.838 and 1321 have special tiles that make them work (÷2s and +1s respectively), the different spawning tiles are a fundamental part of DIVE, and simple spawns would defeat the whole point of Wildcard 2048
+        if (modifiers[15] == "Simple" && gamemode != 14 && (gamemode != 37 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 43 && gamemode != 50 && gamemode != 58 && gamemode != 59 && gamemode != 69 && gamemode != 70 && gamemode != 71) { // 2049, Wildcard 2048, 2216.838, 1321, DIVE, 10, 1825, (232, 240), 16+16i, and 3,188,646 ignore the simple spawns: 2049, 10, and 1825 need both 1s and -1s, 16+16i needs all four quadrants, 2216.838, 1321, and 3,188,646 have special tiles that make them work (÷2s, +1s, and × respectively), simple spawns would reduce (232, 240) to a single dimension, the different spawning tiles are a fundamental part of DIVE, and simple spawns would defeat the whole point of Wildcard 2048
             if (gamemode == 30) startTileSpawns = [["Box", 20, [-1], 4, [-2], 4]];
             else if (gamemode == 47) startTileSpawns = [["Box", 1, [1, -1], 3, [1, 1], 3]];
             else {
@@ -7064,7 +9397,49 @@ function loadModifiers() {
             }
         }
         hiddenTileText = modifiers[21];
-        if (modifiers[13] != "None" && gamemode != 14 && gamemode != 31 && (gamemode != 38 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 41 && gamemode != 43 && gamemode != 44 && gamemode != 49 && gamemode != 50 && gamemode != 58 && gamemode != 59 && gamemode != 60) { // 2049, Isotopic 256, 180 (with prime merges or all merges), Wildcard 2048, X^Y, 1321, mod 27, 378, DIVE, 10, 1825, and 2295 all do special things with negative tiles, but this script is what adds the negative tiles to the rest of the modes
+    }
+    let exrule = 0;
+    while (exrule < MergeRules.length) { //This script expands the multi-length merge rules into several single-length merge rules. This was originally in StartGame, but I had to move it here so it would come after XXXX's merge length but before black boxes
+        let exm = compendiumStructuredClone(MergeRules[exrule]);
+        let vars = [];
+        if (exm[0] === "@var_retain" || exm[0] == "@var_copy") {
+            vars.push(exm[0]);
+            exm.shift();
+        }
+        if (exm[0] === "@include_gvars") {
+            vars.push(exm[0]);
+            exm.shift();
+        }
+        if (exm.indexOf("@end_vars") > -1) {
+            let newvars = exm.slice(0, exm.indexOf("@end_vars"));
+            vars = vars.concat(newvars);
+            exm.splice(0, exm.indexOf("@end_vars") + 1);
+        }
+        if (exm[0] == 0) break;
+        if (exm.length > 9 && exm[9] > exm[0]) {
+            let arbrule = exm;
+            let length = exm[6];
+            let maxlength = exm[9];
+            let iterations = 0;
+            while (length <= maxlength) {
+                let crule = compendiumStructuredClone(arbrule);
+                crule[0] = length;
+                crule[9] = length;
+                crule = evaluateMergeRule(crule);
+                if (length >= exm[0]) {
+                    iterations++;
+                    if (vars.length > 0) MergeRules.splice(exrule + 1, 0, vars.concat("@end_vars", crule));
+                    else MergeRules.splice(exrule + 1, 0, crule);
+                }
+                length += crule[8];
+            }
+            MergeRules.splice(exrule, 1);
+            exrule += iterations;
+        }
+        else exrule++;
+    }
+    if (gamemode != 0) {
+        if (modifiers[13] != "None" && gamemode != 14 && gamemode != 31 && (gamemode != 38 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 41 && gamemode != 43 && gamemode != 44 && gamemode != 49 && gamemode != 50 && gamemode != 58 && gamemode != 59 && gamemode != 60 && !(gamemode >= 69 && gamemode <= 75 && gamemode != 72) && gamemode != 50.1) { // 2049, Isotopic 256, 180 (with prime merges or all merges), Wildcard 2048, X^Y, 1321, mod 27, 378, DIVE, 10, 1825, 2295, (232, 240), 16+16i, 3,188,646, SQUART, Turatin, and 3307 all do special things with negative tiles (and Gaussian DIVE only exists with negative tiles on in the first place), but this script is what adds the negative tiles to the rest of the modes
             TileNumAmount++;
             let neganum = TileNumAmount - 1;
             let positiveTiles = [];
@@ -7078,14 +9453,14 @@ function loadModifiers() {
             else {
                 for (let t = 0; t < TileTypes.length - signlessTiles.length; t++) {
                     if (Array.isArray(TileTypes[t + signlessTiles.length][0]) && indexOfNestedPrimArray("@Signless", TileTypes[t + signlessTiles.length][0]) != -1) {
-                        signlessTiles.push(structuredClone(TileTypes[t + signlessTiles.length]));
+                        signlessTiles.push(compendiumStructuredClone(TileTypes[t + signlessTiles.length]));
                         signlessTiles[signlessTiles.length - 1][0].push(0);
                         t--;
                         continue;
                     }
-                    positiveTiles.push(structuredClone(TileTypes[t + signlessTiles.length]));
-                    negativeTiles.push(structuredClone(TileTypes[t + signlessTiles.length]));
-                    if (eqPrimArrays(arrayTypes(TileTypes[t + signlessTiles.length][0]), ["number"])) {
+                    positiveTiles.push(compendiumStructuredClone(TileTypes[t + signlessTiles.length]));
+                    negativeTiles.push(compendiumStructuredClone(TileTypes[t + signlessTiles.length]));
+                    if (eqPrimArrays(arrayTypes(TileTypes[t + signlessTiles.length][0]), ["number"]) || eqPrimArrays(arrayTypes(TileTypes[t + signlessTiles.length][0]), ["bigint"])) {
                         positiveTiles[t][0].push(1);
                         negativeTiles[t][0].push(-1);
                     }
@@ -7098,6 +9473,7 @@ function loadModifiers() {
                         negativeTiles[t][0].push("&&", ["@This " + neganum, "=", -1]);
                     }
                     if (typeof negativeTiles[t][1] == "number") negativeTiles[t][1] *= -1;
+                    else if (typeof negativeTiles[t][1] == "bigint") negativeTiles[t][1] *= -1n;
                     else if (Array.isArray(negativeTiles[t][1]) && negativeTiles[t][1].indexOf("@no-negative-sign") == -1) negativeTiles[t][1] = [negativeTiles[t][1], "*", -1];
                     negativeTiles[t][2] = ["@rotate", 180, true, negativeTiles[t][2]];
                     negativeTiles[t][3] = ["@rotate", 180, true, negativeTiles[t][3]];
@@ -7107,7 +9483,7 @@ function loadModifiers() {
             let signlessSpawns = [];
             for (let s = 0; s < startTileSpawns.length; s++) {
                 if (Array.isArray(startTileSpawns[s][0]) && indexOfNestedPrimArray("@Signless", startTileSpawns[s][0]) != -1) {
-                    signlessSpawns.push(structuredClone(startTileSpawns[s]));
+                    signlessSpawns.push(compendiumStructuredClone(startTileSpawns[s]));
                     signlessSpawns[signlessSpawns.length - 1][0].push(0);
                     startTileSpawns.splice(s, 1);
                     if (typeof signlessSpawns[signlessSpawns.length - 1][1] == "number") signlessSpawns[signlessSpawns.length - 1][1] *= 2;
@@ -7115,8 +9491,8 @@ function loadModifiers() {
                     s--;
                 }
             }
-            let positiveSpawns = structuredClone(startTileSpawns);
-            let negativeSpawns = structuredClone(startTileSpawns);
+            let positiveSpawns = compendiumStructuredClone(startTileSpawns);
+            let negativeSpawns = compendiumStructuredClone(startTileSpawns);
             for (let i = 0; i < startTileSpawns.length; i++) {
                 for (let j = 0; j < startTileSpawns[i].length; j++) {
                     if (j == 1) {
@@ -7133,47 +9509,49 @@ function loadModifiers() {
             winRequirement *= 2;
             let wlength = winConditions.length;
             for (let w = 0; w < wlength; w++) {
-                if (Array.isArray(winConditions[w]) && eqPrimArrays(arrayTypes(winConditions[w]), ["number"])) {
-                    winConditions.push(structuredClone(winConditions[w]));
+                if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]))) {
+                    winConditions.push(compendiumStructuredClone(winConditions[w]));
                     winConditions[winConditions.length - 1].push(-1);
                     winConditions[w].push(1);
                 }
             }
-            for (let m = 0; m < MergeRules.length; m++) {
-                let mstart = 0;
-                if (MergeRules[m][0] === "@include_gvars") mstart = 1;
-                if ((MergeRules[m]).indexOf("@end_vars") > -1) mstart = (MergeRules[m]).indexOf("@end_vars") + 1;
-                let addInfo = MergeRules[m][mstart];
-                if (MergeRules[m].length > 6) addInfo = MergeRules[m][mstart + 6];
-                if (signlessTiles.length == 0) {
-                    for (let i = 1; i < addInfo; i++) MergeRules[m][mstart + 1].push("&&", ["@Next " + i + " " + neganum, "=", "@This " + neganum]);
-                    if (eqPrimArrays(MergeRules[m][mstart + 1][0], ["@NextNE -1 0", "!=", "@This 0"])) MergeRules[m][mstart + 1].unshift(["@NextNE -1 " + neganum, "!=", "@This " + neganum], "||");
-                    for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) MergeRules[m][mstart + 3][r].push("@This " + neganum);
+            if (!(gamemode == 72 && mode_vars[0] && modifiers[13] == "Interacting")) { // 3026 with all merges has special negatives behavior, but only the merge behavior is special, not the display behavior
+                for (let m = 0; m < MergeRules.length; m++) {
+                    let mstart = 0;
+                    if (MergeRules[m][0] === "@include_gvars") mstart = 1;
+                    if ((MergeRules[m]).indexOf("@end_vars") > -1) mstart = (MergeRules[m]).indexOf("@end_vars") + 1;
+                    let addInfo = MergeRules[m][mstart];
+                    if (MergeRules[m].length > 6) addInfo = MergeRules[m][mstart + 6];
+                    if (signlessTiles.length == 0) {
+                        for (let i = 1; i < addInfo; i++) MergeRules[m][mstart + 1].push("&&", ["@Next " + i + " " + neganum, "=", "@This " + neganum]);
+                        if (eqPrimArrays(MergeRules[m][mstart + 1][0], ["@NextNE -1 0", "!=", "@This 0"])) MergeRules[m][mstart + 1].unshift(["@NextNE -1 " + neganum, "!=", "@This " + neganum], "||");
+                        for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) MergeRules[m][mstart + 3][r].push("@This " + neganum);
+                    }
+                    else {
+                        let negadetector = ["@This " + neganum, "@if", ["@Parent -2", "=", 0], "2nd", "@Next", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", neganum, "!=", 0, "&&", ["@Parent -3", "=", 0]], "2nd", "@Var -1", "arr_elem", neganum, "@end-if"], "@end-if"];
+                        for (let i = 1; i < addInfo; i++) MergeRules[m][mstart + 1].push("&&", [["@Next " + i + " " + neganum, "=", negadetector, "||", ["@Next " + i + " " + neganum, "=", 0]]]);
+                        if (eqPrimArrays(MergeRules[m][mstart + 1][0], ["@NextNE -1 0", "!=", "@This 0"])) MergeRules[m][mstart + 1].unshift(["@NextNE -1 " + neganum, "!=", negadetector, "&&", ["@Next " + i + " " + neganum, "!=", 0]], "||");
+                        for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) MergeRules[m][mstart + 3][r].push(negadetector);
+                    }
                 }
-                else {
-                    let negadetector = ["@This " + neganum, "@if", ["@Parent -2", "=", 0], "2nd", "@Next", "arr_reduce", 0, ["@if", ["@var_retain", "@Var -1", "arr_elem", neganum, "!=", 0, "&&", ["@Parent -3", "=", 0]], "2nd", "@Var -1", "arr_elem", neganum, "@end-if"], "@end-if"];
-                    for (let i = 1; i < addInfo; i++) MergeRules[m][mstart + 1].push("&&", [["@Next " + i + " " + neganum, "=", negadetector, "||", ["@Next " + i + " " + neganum, "=", 0]]]);
-                    if (eqPrimArrays(MergeRules[m][mstart + 1][0], ["@NextNE -1 0", "!=", "@This 0"])) MergeRules[m][mstart + 1].unshift(["@NextNE -1 " + neganum, "!=", negadetector, "&&", ["@Next " + i + " " + neganum, "!=", 0]], "||");
-                    for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) MergeRules[m][mstart + 3][r].push(negadetector);
+                if (modifiers[13] == "Interacting") {
+                    let annihilate_reqs = [["@Next 1 0", "=", "@This 0"]];
+                    for (let i = 1; i < neganum; i++) {
+                        annihilate_reqs.push("&&", ["@Next 1 " + i, "=", "@This " + i]);
+                    }
+                    if (signlessTiles.length == 0) {
+                        annihilate_reqs.push("&&", ["@Next 1 " + neganum, "!=", "@This " + neganum]);
+                    }
+                    else {
+                        annihilate_reqs.push("&&", ["@Next 1 " + neganum, "!=", "@This " + neganum], "&&", ["@This " + neganum, "!=", 0], "&&", ["@Next 1 " + neganum, "!=", 0]);
+                    }
+                    MergeRules.push([2, annihilate_reqs, true, [], 0, [true, true]]);
                 }
-            }
-            if (modifiers[13] == "Interacting") {
-                let annihilate_reqs = [["@Next 1 0", "=", "@This 0"]];
-                for (let i = 1; i < neganum; i++) {
-                    annihilate_reqs.push("&&", ["@Next 1 " + i, "=", "@This " + i]);
-                }
-                if (signlessTiles.length == 0) {
-                    annihilate_reqs.push("&&", ["@Next 1 " + neganum, "!=", "@This " + neganum]);
-                }
-                else {
-                    annihilate_reqs.push("&&", ["@Next 1 " + neganum, "!=", "@This " + neganum], "&&", ["@This " + neganum, "!=", 0], "&&", ["@Next 1 " + neganum, "!=", 0]);
-                }
-                MergeRules.push([2, annihilate_reqs, true, [], 0, [true, true]]);
             }
         }
         if (modifiers[24]) {
-            let threecolormodes = [1, 2, 4, 7, 16, 17, 26, 27, 29, 40, 43, 45, 47, 51, 53, 54, 59, 60, 61];
-            let fourcolormodes = [12, 18, 33, 56];
+            let threecolormodes = [1, 2, 4, 7, 16, 17, 26, 27, 29, 40, 43, 45, 47, 51, 53, 54, 59, 60, 61, 66, 67, 69, 70, 72, 73, 74];
+            let fourcolormodes = [12, 18, 33, 56, 63, 68];
             // let fourcolormodes_colorless1s = [13, 24, 28, 46, 52];
             // let specialcases = [14, 30, 31, 37, 50, 57, 58];
             if (threecolormodes.includes(gamemode) || fourcolormodes.includes(gamemode)) {
@@ -7185,10 +9563,10 @@ function loadModifiers() {
                 let greenTiles = [];
                 let yellowTiles = [];
                 for (let t = 0; t < TileTypes.length; t++) {
-                    redTiles.push(structuredClone(TileTypes[t]));
-                    blueTiles.push(structuredClone(TileTypes[t]));
-                    greenTiles.push(structuredClone(TileTypes[t]));
-                    if (yellowIncluded) yellowTiles.push(structuredClone(TileTypes[t]));
+                    redTiles.push(compendiumStructuredClone(TileTypes[t]));
+                    blueTiles.push(compendiumStructuredClone(TileTypes[t]));
+                    greenTiles.push(compendiumStructuredClone(TileTypes[t]));
+                    if (yellowIncluded) yellowTiles.push(compendiumStructuredClone(TileTypes[t]));
                     if (eqPrimArrays(arrayTypes(TileTypes[t][0]), ["number"]) || eqPrimArrays(arrayTypes(TileTypes[t][0]), ["bigint"]) || eqPrimArrays(arrayTypes(TileTypes[t][0]), ["number", "bigint"])) {
                         redTiles[t][0].push(0);
                         blueTiles[t][0].push(1);
@@ -7250,9 +9628,9 @@ function loadModifiers() {
                 let wlength = winConditions.length;
                 for (let w = 0; w < wlength; w++) {
                     if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"]))) {
-                        winConditions.push(structuredClone(winConditions[w]));
-                        winConditions.push(structuredClone(winConditions[w]));
-                        if (yellowIncluded) winConditions.push(structuredClone(winConditions[w]));
+                        winConditions.push(compendiumStructuredClone(winConditions[w]));
+                        winConditions.push(compendiumStructuredClone(winConditions[w]));
+                        if (yellowIncluded) winConditions.push(compendiumStructuredClone(winConditions[w]));
                         winConditions[winConditions.length - 1].push(2);
                         winConditions[winConditions.length - 2].push(1);
                         if (yellowIncluded) winConditions[winConditions.length - 3].push(3);
@@ -7298,7 +9676,15 @@ function loadModifiers() {
                     for (let e = 0; e < MergeRules[m][mstart]; e++) MergeRules[m][mstart + 5].push(false);
                 }
                 if (MergeRules[m][mstart] == 0) MergeRules[m][mstart + 3].push(ZArray);
-                else MergeRules[m][mstart + 3].push("fill", ZArray);
+                else {
+                    MergeRules[m][mstart + 3].push("fill", ZArray);
+                    let mergelength = MergeRules[m][mstart];
+                    if (MergeRules[m].length > mstart + 6) mergelength = MergeRules[m][mstart + 6];
+                    for (let n = 1; n < mergelength; n++) {
+                        MergeRules[m][mstart + 1].push("&&");
+                        MergeRules[m][mstart + 1].push(["@Next " + n + " 0", "!=", "BlackBox"]);
+                    }
+                }
             }
             let ZRid = [];
             for (let z = 0; z < ZArray.length; z++) {
@@ -7310,7 +9696,7 @@ function loadModifiers() {
         let BlackBox = ["BlackBox"];
         for (let i = 1; i < TileNumAmount; i++) BlackBox.push(0);
         let temporaryHole = ["@TemporaryHole", modifiers[27]];
-        for (let i = 2; i < TileNumAmount; i++) temporaryHole.push(0);
+        for (let i = 1; i < TileNumAmount; i++) temporaryHole.push(0);
         if (modifiers[18] > 0 || (modifiers[5] == "Custom" && indexOfNestedPrimArray(BlackBox, startingGrid) != -1)) {
             TileTypes.unshift([BlackBox, "", ["@radial-gradient", "#000000", 0, 80, "#ffffff", 90], "#ffffff"]);
             for (let m = 0; m < MergeRules.length; m++) {
@@ -7319,6 +9705,12 @@ function loadModifiers() {
                 if ((MergeRules[m]).indexOf("@end_vars") > -1) mstart = (MergeRules[m]).indexOf("@end_vars") + 1;
                 MergeRules[m][mstart + 1].push("&&");
                 MergeRules[m][mstart + 1].push(["@This 0", "!=", "BlackBox"]);
+                let mergelength = MergeRules[m][mstart];
+                if (MergeRules[m].length > mstart + 6) mergelength = MergeRules[m][mstart + 6];
+                for (let n = 1; n < mergelength; n++) {
+                    MergeRules[m][mstart + 1].push("&&");
+                    MergeRules[m][mstart + 1].push(["@Next " + n + " 0", "!=", "BlackBox"]);
+                }
             }
         }
         if (modifiers[25] > 0) {
@@ -7368,24 +9760,121 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             availableTiles.splice(chosen, 1);
         }
         // Random goals
+        if (gamemode == 38) { // 180
+            if (mode_vars[1] > 0) {
+                let r1 = Math.random();
+                let r2 = Math.random();
+                let r3 = Math.random();
+                let rsum = r1+r2+r3;
+                r1 /= rsum;
+                r2 /= rsum;
+                r3 /= rsum;
+                start_game_vars[3] = r1;
+                start_game_vars[4] = r1 + r2;
+                start_game_vars[5] = mode_vars[2];
+                start_game_vars[0] = [0, 0, 0];
+                while (2**start_game_vars[0][0] * 3**start_game_vars[0][1] * 5**start_game_vars[0][2] < start_game_vars[5]) {
+                    if (Math.random() < start_game_vars[3]) start_game_vars[0][0]++;
+                    else if (Math.random() < start_game_vars[4]) start_game_vars[0][1]++;
+                    else start_game_vars[0][2]++
+                }
+                if (mode_vars[0] != 0) start_game_vars[0] = 2n**BigInt(start_game_vars[0][0]) * 3n**BigInt(start_game_vars[0][1]) * 5n**BigInt(start_game_vars[0][2])
+            }
+        }
+        if (gamemode == 39) { // 2592
+            if (mode_vars[1] > 0) {
+                start_game_vars[3] = Math.random();
+                start_game_vars[4] = mode_vars[2];
+                start_game_vars[0] = [0, 0];
+                while (2**start_game_vars[0][0] * 3**start_game_vars[0][1] < start_game_vars[4]) {
+                    if (Math.random() < start_game_vars[3]) start_game_vars[0][0]++;
+                    else start_game_vars[0][1]++
+                }
+            }
+        }
         if (gamemode == 43) { // 1321
             if (mode_vars[1] > 0) {
-                start_game_vars[0] = getRndInteger(4, 7);
+                start_game_vars[0] = getRndInteger(2**(start_game_vars[3] - 1), 2**(start_game_vars[3]) - 1);
             }
         }
         if (gamemode == 50) { // DIVE
             if (mode_vars[3] > 0) {
-                start_game_vars[5] = getRndBigInt(4n, 7n);
+                start_game_vars[5] = getRndBigInt(start_game_vars[9], start_game_vars[9]*2n-1n);
+            }
+        }
+        if (gamemode == 54) { // 3888
+            if (mode_vars[0] > 0) {
+                start_game_vars[3] = Math.random();
+                start_game_vars[4] = mode_vars[1];
+                start_game_vars[0] = [0, 0];
+                while (2**start_game_vars[0][0] * 3**start_game_vars[0][1] < start_game_vars[4]) {
+                    if (Math.random() < start_game_vars[3]) start_game_vars[0][0]++;
+                    else start_game_vars[0][1]++
+                }
+            }
+        }
+        if (gamemode == 55) { // 2000
+            if (mode_vars[0] > 0) {
+                start_game_vars[3] = Math.random();
+                start_game_vars[4] = mode_vars[1];
+                start_game_vars[0] = [0, 0];
+                while (2**start_game_vars[0][0] * 5**start_game_vars[0][1] < start_game_vars[4]) {
+                    if (Math.random() < start_game_vars[3]) start_game_vars[0][0]++;
+                    else start_game_vars[0][1]++
+                }
+            }
+        }
+        if (gamemode == 56) { // 3645
+            if (mode_vars[0] > 0) {
+                start_game_vars[3] = Math.random();
+                start_game_vars[4] = mode_vars[1];
+                start_game_vars[0] = [0, 0];
+                while (3**start_game_vars[0][0] * 5**start_game_vars[0][1] < start_game_vars[4]) {
+                    if (Math.random() < start_game_vars[3]) start_game_vars[0][0]++;
+                    else start_game_vars[0][1]++
+                }
             }
         }
         if (gamemode == 59) { // 1825
             if (mode_vars[0] > 0) {
-                start_game_vars[0] = getRndInteger(4, 7);
+                start_game_vars[0] = getRndInteger(2**(start_game_vars[3] - 1), 2**(start_game_vars[3]) - 1);
             }
         }
         if (gamemode == 61) { // 3069
             if (mode_vars[0] > 0) {
                 start_game_vars[1] = [[1n, 1n], [3n], [1n, 2n], [4n]][getRndInteger(0, 3)];
+                game_vars = compendiumStructuredClone(start_game_vars);
+                game_vars[3] = true;
+                game_vars[2] = -1;
+                CalcArray([0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@add_var", 1n, "@add_var", 2n, "@add_var", [[2n, "^B", ["@GVar 2", "BigInt"], "*B", "@GVar 4"], "rand_bigint", [2n, "^B", ["@GVar 2", "+", 1], "BigInt", "*B", "@GVar 4", "-B", 1n]], "@edit_gvar", 1, ["@Literal"], "@repeat", ["@var_retain", "@Var -1", ">", 1n], "@repeat", ["@var_retain", "@Var -1", "%B", "@Var -2", "=", 0n], "@edit_var", -1, ["@var_retain", "@Var -1", "/B", "@Var -2"], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var -3"], "@end-repeat", "@edit_var", -3, ["@var_retain", "@Var -3", "+B", 1n], "@edit_var", -2, ["@var_retain", "@Var -3", "prime"], "@end-repeat", "@end-if"]);
+                start_game_vars = compendiumStructuredClone(game_vars);
+            }
+        }
+        if (gamemode == 67) { // 1762
+            if (mode_vars[0] > 0) {
+                start_game_vars[0] = getRndBigInt(2n**(start_game_vars[3] - 1n) + 1n, 2n**(start_game_vars[3]));
+            }
+        }
+        if (gamemode == 72) { // 3026
+            if (mode_vars[1] > 0) {
+                start_game_vars[7] = Math.random();
+                let lower = getRndInteger(0, Math.floor(start_game_vars[8] / 2));
+                let upper = start_game_vars[8] - lower;
+                start_game_vars[4] = [lower, upper];
+            }
+        }
+        if (gamemode == 73) { // SQUART
+            if (mode_vars[0] > 0) {
+                start_game_vars[0] = [6n, 8n][getRndInteger(0, 1)];
+                start_game_vars[3] = [1n, 2n, 4n, start_game_vars[0]];
+                game_vars = compendiumStructuredClone(start_game_vars);
+                while (game_vars[0] < game_vars[4]) {
+                    game_vars[2] = true;
+                    CalcArray(scripts[scripts.length - 1][0]);
+                }
+                game_vars[1] = 0;
+                game_vars[2] = false;
+                start_game_vars = compendiumStructuredClone(game_vars);
             }
         }
     }
@@ -7607,19 +10096,19 @@ function operation(n1, operator, n2) {
             result = ~n1;
         break;
         case "bit^":
-        case "bit^":
+        case "bit^B":
             result = n1 ^ n2;
         break;
         case "bit<<":
-        case "bit<<":
+        case "bit<<B":
             result = n1 << n2;
         break;
         case "bit>>":
-        case "bit>>":
+        case "bit>>B":
             result = n1 >> n2;
         break;
         case "bit>>>":
-        case "bit>>>":
+        case "bit>>>B":
             result = n1 >>> n2;
         break;
         case "rand_int":
@@ -7630,33 +10119,42 @@ function operation(n1, operator, n2) {
         break;
         case "defaultAbbrev":
         case "defaultAbbrevB":
+        case "defaultAbbrevGB":
             result = defaultAbbreviate(n1);
         break;
         //comparisons
         case "=":
             if (Array.isArray(n1) && Array.isArray(n2)) result = eqPrimArrays(n1, n2);
+            else if (n1 instanceof GaussianBigInt && n2 instanceof GaussianBigInt) result = n1.eq(n2);
             else result = (n1 === n2);
         break;
         case ">":
-            result = (n1 > n2);
+            if (n1 instanceof GaussianBigInt || n2 instanceof GaussianBigInt) result = false; // The complex numbers are not ordered
+            else result = (n1 > n2);
         break;
         case "<":
-            result = (n1 < n2);
+            if (n1 instanceof GaussianBigInt || n2 instanceof GaussianBigInt) result = false;
+            else result = (n1 < n2);
         break;
         case ">=":
-            result = (n1 >= n2);
+            if (n1 instanceof GaussianBigInt || n2 instanceof GaussianBigInt) result = false;
+            else result = (n1 >= n2);
         break;
         case "<=":
-            result = (n1 <= n2);
+            if (n1 instanceof GaussianBigInt || n2 instanceof GaussianBigInt) result = false;
+            else result = (n1 <= n2);
         break;
         case "!=":
             if (Array.isArray(n1) && Array.isArray(n2)) result = !eqPrimArrays(n1, n2);
+            else if (n1 instanceof GaussianBigInt && n2 instanceof GaussianBigInt) result = n1.neq(n2);
             else result = (n1 !== n2);
         break;
         case "max":
+            if (n1 instanceof GaussianBigInt || n2 instanceof GaussianBigInt) throw new TypeError("Gaussian integers do not have maximums since they are not ordered");
             result = max(n1, n2);
         break;
         case "min":
+            if (n1 instanceof GaussianBigInt || n2 instanceof GaussianBigInt) throw new TypeError("Gaussian integers do not have minimums since they are not ordered");
             result = min(n1, n2);
         break;
         //boolean operators
@@ -7690,23 +10188,18 @@ function operation(n1, operator, n2) {
             result = n1.replace(n2, additional[0]);
         break;
         case "str_indexOf":
-        case "arr_indexOf":
             result = n1.indexOf(n2);
         break;
         case "str_lastIndexOf":
-        case "arr_lastIndexOf":
             result = n1.lastIndexOf(n2);
         break;
         case "str_indexOfFrom":
-        case "arr_indexOfFrom":
             result = n1.indexOf(n2, additional[0]);
         break;
         case "str_lastIndexOfFrom":
-        case "arr_lastIndexOfFrom":
             result = n1.lastIndexOf(n2, additional[0]);
         break;
         case "str_includes":
-        case "arr_includes":
             result = n1.includes(n2);
         break;
         case "str_splice":
@@ -7722,27 +10215,42 @@ function operation(n1, operator, n2) {
             result = n1.split(n2);
         break;
         //Array operators
+        case "arr_indexOf":
+            result = indexOfPrimArray(n2, n1);
+        break;
+        case "arr_lastIndexOf":
+            result = lastIndexOfPrimArray(n2, n1);
+        break;
+        case "arr_indexOfFrom":
+            result = indexOfPrimArray(n2, n1, additional[0]);
+        break;
+        case "arr_lastIndexOfFrom":
+            result = lastIndexOfPrimArray(n2, n1, additional[0]);
+        break;
+        case "arr_includes":
+            result = (indexOfPrimArray(n2, n1) != -1);
+        break;
         case "arr_copy":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
         break;
         case "arr_edit_elem":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
             result[n2] = additional[0];
         break;
         case "arr_push":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
             result.push(n2);
         break;
         case "arr_pop":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
             result.pop();
         break;
         case "arr_unshift":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
             result.unshift(n2);
         break;
         case "arr_shift":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
             result.shift();
         break;
         case "arr_concat":
@@ -7755,7 +10263,7 @@ function operation(n1, operator, n2) {
             result = n1.flat(n2);
         break;
         case "arr_splice":
-            result = structuredClone(n1);
+            result = compendiumStructuredClone(n1);
             result.splice(n2, additional[0], ...(additional[1]));
         break;
         case "arr_slice":
@@ -7767,7 +10275,7 @@ function operation(n1, operator, n2) {
         case "arr_sort":
             result = n1.sort(
                 function(a, b) {
-                    let nn2 = structuredClone(n2);
+                    let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
                     if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -7780,7 +10288,7 @@ function operation(n1, operator, n2) {
         case "arr_map":
             result = n1.map(
                 function(value, index) {
-                    let nn2 = structuredClone(n2);
+                    let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
                     if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -7793,7 +10301,7 @@ function operation(n1, operator, n2) {
         case "arr_filter":
             result = n1.filter(
                 function(value, index) {
-                    let nn2 = structuredClone(n2);
+                    let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
                     if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -7808,7 +10316,7 @@ function operation(n1, operator, n2) {
                 function(total, value, index) {
                     if (Array.isArray(total)) total.unshift("@Literal");
                     if (Array.isArray(value)) value.unshift("@Literal");
-                    let nn2 = structuredClone(n2);
+                    let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
                     if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -7822,7 +10330,7 @@ function operation(n1, operator, n2) {
         case "arr_reduceRight":
             result = n1.reduceRight(
                 function(total, value, index) {
-                    let nn2 = structuredClone(n2);
+                    let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
                     if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -7832,6 +10340,12 @@ function operation(n1, operator, n2) {
                     return CalcArray(nn2, ...additional[0]);
                 }, additional[1]
             )
+        break;
+        case "arr_binarySearch":
+            result = binarySearch(n1, n2);
+        break;
+        case "arr_binaryInsert":
+            result = binaryInsert(n1, n2);
         break;
         //BigInt operators
         case "rootB":
@@ -7851,13 +10365,86 @@ function operation(n1, operator, n2) {
         case "rand_bigint":
             result = getRndBigInt(n1, n2);
         break;
+        case "ipowGB":
+            result = GaussianBigInt.ipow(n1);
+        break;
+        // GaussianBigInt operators
+        case "reGB":
+            result = n1.real;
+        break;
+        case "imGB":
+            result = n1.imaginary;
+        break;
+        case "+GB":
+            result = n1.add(n2);
+        break;
+        case "-GB":
+            result = n1.sub(n2);
+        break;
+        case "*GB":
+            result = n1.mul(n2);
+        break;
+        case "/GB":
+            result = n1.div(n2);
+        break;
+        case "/mGB":
+            result = n1.divM(n2);
+        break;
+        case "modGB":
+            result = n1.mod(n2);
+        break;
+        case "**GB":
+            result = n1.pow(n2);
+        break;
+        case "^GB":
+            result = n1.pow(n2);
+        break;
+        case "normGB":
+            result = n1.norm();
+        break;
+        case "normGGB":
+            result = n1.normG();
+        break;
+        case "negGB":
+            result = n1.neg();
+        break;
+        case "rot90GB":
+            result = n1.rot90();
+        break;
+        case "rot270GB":
+            result = n1.rot270();
+        break;
+        case "conjGB":
+            result = n1.conj();
+        break;
+        case "toFirstQuadrantGB":
+            result = n1.toFirstQuadrant();
+        break;
+        case "firstQuadrantUnitGB":
+            result = n1.firstQuadrantUnit();
+        break;
+        case "gcdGB":
+            result = n1.gcd(n2);
+        break;
+        case "lcmGB":
+            result = n1.lcm(n2);
+        break;
+        case "expomodGB":
+            result = expomodGaussian(n1, n2);
+        break;
+        case "gaussian_prime":
+            result = gaussian_prime(n1);
+        break;
+        case "gaussianSort":
+            result = gaussianSort(n1, n2);
+        break;
         //CalcArray shenanigans
         case "CalcArray":
             result = CalcArray(n1, ...n2);
         break;
         case "CalcArrayParent":
             if (Array.isArray(n1)) n1.unshift("@Literal");
-            let nn2 = structuredClone(n2);
+            let nn2 = compendiumStructuredClone(n2);
             let vpos = 0;
             if (nn2[0] == "@var_retain" || nn2[0] == "@var_copy") vpos = 1;
             if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -7887,8 +10474,15 @@ function operation(n1, operator, n2) {
                 catch {result = 0n;}
             }
         break;
+        case "GaussianBigInt":
+            try {result = new GaussianBigInt(result);}
+            catch {
+                result = new GaussianBigInt(0n, 0n);
+            }
+        break;
         case "typeof":
             if (Array.isArray(result)) result = "array";
+            else if (result instanceof GaussianBigInt) result = "gaussianbigint"
             else result = typeof result;
         break;
         //Leftover cases
@@ -7908,6 +10502,9 @@ function operation(n1, operator, n2) {
         break;
         case "DIVESeedUnlock":
             result = DIVESeedUnlock(n1, n2, additional[0])
+        break;
+        case "GaussianDIVESeedUnlock":
+            result = GaussianDIVESeedUnlock(n1, n2, additional[0], additional[1])
         break;
         case "ignore":
             //Does nothing; this is used for leaving comments in CalcArray expressions, and in particular leaving "@no-negative-sign" is how to prevent loadModifiers from trying to multiply an expression by -1 for auto-generated negative tiles
@@ -7944,15 +10541,15 @@ function CalcArray(arr) {
     if (arguments.length > 6) gri = arguments[6]; // If we're looking at a grid that isn't the regular Grid, this specifies what the grid is
     if (arguments.length > 7) parents = arguments[7]; // The last entry of parents is the first entry of the current CalcArray. The second-to-last entry of parents is the first entry of the CalcArray that the current CalcArray is contained in, and so on, up to the first entry of parents being the first entry of the outermost CalcArray.
     if (arguments.length > 8 && arr[0] === "@var_retain") vars = arguments[8]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray
-    else if (arguments.length > 8 && arr[0] === "@var_copy") vars = structuredClone(arguments[8]);
+    else if (arguments.length > 8 && arr[0] === "@var_copy") vars = compendiumStructuredClone(arguments[8]);
     if (arguments.length > 9) inner = arguments[9]; // If inner is true, then this counts as an inner CalcArray, so it adds to the parents array. This is set to false for things like repeats, ifs, and elses, since they call CalcArray despite not actually being inner arrays
     if ((typeof arr == "string")) return CalcArrayString(arr, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
     if (!Array.isArray(arr)) return arr;
-    let carr = structuredClone(arr);
+    let carr = compendiumStructuredClone(arr);
     if (carr[0] === "@Literal") return CalcArrayConvert(carr, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
     if (carr[0] === "@var_retain" || carr[0] === "@var_copy") carr.shift();
     if (carr[0] === "@include_gvars") { // Include the variables from game_vars as the first variables in this CalcArray
-        let newvars = structuredClone(game_vars);
+        let newvars = compendiumStructuredClone(game_vars);
         for (let v = 0; v < newvars.length; v++) {
             newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -7970,7 +10567,7 @@ function CalcArray(arr) {
         carr.splice(0, carr.indexOf("@end_vars") + 1);
     }
     if (inner) {
-        parents = structuredClone(parents);
+        parents = compendiumStructuredClone(parents);
         parents.push(carr[0]);
     }
     let n1 = 0;
@@ -7984,7 +10581,7 @@ function CalcArray(arr) {
         operator = carr[1];
         n1 = CalcArrayConvert(carr[0], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
         if (Array.isArray(n1)) n1.unshift("@Literal");
-        parents[parents.length - 1] = structuredClone(n1);
+        parents[parents.length - 1] = compendiumStructuredClone(n1);
         if (Array.isArray(n1)) n1.shift("@Literal");
         additional_args = [];
         if (operator == "@repeat") { // Repeats the operations between the entry after "@repeat" and "@end-repeat". If the entry after "@repeat" is a number, that's how many times those operations are repeated (like a for loop); otherwise, it should be a CalcArray expression, and the repetition continues as long as that expression evaluates to true (like a while loop)
@@ -8002,7 +10599,7 @@ function CalcArray(arr) {
                 else position++;
             }
             while ((typeof carr[2] == "number" && carr[2] > 0) || (typeof carr[2] == "object" && CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars) === true)) {
-                let nestarray1 = structuredClone(nestarray);
+                let nestarray1 = compendiumStructuredClone(nestarray);
                 if (Array.isArray(n1)) n1.unshift("@Literal");
                 nestarray1.unshift("@var_retain", n1);
                 n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, false);
@@ -8024,7 +10621,8 @@ function CalcArray(arr) {
                 else position++;
             }
             if (CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars) === true) {
-                let nestarray1 = structuredClone(nestarray);
+                if_skipped = false;
+                let nestarray1 = compendiumStructuredClone(nestarray);
                 if (Array.isArray(n1)) n1.unshift("@Literal");
                 nestarray1.unshift("@var_retain", n1);
                 n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, false);
@@ -8046,7 +10644,7 @@ function CalcArray(arr) {
                 else position++;
             }
             if (if_skipped) {
-                let nestarray1 = structuredClone(nestarray);
+                let nestarray1 = compendiumStructuredClone(nestarray);
                 if (Array.isArray(n1)) n1.unshift("@Literal");
                 nestarray1.unshift("@var_retain", n1);
                 n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, false);
@@ -8070,7 +10668,7 @@ function CalcArray(arr) {
             if (if_skipped) {
                 if (CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars) === true) {
                     if_skipped = false;
-                    let nestarray1 = structuredClone(nestarray);
+                    let nestarray1 = compendiumStructuredClone(nestarray);
                     if (Array.isArray(n1)) n1.unshift("@Literal");
                     nestarray1.unshift("@var_retain", n1);
                     n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, false);
@@ -8223,7 +10821,7 @@ function CalcArray(arr) {
                 n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 additional_args.push(CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
             }
-            else if (operator == "arr_push" || operator == "arr_unshift" || operator == "str_indexOf" || operator == "arr_indexOf") {
+            else if (operator == "arr_push" || operator == "arr_unshift" || operator == "str_indexOf" || operator == "arr_indexOf" || operator == "arr_binarySearch" || operator == "arr_binaryInsert") {
                 to_pop = 2;
                 n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             }
@@ -8238,7 +10836,7 @@ function CalcArray(arr) {
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars]); //The CalcArray in operation will need these
                 additional_args.push(CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars)); //Initial value
             }
-            else if (operator == "@primesUpdate") {
+            else if (operator == "@primesUpdate" || operator == "**GB" || operator == "^GB") {
                 to_pop = 2;
                 n2 = CalcArrayConvert(carr[2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
             }
@@ -8246,6 +10844,12 @@ function CalcArray(arr) {
                 to_pop = 3;
                 n2 = CalcArrayConvert(carr[2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
                 additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
+            }
+            else if (operator == "GaussianDIVESeedUnlock") {
+                to_pop = 4;
+                n2 = CalcArrayConvert(carr[2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
+                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
+                additional_args.push(CalcArrayConvert(carr[4], "&&", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars));
             }
             else if (operator == "CalcArray") {
                 to_pop = 1;
@@ -8276,14 +10880,14 @@ function CalcArrayConvert(input, operator) { // Converts the input into a type b
     if (arguments.length > 7) gri = arguments[7];
     if (arguments.length > 8) parents = arguments[8];
     if (arguments.length > 9) vars = arguments[9];
-    let result = structuredClone(input);
+    let result = compendiumStructuredClone(input);
     do {
         if (Array.isArray(result)) {
             if (result[0] === "@Literal") {
                 // CalcArrays assume that any arrays within them are also CalcArray expressions (making array brackets act sort of like parentheses). To get a CalcArray expression to work with an array inside it as an actual array, you have to put "@Literal" as the 0th entry of the array. CalcArray and CalcArrayString will do the rest to ensure that array stays as an actual array that doesn't actually include that "@Literal".
                 for (let c = 1; c < result.length; c++) {
                     if (Array.isArray(result[c])) {
-                        if (result[c][0] === "@CalcArray") result[c] = CalcArray(result[c].slice(1), vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars); // Once you're in a literal array, the subarrays are considered literal to... unless their 0th entry is "@CalcArray", which indicates that, despite being inside a literal array, that subarray is to be evaluated as a CalcArray expression.
+                        if (result[c][0] === "@CalcArray") result[c] = CalcArray(result[c].slice(1), vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars); // Once you're in a literal array, the subarrays are considered literal too... unless their 0th entry is "@CalcArray", which indicates that, despite being inside a literal array, that subarray is to be evaluated as a CalcArray expression.
                         else {
                             result[c].unshift("@Literal");
                             result[c] = CalcArray(result[c], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
@@ -8321,6 +10925,20 @@ function CalcArrayConvert(input, operator) { // Converts the input into a type b
                 catch {result = 0n;}
             }
         }
+        else if (gaussianbigint_operators.indexOf(operator) > -1) {
+            if (typeof result == "string") result = CalcArrayString(result, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars);
+            if (typeof result == "number" || typeof result == "bigint" || typeof result == "string" || result instanceof GaussianBigInt ||
+                (Array.isArray(result) && result.length == 2 && (typeof result[0] == "number" || typeof result[0] == "bigint") && (typeof result[1] == "number" || typeof result[1] == "bigint"))
+            ) {
+                try {
+                    result = new GaussianBigInt(result);
+                }
+                catch {
+                    result = new GaussianBigInt(0n, 0n);
+                }
+            }
+            else {result = new GaussianBigInt(0n, 0n);}
+        }
     } while (Array.isArray(result) && result[0] === "@Literal")
     return result;
 }
@@ -8345,7 +10963,7 @@ function CalcArrayString(str) {
         else if (hcoord == "None") gri_pos = gri[vcoord];
         else gri_pos = gri[vcoord][hcoord];
         if (split.length == 1) {
-            result = structuredClone(gri_pos);
+            result = compendiumStructuredClone(gri_pos);
             result.unshift("@Literal");
         }
         else {
@@ -8369,7 +10987,7 @@ function CalcArrayString(str) {
             let tile = [];
             for (let t = 1; t < addInfo[0]; t++) {
                 if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) break;
-                tile = structuredClone(gri[nextv][nexth]);
+                tile = compendiumStructuredClone(gri[nextv][nexth]);
                 result.unshift(tile);
                 nextv += vdir;
                 nexth += hdir;
@@ -8398,7 +11016,7 @@ function CalcArrayString(str) {
             }
             if (split.length == 2) {
                 if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return false;
-                result = structuredClone(gri[nextv][nexth]);
+                result = compendiumStructuredClone(gri[nextv][nexth]);
                 if (Array.isArray(result)) result.unshift("@Literal");
             }
             else {
@@ -8457,7 +11075,7 @@ function CalcArrayString(str) {
             }
             if (split.length == 2) {
                 if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return false;
-                result = structuredClone(gri[nextv][nexth]);
+                result = compendiumStructuredClone(gri[nextv][nexth]);
                 if (Array.isArray(result)) result.unshift("@Literal");
             }
             else {
@@ -8473,7 +11091,7 @@ function CalcArrayString(str) {
         let nexth = hcoord + Number(split[2]);
         if (!(!(Number.isNaN(nextv)) && nextv % 1 == 0 && nextv >= 0 && nextv < height) || !(!(Number.isNaN(nexth)) && nexth % 1 == 0 && nexth >= 0 && nexth < width)) return str;
         if (split.length == 3) {
-            result = structuredClone(gri[nextv][nexth]);
+            result = compendiumStructuredClone(gri[nextv][nexth]);
             if (Array.isArray(result)) result.unshift("@Literal");
         }
         else {
@@ -8492,7 +11110,7 @@ function CalcArrayString(str) {
             if (result[sn] == undefined) break;
             result = result[sn];
         }
-        result = structuredClone(result);
+        result = compendiumStructuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
     else if (split.length == 1 && split[0] == "@VCoord") { // Vertical coordinate of the current tile
@@ -8577,7 +11195,7 @@ function CalcArrayString(str) {
             if (result[sn] == undefined) break;
             result = result[sn];
         }
-        result = structuredClone(result);
+        result = compendiumStructuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
     else if (split[0] == "@DiscWinning") { // Like @DiscTiles, but only including the tiles that are included in the win conditions
@@ -8589,7 +11207,7 @@ function CalcArrayString(str) {
             if (result[sn] == undefined) break;
             result = result[sn];
         }
-        result = structuredClone(result);
+        result = compendiumStructuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
     else if (split[0] == "@DiscLosing") { // Like @DiscTiles, but only including the tiles that are included in the loss conditions
@@ -8601,7 +11219,7 @@ function CalcArrayString(str) {
             if (result[sn] == undefined) break;
             result = result[sn];
         }
-        result = structuredClone(result);
+        result = compendiumStructuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
     else if (split[0] == "@NextSpawns") { // "@NextSpawns 0" is the next tile to spawn, "@NextSpawns 3 4" is the 4th entry of the 3rd tile to spawn after the next one
@@ -8613,22 +11231,22 @@ function CalcArrayString(str) {
             if (result[sn] == undefined) break;
             result = result[sn];
         }
-        result = structuredClone(result);
+        result = compendiumStructuredClone(result);
         if (Array.isArray(result)) result.unshift("@Literal");
     }
     else if (split.length == 1 && split[0] == "@Primes") { // No need to support "@Primes 0" because there's already a CalcArray operator "prime"
-        result = structuredClone(primes);
+        result = compendiumStructuredClone(primes);
         result.unshift("@Literal");
     }
     else return str;
-    return structuredClone(result);
+    return compendiumStructuredClone(result);
 }
 
 function calcArrayReorder(arr, order) { // Changes which tiles the "@Next" strings target in accordance with the 7th entry of a MergeRule
     let vdir = 0; let hdir = 0;
     if (arguments.length > 2) vdir = arguments[2];
     if (arguments.length > 3) hdir = arguments[3];
-    let carr = structuredClone(arr);
+    let carr = compendiumStructuredClone(arr);
     for (let e = 0; e < carr.length; e++) {
         let elem = carr[e];
         if (Array.isArray(elem)) elem = calcArrayReorder(elem, order, vdir, hdir);
@@ -8661,15 +11279,15 @@ function evaluateColor(color) {
     if (arguments.length > 2) hcoord = arguments[2];
     if (arguments.length > 3) gri = arguments[3];
     if (arguments.length > 4 && color[0] === "@var_retain") vars = arguments[4];
-    else if (arguments.length > 4 && color[0] === "@var_copy") vars = structuredClone(arguments[4]);
-    color = structuredClone(color);
+    else if (arguments.length > 4 && color[0] === "@var_copy") vars = compendiumStructuredClone(arguments[4]);
+    color = compendiumStructuredClone(color);
     if (!(Array.isArray(color))) return color;
     if (color[0] === "@CalcArray") {
         color = CalcArray(color.slice(1), vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
     }
     if (color[0] === "@var_copy" || color[0] === "@var_retain") color.shift();
     if (color[0] === "@include_gvars") {
-        let newvars = structuredClone(game_vars);
+        let newvars = compendiumStructuredClone(game_vars);
         for (let v = 0; v < newvars.length; v++) {
             newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars);
             if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -8715,16 +11333,17 @@ function evaluateColor(color) {
         let grad = color[0].slice(1) + "("
         let i = 1;
         while (i < color.length) {
-            if (typeof color[i] == "number") { // Strings and arrays in a gradient array represent colors, but numbers represent positions in the gradient...
+            if (typeof color[i] == "number" || (Array.isArray(color[i]) && color[i][0] == "@CalcArrayNumber")) { // Strings and arrays in a gradient array represent colors, but numbers represent positions in the gradient...
+                let position = (typeof color[i] == "number") ? color[i] : CalcArray(color[i].slice(1), vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars)
                 if (i == 1) { // ...unless it's the very first entry after the type of gradient, in which case it's the angle of the gradient.
-                    grad += color[i];
+                    grad += position;
                     grad += "deg";
                 }
                 else {
                     grad += " ";
-                    if (hexagonal && (color[0] == "@linear-gradient" || color[0] == "@repeating-linear-gradient")) grad += (50 + ((color[i] - 50) * Math.sqrt(3) / 2));
-                    else if (hexagonal && (color[0] == "@radial-gradient" || color[0] == "@repeating-radial-gradient")) grad += (color[i] * 0.75);
-                    else grad += color[i];
+                    if (hexagonal && (color[0] == "@linear-gradient" || color[0] == "@repeating-linear-gradient")) grad += (50 + ((position - 50) * Math.sqrt(3) / 2));
+                    else if (hexagonal && (color[0] == "@radial-gradient" || color[0] == "@repeating-radial-gradient")) grad += (position * 0.75);
+                    else grad += position;
                     if (color[0] == "@conic-gradient" || color[0] == "@repeating-conic-gradient") grad += "deg";
                     else grad += "%";
                 }
@@ -8761,7 +11380,7 @@ function convertColor(col, system) { // Converts colors between systems; mostly 
     if (arguments.length > 3) hcoord = arguments[3];
     if (arguments.length > 4) gri = arguments[4];
     if (arguments.length > 5) vars = arguments[5];
-    let color = structuredClone(col);
+    let color = compendiumStructuredClone(col);
     if (Array.isArray(color) && (color[0] == "@linear-gradient" || color[0] == "@radial-gradient" || color[0] == "@conic-gradient" || color[0] == "@multi-gradient")) {
         for (let i = 1; i < color.length; i++) {
             if (Array.isArray(color[i]) || (typeof color[i] == "string" && color[i][0] == "#")) color[i] = convertColor(color[i], system, vcoord, hcoord, gri, vars);
@@ -8894,7 +11513,7 @@ function rotateColor(color, degrees) { //degrees = 180 gives the complementary c
     if (arguments.length > 4) hcoord = arguments[4];
     if (arguments.length > 5) gri = arguments[5];
     if (arguments.length > 6) vars = arguments[6];
-    let colorcopy = structuredClone(color);
+    let colorcopy = compendiumStructuredClone(color);
     if (Array.isArray(color) && (color[0] == "@linear-gradient" || color[0] == "@radial-gradient" || color[0] == "@conic-gradient" || color[0] == "@multi-gradient")) {
         for (let i = 1; i < color.length; i++) {
             if (Array.isArray(colorcopy[i]) || (typeof colorcopy[i] == "string" && colorcopy[i][0] == "#")) colorcopy[i] = rotateColor(colorcopy[i], degrees, invertL, vcoord, hcoord, gri, vars);
@@ -8918,11 +11537,11 @@ function evaluateMergeRule(rule) { // This does not actually evaluate whether a 
     if (arguments.length > 5) addInfo = arguments[5];
     if (arguments.length > 6) gri = arguments[6];
     if (arguments.length > 7 && rule[0] === "@var_retain") vars = arguments[7];
-    else if (arguments.length > 7 && rule[0] === "@var_copy") vars = structuredClone(arguments[7]);
-    let crule = structuredClone(rule);
+    else if (arguments.length > 7 && rule[0] === "@var_copy") vars = compendiumStructuredClone(arguments[7]);
+    let crule = compendiumStructuredClone(rule);
     if (crule[0] === "@var_copy" || crule[0] === "@var_retain") crule.shift();
     if (crule[0] === "@include_gvars") {
-        let newvars = structuredClone(game_vars);
+        let newvars = compendiumStructuredClone(game_vars);
         for (let v = 0; v < newvars.length; v++) {
             newvars[v] = CalcArrayConvert(newvars[v], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, [], vars);
             if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -8978,7 +11597,7 @@ function evaluateMergeRule(rule) { // This does not actually evaluate whether a 
         entry++;
         crule[6] += crule[8];
         mergereqs.push("&&");
-        let orders = structuredClone(crule[7]);
+        let orders = compendiumStructuredClone(crule[7]);
         for (let e = 0; e < orders.length; e++) {
             orders[e] = CalcArray([orders[e], "*", entry, "+", e], vcoord, hcoord, vdir, hdir, [rlength, addInfo[1], addInfo[2]], gri, [], vars);
             if (typeof orders[e] != "number") orders[e] = e;
@@ -8992,38 +11611,115 @@ function evaluateMergeRule(rule) { // This does not actually evaluate whether a 
 
 //I first made the 180 and DIVE color schemes in a separate project, so these next few functions are pasted in from there.
 function factor(num, prime_amount) {
+    let reverse = false;
+    if (arguments.length > 2) reverse = arguments[2];
     try {
         num = BigInt(num);
     }
     catch {
         num = 1n;
     }
+    let altPrimes;
+    if (typeof prime_amount == "number") {
+        while (primes.length < prime_amount && primes[primes.length - 1] < num) primesUpdate(primes[primes.length - 1] * 2n);
+        altPrimes = primes.slice(0, prime_amount);
+    }
+    else altPrimes = prime_amount;
     let leftover = num;
     let product = 1n;
     let factors = [[]];
-    for (let p = 0; p < prime_amount; p++) {
+    if (reverse) for (let p = altPrimes.length - 1; p > -1; p--) {
+        factors[0].unshift(0);
+        while (leftover % altPrimes[p] == 0n) {
+            factors[0][0]++;
+            product *= altPrimes[p];
+            leftover /= altPrimes[p];
+        }
+    } 
+    else for (let p = 0; p < altPrimes.length; p++) {
         factors[0].push(0);
-        while (leftover % primes[p] == 0n) {
+        while (leftover % altPrimes[p] == 0n) {
             factors[0][p]++;
-            product *= primes[p];
-            leftover /= primes[p];
+            product *= altPrimes[p];
+            leftover /= altPrimes[p];
         }
         if (leftover == 1n) break;
     }
     leftover -= 1n;
-    if (leftover > 0n) factors = factors.concat(factor(leftover, prime_amount));
+    if (leftover > 0n) factors = factors.concat(factor(leftover, altPrimes, reverse));
     return factors;
 }
 
 function defactor(num) {
     let result = 1n;
+    let altPrimes = primes;
+    if (arguments.length > 1) altPrimes = arguments[1];
     if (!(Array.isArray(num[0]))) num = [num];
     for (i = num.length - 1; i >= 0; i--) {
-        while (primes.length < num[i].length) primesUpdate(primes[primes.length - 1] * 2n);
+        while (altPrimes.length < num[i].length) {
+            if (arguments.length == 1) {
+                primesUpdate(primes[primes.length - 1] * 2n);
+                altPrimes = primes;
+            }
+            else throw new Error("Not enough primes provided");
+        }
         for (p = 0; p < num[i].length; p++) {
-            result *= primes[p] ** BigInt(num[i][p]);
+            result *= altPrimes[p] ** BigInt(num[i][p]);
         }
         if (i > 0) result += 1n;
+    }
+    return result;
+}
+
+function gaussian_factor(num, prime_amount) {
+    try {
+        num = new GaussianBigInt(num);
+    }
+    catch {
+        num = new GaussianBigInt(1n, 0n);
+    }
+    while (gaussian_primes[gaussian_primes.length - 1].norm() < num.norm() && gaussian_primes.length < prime_amount) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+    let leftover = num;
+    let product = new GaussianBigInt(1n, 0n);
+    let factors = [[]];
+    for (let p = 0; p < prime_amount; p++) {
+        factors[0].push(0);
+        while (leftover.mod(gaussian_primes[p]).eq([0n, 0n])) {
+            factors[0][p]++;
+            product = product.mul(gaussian_primes[p]);
+            leftover = leftover.div(gaussian_primes[p]);
+        }
+        if (leftover.norm() == 1n) break;
+    }
+    factors.push(new GaussianBigInt(1n, 0n).div(leftover.firstQuadrantUnit()));
+    leftover = leftover.toFirstQuadrant();
+    if (leftover.norm() > 1n) {
+        if (leftover.real > leftover.imaginary) {
+            leftover.real -= 1n;
+            factors.push(false);
+        }
+        else {
+            leftover.real -= 1n;
+            factors.push(true);
+        }
+        factors = factors.concat(gaussian_factor(leftover, prime_amount));
+    }
+    return factors;
+}
+
+function gaussian_defactor(num) {
+    let result = new GaussianBigInt(1n, 0n);
+    if (!(Array.isArray(num[0]))) num = [num, new GaussianBigInt(1n, 0n)];
+    for (i = num.length - 2; i >= 0; i -= 3) {
+        while (gaussian_primes.length < num[i].length) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+        for (p = 0; p < num[i].length; p++) {
+            result = result.mul(gaussian_primes[p].pow(num[i][p]));
+        }
+        result = result.mul(num[i + 1]);
+        if (i > 0) {
+            if (num[i - 1]) result.imaginary += 1n;
+            else result.real += 1n;
+        }
     }
     return result;
 }
@@ -9037,13 +11733,22 @@ function threeFactorColor(factors, scheme) {
     if (arguments.length > 2) invert = arguments[2];
     if (arguments.length > 3) alpha = arguments[3];
     while (factors.length < 3) factors.push(0);
-    if (scheme == "DIVE" || scheme == "DIVE_prime" || scheme == "DIVE_primeGrey") {
-        let r = ([0, 4, 8, 10, 12, 13, 14, 15])[Math.min(factors[0], 7)] * 17;
-        let g = ([0, 6, 10, 13, 15])[Math.min(factors[1], 4)] * 17;
-        if (scheme != "DIVE") g = ([0, 4, 8, 12, 15])[Math.min(factors[1], 4)] * 17;
-        let b = ([0, 8, 12, 15])[Math.min(factors[2], 3)] * 17;
-        if (scheme != "DIVE") {
-            if (scheme == "DIVE_primeGrey" && r == g && g == b) {
+    if (scheme == "DIVE" || scheme == "DIVE_prime" || scheme == "DIVE_primeGrey" || scheme == "SQUARTSingle" || scheme == "SQUARTSingle_prime" || scheme == "SQUARTSingle_primeGrey") {
+        let r, g, b;
+        if (scheme.includes("DIVE")) {
+            r = ([0, 4, 8, 10, 12, 13, 14, 15])[Math.min(factors[0], 7)] * 17;
+            g = ([0, 6, 10, 13, 15])[Math.min(factors[1], 4)] * 17;
+            if (scheme != "DIVE") g = ([0, 4, 8, 12, 15])[Math.min(factors[1], 4)] * 17;
+            b = ([0, 8, 12, 15])[Math.min(factors[2], 3)] * 17;
+        }
+        else if (scheme.includes("SQUARTSingle")) {
+            r = ([0, 5, 8, 11, 13, 15])[Math.min(factors[0], 5)] * 17;
+            g = ([0, 8, 12, 15])[Math.min(factors[1], 3)] * 17;
+            if (scheme != "SQUART") g = ([0, 5, 10, 15])[Math.min(factors[1], 3)] * 17;
+            b = ([0, 9, 15])[Math.min(factors[2], 2)] * 17;
+        }
+        if (scheme.includes("prime")) {
+            if (scheme.includes("primeGrey") && r == g && g == b) {
                 r += (255 - r)/2;
                 g += (255 - g)/2;
                 b += (255 - b)/2;
@@ -9076,6 +11781,101 @@ function threeFactorColor(factors, scheme) {
         }
         return answer;
     }
+    if (scheme == "Turatin") {
+        let r, g, b;
+        r = 255 * (3**factors[0] - 2**factors[0])/(3**factors[0]);
+        g = 255 * (3**factors[1] - 2**factors[1])/(3**factors[1]);
+        b = 255 * (3**factors[2] - 2**factors[2])/(3**factors[2]);
+        let col = ["@RGBA", r, g, b, alpha];
+        if (invert) return evaluateColor(rotateColor(col, 240, true));
+        return evaluateColor(rotateColor(col, 60));
+    }
+    if (scheme == "TuratinInner") {
+        let r, g, b;
+        r = 255 * (2**factors[0] - 1)/(2**factors[0]);
+        g = 255 * (2**factors[1] - 1)/(2**factors[1]);
+        b = 255 * (2**factors[2] - 1)/(2**factors[2]);
+        let col = ["@RGBA", r, g, b, alpha];
+        if (invert) return evaluateColor(rotateColor(col, 180, true));
+        return evaluateColor(col);
+    }
+    if (scheme == "3307") {
+        // [[["@This 0", "=", "@This 1"], "&&", ["@This 0", "=", "@This 2"]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", [5, "^", "@This 2"]], ["@HSLA", 0, 0, [0, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", 10, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", -45, "+", 95, "@end-else"], 1], ["@HSLA", ["@This 0", "+", "@This 1", "+", "@This 2", "%", 2, "*", 120], 100, [85, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", 15, "@end-if"], 1]],
+        // [[["@This 2", "<=", "@This 0"], "&&", ["@This 2", "<=", "@This 1"]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", [5, "^", "@This 2"]], ["@HSLA", [120, "*", ["@This 1", "-", "@This 2"], "/", ["@This 2", "*", -2, "+", "@This 0", "+", "@This 1"]], [0.7, "^", "@This 2", "*", 100], [0, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", 10, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", -45, "+", 95, "@end-else"], 1], ["@HSLA", ["@This 0", "+", "@This 1", "+", "@This 2", "%", 2, "*", 120], 100, [85, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", 15, "@end-if"], 1]],
+        // [[["@This 1", "<=", "@This 0"], "&&", ["@This 1", "<=", "@This 2"]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", [5, "^", "@This 2"]], ["@HSLA", [120, "*", ["@This 0", "-", "@This 1"], "/", ["@This 1", "*", -2, "+", "@This 0", "+", "@This 2"], "+", 240], [0.7, "^", "@This 1", "*", 100], [0, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", 10, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", -45, "+", 95, "@end-else"], 1], ["@HSLA", ["@This 0", "+", "@This 1", "+", "@This 2", "%", 2, "*", 120], 100, [85, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", 15, "@end-if"], 1]],
+        // [[["@This 0", "<=", "@This 1"], "&&", ["@This 0", "<=", "@This 2"]], [[2, "^", "@This 0"], "*", [3, "^", "@This 1"], "*", [5, "^", "@This 2"]], ["@HSLA", [120, "*", ["@This 2", "-", "@This 0"], "/", ["@This 0", "*", -2, "+", "@This 1", "+", "@This 2"], "+", 120], [0.7, "^", "@This 0", "*", 100], [0, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", "<", 4], "2nd", "@This 0", "+", "@This 1", "+", "@This 2", "*", 10, "@end-if", "@else", "2nd", 0.75, "^", ["@This 0", "+", "@This 1", "+", "@This 2", "-", 4], "*", -45, "+", 95, "@end-else"], 1], ["@HSLA", ["@This 0", "+", "@This 1", "+", "@This 2", "%", 2, "*", 120], 100, [85, "@if", ["@This 0", "+", "@This 1", "+", "@This 2", ">=", 4], "2nd", 15, "@end-if"], 1]]
+        let hue, saturation, lightness;
+        if (factors[0] + factors[1] + factors[2] < 5) lightness = (factors[0] + factors[1] + factors[2]) * 10;
+        else lightness = 0.75**(factors[0] + factors[1] + factors[2] - 5) * -45 + 95;
+        if (factors[0] == factors[1] && factors[0] == factors[2]) {
+            hue = 0; saturation = 0;
+        }
+        else if (factors[0] >= factors[2] && factors[1] >= factors[2]) {
+            hue = 30 + 120 * (factors[1] - factors[2]) / (factors[0] + factors[1] - factors[2] * 2);
+            saturation = 0.7**factors[2] * 100;
+        }
+        else if (factors[1] >= factors[0] && factors[2] >= factors[0]) {
+            hue = 150 + 120 * (factors[2] - factors[0]) / (factors[1] + factors[2] - factors[0] * 2);
+            saturation = 0.7**factors[0] * 100;
+        }
+        else if (factors[0] >= factors[1] && factors[2] >= factors[1]) {
+            hue = 270 + 120 * (factors[0] - factors[1]) / (factors[0] + factors[2] - factors[1] * 2);
+            saturation = 0.7**factors[1] * 100;
+        }
+        else { // This case shouldn't happen
+            hue = 0; saturation = 0;
+        }
+        if (invert) return evaluateColor(["@rotate", 180, true, ["@HSLA", hue, saturation, lightness, alpha]])
+        return evaluateColor(["@HSLA", hue, saturation, lightness, alpha]);
+    }
+    if (scheme == "GaussianDIVE1" || scheme == "GaussianDIVE1_prime" || scheme == "GaussianDIVE1_primeGrey") {
+        let r = ([0, 3, 5, 7, 8, 9, 10, 12, 13, 14, 15])[Math.min(factors[0], 10)] * 17;
+        let g = ([0, 5, 9, 11, 13, 15])[Math.min(factors[1], 5)] * 17;
+        let b = ([0, 5, 9, 11, 13, 15])[Math.min(factors[2], 5)] * 17;
+        if (scheme != "GaussianDIVE1") {
+            if (scheme == "GaussianDIVE1_primeGrey" && r == g && g == b) {
+                r += (255 - r)/5;
+                g += (255 - g)/5;
+                b += (255 - b)/5;
+            }
+            else if (!(r == g && g == b)) {
+                let brighten = 255 / Math.max(r, g, b);
+                r *= brighten; g *= brighten; b *= brighten;
+            }
+        }
+        if (invert) {
+            r = 255- r;
+            g = 255 - g;
+            b = 255 - b;
+        }
+        let col = ["@RGBA", r, g, b, alpha];
+        if (invert) return evaluateColor(rotateColor(col, 225, true));
+        return evaluateColor(rotateColor(col, 45));
+    }
+    if (scheme == "GaussianDIVE2" || scheme == "GaussianDIVE2_prime" || scheme == "GaussianDIVE2_primeGrey") {
+        let r = ([0, 6, 10, 13, 15])[Math.min(factors[0], 4)] * 17;
+        let g = ([0, 4, 8, 12, 15])[Math.min(factors[1], 3)] * 17;
+        let b = ([0, 4, 8, 12, 15])[Math.min(factors[2], 3)] * 17;
+        if (scheme != "GaussianDIVE2") {
+            if (scheme == "GaussianDIVE2_primeGrey" && r == g && g == b) {
+                r += (255 - r)/5;
+                g += (255 - g)/5;
+                b += (255 - b)/5;
+            }
+            else if (!(r == g && g == b)) {
+                let brighten = 255 / Math.max(r, g, b);
+                r *= brighten; g *= brighten; b *= brighten;
+            }
+        }
+        if (invert) {
+            r = 255- r;
+            g = 255 - g;
+            b = 255 - b;
+        }
+        let col = ["@RGBA", r, g, b, alpha];
+        if (invert) return evaluateColor(rotateColor(col, 255, true));
+        return evaluateColor(rotateColor(col, 75));
+    }
 }
 
 function DIVEresidueFactor(number, small_primes, total_primes) {
@@ -9093,17 +11893,17 @@ function DIVEresidueFactor(number, small_primes, total_primes) {
     return result;
 }
 
-function DIVERenderInnerBar(factors, start, length, layer, depth) {
+function DIVERenderInnerBar(factors, start, length, layer, depth, scheme = "DIVE") {
     let alpha = 0.5 + 0.5 * layer/depth;
     let result = [];
     if (factors[3] == 0) {
-        result += (threeFactorColor(factors.slice(0, 3), "DIVE_prime", false, alpha) + " " + start + "% " + (start + length) + "%");
+        result += (threeFactorColor(factors.slice(0, 3), scheme + "_prime", false, alpha) + " " + start + "% " + (start + length) + "%");
     }
     else {
         for (let s = 0; s < factors[3] * 4 + 1; s++) {
-            let mid_color = threeFactorColor(factors.slice(0, 3), "DIVE_primeGrey", false, alpha);
-            let black = threeFactorColor([0, 0, 0], "DIVE", false, alpha);
-            let white = threeFactorColor([7, 4, 3], "DIVE", false, alpha);
+            let mid_color = threeFactorColor(factors.slice(0, 3), scheme + "_primeGrey", false, alpha);
+            let black = threeFactorColor([0, 0, 0], scheme, false, alpha);
+            let white = threeFactorColor([7, 4, 3], scheme, false, alpha);
             if (s % 4 == 0) result += black;
             if (s % 4 == 1 || s % 4 == 3) result += mid_color;
             if (s % 4 == 2) result += white;
@@ -9111,6 +11911,33 @@ function DIVERenderInnerBar(factors, start, length, layer, depth) {
             if (s < factors[3] * 4) result += ", ";
         }
     }
+    return result;
+}
+
+function GaussianDIVEresidueFactor(number, small_primes, total_primes) {
+    while (gaussian_primes.length < total_primes && gaussian_primes[gaussian_primes.length - 1].norm() < number.norm()) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+    let result = [];
+    let sfCombined = gaussian_factor(number, small_primes);
+    let small_factors = sfCombined[0];
+    let small_unit = sfCombined[1];
+    while (small_factors.length < 6) small_factors.push(0);
+    let residue = number.div(gaussian_defactor([small_factors, [1n, 0n]]));
+    if (residue.norm() == 1n) return [small_factors, small_unit];
+    result.push(small_factors, small_unit);
+    let large_factors = gaussian_factor(residue, total_primes)[0];
+    for (let p = 0; p < large_factors.length; p++) {
+        if (large_factors[p] > 0) {
+            let lower = gaussian_primes[p].add([0n, 1n]).div([1n, -1n]);
+            result.push([large_factors[p], gaussian_primes[p], GaussianDIVEresidueFactor(lower, small_primes, total_primes)]);
+        }
+    }
+    return result;
+}
+
+function GaussianDIVERenderInnerBar(factors, start, length, layer, depth) {
+    let alpha = 0.75 + 0.25 * layer/depth;
+    let result = [];
+    result += (threeFactorColor(factors.slice(0, 3), "GaussianDIVE1_prime", false, alpha) + " " + start + "%, " + threeFactorColor(factors.slice(3, 6), "GaussianDIVE2_prime", false, alpha) + " " + (start + length) + "%");
     return result;
 }
 
@@ -9134,7 +11961,7 @@ function DIVESeedUnlock(tile, seeds, mode) {
     if (tile == 0n) return 1n;
     mode = mod(mode, 4);
     tile = abs(tile);
-    seeds = structuredClone(seeds);
+    seeds = compendiumStructuredClone(seeds);
     if (seeds.indexOf(1n) != -1) seeds.splice(seeds.indexOf(1n), 1);
     if (seeds.length == 0) return tile;
     if (mode == 1 || mode == 2) sortedSeeds = seeds.sort((a, b) => Number(a - b));
@@ -9200,12 +12027,80 @@ function DIVESeedUnlock(tile, seeds, mode) {
     }
 }
 
+function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
+    if (tile.eq(0n, 0n)) return 1n;
+    mode = mod(mode, 4);
+    seeds = compendiumStructuredClone(seeds);
+    seeds = seeds.filter(value => value.norm() > 1n);
+    if (seeds.length == 0) return tile;
+    if (mode == 1 || mode == 2) sortedSeeds = seeds.sort(gaussianSort);
+    else if (mode == 0) sortedSeeds = seeds.sort((a, b) => gaussianSort(b, a));
+    if (mode != 1) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
+        for (let i = 0; i < seeds.length; i++) {
+            while (tile.mod(seeds[i]).eq(0n, 0n)) tile = tile.div(seeds[i]);
+        }
+        if (firstQuadrant) tile = tile.toFirstQuadrant();
+        return tile;
+    }
+    else {
+        // Mode 1 guarantees the minimum possible result by going through every possible combination.
+        // To reduce lag, it speeds this up by finding a decently-sized set of coprime seeds - that one set can be treated as one unit in the subsequent testing, as since they're coprime, they can't affect each other, i.e. they won't "steal possibilities" from each other.
+        let coprimesAndSeeds = [[], []];
+        let potentialCAS = [[], []];
+        let coprimeValue = new GaussianBigInt(1n, 0n);
+        for (let i = 0; i < seeds.length; i++) {
+            potentialCAS = [[seeds[i]], []];
+            coprimeValue = seeds[i];
+            for (let j = (i + 1) % seeds.length; j != i; j = (j + 1) % seeds.length) {
+                if (seeds[j].gcd(coprimeValue).norm() == 1n) {
+                    coprimeValue = coprimeValue.mul(seeds[j]);
+                    potentialCAS[0].push(seeds[j])
+                }
+                else potentialCAS[1].push(seeds[j]);
+            }
+            if (potentialCAS[0].length > coprimesAndSeeds[0].length) coprimesAndSeeds = potentialCAS;
+        }
+        coprimesAndSeeds[0] = coprimesAndSeeds[0].sort(gaussianSort);
+        coprimesAndSeeds[1] = coprimesAndSeeds[1].sort(gaussianSort);
+        let coprimes = coprimesAndSeeds[0];
+        let remainingSeeds = coprimesAndSeeds[1];
+        let seedPowers = Array(remainingSeeds.length).fill(0n);
+        let minimum = compendiumStructuredClone(tile);
+        let index = 0;
+        let seededTile = compendiumStructuredClone(tile);
+        while (true) {
+            for (let c = 0; c < coprimes.length; c++) {
+                while (tile.mod(coprimes[c]).eq(0n, 0n)) tile = tile.div(coprimes[c]);
+            }
+            if (tile.norm() < minimum.norm()) minimum = compendiumStructuredClone(tile);
+            if (remainingSeeds.length == 0) {
+                if (firstQuadrant) minimum = minimum.toFirstQuadrant();
+                return minimum;
+            }
+            tile = compendiumStructuredClone(seededTile);
+            index = 0;
+            while (tile.mod(remainingSeeds[index]).neq(0n, 0n)) {
+                tile = tile.mul(remainingSeeds[index].pow(seedPowers[index]));
+                seedPowers[index] = 0n;
+                index++;
+                if (index >= remainingSeeds.length) {
+                    if (firstQuadrant) minimum = minimum.toFirstQuadrant();
+                    return minimum;
+                }
+            }
+            tile = tile.div(remainingSeeds[index]);
+            seededTile = tile;
+            seedPowers[index] += 1n;
+        }
+    }
+}
+
 //Gameplay
 function refillSpawnConveyor() { // This function ensures that nextTiles is always full. spawnConveyor always has at least 1 tile in it, and it can have more if nextTiles is above 1.
     for (let s = 0; s < spawnConveyor.length; s++) {
         if (spawnConveyor[s] == "@Empty") {
             let weighttotal = 0;
-            let cSpawns = structuredClone(TileSpawns);
+            let cSpawns = compendiumStructuredClone(TileSpawns);
             for (let p of cSpawns) {
                 if (Array.isArray(p[1])) p[1] = CalcArray(p[1]);
                 weighttotal += p[1]; // weighttotal is the sum of the spawn chances of each tile
@@ -9217,7 +12112,7 @@ function refillSpawnConveyor() { // This function ensures that nextTiles is alwa
                 while (entry < cSpawns.length) {
                     randnum -= cSpawns[entry][1];
                     if (randnum <= 0) {
-                        spawnedtile = structuredClone(cSpawns[entry][0]);
+                        spawnedtile = compendiumStructuredClone(cSpawns[entry][0]);
                         break TileDecider;
                     }
                     entry++;
@@ -9236,15 +12131,15 @@ function refillSpawnConveyor() { // This function ensures that nextTiles is alwa
                     if (Array.isArray(spawnedtile[i])) spawnedtile[i] = CalcArray(spawnedtile[i]); //If a spawned tile's entries are themselves arrays, assume those entries are CalcArray expressions
                 }
             }
-            spawnConveyor[s] = structuredClone(spawnedtile);
+            spawnConveyor[s] = compendiumStructuredClone(spawnedtile);
         }
     }
 }
 
 function spawnConveyorSelect() { // Takes the 0th entry of spawnConveyor and returns it, pushes the rest of the entries to the previous entry (thus closer to spawning), and refills the conveyor
     refillSpawnConveyor();
-    let spawnedtile = structuredClone(spawnConveyor[0]);
-    for (let s = 0; s < spawnConveyor.length - 1; s++) spawnConveyor[s] = structuredClone(spawnConveyor[s + 1]);
+    let spawnedtile = compendiumStructuredClone(spawnConveyor[0]);
+    for (let s = 0; s < spawnConveyor.length - 1; s++) spawnConveyor[s] = compendiumStructuredClone(spawnConveyor[s + 1]);
     spawnConveyor[spawnConveyor.length - 1] = "@Empty";
     if (nextTiles > 0) refillSpawnConveyor(); //If there are no visible next tiles, then spawnConveyor should only be refilled when it's time to spawn a tile, as otherwise changes to TileSpawns would be delayed by a turn.
     return spawnedtile;
@@ -9354,8 +12249,8 @@ function RandomTiles(amount, vdir, hdir) { // This is what spawns the random til
             //What tile is spawning there?
             let spawnedtile = spawnConveyorSelect();
             //Do the spawning
-            Grid[row][column] = structuredClone(spawnedtile);
-            spawnedTiles.push(structuredClone(spawnedtile))
+            Grid[row][column] = compendiumStructuredClone(spawnedtile);
+            spawnedTiles.push(compendiumStructuredClone(spawnedtile))
             spawned++;
             TileChoices.splice(choice, 1);
         }
@@ -9491,8 +12386,8 @@ function forcedSpawnTiles(timing, vdir, hdir) {
                     }
                 }
                 //Do the spawning
-                Grid[row][column] = structuredClone(tilesToSpawn[0]);
-                spawnedTiles.push(structuredClone(tilesToSpawn[0]))
+                Grid[row][column] = compendiumStructuredClone(tilesToSpawn[0]);
+                spawnedTiles.push(compendiumStructuredClone(tilesToSpawn[0]))
                 TileChoices.splice(choice, 1);
                 tilesToSpawn.shift();
                 gameOverPossible.shift();
@@ -9609,7 +12504,7 @@ async function MoveHandler(direction_num) {
         let slides = 0; // How many times have all the tiles gone through the movement process? If this value reaches SlideAmount, end the move early.
         let endScriptsChecked = false;
         while ((stillMoving.indexOf(true) > -1 || !endScriptsChecked) && slides < slideAmount) {
-            let oldStillMoving = structuredClone(stillMoving); // oldStillMoving is used for animation purposes
+            let oldStillMoving = compendiumStructuredClone(stillMoving); // oldStillMoving is used for animation purposes
             for (let position of TileOrder) {
                 let index = indexOfPrimArray(position, TileOrder);
                 if (!(stillMoving[index])) continue;
@@ -9623,8 +12518,8 @@ async function MoveHandler(direction_num) {
                 let nexttiles = [];
                 let finding_positions = true;
                 while (finding_positions) {
-                    if (nextpositions.length == 0) nextpositions.push(structuredClone(position));
-                    else nextpositions.push(structuredClone(nextpositions[nextpositions.length - 1]));
+                    if (nextpositions.length == 0) nextpositions.push(compendiumStructuredClone(position));
+                    else nextpositions.push(compendiumStructuredClone(nextpositions[nextpositions.length - 1]));
                     nextpositions[nextpositions.length - 1][0] += paramV;
                     nextpositions[nextpositions.length - 1][1] += paramH;
                     while (indexOfPrimArray(nextpositions[nextpositions.length - 1], TileOrder) != -1 && Grid[nextpositions[nextpositions.length - 1][0]][nextpositions[nextpositions.length - 1][1]] == "@Slippery") {
@@ -9644,7 +12539,7 @@ async function MoveHandler(direction_num) {
                     stillMoving[index] = false; oldStillMoving[index] = false; continue;
                 }
                 else if (nexttiles[0] == "@Empty") { // If the tile ahead of the currently-examined tile is empty, the tile moves
-                    Grid[nextpositions[0][0]][nextpositions[0][1]] = structuredClone(Grid[position[0]][position[1]]);
+                    Grid[nextpositions[0][0]][nextpositions[0][1]] = compendiumStructuredClone(Grid[position[0]][position[1]]);
                     Grid[position[0]][position[1]] = "@Empty";
                     stillMoving[index] = false;
                     stillMoving[nextindices[0]] = true;
@@ -9655,13 +12550,13 @@ async function MoveHandler(direction_num) {
                     let rule = false;
                     let vars = [];
                     MergeCheck: for (let m = 0; m < MergeRules.length; m++) {
-                        let checkedrule = structuredClone(MergeRules[m]);
+                        let checkedrule = compendiumStructuredClone(MergeRules[m]);
                         vars = [];
                         let mlength = checkedrule[0];
                         if (checkedrule[0] === "@include_gvars") mlength = checkedrule[1];
                         if (checkedrule.indexOf("@end_vars") > -1) mlength = checkedrule[checkedrule.indexOf("@end_vars") + 1];
                         if (checkedrule[0] === "@include_gvars") {
-                            let newvars = structuredClone(game_vars);
+                            let newvars = compendiumStructuredClone(game_vars);
                             for (let v = 0; v < newvars.length; v++) {
                                 newvars[v] = CalcArrayConvert(newvars[v], "=", position[0], position[1], paramV, paramH, [mlength, paramSlide, moveType], Grid, [], vars);
                                 if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -9711,8 +12606,13 @@ async function MoveHandler(direction_num) {
                                 }
                             }
                             let entry = -1;
-                            let preMergeGrid = structuredClone(Grid);
+                            let preMergeGrid = compendiumStructuredClone(Grid);
                             let mergeResults = ["@Literal"];
+                            let mergeResultRules = compendiumStructuredClone(rule[3]);
+                            if (mergeResultRules[0] == "@CalcArray") mergeResultRules = CalcArray(mergeResults.slice(1), position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], preMergeGrid, [], vars)
+                            for (let e = 0; e < mergeResultRules.length; e++) {
+                                if (mergeResultRules[e][0] == "@CalcArray") mergeResultRules[e] = CalcArray(mergeResultRules[e].slice(1), position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], preMergeGrid, [], vars)
+                            }
                             for (let p = rule[0] - 1; p >= 0; p--) {
                                 entry++;
                                 let examinedposition, examinedindex, examinedtile;
@@ -9728,7 +12628,7 @@ async function MoveHandler(direction_num) {
                                 }
                                 if (entry < rule[3].length) {
                                     let newarray = [];
-                                    for (let tentry of rule[3][entry]) {newarray.push(CalcArray(tentry, position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], preMergeGrid, [], vars));}
+                                    for (let tentry of mergeResultRules[entry]) {newarray.push(CalcArray(tentry, position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], preMergeGrid, [], vars));}
                                     if (typeof newarray == "boolean") newarray = "@Empty";
                                     Grid[examinedposition[0]][examinedposition[1]] = newarray;
                                     mergeResults.push(newarray);
@@ -9816,14 +12716,14 @@ async function MoveHandler(direction_num) {
                     to decrease the radioactivity counters of radioactive tiles.
                     */
                     let rule = false;
-                    let checkedrule = structuredClone(MergeRules[m]);
+                    let checkedrule = compendiumStructuredClone(MergeRules[m]);
                     let vars = [];
                     let mlength = checkedrule[0];
                     if (checkedrule[0] === "@include_gvars") mlength = checkedrule[1];
                     if (checkedrule.indexOf("@end_vars") > -1) mlength = checkedrule[checkedrule.indexOf("@end_vars") + 1];
                     if (mlength != 0) continue;
                     if (checkedrule[0] === "@include_gvars") {
-                        let newvars = structuredClone(game_vars);
+                        let newvars = compendiumStructuredClone(game_vars);
                         for (let v = 0; v < newvars.length; v++) {
                             newvars[v] = CalcArrayConvert(newvars[v], "=", position[0], position[1], vdir, hdir, [mlength, slideAmount, moveType], Grid, [], vars);
                             if (Array.isArray(newvars[v])) newvars[v].unshift("@Literal");
@@ -9852,7 +12752,7 @@ async function MoveHandler(direction_num) {
                     }
                     if (rule !== false) {
                         let entry = 0;
-                        let preMergeGrid = structuredClone(Grid);
+                        let preMergeGrid = compendiumStructuredClone(Grid);
                         if (entry < rule[3].length) {
                             let newarray = [];
                             for (let tentry of rule[3][entry]) {newarray.push(CalcArray(tentry, position[0], position[1], vdir, hdir, [rule[0], slideAmount, moveType], preMergeGrid, [], vars));}
@@ -10095,12 +12995,12 @@ async function PlayAgain() {
     discoveredTiles = [];
     discoveredWinning = [];
     discoveredLosing = [];
-    Grid = structuredClone(startingGrid);
+    Grid = compendiumStructuredClone(startingGrid);
     loadResettingModifiers();
     currentScreen = "Gameplay";
-    TileSpawns = structuredClone(startTileSpawns);
-    game_vars = structuredClone(start_game_vars);
-    modifier_vars = structuredClone(start_modifier_vars);
+    TileSpawns = compendiumStructuredClone(startTileSpawns);
+    game_vars = compendiumStructuredClone(start_game_vars);
+    modifier_vars = compendiumStructuredClone(start_modifier_vars);
     forcedSpawnTiles("BeforeSpawns", 0, 0);
     RandomTiles(startTileAmount, 0, 0);
     forcedSpawnTiles("AfterSpawns", 0, 0);
@@ -10113,6 +13013,7 @@ async function PlayAgain() {
 function SCstringify(input) { // My version of BigInts-compatible JSON.stringify, converting 100n into "@BigInt 100", which fits for this project because @ is the "this string is special" character for CalcArrays. Also allows infinities.
     return JSON.stringify(input, function(key, value) {
         if (typeof value == "bigint") return "@BigInt " + String(value);
+        else if (value instanceof GaussianBigInt) return "@GaussianBigInt " + String(value.real) + " " + String(value.imaginary);
         else if (value == Infinity) return "@Infinity";
         else if (value == -Infinity) return "@-Infinity";
         else return value;
@@ -10122,10 +13023,28 @@ function SCstringify(input) { // My version of BigInts-compatible JSON.stringify
 function SCparse(input) { // Undoes SCstringify
     return JSON.parse(input, function(key, value) {
         if (typeof value == "string" && value.substring(0, 8) == "@BigInt ") return BigInt(value.substring(8));
+        else if (typeof value == "string" && value.substring(0, 16) == "@GaussianBigInt ") {
+            let split = value.substring(16).split(" ");
+            output(split[0]);
+            output(split[1])
+            return new GaussianBigInt(BigInt(split[0]), BigInt(split[1]))
+        }
         else if (value == "@Infinity") return Infinity;
         else if (value == "@-Infinity") return -Infinity;
         else return value;
     })
+}
+
+function compendiumStructuredClone(input) { // A version of structuredClone that doesn't destroy GaussianBigInts
+    if (input instanceof GaussianBigInt) return new GaussianBigInt(input);
+    else if (Array.isArray(input)) {
+        let result = [];
+        for (let e of input) {
+            result.push(compendiumStructuredClone(e));
+        }
+        return result;
+    }
+    else return structuredClone(input);
 }
 
 function updateAtSign(array, version) { // Version 1.1 added @ to the front of Empty, Void, and color evaluation starts like HSLA and linear-gradient; this function updates the array it's given accordingly.
@@ -10148,7 +13067,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         let SaveCode = "";
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "1.4|"
+        SaveCode += "1.5|"
         SaveCode += window.btoa(String(width));
         SaveCode += "|";
         SaveCode += window.btoa(String(height));
@@ -10267,7 +13186,7 @@ function importSave(code) {
         let coderesults = [];
         let codebits = code.split("|");
         if (!(codebits[0] == "@2048PowCompGame" || codebits[0] == "@2048PowCompMode")) throw "Wrong code type";
-        if (codebits[1] == "1.1" || codebits[1] == "1.2" || codebits[1] == "1.3" || codebits[1] == "1.4") {
+        if (codebits[1] == "1.1" || codebits[1] == "1.2" || codebits[1] == "1.3" || codebits[1] == "1.4" || codebits[1] == "1.5") {
             coderesults.push(Number(window.atob(codebits[2]))); //coderesults[0] is width
             if (isNaN(coderesults[0]) || coderesults[0] < 1 || (coderesults[0] % 1) != 0) throw "Invalid width";
             coderesults.push(Number(window.atob(codebits[3]))); //coderesults[1] is height
@@ -10303,12 +13222,12 @@ function importSave(code) {
             coderesults.push(SCparse(window.atob(codebits[31]))); //coderesults[29] is start_game_vars
             coderesults.push(SCparse(window.atob(codebits[32]))); //coderesults[30] is start_modifier_vars
             coderesults.push(SCparse(window.atob(codebits[33]))); //coderesults[31] is scripts
-            if (codebits[1] == "1.4") {
+            if (codebits[1] == "1.4" || codebits[1] == "1.5") {
                 coderesults.push(SCparse(window.atob(codebits[34]))); //coderesults[32] is hexagonal
                 coderesults.push(SCparse(window.atob(codebits[35]))); //coderesults[33] is hiddenTileText
             }
             if (codebits[0] == "@2048PowCompGame") {
-                let midgameStart = (codebits[1] == "1.4") ? 36 : 34;
+                let midgameStart = (codebits[1] == "1.4" || codebits[1] == "1.5") ? 36 : 34;
                 coderesults.push(SCparse(window.atob(codebits[midgameStart]))); //coderesults[midgameStart] is Grid
                 coderesults.push(Number(window.atob(codebits[midgameStart + 1]))); //coderesults[midgameStart + 1] is score
                 coderesults.push(Number(window.atob(codebits[midgameStart + 2]))); //coderesults[midgameStart + 2] is won
@@ -10361,7 +13280,7 @@ function importSave(code) {
             start_game_vars = coderesults[29];
             start_modifier_vars = coderesults[30];
             scripts = coderesults[31];
-            if (codebits[1] == "1.4") {
+            if (codebits[1] == "1.4" || codebits[1] == "1.5") {
                 hexagonal = coderesults[32];
                 hiddenTileText = coderesults[33];
             }
@@ -10372,7 +13291,7 @@ function importSave(code) {
             gamemode = 0;
             startGame();
             if (codebits[0] == "@2048PowCompGame") {
-                let midgameStart = (codebits[1] == "1.4") ? 34 : 32;
+                let midgameStart = (codebits[1] == "1.4" || codebits[1] == "1.5") ? 34 : 32;
                 Grid = coderesults[midgameStart];
                 score = coderesults[midgameStart + 1];
                 won = coderesults[midgameStart + 2];
@@ -10535,9 +13454,37 @@ function importSave(code) {
     }
 }
 
+function displaySaveCodeMode(mode) {
+    if (mode == -1) {
+        document.getElementById("save_code_type").style.setProperty("display", "none");
+        displayRules("save_code_heading", ["h2", "Import Save Code"], ["p", 'Paste your save code in the text box below, then click "Import Save Code" to resume your saved game.']);
+    }
+    else {
+        document.getElementById("save_code_type").style.setProperty("display", "inline-block");
+        if (mode == 0) {
+            document.getElementById("save_code_type").innerHTML = "Code Type: In-Progress Game";
+            displayRules("save_code_heading", ["h2", "Export Save Code"], ["p", 'Copy this save code, then if you want to resume your game at a later time, click the "Resumed Saved Game" button on the menu and paste the code there.']);
+        }
+        else if (mode == 1) {
+            document.getElementById("save_code_type").innerHTML = "Code Type: New Game with Same Settings";
+            displayRules("save_code_heading", ["h2", "Export Save Code"], ["p", 'Copy this save code, then if you want to start a new game of this mode (with the current modifiers) at a later time, click the "Resumed Saved Game" button on the menu and paste the code there.']);
+        }
+    }
+}
+
 //Hidden Tile Viewer
 function displayViewerTile() {
-    document.getElementById("viewer_number_change").value = screenVars[0];
+    if (subScreen == "Gaussian DIVE") {
+        document.getElementById("viewer_number").style.setProperty("display", "none");
+        document.getElementById("viewer_gaussian_number").style.setProperty("display", "block");
+        document.getElementById("viewer_gaussian_real_change").value = screenVars[0].real;
+        document.getElementById("viewer_gaussian_imaginary_change").value = screenVars[0].imaginary;
+    }
+    else {
+        document.getElementById("viewer_number").style.setProperty("display", "block");
+        document.getElementById("viewer_gaussian_number").style.setProperty("display", "none");
+        document.getElementById("viewer_number_change").value = screenVars[0];
+    }
     if (hexagonal) {
         document.getElementById("viewer_tile").classList.add("hexagon_clip");
     }
@@ -10599,12 +13546,41 @@ function displayViewerTile() {
         document.getElementById("viewer_primes_change").value = screenVars[1];
         document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
     }
+    else if (subScreen == "SQUART") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: SQUART";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#c4690e");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#c38d47");
+        document.getElementById("viewer_primes").style.setProperty("display", "block");
+        document.getElementById("viewer_primes_change").value = screenVars[1];
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
+    else if (subScreen == "Turatin") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: Turatin";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#d4ff55");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#a7ff55");
+        document.getElementById("viewer_primes").style.setProperty("display", "none");
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
+    else if (subScreen == "3307") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: 3307";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#b0579e");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#852c8d");
+        document.getElementById("viewer_primes").style.setProperty("display", "none");
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
+    else if (subScreen == "Gaussian DIVE") {
+        document.getElementById("tile_viewer_scheme").innerHTML = "Color Scheme: Gaussian DIVE";
+        document.getElementById("tile_viewer_scheme").style.setProperty("color", "#694f00");
+        document.getElementById("viewer_tile").style.setProperty("border-color", "#7a5c00");
+        document.getElementById("viewer_primes").style.setProperty("display", "block");
+        document.getElementById("viewer_primes_change").value = screenVars[1];
+        document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
+    }
     displayTile("Viewer", document.getElementById("viewer_tile"), "None", "None", [screenVars[0]], [true, "@This 0", "@ColorScheme", subScreen, ["@This 0", screenVars[1]]]);
     if (screenVars[2]) {
         document.getElementById("tile_viewer_previous").style.setProperty("display", "inline-block");
         document.getElementById("tile_viewer_next").style.setProperty("display", "inline-block");
         document.getElementById("viewer_tile_text").style.setProperty("display", "block");
-        document.getElementById("viewer_number").style.setProperty("display", "block");
         document.getElementById("viewer_hideNumber").innerHTML = "Hide Number";
         document.getElementById("viewer_hideNumber").style.setProperty("background-color", "#230039");
         document.getElementById("viewer_hideNumber").style.setProperty("color", "#8100d1");
@@ -10615,6 +13591,8 @@ function displayViewerTile() {
         document.getElementById("tile_viewer_next").style.setProperty("display", "none");
         document.getElementById("viewer_tile_text").style.setProperty("display", "none");
         document.getElementById("viewer_number").style.setProperty("display", "none");
+        document.getElementById("viewer_number").style.setProperty("display", "none");
+        document.getElementById("viewer_gaussian_number").style.setProperty("display", "none");
         document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
         document.getElementById("viewer_primes").style.setProperty("display", "none");
         document.getElementById("viewer_hideNumber").innerHTML = "Show Number";
@@ -10639,7 +13617,7 @@ function output(output) { //Outputs whatever text is given as a new paragraph on
 }
 
 function boxArrayString(arr) { // Turns an array into a string, but with brackets aroung it
-    let narr = structuredClone(arr);
+    let narr = compendiumStructuredClone(arr);
     if (Array.isArray(narr)) {
         for (let e = 0; e < narr.length; e++) narr[e] = boxArrayString(narr[e]);
         return "[" + narr + "]";
