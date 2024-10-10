@@ -23,7 +23,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color : #406666; /* This is just here so I have an easy place to choose colors from */
+    color : #0b4c00; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;

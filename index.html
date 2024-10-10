@@ -211,10 +211,22 @@
                         </form>
                     </div>
                 </div>
+                <div id="2584_vars" class="gm_var_line">
+                    <div id="2584_previousNegative" class="gm_var_switch_container">
+                        <p id="2584_previousNegative_text" class="gm_var_text">The only tiles of opposite signs that can merge are those with equal absolute value.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2584_previousNegative_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="ThreeHalves_vars" class="gm_var_line">
                     <div id="ThreeHalves_mode" class="gm_var_switch_container">
                         <p id="ThreeHalves_mode_text" class="gm_var_text">Two of the same power of 1.5 merge partially, with half of the colliding tile being absorbed into the resulting tile.</p>
                         <div id="ThreeHalves_mode_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                    <div id="ThreeHalves_partialModeMerges" class="gm_var_switch_container">
+                        <p id="ThreeHalves_partialModeMerges_text" class="gm_var_text">0.5 + 0.5 = 1 is allowed, 1 + 0.5 = 1.5 is not.</p>
+                        <div id="ThreeHalves_partialModeMerges_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                     </div>
                 </div>
                 <div id="180_vars" class="gm_var_line">
@@ -455,6 +467,14 @@
                         </div>
                     </div>
                 </div>
+                <div id="3188646_vars" class="gm_var_line">
+                    <div id="3188646_multiplyMiddle" class="gm_var_switch_container">
+                        <p id="3188646_multiplyMiddle_text" class="gm_var_text">Multiplication tiles must be in the middle of the two tiles they are merging.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3188646_multiplyMiddle_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="3026_vars" class="gm_var_line">
                     <div id="3026_allMerges" class="gm_var_switch_container">
                         <p id="3026_allMerges_text" class="gm_var_text">Only Fibonacci-style merges are allowed.</p>
@@ -500,6 +520,12 @@
                         <p id="Turatin_nonIntegerRatio_text" class="gm_var_text">The ratio between merging tiles must be an integer.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="Turatin_nonIntegerRatio_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="Turatin_switch" class="gm_var_switch_container" style="width:25%">
+                        <p id="Turatin_switch_text" class="gm_var_text">The merge number changes based on the amount of turns so far.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="Turatin_switch_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
                 </div>
@@ -1129,7 +1155,10 @@
                     The 2048 Power Compendium has now been around long enough that a couple people have suggested modes or modifiers that have made it into the game:
                     <ul>
                         <li>
-                            Tricolor Tiles, the "chance of occurring" automatic moves property, Partial Absorb 361, 3,188,646, 3026, and the "1+1+1=1.5+1.5" variant of 2216.838 were suggested by Michael Darrow.
+                            The following modes and modifiers were suggested by Michael Darrow:
+                            Tricolor Tiles, the "chance of occurring" automatic moves property, Partial Absorb 361, 3,188,646, 3026, the "1+1+1=1.5+1.5" variant of 2216.838,
+                            the "1+0.5=1.5" mode modifier in the Partial Absorb variant of 2216.838, the "merge number changes based on merges instead of turns" Turatin mode modifier,
+                            and the "tiles can merge with the previous negative tile" 2584 mode modifier.
                         </li>
                         <li>
                             16+16i was suggested by Toni Brown.
@@ -1215,13 +1244,20 @@
                     </li>
                     <br>
                     <li>
+                        v1.5 (Sep. 9, 2024) [Current Version]: Split the extra modes into two pages, so there are now three pages of modes:
+                        Page 1 is the main modes, Page 2 is the normal-ish extra modes, and Page 3 is the more wacky extra modes.
+                        Added 6 new Page 2 modes (Harder 3375, Interleaved 3125, Interleaved 3375, Interleaved 5832, 1762, and 2205) and 8 new
+                        Page 3 modes (3026, 3,188,646, 16+16i, (232, 240), Partial Absorb 361, SQUART, 3307, and Turatin). Added the random
+                        goals modifier to 180, 3888, 2000, 3645, and 2592 (1762, 3026, and SQUART also have the random goals modifier),
+                        and gave every mode with random goals another modifier that controls the size of the first random goal. Fixed some bugs with box tiles.
+                    </li>
+                    <br>
+                    <li>
                         <b>
-                            v1.5 (Sep. 9, 2024) [Current Version]: Split the extra modes into two pages, so there are now three pages of modes:
-                            Page 1 is the main modes, Page 2 is the normal-ish extra modes, and Page 3 is the more wacky extra modes.
-                            Added 6 new Page 2 modes (Harder 3375, Interleaved 3125, Interleaved 3375, Interleaved 5832, 1762, and 2205) and 8 new
-                            Page 3 modes (3026, 3,188,646, 16+16i, (232, 240), Partial Absorb 361, SQUART, 3307, and Turatin). Added the random
-                            goals modifier to 180, 3888, 2000, 3645, and 2592 (1762, 3026, and SQUART also have the random goals modifier),
-                            and gave every mode with random goals another modifier that controls the size of the first random goal. Fixed some bugs with box tiles.
+                            v1.5.1 (Oct. 10, 2024) [Current Version]: Added a mode modifier to 2216.838's Partial Absorb variant that lets you enable/disable 1+0.5=1.5,
+                            added a mode modifier to 3,166,838 that makes it so the multiplication tile doesn't have to be in the middle of the merge, added a mode
+                            modifier to Turatin that changes what causes the merge number to increment, added a modifier to 2584 when Negative Tiles is Interacting that lets
+                            tiles merge with the previous negative tile, fixed X^Y's lag and reduced (232, 240)'s lag, and a couple bug fixes.
                         </b>
                     </li>
                 </ul>

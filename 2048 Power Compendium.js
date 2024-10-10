@@ -117,14 +117,14 @@ let statBoxes = [["Score", "@Score"]]; // Which stats are visible on the screen;
 
 //These lists of operators are used by CalcArrayConvert
 let special_operators = ["@repeat", "@if", "@else", "@else-if", "@edit_var", "@add_var", "@insert_var", "@remove_var", "@end-repeat", "@end-if", "@end-else", "@end-else-if", "@end_vars", "@var_retain", "@var_copy", "@include_gvars", "@edit_gvar", "@add_gvar", "@insert_gvar", "@remove_gvar", "@add_score", "@edit_spawn", "@add_spawn", "@insert_spawn", "@remove_spawn", "@replace_tile", "@run-script", "@primesUpdate", "announce"];
-let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof", "output", "CalcArrayParent"];
+let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof", "output", "CalcArrayParent", "evaluateColor"];
 let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round", "floor", "ceil", "ceiling", "trunc", "abs", "sign", "sin", "cos", "tan", "gcd", "lcm", "factorial", "prime", "expomod", "bit&", "bit|", "bit~", "bit^", "bit<<", "bit>>", "bit>>>", "rand_int", "rand_float", "defaultAbbrev"];
 let string_operators = ["str_char", "str_concat", "str_concat_front", "str_length", "str_slice", "str_substr", "str_replace", "str_indexOf", "str_lastIndexOf", "str_indexOfFrom", "str_lastIndexOfFrom", "str_includes", "str_splice", "str_toUpperCase", "str_toLowerCase", "str_split"];
 let boolean_operators = ["&&", "||", "!"];
 let array_operators = ["arr_copy", "arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "arr_binarySearch", "arr_binaryInsert", "CalcArray"];
-let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "rand_bigint", "defaultAbbrevB", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
+let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "rand_bigint", "defaultAbbrevB", "perfectPowerForm", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
 let gaussianbigint_operators = ["reGB", "imGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "GaussianDIVESeedUnlock", "gaussianSort"];
-let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "primeGB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list
+let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "primeGB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list. Same goes for evaluateColor.
 
 let primes = [2n, 3n, 5n]; // Some modes need a list of prime numbers. The primesUpdate function extends this list to however far is necessary.
 let gaussian_primes = [new GaussianBigInt(1n, 1n), new GaussianBigInt(2n, 1n), new GaussianBigInt(1n, 2n), new GaussianBigInt(3n, 0n)];
@@ -246,6 +246,10 @@ document.getElementById("XXXX_max_minus").addEventListener("click", function(){
     else mode_vars[1]--;
     gmDisplayVars();
 });
+document.getElementById("2584_previousNegative_button").addEventListener("click", function(){
+    mode_vars[0] = (mode_vars[0] + 1) % 3;
+    gmDisplayVars();
+});
 document.getElementById("Isotopic256_halfLife_change").addEventListener("change", function() {
     let v = Number(this.value);
     if (isFinite(v) && v > 0) mode_vars[0] = v;
@@ -255,6 +259,10 @@ document.getElementById("Isotopic256_halfLife_change").addEventListener("change"
 document.getElementById("ThreeHalves_mode_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     loadGridSize(37, mode_vars);
+    gmDisplayVars();
+});
+document.getElementById("ThreeHalves_partialModeMerges_button").addEventListener("click", function(){
+    mode_vars[1] = (mode_vars[1] + 1) % 3;
     gmDisplayVars();
 });
 document.getElementById("180_length_button").addEventListener("click", function(){
@@ -294,13 +302,13 @@ document.getElementById("Wildcard2048_chaosSpawns_button").addEventListener("cli
     gmDisplayVars();
 });
 document.getElementById("XpowY_pow_plus").addEventListener("click", function(){
-    let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, Infinity];
+    let primes = [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n, 41n, 43n, 47n, 2n**1024n];
     let p = primes.indexOf(mode_vars[0]);
     mode_vars[0] = primes[mod((p + 1), 16)];
     gmDisplayVars();
 });
 document.getElementById("XpowY_pow_minus").addEventListener("click", function(){
-    let primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, Infinity];
+    let primes = [2n, 3n, 5n, 7n, 11n, 13n, 17n, 19n, 23n, 29n, 31n, 37n, 41n, 43n, 47n, 2n**1024n];
     let p = primes.indexOf(mode_vars[0]);
     mode_vars[0] = primes[mod((p - 1), 16)];
     gmDisplayVars();
@@ -482,6 +490,10 @@ document.getElementById("1762_firstGoalMinimum_minus").addEventListener("click",
     mode_vars[1]--;
     gmDisplayVars();
 });
+document.getElementById("3188646_multiplyMiddle_button").addEventListener("click", function(){
+    mode_vars[0] = !(mode_vars[0]);
+    gmDisplayVars();
+});
 document.getElementById("3026_allMerges_button").addEventListener("click", function(){
     mode_vars[0] = !(mode_vars[0]);
     gmDisplayVars();
@@ -524,6 +536,10 @@ document.getElementById("Turatin_interval_plus").addEventListener("click", funct
 });
 document.getElementById("Turatin_nonIntegerRatio_button").addEventListener("click", function(){
     mode_vars[1] = !(mode_vars[1]);
+    gmDisplayVars();
+});
+document.getElementById("Turatin_switch_button").addEventListener("click", function(){
+    mode_vars[2] = (mode_vars[2] + 1) % 3;
     gmDisplayVars();
 });
 document.getElementById("3307_equalVariant_button").addEventListener("click", function(){
@@ -1490,10 +1506,15 @@ function getRndBigInt(min, max) {
     min = BigInt(min);
     max = BigInt(max);
     if (max < min) return getRndBigInt(max, min);
-    if (min < 0n) return getRndBigInt(0n, max - min) + min;
-    max++
-    let randInt = BigInt(Math.round(Math.random() * Number.MAX_SAFE_INTEGER));
-    return (min * BigInt(Number.MAX_SAFE_INTEGER) + (max - min) * randInt) / BigInt(Number.MAX_SAFE_INTEGER);
+    // Cut the interval in half each time
+    let midpoint;
+    while (max - min > 1n) {
+        midpoint = (max + min) / 2n;
+        if (Math.random() > 0.5) max = midpoint;
+        else min = midpoint;
+    }
+    if (Math.random() > 0.5) return max;
+    else return min;
 }
 
 function delay(milliseconds){ //Taken from Alvaro Trigo, only works in an async function
@@ -1734,27 +1755,81 @@ function string_splice(input, start, length) { //Basically the splice method, bu
     return result;
 }
 
-function iroot(base, root) { // nth root for bigints; taken from https://stackoverflow.com/questions/64190185/how-do-i-extract-the-nth-root-of-a-bigint-in-javascript
+function iroot(base, root) { // nth root for bigints
     if (typeof base !== 'bigint' || typeof root !== 'bigint') throw new Error("Arguments must be bigints.");
-
-    let s = base + 1n;
-    let k1 = root - 1n;
-    let u = base;
-    while (u < s) {
-      s = u;
-      u = ((u*k1) + base / (u ** k1)) / root;
+    if (base == 0n) return 0n;
+    if (base == 1n) return 1n;
+    if (root == 1n) return base;
+    if (root < 1n) throw new RangeError("iroot called with degree < 1");
+    if (base < 0n) {
+        if (root % 2n == 1n) return iroot(-base, root) * -1n;
+        else throw new Error("iroot called on even negative base");
     }
-    return s;
+
+    // Find an upper bound
+    let pow2 = ilog(base, 2n);
+    pow2 /= root;
+    let lower = 2n**pow2;
+    let upper = lower * 2n;
+    while (lower**root > base) {
+        lower /= 2n;
+        upper /= 2n;
+    }
+    while (upper**root < base) {
+        lower *= 2n;
+        upper *= 2n;
+    }
+    
+    // Binary search
+    let midpoint;
+    while (upper - lower > 1n) {
+        midpoint = (upper + lower) / 2n;
+        if (midpoint**root >= base) upper = midpoint;
+        else lower = midpoint;
+    }
+    if (lower**root > base || upper**root < base) console.log("iroot went wrong somewhere", lower, upper);
+    if (upper**root <= base) return upper;
+    else return lower;
 }
 
 function ilog(num, base) { //logarithm for bigints
     if (typeof num !== 'bigint' || typeof base !== 'bigint') throw new Error("Arguments must be bigints.");
-    let result = 0n;
-    while (num >= base) {
-        num /= base;
-        result++;
+    if (num < 0n) throw new RangeError("ilog called on a negative number");
+    if (base < 2n) throw new RangeError("ilog called with base < 2");
+    if (num == 0n) return -1n;
+    if (num < base) return 0n;
+    let upper = 1n;
+    while (base**upper < num) upper *= 2n;
+    let lower = upper / 2n;
+    // Binary search
+    let midpoint;
+    while (upper - lower > 1n) {
+        midpoint = (upper + lower) / 2n;
+        if (base**midpoint >= num) upper = midpoint;
+        else lower = midpoint;
     }
-    return result;
+    if (base**lower > num || base**upper < num) console.log("ilog went wrong somewhere");
+    if (base**upper <= num) return upper;
+    else return lower;
+}
+
+function perfectPowerForm(num, maxPow = 2n**1024n) { // Returns an array expressing num as a perfect power. The array has three entries: the first is the base, the second is the exponent, the third is the sign.
+    num = BigInt(num);
+    if (maxPow == Infinity) maxPow = 2n**1024n; // I think I can safely assume no computer is ever going to be able to hold this many bits
+    maxPow = BigInt(maxPow);
+    if (num == 0n) return [0n, 0n, 0n]
+    let sign = 1n;
+    if (num < 0n) {
+        sign = -1n;
+        num *= -1n;
+    }
+    if (num == 1n) return [1n, 0n, sign]
+    let power = min(ilog(num, 2n), maxPow);
+    for (let p = power; p > 1n; p--) {
+        let root = iroot(num, p);
+        if (root**p == num) return [root, p, sign];
+    }
+    return [num, 1n, sign];
 }
 
 function deepArrayReplace(entry, replacement, array) { // Replaces all occurances of the given entry in the given array with the replacement, including in nested subarrays.
@@ -3053,6 +3128,7 @@ function loadMode(mode) {
     }
     else if (mode == 26) { // 2584
         // width = 4; height = 4;
+        mode_vars = [0] // Controls how negatives and positives interact
         TileNumAmount = 1;
         TileTypes = [[[0], 1, "#ffffff", "#2d2b31"], [[1], 2, "#b3ffe8", "#2d2b31"], [[2], 3, "#52ffcb", "#2d2b31"], [[3], 5, "#00ff99", "#2d2b31"],
         [[4], 8, "#00c777", "#2d2b31"], [[5], 13, "#008b53", "#2d2b31"], [[6], 21, "#008b00", "#2d2b31"], [[7], 34, "#00e200", "#2d2b31"],
@@ -3077,6 +3153,10 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
         displayRules("gm_rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s or between any tile above 1 and the tile before it. Get to the 2584 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+        if (modifiers[13] != "None") {
+            document.getElementById("mode_vars_line").style.setProperty("display", "block");
+            document.getElementById("2584_vars").style.setProperty("display", "flex");
+        }
     }
     else if (mode == 27) { // 2745
         // width = 4; height = 4;
@@ -3560,7 +3640,7 @@ function loadMode(mode) {
         startTileSpawns = [[[0, 1], 80], [[0, 2], 10], [[1, 1], 10]];
         winConditions = [[19, 1]];
         winRequirement = 1;
-        mode_vars = [1]; // Which of the three versions of this mode are we in?
+        mode_vars = [1, 0]; // Which of the three versions of this mode are we in? Second entry controls allowed merges in the 1+1=1.5+0.5 version.
         document.documentElement.style.setProperty("background-image", "radial-gradient(#af8c00 0%, #fff 150%)");
         document.documentElement.style.setProperty("--background-color", "#dfd1ac");
         document.documentElement.style.setProperty("--grid-color", "#a59772");
@@ -3690,7 +3770,7 @@ function loadMode(mode) {
     }
     else if (mode == 41) { // X^Y
         // width = 5; height = 5;
-        mode_vars = [Infinity, 4]; //mode_vars[0] is the maximum prime power, mode_vars[1] is the maximum merge length
+        mode_vars = [2n**1024n, 4]; //mode_vars[0] is the maximum prime power, mode_vars[1] is the maximum merge length
         document.documentElement.style.setProperty("background-image", "linear-gradient(#660000, #664e00, #1d6600, #00664e, #005866, #003366, #050066, #3f0066)");
         document.documentElement.style.setProperty("--background-color", "radial-gradient(#000000, #4c0000, #775800, #3ca400, #00d4c9, #0020f2 110%)");
         document.documentElement.style.setProperty("--grid-color", "#272727");
@@ -3705,42 +3785,40 @@ function loadMode(mode) {
         document.getElementById("XpowY_vars").style.setProperty("display", "flex");
         if (modifiers[13] == "None") {
             TileNumAmount = 2;
-            start_game_vars = [["@Literal", [["@This 0", "^", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", ">", 1], "2nd", "@Var 0", "log", 2, "ceil", 1, "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "<=", 1], "@edit_var", 2, "@Var 0", "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1"]]]; //When the "@Literal" is removed, this becomes a CalcArray expression that calculates the perfect power form of a number, so 25 becomes [5, 2] and 128 becomes [2, 7]. Higher exponents are prioritized, so 64 becomes [2, 6] rather than [4, 3] or [8, 2]. Numbers that are not perfect powers return [0, 1]. 0 and 1 themselves return [0, 1.5] and [1, 1.5]. This expression is used as a variable so each merge rule only has to compute it once per merge attempt instead of several times.
             TileTypes = [
-                [[1, 1], 1, "#000000", "#ffffff"],
-                [["@This 1", "<", 7], ["@This 0", "^", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]],
-                [["@This 1", ">=", 7], ["@This 0", "^", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 100, [0.95, "^", ["@This 1", "-", 9], "*", 40], 1]],
+                [[1n, 0n], 1n, "#000000", "#ffffff"],
+                [["@This 1", "<", 7n], ["@This 0", "^B", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]],
+                [["@This 1", ">=", 7n], ["@This 0", "^B", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 100, [0.95, "^", ["@This 1", "-", 9], "*", 40], 1]],
             ];
             MergeRules = [
-                [["@include_gvars", "@Var 0", "CalcArray"], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 1, ">", 1, "&&", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]]], true, [[["@var_retain", "@Var 0", "arr_elem", 0], ["@var_retain", "@Var 0", "arr_elem", 1]]], ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", 0], "^", ["@var_retain", "@Var 0", "arr_elem", 1]], [], 2, [0, 0], 1, 4]
+                [["@This 0", "^B", "@This 1", "+B", ["@Next", "arr_reduce", 0, ["+B", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^B", ["@var_retain", "@Var -1", "arr_elem", 1]]]], "perfectPowerForm", 2n**1024n], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 1, "!=", 1n, "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "bigint"], "2nd", false, "@end-if"]]], true, [[["@var_retain", "@Var 0", "arr_elem", 0], ["@var_retain", "@Var 0", "arr_elem", 1]]], ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", 0], "^", ["@var_retain", "@Var 0", "arr_elem", 1]], [], 2, [0, 0], 1, 4]
             ]
-            startTileSpawns = [[[1, 1], 100]];
-            winConditions = [[["@This 1", ">=", 3]]];
+            startTileSpawns = [[[1n, 0n], 100]];
+            winConditions = [[["@This 1", ">=", 3n]]];
             winRequirement = 12;
         }
         else { // If Negative Tiles is Non-Interacting, then positives and negatives can't interact with each other, as usual. If Negative Tiles is Interacting, then positive and negative tiles in this mode can freely add under the rules of the mode; for example, a 25 tile and a -9 tile can merge into a 16 tile.
             TileNumAmount = 3;
             TileTypes = [
-                [[1, 1, 1], 1, "#000000", "#ffffff"],
-                [[["@This 1", "<", 7], "&&", ["@This 2", "=", 1]], ["@This 0", "^", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]],
-                [[["@This 1", ">=", 7], "&&", ["@This 2", "=", 1]], ["@This 0", "^", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 100, [0.95, "^", ["@This 1", "-", 9], "*", 40], 1]],
-                [[1, 1, -1], -1, "#ffffff", "#000000"],
-                [[["@This 1", "<", 7], "&&", ["@This 2", "=", -1]], ["@This 0", "^", "@This 1", "*", -1], ["@rotate", 180, true, ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1]], ["@rotate", 180, true, ["@HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]]],
-                [[["@This 1", ">=", 7], "&&", ["@This 2", "=", -1]], ["@This 0", "^", "@This 1", "*", -1], ["@rotate", 180, true, ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1]], ["@rotate", 180, true, ["@HSVA", ["@This 1", "-", 2, "*", 49], 100, [0.95, "^", ["@This 1", "-", 9], "*", 40], 1]]],
+                [[1n, 0n, 1n], 1, "#000000", "#ffffff"],
+                [[["@This 1", "<", 7n], "&&", ["@This 2", "=", 1n]], ["@This 0", "^B", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]],
+                [[["@This 1", ">=", 7n], "&&", ["@This 2", "=", 1n]], ["@This 0", "^B", "@This 1"], ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1], ["@HSVA", ["@This 1", "-", 2, "*", 49], 100, [0.95, "^", ["@This 1", "-", 9], "*", 40], 1]],
+                [[1n, 0n, -1n], -1, "#ffffff", "#000000"],
+                [[["@This 1", "<", 7n], "&&", ["@This 2", "=", -1n]], ["@This 0", "^B", "@This 1", "*B", -1n], ["@rotate", 180, true, ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1]], ["@rotate", 180, true, ["@HSVA", ["@This 1", "-", 2, "*", 49], 25, 100, 1]]],
+                [[["@This 1", ">=", 7n], "&&", ["@This 2", "=", -1n]], ["@This 0", "^B", "@This 1", "*B", -1n], ["@rotate", 180, true, ["@HSVA", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2], "*", 240], [0.7, "^", ["@This 0", "+", 4, "log", 2, "-", [6, "log", 2]], "*", 100], [0.75, "^", "@This 1", "*", -100, "+", 100], 1]], ["@rotate", 180, true, ["@HSVA", ["@This 1", "-", 2, "*", 49], 100, [0.95, "^", ["@This 1", "-", 9], "*", 40], 1]]],
             ];
-            startTileSpawns = [[[1, 1, 1], 100 * modifiers[22]], [[1, 1, -1], 100 * modifiers[23]]];
-            winConditions = [[["@This 1", ">=", 3]]];
+            startTileSpawns = [[[1n, 0n, 1n], 100 * modifiers[22]], [[1n, 0n, -1n], 100 * modifiers[23]]];
+            winConditions = [[["@This 1", ">=", 3n]]];
             winRequirement = 24;
-            start_game_vars = [["@Literal", [["@This 0", "^", "@This 1", "*", "@This 2", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1], "*", ["@var_retain", "@Var -1", "arr_elem", 2]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", "abs", ">", 1], "2nd", "@Var 0", "abs", "log", 2, "ceil", 1, "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "abs", "<=", 1], "@edit_var", 2, ["@var_retain", "@Var 0", "abs"], "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "abs", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", ["@var_retain", "@Var 0", "abs"]], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", ["@var_retain", "@Var 0", "abs"]], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1", "arr_push", ["@var_retain", "@Var 0", "sign"]]]];
             if (modifiers[13] == "Interacting") {
                 MergeRules = [
-                    [["@include_gvars", "@Var 0", "CalcArray"], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 0, "=", 0, "&&", ["@var_retain", "@Var 0", "arr_elem", 1, ">", 1], "&&", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]]], true, [], 0, [], 2, [0, 0], 1, 4],
-                    [["@include_gvars", "@Var 0", "CalcArray"], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 0, "!=", 0, "&&", ["@var_retain", "@Var 0", "arr_elem", 1, ">", 1], "&&", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]]], true, [[["@var_retain", "@Var 0", "arr_elem", 0], ["@var_retain", "@Var 0", "arr_elem", 1, "floor", 1], ["@var_retain", "@Var 0", "arr_elem", 2]]], ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", 0], "^", ["@var_retain", "@Var 0", "arr_elem", 1, "floor", 1]], [], 2, [0, 0], 1, 4]
+                    [["@This 0", "^B", "@This 1", "*B", "@This 2", "+B", ["@Next", "arr_reduce", 0, ["+B", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^B", ["@var_retain", "@Var -1", "arr_elem", 1], "*", ["@var_retain", "@Var -1", "arr_elem", 2]]]], "perfectPowerForm", 2n**1024n], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 0, "=", 0n, "&&", ["@var_retain", "@Var 0", "arr_elem", 1, "!=", 1n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "bigint"], "2nd", false, "@end-if"]]], true, [], 0, [], 2, [0, 0], 1, 4],
+                    [["@This 0", "^B", "@This 1", "*B", "@This 2", "+B", ["@Next", "arr_reduce", 0, ["+B", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^B", ["@var_retain", "@Var -1", "arr_elem", 1], "*", ["@var_retain", "@Var -1", "arr_elem", 2]]]], "perfectPowerForm", 2n**1024n], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 0, "!=", 0n, "&&", ["@var_retain", "@Var 0", "arr_elem", 1, "!=", 1n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "bigint"], "2nd", false, "@end-if"]]], true, [[["@var_retain", "@Var 0", "arr_elem", 0], ["@var_retain", "@Var 0", "arr_elem", 1], ["@var_retain", "@Var 0", "arr_elem", 2]]], ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", 0], "^", ["@var_retain", "@Var 0", "arr_elem", 1]], [], 2, [0, 0], 1, 4]
                 ]
             }
             else {
                 MergeRules = [
-                    [["@include_gvars", "@Var 0", "CalcArray"], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 1, ">", 1, "&&", ["@This 0", "typeof", "=", "number"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "number"], "2nd", false, "@end-if"]], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 2, "!=", "@This 2"], "2nd", false, "@end-if"]]], true, [[["@var_retain", "@Var 0", "arr_elem", 0], ["@var_retain", "@Var 0", "arr_elem", 1], "@This 2"]], ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", 0], "^", ["@var_retain", "@Var 0", "arr_elem", 1]], [], 2, [0, 0], 1, 4]
+                    [["@This 0", "^B", "@This 1", "*B", "@This 2", "+B", ["@Next", "arr_reduce", 0, ["+B", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^B", ["@var_retain", "@Var -1", "arr_elem", 1], "*", ["@var_retain", "@Var -1", "arr_elem", 2]]]], "perfectPowerForm", 2n**1024n], "@end_vars", 2, ["@var_retain", "@Var 0", "arr_elem", 1, "!=", 1n, "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 0, "typeof", "!=", "bigint"], "2nd", false, "@end-if"]], "&&", ["@Next", "arr_reduce", true, ["@if", ["@var_retain", "@Var -1", "arr_elem", 2, "!=", "@This 2"], "2nd", false, "@end-if"]]], true, [[["@var_retain", "@Var 0", "arr_elem", 0], ["@var_retain", "@Var 0", "arr_elem", 1], "@This 2"]], ["@var_retain", ["@var_retain", "@Var 0", "arr_elem", 0], "^", ["@var_retain", "@Var 0", "arr_elem", 1]], [], 2, [0, 0], 1, 4]
                 ]
             }
         }
@@ -4134,8 +4212,8 @@ function loadMode(mode) {
         scripts = [
             [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "absB", "DIVESeedUnlock", "@GVar 0", "@GVar 4", "@if", [["@Parent -3", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "!=", 0n]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "%B", "@Var 2", "=", 0n], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
-            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 9", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 9", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 9", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 9", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 9", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
-            [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 9", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 9", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 9", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 9", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 9", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
+            [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1]], "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+            [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 8", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]]], "@if", "@GVar 8", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("DIVE_vars").style.setProperty("display", "flex");
@@ -4800,7 +4878,7 @@ function loadMode(mode) {
         if (modifiers[13] == "None") {
             TileNumAmount = 2;
             TileTypes = [
-                [true, ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"], "#ffffff"],
+                [true, ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@linear-gradient", ["#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "evaluateColor", "@end-if"], 0, 100/3, ["#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "evaluateColor"], 200/3, 100], "#ffffff"],
             ];
             MergeRules = [
                 [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"]], true, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "+", "@Next 1 0", "^", 2], "+", ["@This 1", "+", "@Next 1 1", "^", 2], "^", 1/2], [false, true]],
@@ -4816,8 +4894,8 @@ function loadMode(mode) {
         else if (modifiers[13] == "Non-Interacting") {
             TileNumAmount = 2;
             TileTypes = [
-                [[["@This 0", ">", 0n], "||", ["@This 1", ">", 0n]], ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"], "#ffffff"],
-                [[["@This 0", "<", 0n], "||", ["@This 1", "<", 0n]], ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"], "#000000"],
+                [[["@This 0", ">", 0n], "||", ["@This 1", ">", 0n]], ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@linear-gradient", ["#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "evaluateColor", "@end-if"], 0, 100/3, ["#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "evaluateColor", "@end-if"], 200/3, 100], "#ffffff"],
+                [[["@This 0", "<", 0n], "||", ["@This 1", "<", 0n]], ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"], ["@linear-gradient", ["#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1]], "evaluateColor", "@end-if"], 0, 100/3, ["#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1]], "evaluateColor", "@end-if"], 200/3, 100], "#000000"],
             ];
             MergeRules = [
                 [2, [["@This 0", "=", "@Next 1 0"], "||", ["@This 1", "=", "@Next 1 1"], "&&", [[[["@This 0", ">=", 0n], "&&", ["@This 1", ">=", 0n], "&&", ["@Next 1 0", ">=", 0n], "&&", ["@Next 1 1", ">=", 0n]]], "||", [[["@This 0", "<=", 0n], "&&", ["@This 1", "<=", 0n], "&&", ["@Next 1 0", "<=", 0n], "&&", ["@Next 1 1", "<=", 0n]]]]], true, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"]]], [["@This 0", "+", "@Next 1 0", "^", 2], "+", ["@This 1", "+", "@Next 1 1", "^", 2], "^", 1/2], [false, true]],
@@ -4835,7 +4913,7 @@ function loadMode(mode) {
             TileTypes = [
                 [
                     true, ["(", "str_concat", ["@This 0", "defaultAbbrevB"], "str_concat", ", ", "str_concat", ["@This 1", "defaultAbbrevB"], "str_concat", ")"],
-                    ["@CalcArray", ["@Literal", "@linear-gradient"], "@end_vars", "#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@if", ["@This 0", "<", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@CalcArray", "@Parent -2"]], "@end-if", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@if", ["@This 1", "<", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@CalcArray", "@Parent -2"]], "@end-if", "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", "@Parent -2", "arr_push", "@Parent -2"], "2nd", "@Var 0"],
+                    ["@linear-gradient", ["#808080", "@if", ["@This 0", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 0", "/", [2, "^", ["@This 0", "expomod", 2]]], "log", 2], "*", 100], [["@This 0", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 0", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 0", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@if", ["@This 0", "<", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@CalcArray", "@Parent -2"]], "@end-if", "evaluateColor", "@end-if"], 0, 100/3, ["#808080", "@if", ["@This 1", "!=", 0n], "2nd", ["@Literal", "@HSLA", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "+", 15, "log", 2, "-", 4, "*", 300], [0.9, "^", [["@This 1", "/", [2, "^", ["@This 1", "expomod", 2]]], "log", 2], "*", 100], [["@This 1", "expomod", 2, "*", -100, "/", 12, "+", 78], "@if", ["@This 1", "expomod", 2, ">=", 4], "2nd", [0.85, "^", ["@This 1", "expomod", 2, "-", 4], "*", 50], "@end-if"], 1], "@if", ["@This 1", "<", 0n], "2nd", ["@Literal", "@rotate", 180, true, ["@CalcArray", "@Parent -2"]], "@end-if", "evaluateColor", "@end-if"], 200/3, 100],
                     ["@CalcArray", "#000000", "@if", [["@This 0", ">", 0n], "&&", ["@This 1", ">", 0n]], "2nd", "#ff0000", "@end-if", "@if", [["@This 0", "<", 0n], "&&", ["@This 1", ">", 0n]], "2nd", "#ff8000", "@end-if", "@if", [["@This 0", "<", 0n], "&&", ["@This 1", "<", 0n]], "2nd", "#00ffff", "@end-if", "@if", [["@This 0", ">", 0n], "&&", ["@This 1", "<", 0n]], "2nd", "#8000ff", "@end-if", "@if", [["@This 0", ">", 0n], "&&", ["@This 1", "=", 0n]], "2nd", "#ff00bf", "@end-if", "@if", [["@This 0", "=", 0n], "&&", ["@This 1", ">", 0n]], "2nd", "#ffbf00", "@end-if", "@if", [["@This 0", "<", 0n], "&&", ["@This 1", "=", 0n]], "2nd", "#00ff40", "@end-if", "@if", [["@This 0", "=", 0n], "&&", ["@This 1", "<", 0n]], "2nd", "#0040ff", "@end-if"],
                     "0px 0px 5px #000000"
                 ],
@@ -4925,6 +5003,7 @@ function loadMode(mode) {
     }
     else if (mode == 71) { // 3,188,646
         // width = 5; height = 5;
+        mode_vars = [true]; // Does the multiplication tile have to be in the middle?
         if (modifiers[13] == "None") {
             TileNumAmount = 2;
             TileTypes = [
@@ -4969,6 +5048,8 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
         displayRules("gm_rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile in the middle, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
         ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("3188646_vars").style.setProperty("display", "flex");
     }
     else if (mode == 72) { // 3026
         // width = 4; height = 4;
@@ -5052,7 +5133,7 @@ function loadMode(mode) {
     else if (mode == 74) { // Turatin
         // width = 4; height = 4;
         TileNumAmount = 1;
-        mode_vars = [4, false] // mode_vars[0] is the amount of turns between merge changes, mode_vars[1] allows non-integer ratios if true
+        mode_vars = [4, false, 0] // mode_vars[0] is the amount of turns between merge changes, mode_vars[1] allows non-integer ratios if true, mode_vars[2] controls what statistic is used to change the merge number (like in 2592)
         start_game_vars = [1n, 4, 4] // game_vars[0] is the merge number, game_vars[1] is the amount of turns until the next merge change, and game_vars[2] is the amount of turns between merge changes
         TileTypes = [
             [true, "@This 0", "@ColorScheme", "Turatin", ["@This 0"]]
@@ -5312,17 +5393,66 @@ function gmDisplayVars() {
         if (mode_vars[1] >= Math.max(width, height) && mode_vars[1] != Infinity) document.getElementById("XXXX_max_plus").style.setProperty("display", "none");
         else document.getElementById("XXXX_max_plus").style.setProperty("display", "inline-block");
     }
+    if (gamemode == 26) { // 2584
+        if (mode_vars[0] == 0) {
+            if (modifiers[13] == "Interacting") document.getElementById("2584_previousNegative_text").innerHTML = "The only tiles of opposite signs that can merge are those with equal absolute value.";
+            else document.getElementById("2584_previousNegative_text").innerHTML = "The only tiles of opposite signs cannot merge.";
+            document.getElementById("2584_previousNegative_text").style.setProperty("color", "#0b4c00");
+            displayRules("rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s or between any tile above 1 and the tile before it. Get to the 2584 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+            displayRules("gm_rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s or between any tile above 1 and the tile before it. Get to the 2584 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+        }
+        else if (mode_vars[0] == 1) {
+            document.getElementById("2584_previousNegative_text").innerHTML = "A tile of one sign can merge with the previous tile of the other sign.";
+            document.getElementById("2584_previousNegative_text").style.setProperty("color", "#00444c");
+            displayRules("rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s, or between any tile above 1 and the tile before it (where either tile could be either sign). Get to the 2584 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+            displayRules("gm_rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s, or between any tile above 1 and the tile before it (where either tile could be either sign). Get to the 2584 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+        }
+        else if (mode_vars[0] == 2) {
+            document.getElementById("2584_previousNegative_text").innerHTML = "A tile of one sign can merge with the previous tile of the other sign, but only if the negative tile is actually in the Fibonacci sequence as a negative term.";
+            document.getElementById("2584_previousNegative_text").style.setProperty("color", "#0e004c");
+            displayRules("rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s or between any tile above 1 and the tile before it. The tiles could be opposite signs, but only if the negative tile's position in the tile order is odd (1, 3, 8, 21, 55, etc.) and the positive tile's position in the tile order is even (2, 5, 13, 34, 89, etc.). Get to the 2584 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+            displayRules("gm_rules_text", ["h2", "Fibonacci Sequence"], ["h1", "2584"], ["p", "Merges occur between two 1s or between any tile above 1 and the tile before it. The tiles could be opposite signs, but only if the negative tile's position in the tile order is odd (1, 3, 8, 21, 55, etc.) and the positive tile's position in the tile order is even (2, 5, 13, 34, 89, etc.). Get to the 2584 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 3 (5%)"]);
+        }
+    }
     else if (gamemode == 31) { // Isotopic 256
         document.getElementById("Isotopic256_halfLife_change").value = mode_vars[0];
     }
     else if (gamemode == 37) { // 2216.8378200531005859375
+        document.getElementById("ThreeHalves_partialModeMerges").style.setProperty("display", "none");
         if (mode_vars[0] == 0) {
             document.getElementById("ThreeHalves_mode_text").innerHTML = "Two of the same power of 1.5 merge partially, with half of the colliding tile being absorbed into the resulting tile.";
             document.getElementById("ThreeHalves_mode_text").style.setProperty("color", "#406abf");
-            displayRules("rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
-            ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
-            displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
-            ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+            document.getElementById("ThreeHalves_partialModeMerges").style.setProperty("display", "block");
+            if (mode_vars[1] == 0) {
+                document.getElementById("ThreeHalves_partialModeMerges_text").innerHTML = "0.5 + 0.5 = 1 is a valid merge, 1 + 0.5 = 1.5 is not.";
+                document.getElementById("ThreeHalves_partialModeMerges_text").style.setProperty("color", "#ea7656");
+                displayRules("rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+                ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+                displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+                ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+            }
+            else if (mode_vars[1] == 1) {
+                document.getElementById("ThreeHalves_partialModeMerges_text").innerHTML = "1 + 0.5 = 1.5 is a valid merge, 0.5 + 0.5 = 1 is not.";
+                document.getElementById("ThreeHalves_partialModeMerges_text").style.setProperty("color", "#d1ea56");
+                displayRules("rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number and a power of 1.5. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. A tile that is a power of 1.5 can also merge with the tile that's half of it, and those two tiles will merge entirely. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+                ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+                displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number and a power of 1.5. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. A tile that is a power of 1.5 can also merge with the tile that's half of it, and those two tiles will merge entirely. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+                ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+            }
+            else if (mode_vars[1] == 2) {
+                document.getElementById("ThreeHalves_partialModeMerges_text").innerHTML = "0.5 + 0.5 = 1 and 1 + 0.5 = 1.5 are both valid merges.";
+                document.getElementById("ThreeHalves_partialModeMerges_text").style.setProperty("color", "#c0853d");
+                displayRules("rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. A tile that is a power of 1.5 can also merge with the tile that's half of it, and those two tiles will merge entirely. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+                ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+                displayRules("gm_rules_text", ["h2", "Powers of 1.5"], ["h1", "2216.8378200531005859375"], ["p","Merges occur between two tiles that are the same number. Tiles that are a power of 1.5 will only merge partially, with only half of the colliding tile absorbed into the result, so two 1s merge into a 1.5 and a 0.5, while two 1.5s merge into a 2.25 and a 0.75. If the tiles are not powers of 1.5, they merge entirely, so two 0.5s merge into a 1. A tile that is a power of 1.5 can also merge with the tile that's half of it, and those two tiles will merge entirely. Get to the 2216.838 (1.5<sup>19</sup>) tile to win!"],
+                ["p", "Spawning tiles: 1 (80%), 0.5 (10%), 1.5 (10%)"]);
+            }
         }
         else if (mode_vars[0] == 1) {
             document.getElementById("ThreeHalves_mode_text").innerHTML = "There are &#247;2 tiles that can merge with any power of 1.5, and merges occur between a tile that's a power of 1.5 and a tile that's half of it, or between two equal tiles that are not a power of 1.5.";
@@ -5465,7 +5595,7 @@ function gmDisplayVars() {
         }
     }
     else if (gamemode == 41) { // X^Y
-        if (mode_vars[0] == Infinity) document.getElementById("XpowY_pow_counter").innerHTML = "&infin;";
+        if (mode_vars[0] == 2n**1024n) document.getElementById("XpowY_pow_counter").innerHTML = "&infin;";
         else document.getElementById("XpowY_pow_counter").innerHTML = mode_vars[0];
         document.getElementById("XpowY_merge_counter").innerHTML = mode_vars[1];
         if (mode_vars[1] < 5) document.getElementById("XpowY_merge_minus").style.setProperty("display", "none");
@@ -6426,6 +6556,24 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 1 (100%)"]);
         }
     }
+    if (gamemode == 71) { // 3,188,646
+        if (mode_vars[0]) {
+            document.getElementById("3188646_multiplyMiddle_text").innerHTML = "Multiplication tiles must be in the middle of the two tiles they are merging..";
+            document.getElementById("3188646_multiplyMiddle_text").style.setProperty("color", "#a6ff6a");
+            displayRules("rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile in the middle, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
+            ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+            displayRules("gm_rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile in the middle, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
+            ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+        }
+        else {
+            document.getElementById("3188646_multiplyMiddle_text").innerHTML = "Multiplication tiles don't have to be in the middle of the two tiles they are merging..";
+            document.getElementById("3188646_multiplyMiddle_text").style.setProperty("color", "#5ad3ff");
+            displayRules("rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
+            ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+            displayRules("gm_rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
+            ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
+        }
+    }
     if (gamemode == 72) { // 3026
         if (mode_vars[0]) {
             document.getElementById("3026_allMerges_text").innerHTML = "Any two tiles that add to a product of two Fibonacci numbers can merge.";
@@ -6491,11 +6639,35 @@ function gmDisplayVars() {
         else document.getElementById("Turatin_interval_minus").style.setProperty("display", "inline-block");
         document.getElementById("Turatin_interval_plus").style.setProperty("display", "inline-block");
         let mergeNumberText, ratioText, title;
-        if (mode_vars[0] == 1) {
-            mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every turn. '
+        if (mode_vars[2] == 0) {
+            document.getElementById("Turatin_switch_text").innerHTML = "The merge number increases based on the amount of turns.";
+            document.getElementById("Turatin_switch_text").style.setProperty("color", "#7cffb5");
+            if (mode_vars[0] == 1) {
+                mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every turn.'
+            }
+            else {
+                mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every ' + mode_vars[0] + ' turns.'
+            }
         }
-        else {
-            mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every ' + mode_vars[0] + ' turns.'
+        else if (mode_vars[2] == 1) {
+            document.getElementById("Turatin_switch_text").innerHTML = "The merge number increases based on the amount of turns where a merge occured.";
+            document.getElementById("Turatin_switch_text").style.setProperty("color", "#ffd500");
+            if (mode_vars[0] == 1) {
+                mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every turn where a merge occured.'
+            }
+            else {
+                mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every ' + mode_vars[0] + ' turns where a merge occured.'
+            }
+        }
+        else if (mode_vars[2] == 2) {
+            document.getElementById("Turatin_switch_text").innerHTML = "The merge number increases based on the amount of merges that have happened so far, not counting the current turn.";
+            document.getElementById("Turatin_switch_text").style.setProperty("color", "#9d00ff");
+            if (mode_vars[0] == 1) {
+                mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every merge (this only updates after each move, so the merge rules won\'t change in the middle of a move).'
+            }
+            else {
+                mergeNumberText = 'The "merge number" starts at 1 and increases by 1 every ' + mode_vars[0] + ' merges (this only updates after each move, so the merge rules won\'t change in the middle of a move).'
+            }
         }
         if (mode_vars[1]) {
             ratioText = ' Two tiles can merge if the current merge number is a multiple of the ratio between the larger tile and the smaller tile (even if that ratio is not an integer!). '
@@ -7504,11 +7676,11 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
         if (display[2] != "@ColorScheme") {
             let dispbackground = evaluateColor(display[2], vcoord, hcoord, container, vars);
             if (dispbackground.includes("gradient")) {
-                tile.style.setProperty("background-image", (evaluateColor(display[2], vcoord, hcoord, container, vars)));
+                tile.style.setProperty("background-image", (dispbackground));
                 tile.style.setProperty("background-color", "transparent");
             }
             else {
-                tile.style.setProperty("background-color", (evaluateColor(display[2], vcoord, hcoord, container, vars)));
+                tile.style.setProperty("background-color", (dispbackground));
                 tile.style.setProperty("background-image", "none");
             }
             tile.style.setProperty("color", (evaluateColor(display[3], vcoord, hcoord, container, vars)));
@@ -8859,6 +9031,14 @@ function loadModifiers() {
                 ]
                 startTileSpawns = [[[0, 1], 72], [[1, 1], 16], [[2, 1], 8], [[3, 1], 4]];
             }
+            else if (mode_vars[0] == 0) {
+                // MergeRules = [
+                //     [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 1]], true, [[["@This 0", "+", 1], 1], ["@This 0", 2]], [1.5, "^", "@This 0", "*", 1.5], [false, false]],
+                //     [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 2]], true, [["@This 0", 1]], [1.5, "^", "@This 0"], [false, true]]
+                // ];
+                if (mode_vars[1] == 1) MergeRules.pop();
+                if (mode_vars[1] != 0) MergeRules.push([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 2]], false, [[["@This 0", "+", 1], 1]], [1.5, "^", "@This 0", "*", 1.5], [false, true]]);
+            }
         }
         else if (gamemode == 38) { // 180
             if (mode_vars[0] != 0) {
@@ -8980,9 +9160,8 @@ function loadModifiers() {
         }
         else if (gamemode == 41) { // X^Y
             MergeRules[0][11] = mode_vars[1];
-            if (mode_vars[0] != Infinity) {
-                if (modifiers[13] == "None") start_game_vars = [["@Literal", [["@This 0", "^", "@This 1", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", ">", 1], "2nd", "@Var 0", "log", 2, "ceil", 1, "min", mode_vars[0], "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "<=", 1], "@edit_var", 2, "@Var 0", "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", "@Var 0"], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1"]]];
-                else start_game_vars = [["@Literal", [["@This 0", "^", "@This 1", "*", "@This 2", "+", ["@Next", "arr_reduce", 0, ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "^", ["@var_retain", "@Var -1", "arr_elem", 1], "*", ["@var_retain", "@Var -1", "arr_elem", 2]]]]], ["@var_retain", 1, "@if", ["@var_retain", "@Var 0", "abs", ">", 1], "2nd", "@Var 0", "abs", "log", 2, "ceil", 1, "min", mode_vars[0], "@end-if"], 2, true, "@end_vars", 0, "@if", ["@var_retain", "@Var 0", "abs", "<=", 1], "@edit_var", 2, ["@var_retain", "@Var 0", "abs"], "@edit_var", 1, 1.5, "@end-if", "@else", "@repeat", ["@var_retain", "@Var 1", ">=", 2, "&&", "@Var 3"], "@edit_var", 2, ["@var_retain", "@Var 0", "abs", "^", ["@var_retain", 1, "/", "@Var 1"], "floor", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", ["@var_retain", "@Var 0", "abs"]], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 2, ["@var_retain", "@Var 2", "+", 1], "@if", ["@var_retain", "@Var 2", "^", "@Var 1", "=", ["@var_retain", "@Var 0", "abs"]], "@edit_var", 3, false, "@end-if", "@else", "@edit_var", 1, ["@var_retain", "@Var 1", "-", 1], "@end-else", "@end-else", "@end-repeat", "@if", ["@var_retain", "@Var 1", "=", 1], "@edit_var", 2, 0, "@end-if", "@end-else", "2nd", "@Var 2", "arr_push", "@Var 1", "arr_push", ["@var_retain", "@Var 0", "sign"]]]];
+            for (let m = 0; m < MergeRules.length; m++) {
+                MergeRules[m][0][MergeRules[m][0].length - 1] = mode_vars[0];
             }
         }
         else if (gamemode == 43) { // 1321
@@ -9187,6 +9366,9 @@ function loadModifiers() {
                 statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
         }
+        else if (gamemode == 71) {
+            MergeRules[1][2] = mode_vars[0];
+        }
         else if (gamemode == 72) { // 3026
             if (mode_vars[0]) {
                 TileTypes = [
@@ -9279,6 +9461,24 @@ function loadModifiers() {
                     }
                 }
             }
+            if (mode_vars[2] == 0) {
+                statBoxes = [["Turns Until Merge Change", "@GVar 1"], ["Merge Number", "@GVar 0", false, false, "Tile", "Turatin"], ["Score", "@Score"]];
+                scripts = [
+                    [[0, "@edit_gvar", 1, ["@Moves", "%B", "@GVar 2", "*B", -1n, "+B", "@GVar 2"], "@edit_gvar", 0, ["@Moves", "/B", "@GVar 2", "+B", 1]], "EndTurn"]
+                ];
+            }
+            else if (mode_vars[2] == 1) {
+                statBoxes = [["Turns with Merges Until Merge Change", "@GVar 1"], ["Merge Number", "@GVar 0", false, false, "Tile", "Turatin"], ["Score", "@Score"]];
+                scripts = [
+                    [[0, "@edit_gvar", 1, ["@MergeMoves", "%B", "@GVar 2", "*B", -1n, "+B", "@GVar 2"], "@edit_gvar", 0, ["@MergeMoves", "/B", "@GVar 2", "+B", 1]], "EndTurn"]
+                ];
+            }
+            else if (mode_vars[2] == 2) {
+                statBoxes = [["Merges Until Merge Change", "@GVar 1"], ["Merge Number", "@GVar 0", false, false, "Tile", "Turatin"], ["Score", "@Score"]];
+                scripts = [
+                    [[0, "@edit_gvar", 1, ["@MergesBefore", "%B", "@GVar 2", "*B", -1n, "+B", "@GVar 2"], "@edit_gvar", 0, ["@MergesBefore", "/B", "@GVar 2", "+B", 1]], "EndTurn"]
+                ];
+            }
         }
         else if (gamemode == 50.1) { // Gaussian DIVE
             if (mode_vars[0] == 0) start_game_vars[0] = [new GaussianBigInt(1n, 1n)];
@@ -9368,7 +9568,7 @@ function loadModifiers() {
                 else directions.push([[0, 0, 0, 0, [1, true, true, true]], "&#8226;", 5/33, 5/33, 3/33, 14/33, 14/33, ["Space"], 0]);
             }
         }
-        if (modifiers[15] == "Simple" && gamemode != 14 && (gamemode != 37 || mode_vars[0] == 0) && gamemode != 40 && gamemode != 43 && gamemode != 50 && gamemode != 58 && gamemode != 59 && gamemode != 69 && gamemode != 70 && gamemode != 71) { // 2049, Wildcard 2048, 2216.838, 1321, DIVE, 10, 1825, (232, 240), 16+16i, and 3,188,646 ignore the simple spawns: 2049, 10, and 1825 need both 1s and -1s, 16+16i needs all four quadrants, 2216.838, 1321, and 3,188,646 have special tiles that make them work (÷2s, +1s, and × respectively), simple spawns would reduce (232, 240) to a single dimension, the different spawning tiles are a fundamental part of DIVE, and simple spawns would defeat the whole point of Wildcard 2048
+        if (modifiers[15] == "Simple" && gamemode != 14 && (gamemode != 37 || mode_vars[0] != 1) && gamemode != 40 && gamemode != 43 && gamemode != 50 && gamemode != 58 && gamemode != 59 && gamemode != 69 && gamemode != 70 && gamemode != 71 && gamemode != 50.1) { // 2049, Wildcard 2048, 2216.838, 1321, DIVE, 10, 1825, (232, 240), 16+16i, 3,188,646, and Gaussian DIVE ignore the simple spawns: 2049, 10, and 1825 need both 1s and -1s, 16+16i needs all four quadrants, 2216.838, 1321, and 3,188,646 have special tiles that make them work (÷2s, +1s, and × respectively), simple spawns would reduce (232, 240) to a single dimension, the different spawning tiles are a fundamental part of DIVE and Gaussian DIVE, and simple spawns would defeat the whole point of Wildcard 2048
             if (gamemode == 30) startTileSpawns = [["Box", 20, [-1], 4, [-2], 4]];
             else if (gamemode == 47) startTileSpawns = [["Box", 1, [1, -1], 3, [1, 1], 3]];
             else {
@@ -9547,6 +9747,10 @@ function loadModifiers() {
                     }
                     MergeRules.push([2, annihilate_reqs, true, [], 0, [true, true]]);
                 }
+            }
+            if (gamemode == 26) { // 2584 has some special merge rules with negatives, but not special display rules
+                if (mode_vars[0] == 1) MergeRules.push([2, [["@This 0", "-", 1, "=", "@Next 1 0"], "&&", ["@This 1", "!=", "@Next 1 1"]], false, [[["@This 0", "-", 2, "max", 0], "@This 1"]], [[((1 + Math.sqrt(5))/2), "^", "@This 0"], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1]], "/", Math.sqrt(5), "round", 1], [false, true]]);
+                else if (mode_vars[0] == 2) MergeRules.push([2, [["@This 0", "-", "@Next 1 0", "abs", "=", 1], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", -1], "&&", ["@This 0", "%", 2, "=", 1], "&&", ["@Next 1 0", "%", 2, "=", 0]], false, [[["@This 0", "-", 2, "max", 0], "@This 1"]], [[((1 + Math.sqrt(5))/2), "^", "@This 0"], "-", [((1 + Math.sqrt(5))/-2), "^", ["@This 0", "*", -1]], "/", Math.sqrt(5), "round", 1], [false, true]])
             }
         }
         if (modifiers[24]) {
@@ -10365,6 +10569,9 @@ function operation(n1, operator, n2) {
         case "rand_bigint":
             result = getRndBigInt(n1, n2);
         break;
+        case "perfectPowerForm":
+            result = perfectPowerForm(n1, n2);
+        break;
         case "ipowGB":
             result = GaussianBigInt.ipow(n1);
         break;
@@ -10452,6 +10659,9 @@ function operation(n1, operator, n2) {
             nn2.splice(vpos + 1, 0, total);
             nn2.splice(vpos, 0, index, value);
             result = CalcArray(nn2, ...additional[0]);
+        break;
+        case "evaluateColor":
+            result = evaluateColor(n1, ...n2);
         break;
         //Type conversions
         case "Number":
@@ -10854,6 +11064,10 @@ function CalcArray(arr) {
             else if (operator == "CalcArray") {
                 to_pop = 1;
                 n2 = [vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars]; //The CalcArray in operation will need these
+            }
+            else if (operator == "evaluateColor") {
+                to_pop = 1;
+                n2 = [vcoord, hcoord, gri, vars]; //The CalcArray in operation will need these
             }
             else {
                 to_pop = 2;
@@ -13067,7 +13281,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         let SaveCode = "";
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "1.5|"
+        SaveCode += "1.5.1|"
         SaveCode += window.btoa(String(width));
         SaveCode += "|";
         SaveCode += window.btoa(String(height));
@@ -13186,7 +13400,7 @@ function importSave(code) {
         let coderesults = [];
         let codebits = code.split("|");
         if (!(codebits[0] == "@2048PowCompGame" || codebits[0] == "@2048PowCompMode")) throw "Wrong code type";
-        if (codebits[1] == "1.1" || codebits[1] == "1.2" || codebits[1] == "1.3" || codebits[1] == "1.4" || codebits[1] == "1.5") {
+        if (codebits[1] == "1.1" || codebits[1] == "1.2" || codebits[1] == "1.3" || codebits[1] == "1.4" || codebits[1] == "1.5" || codebits[1] == "1.5.1") {
             coderesults.push(Number(window.atob(codebits[2]))); //coderesults[0] is width
             if (isNaN(coderesults[0]) || coderesults[0] < 1 || (coderesults[0] % 1) != 0) throw "Invalid width";
             coderesults.push(Number(window.atob(codebits[3]))); //coderesults[1] is height
@@ -13227,7 +13441,7 @@ function importSave(code) {
                 coderesults.push(SCparse(window.atob(codebits[35]))); //coderesults[33] is hiddenTileText
             }
             if (codebits[0] == "@2048PowCompGame") {
-                let midgameStart = (codebits[1] == "1.4" || codebits[1] == "1.5") ? 36 : 34;
+                let midgameStart = (codebits[1] == "1.4" || codebits[1] == "1.5" || codebits[1] == "1.5.1") ? 36 : 34;
                 coderesults.push(SCparse(window.atob(codebits[midgameStart]))); //coderesults[midgameStart] is Grid
                 coderesults.push(Number(window.atob(codebits[midgameStart + 1]))); //coderesults[midgameStart + 1] is score
                 coderesults.push(Number(window.atob(codebits[midgameStart + 2]))); //coderesults[midgameStart + 2] is won
@@ -13280,7 +13494,7 @@ function importSave(code) {
             start_game_vars = coderesults[29];
             start_modifier_vars = coderesults[30];
             scripts = coderesults[31];
-            if (codebits[1] == "1.4" || codebits[1] == "1.5") {
+            if (codebits[1] == "1.4" || codebits[1] == "1.5" || codebits[1] == "1.5.1") {
                 hexagonal = coderesults[32];
                 hiddenTileText = coderesults[33];
             }
@@ -13291,7 +13505,7 @@ function importSave(code) {
             gamemode = 0;
             startGame();
             if (codebits[0] == "@2048PowCompGame") {
-                let midgameStart = (codebits[1] == "1.4" || codebits[1] == "1.5") ? 34 : 32;
+                let midgameStart = (codebits[1] == "1.4" || codebits[1] == "1.5" || codebits[1] == "1.5.1") ? 34 : 32;
                 Grid = coderesults[midgameStart];
                 score = coderesults[midgameStart + 1];
                 won = coderesults[midgameStart + 2];
