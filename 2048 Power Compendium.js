@@ -6558,7 +6558,7 @@ function gmDisplayVars() {
     }
     if (gamemode == 71) { // 3,188,646
         if (mode_vars[0]) {
-            document.getElementById("3188646_multiplyMiddle_text").innerHTML = "Multiplication tiles must be in the middle of the two tiles they are merging..";
+            document.getElementById("3188646_multiplyMiddle_text").innerHTML = "Multiplication tiles must be in the middle of the two tiles they are merging.";
             document.getElementById("3188646_multiplyMiddle_text").style.setProperty("color", "#a6ff6a");
             displayRules("rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile in the middle, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
             ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
@@ -6566,7 +6566,7 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
         }
         else {
-            document.getElementById("3188646_multiplyMiddle_text").innerHTML = "Multiplication tiles don't have to be in the middle of the two tiles they are merging..";
+            document.getElementById("3188646_multiplyMiddle_text").innerHTML = "Multiplication tiles don't have to be in the middle of the two tiles they are merging.";
             document.getElementById("3188646_multiplyMiddle_text").style.setProperty("color", "#5ad3ff");
             displayRules("rules_text", ["h1", "3,188,646"], ["p","There are multiplication tiles. If you merge two tiles that are each double a power of three (they do not need to be double the <i>same</i> power of three) with a multiplication tile, those two tiles will be multiplied. A tile that's quadruple a power of three can merge with a tile that's half of itself (i.e. double that power of three); this is the only kind of merge that gives any score. Also, if two multiplication tiles collide, they merge (and this does not prevent that multiplication tile from merging again that turn) to save on space. Get to the 3,188,646 (2 &#215; 3<sup>13</sup>) tile to win!"],
             ["p", "Spawning tiles: 2 (50%), &#215; (50%)"]);
@@ -6862,7 +6862,7 @@ function gmDisplayVars() {
         document.getElementById("GaussianDIVE_quadrant1SpawnRatio_change").value = mode_vars[3][1];
         document.getElementById("GaussianDIVE_quadrant2SpawnRatio_change").value = mode_vars[3][2];
         document.getElementById("GaussianDIVE_quadrant3SpawnRatio_change").value = mode_vars[3][3];
-        seedSpawnDescription = "At first, only " + startingSeedsDescription + " spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value " + firstQuadrantRotateDescription + "is permanently added as a new spawning tile." + seedCheckDescription;
+        seedSpawnDescription = "At first, only " + startingSeedsDescription + " spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can has a greater magnitude than 1, that leftover value " + firstQuadrantRotateDescription + "is permanently added as a new spawning tile." + seedCheckDescription;
         if (mode_vars[1]) seedSpawnDescription += "If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points equal to its value."
         displayRules("rules_text", ["h1", "Gaussian DIVE"], ["p", "DIVE, but the tiles are complex integers instead of just real integers."],
         ["p", seedSpawnDescription]);
@@ -13436,7 +13436,7 @@ function importSave(code) {
             coderesults.push(SCparse(window.atob(codebits[31]))); //coderesults[29] is start_game_vars
             coderesults.push(SCparse(window.atob(codebits[32]))); //coderesults[30] is start_modifier_vars
             coderesults.push(SCparse(window.atob(codebits[33]))); //coderesults[31] is scripts
-            if (codebits[1] == "1.4" || codebits[1] == "1.5") {
+            if (codebits[1] == "1.4" || codebits[1] == "1.5" || codebits[1] == "1.5.1") {
                 coderesults.push(SCparse(window.atob(codebits[34]))); //coderesults[32] is hexagonal
                 coderesults.push(SCparse(window.atob(codebits[35]))); //coderesults[33] is hiddenTileText
             }
