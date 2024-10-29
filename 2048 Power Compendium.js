@@ -1020,7 +1020,7 @@ document.getElementById("modifiers_customArrow_hdir_plus").addEventListener("cli
         directions[screenVars[0]][0][1]++;
     }
     else {
-        directions[screenVars[0]][0][0]++;
+        directions[screenVars[0]][0][1]++;
     }
     displayModifiers(3.2);
 });
@@ -1030,7 +1030,7 @@ document.getElementById("modifiers_customArrow_hdir_minus").addEventListener("cl
         directions[screenVars[0]][0][1]--;
     }
     else {
-        directions[screenVars[0]][0][0]--;
+        directions[screenVars[0]][0][1]--;
     }
     displayModifiers(3.2);
 });
