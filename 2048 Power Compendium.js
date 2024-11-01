@@ -9696,12 +9696,24 @@ function loadModifiers() {
             for (let i = 0; i < startTileSpawns.length; i++) {
                 for (let j = 0; j < startTileSpawns[i].length; j++) {
                     if (j == 1) {
-                        positiveSpawns[i][1] *= modifiers[22];
-                        negativeSpawns[i][1] *= modifiers[23];
+                        if (Array.isArray(startTileSpawns[i][j])) {
+                            positiveSpawns[i][1].push("*", modifiers[22]);
+                            negativeSpawns[i][1].push("*", modifiers[23]);
+                        }
+                        else {
+                            positiveSpawns[i][1] *= modifiers[22];
+                            negativeSpawns[i][1] *= modifiers[23];
+                        }
                     }
                     else if (Array.isArray(startTileSpawns[i][j])) {
-                        positiveSpawns[i][j].push(1);
-                        negativeSpawns[i][j].push(-1);
+                        if (startTileSpawns[i][j][0] == "@CalcArray") {
+                            positiveSpawns[i][j].push("arr_push", 1);
+                            negativeSpawns[i][j].push("arr_push", -1);
+                        }
+                        else {
+                            positiveSpawns[i][j].push(1);
+                            negativeSpawns[i][j].push(-1);
+                        }
                     }
                 }
             }
