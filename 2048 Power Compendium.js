@@ -13496,6 +13496,7 @@ function importSave(code) {
             document.documentElement.style.setProperty("--grid-color", coderesults[19]);
             document.documentElement.style.setProperty("--tile-color", coderesults[20]);
             document.documentElement.style.setProperty("--text-color", coderesults[21]);
+            if (codebits[0] == "@2048PowCompGame" && !coderesults[22].includes("<p>This game was resumed from a save code.</p>")) coderesults[22] += "<p>This game was resumed from a save code.</p>";
             document.getElementById("rules_text").innerHTML = coderesults[22];
             multiMerge = coderesults[23];
             spawnLocation = coderesults[24];
@@ -13618,6 +13619,7 @@ function importSave(code) {
             document.documentElement.style.setProperty("--grid-color", coderesults[12]);
             document.documentElement.style.setProperty("--tile-color", coderesults[13]);
             document.documentElement.style.setProperty("--text-color", coderesults[14]);
+            if (codebits[0] == "@2048PowCompGame" && !coderesults[15].includes("<p>This game was resumed from a save code.</p>")) coderesults[15] += "<p>This game was resumed from a save code.</p>";
             document.getElementById("rules_text").innerHTML = coderesults[15];
             statBoxes = [];
             if (coderesults[23]) statBoxes.push(["Moves", "@Moves"]);
