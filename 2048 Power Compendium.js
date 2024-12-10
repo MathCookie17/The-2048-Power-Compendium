@@ -2758,7 +2758,7 @@ function binarySearch(array, element, sortFunc = function(a, b){
 
 function binaryInsert(array, element, sortFunc = function(a, b){
     if (a < b) return -1;
-    else if (b > a) return 1;
+    else if (b < a) return 1;
     else if (a == b) return 0;
     else return NaN;
 }) { // Yes, I know splice means this runs in O(n) anyway, but this is better than having to sort the array later
