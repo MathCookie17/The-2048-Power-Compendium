@@ -1896,7 +1896,7 @@ document.getElementById("customBackground_gradientSelection_next").addEventListe
 });
 document.getElementById("customBackground_addGradientEntry").addEventListener("click", function(){
     for (let p = 0; p < customBackground[screenVars[0]][2].length; p++) customBackground[screenVars[0]][2][p] *= ((customBackground[screenVars[0]][2].length - 1) / (customBackground[screenVars[0]][2].length));
-    customBackground[screenVars[0]][3].push(customBackground[screenVars[0]][3][screenVars[1]]);
+    customBackground[screenVars[0]][3].push(compendiumStructuredClone(customBackground[screenVars[0]][3][screenVars[1]]));
     customBackground[screenVars[0]][2].push(100);
     screenVars[1] = customBackground[screenVars[0]][2].length - 1;
     displayCustomMode("Background", screenVars);
@@ -12538,6 +12538,7 @@ function evaluateColor(color) {
             if (typeof color[i] == "number" || (Array.isArray(color[i]) && color[i][0] == "@CalcArrayNumber")) { // Strings and arrays in a gradient array represent colors, but numbers represent positions in the gradient...
                 let position = (typeof color[i] == "number") ? color[i] : CalcArray(color[i].slice(1), vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars, globalVarStat)
                 if (i == 1) { // ...unless it's the very first entry after the type of gradient, in which case it's the angle of the gradient.
+                    if (color[0] === "@conic-gradient" || color[0] === "@repeating-radial-gradient" || color[0] === "@repeating-conic-gradient") grad += "from "
                     grad += position;
                     grad += "deg";
                 }
@@ -13335,7 +13336,7 @@ function refillSpawnConveyor() { // This function ensures that nextTiles is alwa
                 if (Array.isArray(p[1])) p[1] = CalcArray(p[1]);
                 weighttotal += p[1]; // weighttotal is the sum of the spawn chances of each tile
             }
-            let randnum = getRndInteger(1, weighttotal);
+            let randnum = getRndFloat(0, weighttotal);
             let spawnedtile = "@Empty";
             let entry = 0;
             TileDecider: { // Chooses which tile we're spawning

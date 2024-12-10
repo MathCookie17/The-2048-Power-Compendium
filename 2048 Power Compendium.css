@@ -328,6 +328,36 @@ html {
         font-size: 6vw;
         text-shadow: 0px 0px 0.75vw #ff00cc;
     }
+    #menu_extra {
+        border-width: 1vw;
+        left: 5vw;
+        top: 115vw;
+    }
+    #menu_import {
+        border-width: 1vw;
+        left: 55vw;
+        top: 115vw;
+    }
+    #menu_to_modifiers {
+        border-width: 1vw;
+        left: 5vw;
+        top: 125vw;
+    }
+    #menu_to_guide {
+        border-width: 1vw;
+        left: 55vw;
+        top: 125vw;
+    }
+    #menu_to_custom {
+        border-width: 1vw;
+        left: 5vw;
+        top: 135vw;
+    }
+    #menu_to_homepage {
+        border-width: 1vw;
+        left: 55vw;
+        top: 135vw;
+    }
 }
 @media screen and (max-aspect-ratio: 25/40) {
     .menu_button {
@@ -339,32 +369,32 @@ html {
     #menu_extra {
         border-width: 0.75vh;
         left: 4vw;
-        top: 72vh;
+        top: 116vw;
     }
     #menu_import {
         border-width: 0.75vh;
         left: 51vw;
-        top: 72vh;
+        top: 116vw;
     }
     #menu_to_modifiers {
         border-width: 0.75vh;
         left: 4vw;
-        top: 81vh;
+        top: 131vw;
     }
     #menu_to_guide {
         border-width: 0.75vh;
         left: 51vw;
-        top: 81vh;
+        top: 131vw;
     }
     #menu_to_custom {
         border-width: 0.75vh;
         left: 4vw;
-        top: 90vh;
+        top: 146vw;
     }
     #menu_to_homepage {
         border-width: 0.75vh;
         left: 51vw;
-        top: 90vh;
+        top: 146vw;
     }
 }
 @media screen and (max-aspect-ratio: 21/40) {
