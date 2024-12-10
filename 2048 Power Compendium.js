@@ -1881,7 +1881,7 @@ document.getElementById("customBackground_gradientType").addEventListener("click
 });
 document.getElementById("customBackground_gradientDirectionInput").addEventListener("change", function(){
     let v = Number(this.value);
-    if (isFinite(v)) customBackground[screenVars[0]][2][screenVars[1]] = v;
+    if (isFinite(v)) customBackground[screenVars[0]][1] = v;
     displayCustomMode("Background", screenVars);
 });
 document.getElementById("customBackground_gradientSelection_previous").addEventListener("click", function(){
@@ -15319,6 +15319,7 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
         SubsetCheck:
         for (let p = 0; p < m; p++) {
             let prevRule = customMerges[p];
+            if (prevRule[2].length == 0 || thisCM[2].length == 0) continue SubsetCheck;
             let subset = customMergeSubset(thisCM, prevRule);
             if (subset !== false) {
                 let subsetCondition = [];
@@ -15383,7 +15384,7 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
             let outputSum = ["@This 1"];
             for (let next = 0; next < thisCM[2].length; next++) outputSum.push("+", "@Next " + (next + 1) + " 1");
             outputArray.push(outputSum);
-            newRule.push([outputArray], outputSum);
+            newRule.push([outputArray], (thisCM[2].length == 0 ? 0 : outputSum));
         }
         MergeRules.push(newRule);
     }
@@ -15515,8 +15516,10 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
     let spawningString = "Spawning tiles: ";
     if (customSpawningTiles[0]) spawningString = 'Spawning tiles pull from a "box" that starts with: '
     for (let s = 1; s < customSpawningTiles.length; s++) {
-        if (s > 1) spawningString += ", ";
-        spawningString += customSpawningTiles[s][0] + (customSpawningTiles[0] ? " with amount " : " with chance ") + customSpawningTiles[s][1];
+        if (customSpawningTiles[s][1] != 0) {
+            if (spawningString[spawningString.length - 2] != ":") spawningString += ", ";
+            spawningString += customSpawningTiles[s][0] + (customSpawningTiles[0] ? " with amount " : " with chance ") + customSpawningTiles[s][1];
+        }
     }
     displayRules("rules_text", ["h2", customRulesText[0]], ["h1", customRulesText[1]], ["p", customRulesText[2]], ["p", spawningString]);
     displayRules("gm_rules_text", ["h2", customRulesText[0]], ["h1", customRulesText[1]], ["p", customRulesText[2]], ["p", spawningString]);
