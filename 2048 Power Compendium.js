@@ -127,7 +127,7 @@ let customRulesText = [];
 
 //These lists of operators are used by CalcArrayConvert
 let special_operators = ["@repeat", "@if", "@else", "@else-if", "@edit_var", "@add_var", "@insert_var", "@remove_var", "@end-repeat", "@end-if", "@end-else", "@end-else-if", "@end_vars", "@var_retain", "@var_copy", "@include_gvars", "@edit_gvar", "@add_gvar", "@insert_gvar", "@remove_gvar", "@add_score", "@edit_spawn", "@add_spawn", "@insert_spawn", "@remove_spawn", "@replace_tile", "@run-script", "@primesUpdate", "announce"];
-let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof", "output", "CalcArrayParent", "evaluateColor"];
+let any_operators = ["=", "!=", ">", "<", ">=", "<=", "max", "min", "1st", "first", "2nd", "second", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "typeof", "output", "console.log", "CalcArrayParent", "evaluateColor"];
 let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round", "floor", "ceil", "ceiling", "trunc", "abs", "sign", "sin", "cos", "tan", "gcd", "lcm", "factorial", "prime", "expomod", "bit&", "bit|", "bit~", "bit^", "bit<<", "bit>>", "bit>>>", "rand_int", "rand_float", "defaultAbbrev", "mergeRuleApplies", "mergeRuleApplies_nonRecursive"];
 let string_operators = ["str_char", "str_concat", "str_concat_front", "str_length", "str_slice", "str_substr", "str_replace", "str_indexOf", "str_lastIndexOf", "str_indexOfFrom", "str_lastIndexOfFrom", "str_includes", "str_splice", "str_toUpperCase", "str_toLowerCase", "str_split"];
 let boolean_operators = ["&&", "||", "!"];
@@ -11650,6 +11650,10 @@ function operation(n1, operator, n2) {
             output(n2);
             result = n1;
         break;
+        case "console.log": //For testing purposes only
+            console.log(n2);
+            result = n1;
+        break;
         default: result = n1;
     }
     return result;
@@ -11965,12 +11969,12 @@ function CalcArray(arr) {
             else if (operator == "arr_sort" || operator == "arr_map" || operator == "arr_filter" || operator == "CalcArrayParent") {
                 to_pop = 2;
                 n2 = carr[2]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
-                additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat]); //The CalcArray in operation will need these
+                additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, compendiumStructuredClone(vars), globalVarStat]); //The CalcArray in operation will need these
             }
             else if (operator == "arr_reduce" || operator == "arr_reduceRight") {
                 to_pop = 3;
                 n2 = carr[3]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
-                additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat]); //The CalcArray in operation will need these
+                additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, compendiumStructuredClone(vars), globalVarStat]); //The CalcArray in operation will need these
                 additional_args.push(CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat)); //Initial value
             }
             else if (operator == "@primesUpdate" || operator == "**GB" || operator == "^GB") {
@@ -11990,11 +11994,11 @@ function CalcArray(arr) {
             }
             else if (operator == "CalcArray") {
                 to_pop = 1;
-                n2 = [vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat]; //The CalcArray in operation will need these
+                n2 = [vcoord, hcoord, vdir, hdir, addInfo, gri, parents, compendiumStructuredClone(vars), globalVarStat]; //The CalcArray in operation will need these
             }
             else if (operator == "evaluateColor") {
                 to_pop = 1;
-                n2 = [vcoord, hcoord, gri, vars, globalVarStat]; //The CalcArray in operation will need these
+                n2 = [vcoord, hcoord, gri, compendiumStructuredClone(vars), globalVarStat]; //The CalcArray in operation will need these
             }
             else if (operator == "mergeRuleApplies" || operator == "mergeRuleApplies_nonRecursive") {
                 to_pop = 2;
@@ -13639,7 +13643,7 @@ function mergeRuleApplies(rule, vcoord, hcoord, vdir, hdir) { // Tests whether a
     if (arguments.length > 7) offset = arguments[7];
     let checkedrule = compendiumStructuredClone(rule);
     let result = false;
-    vars = [];
+    let vars = [];
     let mlength = checkedrule[0];
     if (checkedrule[0] === "@include_gvars") mlength = checkedrule[1];
     if (checkedrule.indexOf("@end_vars") > -1) mlength = checkedrule[checkedrule.indexOf("@end_vars") + 1];
@@ -14430,6 +14434,7 @@ async function displayCustomMode(subscreen, vars) {
                     newElem.firstElementChild.name = "customMerges_allowedNInput" + valueNum;
                     newElem.firstElementChild.addEventListener("change", function() {
                         let v = Number(this.value);
+                        if (this.value == "") v = NaN;
                         // let idNum = this.id.slice(26);
                         if (v % 1 == 0 && isFinite(v)) {
                             if (valueNum > customMerges[screenVars[0]][1].length) customMerges[screenVars[0]][1].push(v);
@@ -14677,6 +14682,7 @@ async function displayCustomMode(subscreen, vars) {
                     newElem.firstElementChild.name = "customColors_allowedNInput" + valueNum;
                     newElem.firstElementChild.addEventListener("change", function() {
                         let v = Number(this.value);
+                        if (this.value == "") v = NaN;
                         // let idNum = this.id.slice(26);
                         if (v % 1 == 0 && isFinite(v)) {
                             if (valueNum > customColors[screenVars[0]][1].length) customColors[screenVars[0]][1].push(v);
@@ -15292,7 +15298,7 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
                 nextArray.push("@Next " + next + " 0");
             }
             outerCondition.push(
-                0, -1, nextArray, false, "@end_vars", 0,
+                0, -1, nextArray, false, m, "@end_vars", 0,
                 "@repeat", ["@Var 1", "<", thisCM[2].length, "&&", ["@Var 3", "!"]],
                 "@edit_var", 1, ["@Var 1", "+", 1], "@edit_var", 0, ["@Var 2", "arr_elem", "@Var 1", "CalcArray"], "@if",
             );
