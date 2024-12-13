@@ -207,7 +207,7 @@ class GaussianBigInt {
         if (this.imaginary == 0n)
             return this.real;
         else
-            throw new Error("Cannot convert gaussian bigint with nonzero imaginary part to bigint");
+            return this;
     }
     static valueOf(value) {
         return value.valueOf();

@@ -10347,13 +10347,13 @@ function loadModifiers() {
                 else {
                     if (modifiers[13] == "Non-Interacting") {
                         MergeRules = [
-                            [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@GVar 0", "%B", [["@This 0", "absB"], "/B", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"]]], "=", 0n], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0"], [false, true]]
+                            [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@GVar 0", "%B", [["@This 0", "absB"], "/B", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"]]], "=", 0n], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0", "abs"], [false, true]]
                         ]
                     }
                     else {
                         MergeRules = [
                             [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0, [true, true]],
-                            [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@GVar 0", "%B", [["@This 0", "absB"], "/B", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"]]], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0"], [false, true]]
+                            [2, [[["@This 0", "absB"], ">=", ["@Next 1 0", "absB"]], "&&", ["@GVar 0", "%B", [["@This 0", "absB"], "/B", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"]]], "=", 0n]], false, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "/", "@Next 1 0", "abs"], [false, true]]
                         ]
                     }
                 }
@@ -15390,7 +15390,7 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
             let outputSum = ["@This 1"];
             for (let next = 0; next < thisCM[2].length; next++) outputSum.push("+", "@Next " + (next + 1) + " 1");
             outputArray.push(outputSum);
-            newRule.push([outputArray], (thisCM[2].length == 0 ? 0 : outputSum));
+            newRule.push([outputArray], (thisCM[2].length == 0 ? 0 : outputSum.concat(["abs"])));
         }
         MergeRules.push(newRule);
     }
