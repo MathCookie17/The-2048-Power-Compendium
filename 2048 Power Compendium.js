@@ -1264,8 +1264,8 @@ document.getElementById("customMode_start").addEventListener("click", function()
     customSpawningTiles = [false, [1, 1]];
     customMerges = [[1, [1, Infinity, 0, 1], [[true, 0]], [[true, 1]], false]];
     customGeneratedTiles = [];
-    customColors = [[1, [1, Infinity, 0, 1], [["@HSLA", 0, 100, 50, 1, 1, false, 30, 0, true, 0, 0.975, true, 100, 0.95, false, 0, 0]], [0], ["@linear-gradient", 0], ["@HSLA", 0, 100, 0, 1, 1, false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0]]];
-    customBackground = [["@linear-gradient", 0, [0], [["@HSLA", 44, 100, 93, 1]]], ["@radial-gradient", 0, [0, 150], [["@HSLA", 46, 100, 50, 1], ["@HSLA", 0, 100, 100, 1]]], ["@linear-gradient", 0, [0], [["@HSLA", 43, 22, 72, 1]]], ["@linear-gradient", 0, [0], [["@HSLA", 43, 53, 84, 1]]], ["@linear-gradient", 0, [0], [["@HSLA", 30, 8, 30, 1]]]];
+    customColors = [[1, [1, Infinity, 0, 1], [["@HSLA", 0, 100, 50, 1, 1, false, 30, 0, true, 0, 0.975, true, 100, 0.95, false, 0, 0]], [0], ["@linear-gradient", 180], ["@HSLA", 0, 100, 0, 1, 1, false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0]]];
+    customBackground = [["@linear-gradient", 180, [0], [["@HSLA", 44, 100, 93, 1]]], ["@radial-gradient", 0, [0, 150], [["@HSLA", 46, 100, 50, 1], ["@HSLA", 0, 100, 100, 1]]], ["@linear-gradient", 180, [0], [["@HSLA", 43, 22, 72, 1]]], ["@linear-gradient", 180, [0], [["@HSLA", 43, 53, 84, 1]]], ["@linear-gradient", 180, [0], [["@HSLA", 30, 8, 30, 1]]]];
     customWins = [0];
     customLosses = [0];
     customRulesText = ["", "Custom Mode", "No description has been provided.", 0]
@@ -1476,7 +1476,7 @@ document.getElementById("customColors_selection_next").addEventListener("click",
     displayCustomMode("Colors", screenVars);
 });
 document.getElementById("customColors_addColorRule").addEventListener("click", function(){
-    if (customColors.length == 0) customColors.push([1, [1, Infinity, 0, 1], [["@HSLA", 0, 100, 50, 1, 1, false, 30, 0, true, 0, 0.975, true, 100, 0.95, false, 0, 0]], [0], 0, ["@HSLA", 0, 100, 0, 1, 1, false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0]]);
+    if (customColors.length == 0) customColors.push([1, [1, Infinity, 0, 1], [["@HSLA", 0, 100, 50, 1, 1, false, 30, 0, true, 0, 0.975, true, 100, 0.95, false, 0, 0]], [0], ["@linear-gradient", 180], ["@HSLA", 0, 100, 0, 1, 1, false, 0, 0, false, 0, 0, false, 0, 0, false, 0, 0]]);
     else customColors.push(compendiumStructuredClone(customColors[screenVars[0]]));
     screenVars[0] = customColors.length - 1;
     screenVars[1] = 0;
@@ -1546,7 +1546,7 @@ document.getElementById("customColors_gradientType").addEventListener("click", f
         }
     }
     else {
-        customColors[screenVars[0]][4] = ["@linear-gradient", 0]
+        customColors[screenVars[0]][4] = ["@linear-gradient", 180]
         for (let p = 0; p < customColors[screenVars[0]][3].length; p++) {
             customColors[screenVars[0]][3][p] /= 3.6;
         }
@@ -1872,7 +1872,7 @@ document.getElementById("customBackground_gradientType").addEventListener("click
     }
     else {
         customBackground[screenVars[0]][0] = "@linear-gradient"
-        customBackground[screenVars[0]][1] = 0;
+        customBackground[screenVars[0]][1] = 180;
         for (let p = 0; p < customBackground[screenVars[0]][2].length; p++) {
             customBackground[screenVars[0]][2][p] /= 3.6;
         }
@@ -15443,7 +15443,7 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
             else {
                 entryArray.push(["@This 0", "-", currentEntry[5], "*", currentEntry[16], "+", currentEntry[4]]);
             }
-            gradientArray.push(entryArray, thisCC[3][entry]);
+            gradientArray.push(entryArray, thisCC[3][gradientOrder[entry][1]]);
         }
         if (gradientArray.length == 2) gradientArray = gradientArray[0];
         else gradientArray.unshift(...thisCC[4]);
@@ -15480,8 +15480,9 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
     TileTypes.push([true, "@This 1", "#000000", "#ffffff"])
     // Background
     let gradientArray = [];
+    let gradientOrder = customBackground[0][2].map((value, index) => [value, index]).sort((a, b) => (a[0] - b[0]));
     for (let entry = 0; entry < customBackground[0][3].length; entry++) {
-        gradientArray.push(customBackground[0][3][entry], customBackground[0][2][entry]);
+        gradientArray.push(customBackground[0][3][gradientOrder[entry][1]], customBackground[0][2][gradientOrder[entry][1]]);
     }
     if (gradientArray.length == 2) gradientArray = gradientArray[0];
     else {
@@ -15490,8 +15491,9 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
     }
     document.documentElement.style.setProperty("--background-color", evaluateColor(gradientArray));
     gradientArray = [];
+    gradientOrder = customBackground[1][2].map((value, index) => [value, index]).sort((a, b) => (a[0] - b[0]));
     for (let entry = 0; entry < customBackground[1][3].length; entry++) {
-        gradientArray.push(customBackground[1][3][entry], customBackground[1][2][entry]);
+        gradientArray.push(customBackground[1][3][gradientOrder[entry][1]], customBackground[1][2][gradientOrder[entry][1]]);
     }
     if (gradientArray.length == 2) {
         gradientArray = [gradientArray[0], gradientArray[0]]
