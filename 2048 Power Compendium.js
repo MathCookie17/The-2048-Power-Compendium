@@ -14503,32 +14503,32 @@ async function displayCustomMode(subscreen, vars) {
                 document.getElementById("customMerges_orderedMergeOff").style.setProperty("display", "inline-flex");
                 document.getElementById("customMerges_orderedMergeOn").style.setProperty("display", "none");
             }
+            // Output
+            if (customMerges[screenVars[0]][3].length == 1) {
+                document.getElementById("customMerges_output").style.setProperty("display", "flex");
+                document.getElementById("customMerges_noOutput").style.setProperty("display", "none");
+                document.getElementById("customMerges_addOutputTile").style.setProperty("display", "none");
+                let outputTile = customMerges[screenVars[0]][3][0]
+                if (outputTile[0]) {
+                    if (outputTile[1] == 0) document.getElementById("customMerges_output_counter").innerHTML = "Tile n";
+                    else if (outputTile[1] < 0) document.getElementById("customMerges_output_counter").innerHTML = "Tile n - " + (outputTile[1] * -1);
+                    else document.getElementById("customMerges_output_counter").innerHTML = "Tile n + " + outputTile[1];
+                }
+                else document.getElementById("customMerges_output_counter").innerHTML = "Tile " + outputTile[1];
+                if (!(outputTile[0]) && outputTile[1] <= 1) document.getElementById("customMerges_output_minus").style.setProperty("opacity", "0");
+                else document.getElementById("customMerges_output_minus").style.setProperty("opacity", "1");
+                document.getElementById("customMerges_output_plus").style.setProperty("opacity", "1");
+            }
+            else {
+                document.getElementById("customMerges_output").style.setProperty("display", "none");
+                document.getElementById("customMerges_noOutput").style.setProperty("display", "block");
+                document.getElementById("customMerges_addOutputTile").style.setProperty("display", "inline-flex");
+            }
         }
         else {
             document.getElementById("customMerges_selection_counter").innerHTML = "No merges have been added yet."
             document.getElementById("customMerges_removeMerge").style.setProperty("display", "none");
             document.getElementById("customMerges_shownMergeContainer").style.setProperty("display", "none");
-        }
-        // Output
-        if (customMerges[screenVars[0]][3].length == 1) {
-            document.getElementById("customMerges_output").style.setProperty("display", "flex");
-            document.getElementById("customMerges_noOutput").style.setProperty("display", "none");
-            document.getElementById("customMerges_addOutputTile").style.setProperty("display", "none");
-            let outputTile = customMerges[screenVars[0]][3][0]
-            if (outputTile[0]) {
-                if (outputTile[1] == 0) document.getElementById("customMerges_output_counter").innerHTML = "Tile n";
-                else if (outputTile[1] < 0) document.getElementById("customMerges_output_counter").innerHTML = "Tile n - " + (outputTile[1] * -1);
-                else document.getElementById("customMerges_output_counter").innerHTML = "Tile n + " + outputTile[1];
-            }
-            else document.getElementById("customMerges_output_counter").innerHTML = "Tile " + outputTile[1];
-            if (!(outputTile[0]) && outputTile[1] <= 1) document.getElementById("customMerges_output_minus").style.setProperty("opacity", "0");
-            else document.getElementById("customMerges_output_minus").style.setProperty("opacity", "1");
-            document.getElementById("customMerges_output_plus").style.setProperty("opacity", "1");
-        }
-        else {
-            document.getElementById("customMerges_output").style.setProperty("display", "none");
-            document.getElementById("customMerges_noOutput").style.setProperty("display", "block");
-            document.getElementById("customMerges_addOutputTile").style.setProperty("display", "inline-flex");
         }
     }
     else if (subscreen == "ConsistencyCheck") {
@@ -15539,15 +15539,17 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
             break;
         }
     }
-    mode_vars[1] = customMerges[0][2].length;
-    for (let m = 1; m < customMerges.length; m++) {
-        let nextLength = customMerges[m][2].length;
-        if (nextLength != mode_vars[1]) {
-            mode_vars[1] = 0;
-            break;
+    if (customMerges.length != 0) {
+        mode_vars[1] = customMerges[0][2].length;
+        for (let m = 1; m < customMerges.length; m++) {
+            let nextLength = customMerges[m][2].length;
+            if (nextLength != mode_vars[1]) {
+                mode_vars[1] = 0;
+                break;
+            }
         }
+        if (mode_vars[1] != 1 && mode_vars[1] != 2) mode_vars[1] = 0;
     }
-    if (mode_vars[1] != 1 && mode_vars[1] != 2) mode_vars[1] = 0;
 }
 
 //Save codes
