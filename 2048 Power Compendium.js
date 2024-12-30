@@ -15018,13 +15018,13 @@ async function customConsistencyCheck() {
             let CGTIndex = function(n){
                 return customGeneratedTiles.map(entry => entry[0]).indexOf(n);
             }
+            if (customMerges[m][3].length == 0) {
+                screenVars[5].shift(); continue CustomConsistency_TileLoop;
+            }
             if (CGTIndex(n) === -1 || Math.abs(customGeneratedTiles[CGTIndex(n)][1]) > screenVars[3] || customGeneratedTiles.length >= screenVars[2]) {
                 waitlist.push([n, m])
                 n++; screenVars[5].shift(); continue CustomConsistency_TileLoop;
             }
-            // if (customMerges[m][3].length == 0) {
-            //     screenVars[5].shift(); continue CustomConsistency_TileLoop;
-            // }
             if ((customMerges[m][0] == 0 && customMerges[m][1].includes(n)) || (customMerges[m][0] == 1 && n >= customMerges[m][1][0] && n <= customMerges[m][1][1] && mod(n, customMerges[m][1][3]) == customMerges[m][1][2])) {
                 let result = customGeneratedTiles[CGTIndex(n)][1];
                 for (let input = 0; input < customMerges[m][2].length; input++) {
