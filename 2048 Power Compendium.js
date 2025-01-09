@@ -5920,7 +5920,7 @@ function loadMode(mode) {
                 [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless", 0]], 0, [true, true]]
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
-            startTileSpawns = [[[0, 2, 1], 25], [[0, 2, -1], 25], [["Multiply", "@Signless", 0], 50]];
+            startTileSpawns = [[[0, 2, 1], modifiers[22]], [[0, 2, -1], modifiers[23]], [["Multiply", "@Signless", 0], modifiers[22] + modifiers[23]]];
             winConditions = [[13, 2, 1], [13, 2, -1]];
             winRequirement = 2;
         }
@@ -10264,7 +10264,7 @@ function loadModifiers() {
             }
         }
         else if (gamemode == 71) {
-            MergeRules[1][2] = mode_vars[0];
+            MergeRules[(modifiers[13] == "Interacting") ? 2 : 1][2] = mode_vars[0];
         }
         else if (gamemode == 72) { // 3026
             if (mode_vars[0]) {
