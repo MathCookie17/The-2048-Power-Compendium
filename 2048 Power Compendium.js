@@ -13684,7 +13684,7 @@ function mergeRuleApplies(rule, vcoord, hcoord, vdir, hdir) { // Tests whether a
         }
     }
     else { // If the 2nd entry is false, we need to look at every permutation of the merge rule, which grows factorially with the length of the rule, to see if any permutation evaluates to true
-        let arrangements = orders(checkedrule[0]);
+        let arrangements = orders(mlength);
         for (let permu = 0; permu < arrangements.length; permu++) {
             let testing = calcArrayMergeOffset(calcArrayReorder(checkedrule, arrangements[permu], vdir, hdir), offset, vdir, hdir);
             if (CalcArray(testing[1], vcoord, hcoord, vdir, hdir, [testing[0], addInfo[0], addInfo[1]], gri, [], vars) === true) {
