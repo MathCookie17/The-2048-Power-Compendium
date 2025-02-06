@@ -1,9 +1,3 @@
-var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
-    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
-    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
-    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
-};
-var _a, _GaussianBigInt_absB, _GaussianBigInt_modB;
 /**
  * Instances of this class represent Gaussian integers, i.e. complex numbers of the form a + bi, where a and b are bigints.
  * Since these are bigints, not floats, some common complex number operations (magnitude and phase, for instance) are not implemented
@@ -11,6 +5,15 @@ var _a, _GaussianBigInt_absB, _GaussianBigInt_modB;
  * (though norm, which is just the square of magnitude, is included).
  */
 class GaussianBigInt {
+    // Components
+    /**
+     * The real part of the Gaussian integer.
+     */
+    real;
+    /**
+     * The imaginary part of the Gaussian integer.
+     */
+    imaginary;
     /**
      * The real part of the Gaussian integer.
      */
@@ -27,7 +30,7 @@ class GaussianBigInt {
         return this.imaginary;
     }
     set Im(Im) {
-        this.real = Im;
+        this.imaginary = Im;
     }
     // Constructors
     constructor(value, second) {
@@ -43,7 +46,7 @@ class GaussianBigInt {
             this.fromString(value);
         else if (Array.isArray(value))
             this.fromArrayPair(value);
-        else if (value instanceof _a)
+        else if (value instanceof GaussianBigInt)
             this.fromGaussianBigInt(value);
         else {
             this.real = 0n;
@@ -57,7 +60,7 @@ class GaussianBigInt {
         return this;
     }
     static fromBigInt(input) {
-        return new _a().fromBigInt(input);
+        return new GaussianBigInt().fromBigInt(input);
     }
     fromArrayPair(input) {
         this.real = BigInt(input[0]);
@@ -65,7 +68,7 @@ class GaussianBigInt {
         return this;
     }
     static fromArrayPair(input) {
-        return new _a().fromArrayPair(input);
+        return new GaussianBigInt().fromArrayPair(input);
     }
     fromPair(real, imaginary) {
         this.real = BigInt(real);
@@ -73,7 +76,7 @@ class GaussianBigInt {
         return this;
     }
     static fromPair(real, imaginary) {
-        return new _a().fromPair(real, imaginary);
+        return new GaussianBigInt().fromPair(real, imaginary);
     }
     fromString(input) {
         while (input[0] == " ")
@@ -180,7 +183,7 @@ class GaussianBigInt {
             throw new Error("Cannot convert string to gaussian bigint");
     }
     static fromString(input) {
-        return new _a().fromString(input);
+        return new GaussianBigInt().fromString(input);
     }
     fromGaussianBigInt(input) {
         this.real = input.real;
@@ -188,7 +191,7 @@ class GaussianBigInt {
         return this;
     }
     static fromGaussianBigInt(input) {
-        return new _a().fromGaussianBigInt(input);
+        return new GaussianBigInt().fromGaussianBigInt(input);
     }
     toString() {
         if (this.imaginary == 0n)
@@ -196,7 +199,7 @@ class GaussianBigInt {
         else if (this.real == 0n)
             return String(this.imaginary) + "i";
         else if (this.imaginary < 0n)
-            return String(this.real) + "-" + String(__classPrivateFieldGet(_a, _a, "m", _GaussianBigInt_absB).call(_a, this.imaginary)) + "i";
+            return String(this.real) + "-" + String(GaussianBigInt.#absB(this.imaginary)) + "i";
         else
             return String(this.real) + "+" + String(this.imaginary) + "i";
     }
@@ -223,60 +226,60 @@ class GaussianBigInt {
      * Returns true if the two Gaussian integers are equal, false otherwise.
      */
     eq(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return (this.real == other.real && this.imaginary == other.imaginary);
     }
     /**
      * Returns true if the two Gaussian integers are equal, false otherwise.
      */
     static eq(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.eq(other);
     }
     /**
      * Returns true if the two Gaussian integers are equal, false otherwise.
      */
     equals(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.eq(other);
     }
     /**
      * Returns true if the two Gaussian integers are equal, false otherwise.
      */
     static equals(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.eq(other);
     }
     /**
      * Returns false if the two Gaussian integers are equal, true otherwise.
      */
     neq(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return !(this.eq(other));
     }
     /**
      * Returns false if the two Gaussian integers are equal, true otherwise.
      */
     static neq(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.neq(other);
     }
     /**
      * Returns false if the two Gaussian integers are equal, true otherwise.
      */
     notEquals(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.neq(other);
     }
     /**
      * Returns false if the two Gaussian integers are equal, true otherwise.
      */
     static notEquals(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.neq(other);
     }
     // Unary operations
@@ -284,13 +287,13 @@ class GaussianBigInt {
      * Returns the negative of a Gaussian integer (negates both the real and imaginary parts).
      */
     neg() {
-        return new _a(-this.real, -this.imaginary);
+        return new GaussianBigInt(-this.real, -this.imaginary);
     }
     /**
      * Returns the negative of a Gaussian integer (negates both the real and imaginary parts).
      */
     static neg(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.neg();
     }
     /**
@@ -303,7 +306,7 @@ class GaussianBigInt {
      * Returns the negative of a Gaussian integer (negates both the real and imaginary parts).
      */
     static negative(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.neg();
     }
     /**
@@ -316,20 +319,20 @@ class GaussianBigInt {
      * Returns the negative of a Gaussian integer (negates both the real and imaginary parts).
      */
     static negate(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.neg();
     }
     /**
      * Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
      */
     muli() {
-        return new _a(-this.imaginary, this.real);
+        return new GaussianBigInt(-this.imaginary, this.real);
     }
     /**
      *  Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
      */
     static muli(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.muli();
     }
     /**
@@ -342,20 +345,20 @@ class GaussianBigInt {
      *  Multiplies a Gaussian integer by i, i.e. rotates it 90 degrees.
      */
     static rot90(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.muli();
     }
     /**
      * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
      */
     mulnegi() {
-        return new _a(this.imaginary, -this.real);
+        return new GaussianBigInt(this.imaginary, -this.real);
     }
     /**
      * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
      */
     static mulnegi(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.mulnegi();
     }
     /**
@@ -368,20 +371,20 @@ class GaussianBigInt {
      * Multiplies a Gaussian integer by -i, i.e. rotates it 270 degrees.
      */
     static rot270(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.mulnegi();
     }
     /**
      * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
      */
     conj() {
-        return new _a(this.real, -this.imaginary);
+        return new GaussianBigInt(this.real, -this.imaginary);
     }
     /**
      * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
      */
     static conj(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.conj();
     }
     /**
@@ -394,7 +397,7 @@ class GaussianBigInt {
      * Returns the complex conjugate of a Gaussian integer (the complex conjugate of a + bi is a - bi).
      */
     static conjugate(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.conj();
     }
     /**
@@ -407,20 +410,20 @@ class GaussianBigInt {
      * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a bigint.
      */
     static norm(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.norm();
     }
     /**
      * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a GaussianBigInt.
      */
     normG() {
-        return new _a(this.norm());
+        return new GaussianBigInt(this.norm());
     }
     /**
      * Returns the norm of a Gaussian integer (The norm of a + bi is a^2 + b^2). This function returns a GaussianBigInt.
      */
     static normG(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.normG();
     }
     /**
@@ -428,17 +431,17 @@ class GaussianBigInt {
      */
     static ipow(power) {
         power = BigInt(power);
-        let mod4 = __classPrivateFieldGet(_a, _a, "m", _GaussianBigInt_modB).call(_a, power, 4n);
+        let mod4 = GaussianBigInt.#modB(power, 4n);
         if (mod4 == 0n)
-            return new _a(1n, 0n);
+            return new GaussianBigInt(1n, 0n);
         else if (mod4 == 1n)
-            return new _a(0n, 1n);
+            return new GaussianBigInt(0n, 1n);
         if (mod4 == 2n)
-            return new _a(-1n, 0n);
+            return new GaussianBigInt(-1n, 0n);
         else if (mod4 == 3n)
-            return new _a(0n, -1n);
+            return new GaussianBigInt(0n, -1n);
         else
-            return new _a(1n, 0n); // This shouldn't happen
+            return new GaussianBigInt(1n, 0n); // This shouldn't happen
     }
     /**
      * What quadrant is this Gaussian integer in?
@@ -460,22 +463,22 @@ class GaussianBigInt {
      * Quadrant 0 is (+, +), quadrant 1 is (-, +), quadrant 2 is (-, -), quadrant 3 is (+, -). Numbers on one of the axes are put in the quadrant that's counterclockwise before them, so 1 is in quadrant 0 and i is in quadrant 1. An input of 0 returns -1.
      */
     static quadrant(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.quadrant();
     }
     /**
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
      */
     firstQuadrantUnit() {
-        if (this.eq(_a.zero))
-            return new _a(0n, 0n);
-        return _a.ipow(4n - this.quadrant());
+        if (this.eq(GaussianBigInt.zero))
+            return new GaussianBigInt(0n, 0n);
+        return GaussianBigInt.ipow(4n - this.quadrant());
     }
     /**
      * What unit do we have to multiply by to rotate this gaussian integer into the first quadrant?
      */
     static firstQuadrantUnit(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.firstQuadrantUnit();
     }
     /**
@@ -488,7 +491,7 @@ class GaussianBigInt {
      * Multiplies the gaussian integer in question by some power of i to put it into the first quadrant.
     */
     static toFirstQuadrant(value) {
-        value = new _a(value);
+        value = new GaussianBigInt(value);
         return value.toFirstQuadrant();
     }
     // Arithmetic
@@ -496,159 +499,159 @@ class GaussianBigInt {
      * Addition of two Gaussian integers.
      */
     add(other) {
-        other = new _a(other);
-        return new _a(this.real + other.real, this.imaginary + other.imaginary);
+        other = new GaussianBigInt(other);
+        return new GaussianBigInt(this.real + other.real, this.imaginary + other.imaginary);
     }
     /**
      * Addition of two Gaussian integers.
      */
     static add(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.add(other);
     }
     /**
      * Addition of two Gaussian integers.
      */
     plus(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.add(other);
     }
     /**
      * Addition of two Gaussian integers.
      */
     static plus(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.add(other);
     }
     /**
      * Subtraction of two Gaussian integers.
      */
     sub(other) {
-        other = new _a(other);
-        return new _a(this.real - other.real, this.imaginary - other.imaginary);
+        other = new GaussianBigInt(other);
+        return new GaussianBigInt(this.real - other.real, this.imaginary - other.imaginary);
     }
     /**
      * Subtraction of two Gaussian integers.
      */
     static sub(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.sub(other);
     }
     /**
      * Subtraction of two Gaussian integers.
      */
     subtract(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.sub(other);
     }
     /**
      * Subtraction of two Gaussian integers.
      */
     static subtract(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.sub(other);
     }
     /**
      * Subtraction of two Gaussian integers.
      */
     minus(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.sub(other);
     }
     /**
      * Subtraction of two Gaussian integers.
      */
     static minus(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.sub(other);
     }
     /**
      * Multiplication of two Gaussian integers.
      */
     mul(other) {
-        other = new _a(other);
-        return new _a(this.real * other.real - this.imaginary * other.imaginary, this.real * other.imaginary + this.imaginary * other.real);
+        other = new GaussianBigInt(other);
+        return new GaussianBigInt(this.real * other.real - this.imaginary * other.imaginary, this.real * other.imaginary + this.imaginary * other.real);
     }
     /**
      * Multiplication of two Gaussian integers.
      */
     static mul(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.mul(other);
     }
     /**
      * Multiplication of two Gaussian integers.
      */
     multiply(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.sub(other);
     }
     /**
      * Multiplication of two Gaussian integers.
      */
     static multiply(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.sub(other);
     }
     /**
      * Multiplication of two Gaussian integers.
      */
     times(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.sub(other);
     }
     /**
      * Multiplication of two Gaussian integers.
      */
     static times(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.sub(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
      */
     div(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         let denominator = other.norm();
         let numerator = this.mul(other.conj());
-        return new _a(numerator.real / denominator, numerator.imaginary / denominator);
+        return new GaussianBigInt(numerator.real / denominator, numerator.imaginary / denominator);
     }
     /**
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
      */
     static div(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.div(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
      */
     divide(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.divide(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the same way that bigint division does)
      */
     static divide(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.divide(other);
     }
     /**
      * Modulo, a.k.a. remainder: what is the remainder of a / b?
      */
     mod(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         let result = this.sub(this.div(other).mul(other));
         while (result.plus(other).norm() < result.norm()) {
             result = result.plus(other);
@@ -668,53 +671,53 @@ class GaussianBigInt {
      * Modulo, a.k.a. remainder: what is the remainder of a / b?
      */
     static mod(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.mod(other);
     }
     /**
      * Modulo, a.k.a. remainder: what is the remainder of a / b?
      */
     modulo(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.mod(other);
     }
     /**
      * Modulo, a.k.a. remainder: what is the remainder of a / b?
      */
     static modulo(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.mod(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the way that minimizes the remainder)
      */
     divM(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.sub(this.mod(other)).div(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the way that minimizes the remainder)
      */
     static divM(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.divM(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the way that minimizes the remainder)
      */
     divideM(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.divM(other);
     }
     /**
      * Division of two Gaussian integers (rounds in the way that minimizes the remainder)
      */
     static divideM(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.divM(other);
     }
     /**
@@ -724,8 +727,8 @@ class GaussianBigInt {
         exponent = BigInt(exponent);
         if (exponent < 0n)
             throw new RangeError("Gaussian bigint negative exponent");
-        let result = new _a(1n, 0n);
-        let base = new _a(this);
+        let result = new GaussianBigInt(1n, 0n);
+        let base = new GaussianBigInt(this);
         // Exponentiation by squaring
         while (exponent > 0n) {
             if (exponent % 2n == 0n) {
@@ -743,7 +746,7 @@ class GaussianBigInt {
      * Exponentiation. The exponent must be a nonnegative bigint, because negative and complex exponents do not stay within the integers.
      */
     static pow(base, exponent) {
-        base = new _a(base);
+        base = new GaussianBigInt(base);
         exponent = BigInt(exponent);
         return base.pow(exponent);
     }
@@ -751,58 +754,66 @@ class GaussianBigInt {
      * Finds the greatest common divisor of two Gaussian integers. (To avoid ambiguity, the result returned is always in the first quadrant.)
      */
     gcd(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         if (other.norm() > this.norm())
             return other.gcd(this);
-        if (other.eq(_a.zero))
-            return new _a(this).toFirstQuadrant();
+        if (other.eq(GaussianBigInt.zero))
+            return new GaussianBigInt(this).toFirstQuadrant();
         return other.gcd(this.mod(other));
     }
     /**
      * Finds the greatest common divisor of two Gaussian integers. (To avoid ambiguity, the result returned is always in the first quadrant.)
      */
     static gcd(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.gcd(other);
     }
     /**
      * Finds the least common multiple of two Gaussian integers. (To avoid ambiguity, the result returned is always in the first quadrant.)
      */
     lcm(other) {
-        other = new _a(other);
+        other = new GaussianBigInt(other);
         return this.mul(other).div(this.gcd(other)).toFirstQuadrant();
     }
     /**
     * Finds the least common multiple of two Gaussian integers. (To avoid ambiguity, the result returned is always in the first quadrant.)
     */
     static lcm(value, other) {
-        value = new _a(value);
-        other = new _a(other);
+        value = new GaussianBigInt(value);
+        other = new GaussianBigInt(other);
         return value.lcm(other);
     }
+    // Constants
+    /** Represents 0. */
+    static zero = new GaussianBigInt(0n, 0n);
+    /** Represents 1. */
+    static one = new GaussianBigInt(1n, 0n);
+    /** Represents i. */
+    static i = new GaussianBigInt(0n, 1n);
+    /** Represents -1. */
+    static negative_one = new GaussianBigInt(-1n, 0n);
+    /** Represents -i. */
+    static negative_i = new GaussianBigInt(0n, -1n);
+    // Utility functions
+    /**
+     * Absolute value function for bigints
+     */
+    static #absB(b) {
+        if (b < 0n)
+            return b * -1n;
+        else
+            return b;
+    }
+    /**
+     * Floored modulo is the correct modulo mathematically, but JavaScript uses a different form. This function fixes that.
+     */
+    static #modB(a, b) {
+        if (a >= 0 && b >= 0)
+            return a % b;
+        else if (a < 0 && b >= 0)
+            return b - (GaussianBigInt.#absB(a) % b);
+        else
+            return -GaussianBigInt.#modB(-a, -b);
+    }
 }
-_a = GaussianBigInt, _GaussianBigInt_absB = function _GaussianBigInt_absB(b) {
-    if (b < 0n)
-        return b * -1n;
-    else
-        return b;
-}, _GaussianBigInt_modB = function _GaussianBigInt_modB(a, b) {
-    if (a >= 0 && b >= 0)
-        return a % b;
-    else if (a < 0 && b >= 0)
-        return b - (__classPrivateFieldGet(_a, _a, "m", _GaussianBigInt_absB).call(_a, a) % b);
-    else
-        return -__classPrivateFieldGet(_a, _a, "m", _GaussianBigInt_modB).call(_a, -a, -b);
-};
-// Constants
-/** Represents 0. */
-GaussianBigInt.zero = new _a(0n, 0n);
-/** Represents 1. */
-GaussianBigInt.one = new _a(1n, 0n);
-/** Represents i. */
-GaussianBigInt.i = new _a(0n, 1n);
-/** Represents -1. */
-GaussianBigInt.negative_one = new _a(-1n, 0n);
-/** Represents -i. */
-GaussianBigInt.negative_i = new _a(0n, -1n);

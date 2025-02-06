@@ -1,3 +1,6 @@
+/* There are secrets hidden in the Compendium. If you want to find those secrets legitimately, I'd recommend not looking
+ at the code. If you don't know whether you've found all the secrets yet, then you have not. */
+
 /* Opening stuff */
 html {
     background-color: var(--background-color);
@@ -23,7 +26,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color : #61c5ff; /* This is just here so I have an easy place to choose colors from */
+    color : #827818; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -534,19 +537,43 @@ html {
     padding: 0.75vh;
     position: relative;
 }
-#GaussianDIVE_enter_button {
-    width: 25vh;
-    font-size: 2.25vh;
-    background-color: #5e6644;
-    color: #333c55;
-    border: 0.56vh solid #333c55;
+.secretMode_enter_button {
+    display: inline-block;
+    width: fit-content;
+    min-width: 35vh;
+    font-size: 3vh;
     font-weight: bold;
     margin: auto;
-    padding: 0.75vh;
+    padding: 1.25vh;
     position: relative;
+    border-style: solid;
+    border-width: 0.56vh;
+}
+#GaussianDIVE_enter_button {
+    background-color: #5e6644;
+    color: #333c55;
+    border-color: #333c55;
+}
+#MergeOverflow256_enter_button {
+    background-color: #aa3030;
+    color: #ff7575;
+    border-color: #ff7575;
+}
+#reciprocal512_enter_button {
+    background-color: #edc850;
+    color: #dc44e4;
+    border-color: #dc44e4;
+}
+#PA19683_enter_button {
+    background-color: #fe5bb6;
+    color: #aa15a7;
+    border-color: #aa15a7;
 }
 .gm_var_switchForm_container > .gmSwitchModifier {
     top: 8vh;
+}
+.gm_var_switchForm_container > .gmSwitchModifier_inRationalForm {
+    top: 0;
 }
 .gmSwitchButtonLine {
     width: 100%;
@@ -573,6 +600,22 @@ html {
     position: relative;
     top: 7.5vh;
     text-align: center;
+}
+.gm_var_rationalFormLine {
+    display: flex;
+    position: relative;
+    top: 3vh;
+    justify-content: center;
+    align-items: center;
+}
+.gm_var_rationalFormLine > .gm_var_form > input {
+    top: 0;
+    height: 4vh;
+}
+.gm_var_rationalForm_middle {
+    margin-left: 1vh;
+    margin-right: 1vh;
+    font-size: 4vh;
 }
 #XXXX_min {
     color: #447900;
@@ -651,12 +694,15 @@ html {
     .gm_var_switchForm_container > .gmSwitchModifier {
         top: calc(4.85vw * var(--gm_scale));
     }
+    .gm_var_switchForm_container > .gmSwitchModifier_inRationalForm {
+        top: 0;
+    }
     .gm_var_text {
         font-size: calc(1.36vw * var(--gm_scale));
     }
     .gm_var_form > input {
-        font-size: calc(1.82vw * var(--gm_scale));;
-        height: calc(3.03vw * var(--gm_scale));;
+        font-size: calc(1.82vw * var(--gm_scale));
+        height: calc(3.03vw * var(--gm_scale));
         top: calc(4.54vw * var(--gm_scale));;
     }
     #gamemode .gm_var_title {
@@ -685,6 +731,23 @@ html {
         padding: calc(0.6vw * var(--gm_scale));
         width: calc(15.15vw * var(--gm_scale));
         margin-bottom: calc(1.2vw * var(--gm_scale));
+    }
+    .gm_var_rationalFormLine {
+        top: calc(1.8vw * var(--gm_scale));
+    }
+    .gm_var_rationalFormLine > .gm_var_form > input {
+        height: calc(2.4vw * var(--gm_scale));
+    }
+    .gm_var_rationalForm_middle {
+        margin-left: calc(0.6vw * var(--gm_scale));
+        margin-right: calc(0.6vw * var(--gm_scale));
+        font-size: calc(2.4vw * var(--gm_scale));
+    }
+    .secretMode_enter_button {
+        min-width: calc(21vw * var(--gm_scale));
+        font-size: calc(2.4vw * var(--gm_scale));
+        padding: calc(0.75vw * var(--gm_scale));
+        border-width: calc(0.336vw * var(--gm_scale));
     }
 }
 @media screen and (max-aspect-ratio: 21/20) {
@@ -723,22 +786,36 @@ html {
     --modifiers_base_size: 1vh;
     font-size: calc(var(--modifiers_base_size) * 2.5);
 }
-#modifiers_return {
+#modifiers_bottomLine {
+    display: flex;
+    width: calc(var(--modifiers_base_size) * 90);
+    margin: auto;
+    justify-content: space-between;
+}
+#modifiers_return, #modifiers_save_code {
     width: calc(var(--modifiers_base_size) * 33);
     position: relative;
-    font-size: calc(var(--modifiers_base_size) * 4);
     font-weight: bold;
     padding: calc(var(--modifiers_base_size) * 2);
     height: calc(var(--modifiers_base_size) * 5);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #787800;
-    background-color: #004675;
-    border: var(--modifiers_base_size) solid #787800;
     margin: auto;
     margin-top: calc(var(--modifiers_base_size) * 3);
     margin-bottom: 0;
+}
+#modifiers_return {
+    color: #787800;
+    background-color: #004675;
+    border: var(--modifiers_base_size) solid #787800;
+    font-size: calc(var(--modifiers_base_size) * 4);
+}
+#modifiers_save_code {
+    color: #db58ff;
+    background-color: #9e00a6;
+    border: var(--modifiers_base_size) solid #db58ff;
+    font-size: calc(var(--modifiers_base_size) * 3);
 }
 #modifiers_title {
     font-size: calc(var(--modifiers_base_size) * 6);
@@ -1343,9 +1420,12 @@ html {
         width: 50%;
     }
 }
-@media screen and (max-aspect-ratio: 9/20) {
+@media screen and (max-aspect-ratio: 17/40) {
     #modifiers {
         --modifiers_base_size: 1.2vw;
+    }
+    #modifiers_bottomLine {
+        all: revert;
     }
 }
 @media screen and (max-aspect-ratio: 13/40) {
@@ -2512,16 +2592,20 @@ html {
     --base_size: 1vh;
     font-size: calc(var(--base_size) * 2.5);
 }
-.guide_return {
-    width: calc(var(--base_size) * 24.75);
-    position: fixed;
+.guide_return, .guide_button {
+    min-width: calc(var(--base_size) * 24.75);
+    max-width: 90%;
+    margin: auto;
     font-size: calc(var(--base_size) * 3);
     font-weight: bold;
     padding: calc(var(--base_size) * 1.5);
-    height: calc(var(--base_size) * 3.75);
+    min-height: calc(var(--base_size) * 3.75);
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.guide_return {
+    position: fixed;
     left: calc(50% - var(--base_size) * 12.375);
     bottom: calc(var(--base_size) * 1.5);
 }
@@ -2534,6 +2618,11 @@ html {
     color: #c100cb;
     background-color: #000a75;
     border: calc(var(--base_size) * 0.75) solid #c100cb;
+}
+#secretOffice_return {
+    color: #bc8332;
+    background-color: #edc536;
+    border: calc(var(--base_size) * 0.75) solid #bc8332;
 }
 .guide_box {
     width: 95%;
@@ -2567,6 +2656,11 @@ html {
     background-color: #fcd164;
     color: #d700c9;
     border-color: #d700c9;
+}
+#guide_modeModifiers {
+    background-color: #00ff91;
+    color: #208096;
+    border-color: #208096;
 }
 #guide_credits {
     background-color: #f9cccc;
@@ -2651,6 +2745,34 @@ ul {
 .guide_bottomspace {
     height: calc(var(--base_size) * 9);
 }
+#secretOffice_cluesBox {
+    font-size: calc(var(--base_size) * 3);
+}
+.secretOffice_cluesList {
+    font-style: italic;
+}
+#secretOffice_trackingOff {
+    color: #5a160d;
+    background-color: #ab4537;
+    border: calc(var(--base_size) * 0.75) solid #5a160d;
+}
+#secretOffice_trackingOn {
+    color: #5a480d;
+    background-color: #ab9a37;
+    border: calc(var(--base_size) * 0.75) solid #5a480d;
+}
+@keyframes titleZero {
+    0% {color : #ffe100}
+    98% {color : #ffe100}
+    99% {color : #9d7828}
+    100% {color : #ffe100}
+}
+#titleZero {
+    animation-name: titleZero;
+    animation-duration: 64s;
+    animation-iteration-count: infinite;
+    cursor: pointer;
+}
 @media screen and (max-aspect-ratio: 16/9) {
     #guide {
         --base_size: 0.5625vw;
@@ -2691,6 +2813,7 @@ ul {
         --base_size: 1.75vw;
     }
 }
+
 
 /* Hidden Tile Viewer */
 #tile_viewer {
@@ -2753,6 +2876,7 @@ ul {
     height: calc(var(--secondary_size) * 35);
     background-color: #ffffff;
     border: calc(var(--secondary_size) * 0.875) solid black;
+    font-weight: bold;
     margin: auto;
     display: flex;
     justify-content: center;
