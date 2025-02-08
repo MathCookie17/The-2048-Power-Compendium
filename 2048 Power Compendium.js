@@ -13724,6 +13724,7 @@ function loadModifiers() {
             spawnConditions = ["@Moves", "+", 1, "%", modifiers[19], "=", 0];
             if (indexOfNestedPrimArray("@Moves", statBoxes) == -1) statBoxes.push(["Moves", "@Moves"]);
         }
+        else spawnConditions = true;
         if (modifiers[20]) {
             let mnum = start_modifier_vars.length;
             start_modifier_vars.push([0, 0, 0]);
