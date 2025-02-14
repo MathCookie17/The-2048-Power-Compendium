@@ -9720,7 +9720,7 @@ function gmDisplayVars() {
                     ];
                 }
                 let rulesTitle = mode_vars[1]**goalPow + " (Alternate 5040, 1668 Variant)";
-                let rulesDescription = "Two equal tiles that are a power of " + mode_vars[1] + " tiles can merge if " + mode_vars[1] + " is not a power of 3, and three tiles that are multiples of " + mode_vars[1] + "<sup>n</sup> and less than " + mode_vars[1] + "<sup>n + 1</sup> can merge if two of them are equal and the third one is equal to the other two or exactly " + mode_vars[1] + "<sup>n</sup> away from the other two, and their sum is less than " + mode_vars[1] + "<sup>n</sup> away from " + mode_vars[1] + "<sup>n + 1</sup> divided by some nonnegative integer power of three. (In other words, to get from one power of " + mode_vars[1] + " to the next, pretend " + mode_vars[1] + "<sup>n</sup> is 1 and follow the path to get from 1 to " + mode_vars[1] + " in 1668.) Get to the " + mode_vars[1]**goalPow + " tile to win!"
+                let rulesDescription = "Two equal tiles that are a power of " + mode_vars[1] + " can merge if " + mode_vars[1] + " is not a power of 3, and three tiles that are multiples of " + mode_vars[1] + "<sup>n</sup> and less than " + mode_vars[1] + "<sup>n + 1</sup> can merge if two of them are equal and the third one is equal to the other two or exactly " + mode_vars[1] + "<sup>n</sup> away from the other two, and their sum is less than " + mode_vars[1] + "<sup>n</sup> away from " + mode_vars[1] + "<sup>n + 1</sup> divided by some nonnegative integer power of three. (In other words, to get from one power of " + mode_vars[1] + " to the next, pretend " + mode_vars[1] + "<sup>n</sup> is 1 and follow the path to get from 1 to " + mode_vars[1] + " in 1668.) Get to the " + mode_vars[1]**goalPow + " tile to win!"
                 displayRules("rules_text", ["h1", rulesTitle], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
                 displayRules("gm_rules_text", ["h1", rulesTitle], ["p", rulesDescription], ["p", "Spawning tiles: 1 (100%)"]);
             }
@@ -10588,82 +10588,84 @@ function displayGrid() {
         let box = document.getElementById("stat_container_" + b);
         let counter = document.getElementById("stat_counter_" + b);
         let title = document.getElementById("stat_title_" + b);
-        box.style.setProperty("display", "flex");
-        title.innerHTML = CalcArray(statBoxes[b][0]);
         if (statBoxes[b][6] !== undefined && CalcArray(statBoxes[b][6]) == false) {
             box.style.setProperty("display", "none");
         }
-        else if (statBoxes[b].length > 4 && (statBoxes[b][4] == "Tile" || statBoxes[b][4] == "TileArray")) {
-            while (counter.lastElementChild) counter.removeChild(counter.lastElementChild);
-            let tiles = compendiumStructuredClone(CalcArray(statBoxes[b][1]));
-            if (statBoxes[b][4] == "Tile") tiles = [tiles];
-            for (let t = 0; t < tiles.length; t++) {
-                let newTile = document.createElement("div");
-                newTile.id = "stat_tile_" + b + "_" + t;
-                if (statBoxes[b][4] == "Tile") newTile.classList.add("stat_tile")
-                else newTile.classList.add("stat_array_tile");
-                if (hexagonal) newTile.classList.add("hexagon_clip")
-                counter.appendChild(newTile);
-                let newTilep = document.createElement("p");
-                let newTilet = document.createTextNode("");
-                newTilep.appendChild(newTilet);
-                newTile.appendChild(newTilep);
-                newTilep.classList.add("tile_text");
-                if (!Array.isArray(tiles[t])) tiles[t] = [tiles[t]];
-                if (statBoxes[b][4] == "Tile") {
-                    if (statBoxes[b][5] == "Self") displayTile("ScoreSelf", newTile, "None", "None", tiles[t], tiles[t]);
-                    else displayTile("Score", newTile, "None", "None", tiles[t], [true, "@This 0", "@ColorScheme", statBoxes[b][5], ["@This 0"]]);
+        else {
+            box.style.setProperty("display", "flex");
+            title.innerHTML = CalcArray(statBoxes[b][0]);
+            if (statBoxes[b].length > 4 && (statBoxes[b][4] == "Tile" || statBoxes[b][4] == "TileArray")) {
+                while (counter.lastElementChild) counter.removeChild(counter.lastElementChild);
+                let tiles = compendiumStructuredClone(CalcArray(statBoxes[b][1]));
+                if (statBoxes[b][4] == "Tile") tiles = [tiles];
+                for (let t = 0; t < tiles.length; t++) {
+                    let newTile = document.createElement("div");
+                    newTile.id = "stat_tile_" + b + "_" + t;
+                    if (statBoxes[b][4] == "Tile") newTile.classList.add("stat_tile")
+                    else newTile.classList.add("stat_array_tile");
+                    if (hexagonal) newTile.classList.add("hexagon_clip")
+                    counter.appendChild(newTile);
+                    let newTilep = document.createElement("p");
+                    let newTilet = document.createTextNode("");
+                    newTilep.appendChild(newTilet);
+                    newTile.appendChild(newTilep);
+                    newTilep.classList.add("tile_text");
+                    if (!Array.isArray(tiles[t])) tiles[t] = [tiles[t]];
+                    if (statBoxes[b][4] == "Tile") {
+                        if (statBoxes[b][5] == "Self") displayTile("ScoreSelf", newTile, "None", "None", tiles[t], tiles[t]);
+                        else displayTile("Score", newTile, "None", "None", tiles[t], [true, "@This 0", "@ColorScheme", statBoxes[b][5], ["@This 0"]]);
+                    }
+                    else {
+                        if (statBoxes[b][5] == "Self") displayTile("ScoreArraySelf", newTile, "None", "None", tiles[t], tiles[t]);
+                        else displayTile("ScoreArray", newTile, "None", "None", tiles[t], [true, "@This 0", "@ColorScheme", statBoxes[b][5], ["@This 0"]]);
+                    }
                 }
-                else {
-                    if (statBoxes[b][5] == "Self") displayTile("ScoreArraySelf", newTile, "None", "None", tiles[t], tiles[t]);
-                    else displayTile("ScoreArray", newTile, "None", "None", tiles[t], [true, "@This 0", "@ColorScheme", statBoxes[b][5], ["@This 0"]]);
+            }
+            else counter.innerHTML = defaultAbbreviate(CalcArray(statBoxes[b][1]));
+            if (statBoxes[b][8] !== undefined) {
+                if (typeof statBoxes[b][8] == "string") box.style.setProperty("border", statBoxes[b][8]);
+                else if (statBoxes[b][8] === false) box.style.setProperty("border", "none");
+                else if (statBoxes[b][8] === true) {
+                    let sizeExpression = 1;
+                    let size = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + 0.005 + ") ";
+                    let color = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
+                    let border = size + "solid " + color;
+                    box.style.setProperty("border", border);
+                }
+                else if (Array.isArray(statBoxes[b][8]) && statBoxes[b][8].length > 0) {
+                    let sizeExpression = 1;
+                    let size = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][8][0] + ") ";
+                    let color;
+                    if (statBoxes[b][8][1] === undefined) color = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
+                    else color = evaluateColor(statBoxes[b][8][1]);
+                    let border = size + "solid " + color;
+                    box.style.setProperty("border", border);
                 }
             }
-        }
-        else counter.innerHTML = defaultAbbreviate(CalcArray(statBoxes[b][1]));
-        if (statBoxes[b][8] !== undefined) {
-            if (typeof statBoxes[b][8] == "string") box.style.setProperty("border", statBoxes[b][8]);
-            else if (statBoxes[b][8] === false) box.style.setProperty("border", "none");
-            else if (statBoxes[b][8] === true) {
-                let sizeExpression = 1;
-                let size = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + 0.005 + ") ";
-                let color = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
-                let border = size + "solid " + color;
-                box.style.setProperty("border", border);
+            else box.style.setProperty("border", "none");
+            if (statBoxes[b][9] === undefined) box.style.setProperty("background-color", getComputedStyle(document.documentElement).getPropertyValue("--grid-color"));
+            else box.style.setProperty("background-color", evaluateColor(statBoxes[b][9]));
+            if (statBoxes[b][10] === undefined) counter.style.setProperty("color", "#ffffff");
+            else counter.style.setProperty("color", evaluateColor(statBoxes[b][10]));
+            if (statBoxes[b][11] === undefined) title.style.setProperty("color", getComputedStyle(document.documentElement).getPropertyValue("--text-color"));
+            else title.style.setProperty("color", evaluateColor(statBoxes[b][11]));
+            if (statBoxes[b][12] !== undefined) {
+                if (typeof statBoxes[b][12] == "string") box.style.setProperty("box-shadow", statBoxes[b][12]);
+                else if (statBoxes[b][12] === false) box.style.setProperty("box-shadow", "none");
+                else if (Array.isArray(statBoxes[b][12]) && statBoxes[b][12].length > 2) {
+                    let sizeExpression = 1;
+                    let offset1 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][12][0] + ") ";
+                    let offset2 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][12][1] + ") ";
+                    let blur = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][12][2] +  ") ";
+                    let color;
+                    if (statBoxes[b][8][3] === undefined) color = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
+                    else color = evaluateColor(statBoxes[b][12][3]);
+                    let shadow = offset1 + offset2 + blur + color;
+                    box.style.setProperty("box-shadow", shadow);
+                }
             }
-            else if (Array.isArray(statBoxes[b][8]) && statBoxes[b][8].length > 0) {
-                let sizeExpression = 1;
-                let size = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][8][0] + ") ";
-                let color;
-                if (statBoxes[b][8][1] === undefined) color = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
-                else color = evaluateColor(statBoxes[b][8][1]);
-                let border = size + "solid " + color;
-                box.style.setProperty("border", border);
-            }
+            else box.style.setProperty("box-shadow", "none");
         }
-        else box.style.setProperty("border", "none");
-        if (statBoxes[b][9] === undefined) box.style.setProperty("background-color", getComputedStyle(document.documentElement).getPropertyValue("--grid-color"));
-        else box.style.setProperty("background-color", evaluateColor(statBoxes[b][9]));
-        if (statBoxes[b][10] === undefined) counter.style.setProperty("color", "#ffffff");
-        else counter.style.setProperty("color", evaluateColor(statBoxes[b][10]));
-        if (statBoxes[b][11] === undefined) title.style.setProperty("color", getComputedStyle(document.documentElement).getPropertyValue("--text-color"));
-        else title.style.setProperty("color", evaluateColor(statBoxes[b][11]));
-        if (statBoxes[b][12] !== undefined) {
-            if (typeof statBoxes[b][12] == "string") box.style.setProperty("box-shadow", statBoxes[b][12]);
-            else if (statBoxes[b][12] === false) box.style.setProperty("box-shadow", "none");
-            else if (Array.isArray(statBoxes[b][12]) && statBoxes[b][12].length > 2) {
-                let sizeExpression = 1;
-                let offset1 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][12][0] + ") ";
-                let offset2 = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][12][1] + ") ";
-                let blur = "calc(1vw * var(--grid_vw) * " + sizeExpression + " * " + statBoxes[b][12][2] +  ") ";
-                let color;
-                if (statBoxes[b][8][3] === undefined) color = getComputedStyle(document.documentElement).getPropertyValue("--text-color");
-                else color = evaluateColor(statBoxes[b][12][3]);
-                let shadow = offset1 + offset2 + blur + color;
-                box.style.setProperty("box-shadow", shadow);
-            }
-        }
-        else box.style.setProperty("box-shadow", "none");
     }
     if (screen.width/screen.height > 1.2) {
         document.getElementById("left_of_grid").style.setProperty("top", getComputedStyle(document.getElementById("score_line")).getPropertyValue("height"));
