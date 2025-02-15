@@ -7456,7 +7456,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "/", 2, "=", "@Next 1 1"]], false, [[["@This 0", "+", 1], "@This 1"]], [3, "^", "@This 0", "*", "@This 1"], [false, true]],
-                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"]]], 0, [false, true]],
                 [2, [["@Next 1 0", "=", "Divide"], "&&", ["@This 0", "=", "Divide"]], true, [["Divide", "@Signless"]], 0, [true, true]]
             ];
             startTileSpawns = [[[0, 2], 50], [["Divide", "@Signless"], 50]];
