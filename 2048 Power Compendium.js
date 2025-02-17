@@ -19480,7 +19480,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         let SaveCode = "";
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "2.1|"
+        SaveCode += "2.1.4|"
         SaveCode += window.btoa(String(width));
         SaveCode += "|";
         SaveCode += window.btoa(String(height));
@@ -19525,7 +19525,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         SaveCode += "|";
         SaveCode += window.btoa(getComputedStyle(document.documentElement).getPropertyValue("--text-color"));
         SaveCode += "|";
-        SaveCode += window.btoa(document.getElementById("rules_text").innerHTML);
+        SaveCode += window.btoa(he.encode(document.getElementById("rules_text").innerHTML));
         SaveCode += "|";
         SaveCode += window.btoa(SCstringify(multiMerge));
         SaveCode += "|";
@@ -19589,8 +19589,8 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         }
         document.getElementById("save_code_box").value = SaveCode;
     }
-    catch {
-        document.getElementById("save_code_box").value = "There was an error with exporting your save code.";
+    catch (error) {
+        document.getElementById("save_code_box").value = "There was an error with exporting your save code: " + error.message;
     }
 }
 
@@ -19657,7 +19657,7 @@ function exportModifiersSave() {
 //     and modifiers[28] adds slippery tiles to the grid.
 //     */
 
-let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1"];
+let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4"];
 
 function importSave(code) {
     try {
@@ -19690,7 +19690,9 @@ function importSave(code) {
                 coderesults.push(window.atob(codebits[21])); //coderesults[19] is --grid-color
                 coderesults.push(window.atob(codebits[22])); //coderesults[20] is --tile-color
                 coderesults.push(window.atob(codebits[23])); //coderesults[21] is --text-color
-                coderesults.push(window.atob(codebits[24])); //coderesults[22] is the rules text
+                //coderesults[22] is the rules text
+                if (validSaveCodeVersions.indexOf(codebits[1]) > 8) coderesults.push(he.decode(window.atob(codebits[24])));
+                else coderesults.push(window.atob(codebits[24]));
                 coderesults.push(SCparse(window.atob(codebits[25]))); //coderesults[23] is multiMerge
                 coderesults.push(window.atob(codebits[26])); //coderesults[24] is spawnLocation
                 coderesults.push(Number(window.atob(codebits[27]))); //coderesults[25] is startTileAmount
@@ -19700,12 +19702,12 @@ function importSave(code) {
                 coderesults.push(SCparse(window.atob(codebits[31]))); //coderesults[29] is start_game_vars
                 coderesults.push(SCparse(window.atob(codebits[32]))); //coderesults[30] is start_modifier_vars
                 coderesults.push(SCparse(window.atob(codebits[33]))); //coderesults[31] is scripts
-                if (validSaveCodeVersions.indexOf(codebits[1]) > 4) {
+                if (validSaveCodeVersions.indexOf(codebits[1]) > 3) {
                     coderesults.push(SCparse(window.atob(codebits[34]))); //coderesults[32] is hexagonal
                     coderesults.push(SCparse(window.atob(codebits[35]))); //coderesults[33] is hiddenTileText
                 }
                 if (codebits[0] == "@2048PowCompGame") {
-                    let midgameStart = (validSaveCodeVersions.indexOf(codebits[1]) > 4) ? 36 : 34;
+                    let midgameStart = (validSaveCodeVersions.indexOf(codebits[1]) > 3) ? 36 : 34;
                     coderesults.push(SCparse(window.atob(codebits[midgameStart]))); //coderesults[midgameStart] is Grid
                     coderesults.push(Number(window.atob(codebits[midgameStart + 1]))); //coderesults[midgameStart + 1] is score
                     coderesults.push(Number(window.atob(codebits[midgameStart + 2]))); //coderesults[midgameStart + 2] is won
@@ -19759,7 +19761,7 @@ function importSave(code) {
                 start_game_vars = coderesults[29];
                 start_modifier_vars = coderesults[30];
                 scripts = coderesults[31];
-                if (validSaveCodeVersions.indexOf(codebits[1]) > 4) {
+                if (validSaveCodeVersions.indexOf(codebits[1]) > 3) {
                     hexagonal = coderesults[32];
                     hiddenTileText = coderesults[33];
                 }
@@ -19770,7 +19772,7 @@ function importSave(code) {
                 gamemode = 0;
                 startGame();
                 if (codebits[0] == "@2048PowCompGame") {
-                    let midgameStart = (validSaveCodeVersions.indexOf(codebits[1]) > 4) ? 34 : 32;
+                    let midgameStart = (validSaveCodeVersions.indexOf(codebits[1]) > 3) ? 34 : 32;
                     Grid = coderesults[midgameStart];
                     score = coderesults[midgameStart + 1];
                     won = coderesults[midgameStart + 2];
