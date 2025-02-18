@@ -7588,7 +7588,7 @@ function loadMode(mode) {
         }
         else {
             startTileSpawns = [[[0, 1], 90 * modifiers[22]], [[1, 1], 10 * modifiers[22]], [[0, -1], 90 * modifiers[23]], [[1, -1], 10 * modifiers[23]]];
-            winConditions = [[9, 1], [-9, 1]];
+            winConditions = [[9, 1], [9, -1]];
             winRequirement = 2;
             MergeRules = [
                 [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], true, [[["@This 0", "+", 1], "@This 1"], ["@This 0", ["@This 1", "*", -1]]], [3, "^", "@This 0", "*", 2], [false, false]],
