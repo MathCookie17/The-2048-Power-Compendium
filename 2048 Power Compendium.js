@@ -7472,7 +7472,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "/", 2, "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"]], false, [[["@This 0", "+", 1], "@This 1", "@This 2"]], [3, "^", "@This 0", "*", "@This 1"], [false, true]],
-                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"], ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"], ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
                 [2, [["@Next 1 0", "=", "Divide"], "&&", ["@This 0", "=", "Divide"]], true, [["Divide", "@Signless", 0]], 0, [true, true]]
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
@@ -9885,7 +9885,7 @@ function gmDisplayVars() {
             document.getElementById("3188646_multiplyMiddle_text").style.setProperty("color", "#a6ff6a");
             displayRules("rules_text", ["h1", "145.965"], ["p","There are division tiles. If you merge two tiles that are each double a power of 1.5 or half a power of 1.5 (they do not need to be double or half the <i>same</i> power of 1.5) with a divison tile in the middle, those two tiles will be divided. Also, a 1 tile can be divided in this way with any other tile, and any tile can merge normally with a tile that's double itself. Get to the 145.965 (0.5 &#215; 1.5<sup>14</sup>) tile to win!"],
             ["p", "Spawning tiles: 2 (50%), &#247; (50%)"]);
-            displayRules("gm_rules_text", ["h1", "145.965"], ["p","There are division tiles. If you merge two tiles that are each double a power of 1.5 or half a power of 1.5 (they do not need to be double or half the <i>same</i> power of 1.5) with a divison tile in the middle, those two tiles will be divided. Also, a 1 tile can be divided in this way with any other tile, and any tile can merge normally with a tile that's double itself. Get to the 145.965 (0.5 &#215; 1.5<sup>14</sup>) tile to win!"],
+            displayRules("gm_rules_text", ["h1", "145.965"], ["p", "You found a hidden mode!"], ["p","There are division tiles. If you merge two tiles that are each double a power of 1.5 or half a power of 1.5 (they do not need to be double or half the <i>same</i> power of 1.5) with a divison tile in the middle, those two tiles will be divided. Also, a 1 tile can be divided in this way with any other tile, and any tile can merge normally with a tile that's double itself. Get to the 145.965 (0.5 &#215; 1.5<sup>14</sup>) tile to win!"],
             ["p", "Spawning tiles: 2 (50%), &#247; (50%)"]);
         }
         else {
@@ -9893,7 +9893,7 @@ function gmDisplayVars() {
             document.getElementById("3188646_multiplyMiddle_text").style.setProperty("color", "#5ad3ff");
             displayRules("rules_text", ["h1", "145.965"], ["p","There are division tiles. If you merge two tiles that are each double a power of 1.5 or half a power of 1.5 (they do not need to be double or half the <i>same</i> power of 1.5) with a divison tile, those two tiles will be divided. Also, a 1 tile can be divided in this way with any other tile, and any tile can merge normally with a tile that's double itself. Get to the 145.965 (0.5 &#215; 1.5<sup>14</sup>) tile to win!"],
             ["p", "Spawning tiles: 2 (50%), &#247; (50%)"]);
-            displayRules("gm_rules_text", ["h1", "145.965"], ["p","There are division tiles. If you merge two tiles that are each double a power of 1.5 or half a power of 1.5 (they do not need to be double or half the <i>same</i> power of 1.5) with a divison tile, those two tiles will be divided. Also, a 1 tile can be divided in this way with any other tile, and any tile can merge normally with a tile that's double itself. Get to the 145.965 (0.5 &#215; 1.5<sup>14</sup>) tile to win!"],
+            displayRules("gm_rules_text", ["h1", "145.965"], ["p", "You found a hidden mode!"], ["p","There are division tiles. If you merge two tiles that are each double a power of 1.5 or half a power of 1.5 (they do not need to be double or half the <i>same</i> power of 1.5) with a divison tile, those two tiles will be divided. Also, a 1 tile can be divided in this way with any other tile, and any tile can merge normally with a tile that's double itself. Get to the 145.965 (0.5 &#215; 1.5<sup>14</sup>) tile to win!"],
             ["p", "Spawning tiles: 2 (50%), &#247; (50%)"]);
         }
     }
@@ -12723,12 +12723,18 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 let vert = (innerdisplay[1].split("-"))[0];
                 let horiz = (innerdisplay[1].split("-"))[1];
                 innerscript.style.setProperty("display", "flex");
-                innerscript.style.setProperty("width", "100%");
-                innerscript.style.setProperty("height", "100%");
+                if (hexagonal) {
+                    innerscript.style.setProperty("width", "80%");
+                    innerscript.style.setProperty("height", "80%");
+                }
+                else {
+                    innerscript.style.setProperty("width", "100%");
+                    innerscript.style.setProperty("height", "100%");
+                }
                 if (vert == "top") {
                     innerscript.style.setProperty("align-items", "flex-start");
                 }
-                if (vert == "bottom") {
+                else if (vert == "bottom") {
                     innerscript.style.setProperty("align-items", "flex-end");
                 }
                 else {
@@ -12737,7 +12743,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 if (horiz == "left") {
                     innerscript.style.setProperty("justify-content", "flex-start");
                 }
-                if (horiz == "right") {
+                else if (horiz == "right") {
                     innerscript.style.setProperty("justify-content", "flex-end");
                 }
                 else {
@@ -17595,27 +17601,17 @@ function mergeRuleApplies(rule, vcoord, hcoord, vdir, hdir) { // Tests whether a
             }
         }
         let vcoordMM, hcoordMM;
-        if (reverseMergePosition) {
-            vcoordMM = vcoord;
-            hcoordMM = hcoord;
-            for (let i = 0; i < mlength; i++) {
-                if (i > 0) {
-                    vcoordMM += vdir;
-                    hcoordMM += hdir;
-                }
-                outputPositions.push([vcoordMM, hcoordMM]);
+        vcoordMM = vcoord;
+        hcoordMM = hcoord;
+        for (let i = 0; i < mlength; i++) {
+            if (i > 0) {
+                [vcoordMM, hcoordMM] = CalcArray(["@Next 1 @Position"], vcoordMM, hcoordMM, vdir, hdir);
             }
+            outputPositions.push([vcoordMM, hcoordMM]);
         }
-        else {
-            vcoordMM = vcoord + vdir * (mlength - 1);
-            hcoordMM = hcoord + hdir * (mlength - 1);
-            for (let i = 0; i < mlength; i++) {
-                if (i > 0) {
-                    vcoordMM -= vdir;
-                    hcoordMM -= hdir;
-                }
-                outputPositions.push([vcoordMM, hcoordMM]);
-            }
+        if (!reverseMergePosition) {
+            outputPositions.reverse();
+            [vcoordMM, hcoordMM] = outputPositions[outputPositions.length - 1];
         }
         if (checkedrule[3].length > mlength) { // Overflow
             let newPosition;
