@@ -6043,7 +6043,7 @@ function loadMode(mode) {
             [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@This 1", "=", 75], "&&", ["@Next 1 1", "=", 75], "&&", ["@Next 2 1", "=", 75]], false, [[["@This 0", "+", 1], 15]], [15, "^", "@This 0", "*", 225, "round", 1], [false, true, true]]
         ]
         startTileSpawns = [[[-1, 15], 85], [[-1, 30], 12], [[-1, 60], 3]];
-        winConditions = [[3, 1]];
+        winConditions = [[2, 15]];
         winRequirement = 1;
         document.documentElement.style.setProperty("background-image", "repeating-linear-gradient(90deg, #f59879 0%, #ba7862 20%, #f59879 40%)");
         document.documentElement.style.setProperty("--background-color", "repeating-linear-gradient(#f9dcd7 0%, #e1aea5 15%, #f9dcd7 30%)");
