@@ -2260,13 +2260,17 @@ document.getElementById("regularGuide_return").addEventListener("click", functio
 document.getElementById("customGuide_return").addEventListener("click", function(){
     switchScreen("CustomMode", "Opening");
 });
-for (let c of document.getElementsByClassName("customGuide_exampleCodeBox")) {
+for (let c of document.getElementsByClassName("customGuide_exampleReveal")) {
     c.addEventListener("click", function(){
-        for (let d of c.children) {
-            if (d.tagName == "P") {
-                if (getComputedStyle(d).getPropertyValue("display") == "none") d.style.setProperty("display", "block");
-                else d.style.setProperty("display", "none")
-            }
+        let d = c.parentElement;
+        d = d.children[d.children.length - 1];
+        if (getComputedStyle(d).getPropertyValue("display") == "none") {
+            d.style.setProperty("display", "block");
+            c.innerHTML = "Hide Save Code";
+        }
+        else {
+            d.style.setProperty("display", "none");
+            c.innerHTML = "Show Save Code";
         }
     })
 };
@@ -19181,7 +19185,8 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
         SubsetCheck:
         for (let p = 0; p < m; p++) {
             let prevRule = customMerges[p];
-            if (prevRule[2].length == 0 || thisCM[2].length <= prevRule[2].length) continue SubsetCheck;
+            console.log(p, m, prevRule[2].length, thisCM[2].length);
+            if (prevRule[2].length == 0 || thisCM[2].length >= prevRule[2].length) continue SubsetCheck;
             // let subset = customMergeSubset(thisCM, prevRule);
             // if (subset !== false) {
             //     let subsetCondition = [];

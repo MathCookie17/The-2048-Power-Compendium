@@ -2624,6 +2624,12 @@ html {
     background-color: #edc536;
     border: calc(var(--base_size) * 0.75) solid #bc8332;
 }
+#customMoreExamples_return {
+    color: #d2d200;
+    background-color: #0077c7;
+    border: calc(var(--base_size) * 0.75) solid #d2d200;
+    text-decoration: none;
+}
 .guide_box {
     width: 95%;
     border: calc(var(--base_size)) solid;
@@ -2636,6 +2642,7 @@ html {
     border: calc(var(--base_size) * 0.65) solid;
     margin: auto;
     margin-bottom: calc(var(--base_size) * 2);
+    padding: calc(var(--base_size) * 0.75);
 }
 #guide_basics {
     background-color: #2072ff;
@@ -2727,12 +2734,29 @@ html {
     color: #6a00ff;
     border-color: #6a00ff;
 }
+.customGuide_exampleReveal {
+    background-color: #6d008e;
+    color: #ee00ff;
+    border-color: #ee00ff;
+    width: 30%;
+    border: calc(var(--base_size) * 0.5) solid;
+    margin: auto;
+    padding: calc(var(--base_size) * 0.75);
+    margin-bottom: calc(var(--base_size) * 2);
+}
 .customGuide_exampleCodeBox {
     overflow-wrap: break-word;
 }
-.customGuide_exampleCodeBox > p {
+.customGuide_exampleCode {
     display: none;
     font-size: calc(var(--base_size) * 1.5);
+}
+#customGuide_moreExamplesLink {
+    background-color: #6d008e;
+    color: #ee00ff;
+    width: 50%;
+    border: calc(var(--base_size) * 0.75) solid #ee00ff;
+    text-decoration: none;
 }
 ul {
     text-align: left;
