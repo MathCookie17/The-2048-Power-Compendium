@@ -15042,9 +15042,8 @@ function operation(n1, operator, n2) {
             while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
             if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
             vpos = nn2.indexOf("@end_vars");
-            nn2.splice(vpos + 1, 0, total);
-            nn2.splice(vpos, 0, index, value);
-            result = CalcArray(nn2, ...additional[0]);
+            nn2.splice(vpos + 1, 0, n1);
+            result = CalcArray(nn2);
         break;
         case "evaluateColor":
             result = evaluateColor(n1, ...n2);
