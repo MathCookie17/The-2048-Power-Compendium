@@ -7584,7 +7584,7 @@ function loadMode(mode) {
         if (modifiers[13] == "None") {
             MergeRules = [
                 [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", 1]], true, [[["@This 0", "+", 1], "@This 1"], ["@This 0", ["@This 1", "*", -1]]], [3, "^", "@This 0", "*", 2], [false, false]],
-                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", "@Next 1 1"]], true, [], 0, [false, false]]
+                [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", "@Next 1 1"]], true, [], 0, [true, true]]
             ];
             startTileSpawns = [[[0, 1], 90], [[1, 1], 10]];
             winConditions = [[9, 1]];
@@ -7597,7 +7597,7 @@ function loadMode(mode) {
             MergeRules = [
                 [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], true, [[["@This 0", "+", 1], "@This 1"], ["@This 0", ["@This 1", "*", -1]]], [3, "^", "@This 0", "*", 2], [false, false]],
             ];
-            if (modifiers[13] == "Interacting") MergeRules.push([2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", "@Next 1 1"]], true, [], 0, [false, false]]);
+            if (modifiers[13] == "Interacting") MergeRules.push([2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", "@Next 1 1"]], true, [], 0, [true, true]]);
         }
         document.documentElement.style.setProperty("background-image", "radial-gradient(#ff5cb6,#aa15a7)");
         document.documentElement.style.setProperty("--background-color", "linear-gradient(#f29dcc,#9f419d)");
@@ -14440,18 +14440,18 @@ function displayCustomTile(tile) {
     hcoord = Number(hcoord);
     vcoord = Number(vcoord);
     if (Array.isArray(startingGrid[vcoord][hcoord]) && startingGrid[vcoord][hcoord][0] === "BlackBox") {
-        startingGrid[vcoord][hcoord] == "@BlackBox";
+        startingGrid[vcoord][hcoord] = "@BlackBox";
     }
-    if (startingGrid[vcoord][hcoord] == "@Void") {
+    if (startingGrid[vcoord][hcoord] === "@Void") {
         tile.style.setProperty("background-color", "#e8de8110");
         tile.style.setProperty("background-image", "none");
     }
-    else if (startingGrid[vcoord][hcoord] == "@BlackBox") {
+    else if (startingGrid[vcoord][hcoord] === "@BlackBox") {
         tile.style.setProperty("background-color", "#e8de81");
         if (hexagonal) tile.style.setProperty("background-image", "radial-gradient(#000000 0% 60%, #ffffff 66.666%)");
         else tile.style.setProperty("background-image", "radial-gradient(#000000 0% 80%, #ffffff 90%)");
     }
-    else if (startingGrid[vcoord][hcoord] == "@Slippery") {
+    else if (startingGrid[vcoord][hcoord] === "@Slippery") {
         tile.style.setProperty("background-color", "#e8de81");
         if (hexagonal) tile.style.setProperty("background-image", 'url("SlipperyHexagonal.png")');
         else tile.style.setProperty("background-image", 'url("Slippery.png")');
