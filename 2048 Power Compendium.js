@@ -7810,8 +7810,8 @@ function gmDisplayVars() {
         }
     }
     else if (gamemode == 25) { // XXXX
-        if (mode_vars[0] > Math.max(width, height)) mode_vars[0] = Math.max(width, height);
-        if (mode_vars[1] > Math.max(width, height) && mode_vars[1] != Infinity) mode_vars[1] = Math.max(width, height);
+        if (mode_vars[0] > Math.max(width, height, 2)) mode_vars[0] = Math.max(width, height, 2);
+        if (mode_vars[1] > Math.max(width, height, 3) && mode_vars[1] != Infinity) mode_vars[1] = Math.max(width, height, 3);
         document.getElementById("XXXX_min_counter").innerHTML = mode_vars[0];
         if (mode_vars[1] == Infinity) document.getElementById("XXXX_max_counter").innerHTML = "&infin;";
         else document.getElementById("XXXX_max_counter").innerHTML = mode_vars[1];

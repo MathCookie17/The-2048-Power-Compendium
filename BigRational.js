@@ -937,11 +937,16 @@ class BigRational {
         let denominator = 1;
         let previous = [0, 0, 1];
         let approximation = 0;
+        let negative = false;
+        if (value < 0) {
+            value *= -1;
+            negative = true;
+        }
+        let currentValue = value;
         if (precision < 0)
             precision = Math.abs(value * precision);
         if (precision > 1)
             precision = 1;
-        let currentValue = value;
         while (Math.abs(value - approximation) > precision && denominator <= maxDenominator && numerator <= maxNumerator && continuedFraction.length < maxIterations) {
             continuedFraction.push(Math.floor(currentValue));
             previous = [whole, numerator, denominator];
@@ -967,7 +972,7 @@ class BigRational {
             return new BigRational(0n, 1n);
         }
         else {
-            return new BigRational(numerator, denominator);
+            return new BigRational(numerator * (negative ? -1 : 1), denominator);
         }
     }
     /**
