@@ -14100,6 +14100,14 @@ function loadModifiers() {
                     MergeRules[m][mstart + 1].push(["@Next " + n + " 0", "!=", "BlackBox"]);
                 }
             }
+            for (let row = 0; row < height; row++) {
+                for (let column = 0; column < width; column++) {
+                    if (Array.isArray(Grid[row][column]) && Grid[row][column][0] == "BlackBox") {
+                        Grid[row][column] = BlackBox;
+                        startingGrid[row][column] = BlackBox;
+                    }
+                }
+            }
         }
         if (modifiers[25] > 0) {
             let THSpawn = [["@Moves", "%", modifiers[26], "=", 0], "AfterSpawns", false];
