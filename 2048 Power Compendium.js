@@ -3152,7 +3152,6 @@ function binaryInsert(array, element, sortFunc = function(a, b){
         else if (sortFunc(array[midpoint], element) < 0) start = midpoint + 1;
         else if (sortFunc(array[midpoint], element) > 0) end = midpoint;
         else {
-            console.log(array, element, array[midpoint])
             throw TypeError("Noncomparable element found during binaryInsert");
         }
     }
@@ -7102,7 +7101,7 @@ function loadMode(mode) {
         ];
         MergeRules = [
             [2, [["@This 0", "=", "@Next 1 0"]], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]],
-            [2, [["@This 0", "-B", "@Next 1 0"], "/B", ["@This 0", "gcdB", "@Next 1 0"], "absB", "=", 1n], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+            [2, [["@This 0", "-B", "@Next 1 0"], "/B", ["@This 0", "gcdB", "@Next 1 0", "max", 1n], "absB", "=", 1n], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
         ];
         startTileSpawns = [[[1n], 1]];
         winConditions = [[1845n]];
@@ -7130,7 +7129,7 @@ function loadMode(mode) {
         ];
         if (modifiers[13] == "None") {
             MergeRules = [
-                [2, [["@This 0", "+B", "@Next 1 0"], "/B", ["@This 0", "gcdB", "@Next 1 0"], "primeFactorizeB", 2, "arr_length", "<", 2], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+                [2, [["@This 0", "+B", "@Next 1 0"], "/B", ["@This 0", "gcdB", "@Next 1 0", "max", 1n], "primeFactorizeB", 2, "arr_length", "<", 2], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
             ];
             startTileSpawns = [[[1n], 1]];
         }
@@ -7138,13 +7137,13 @@ function loadMode(mode) {
             startTileSpawns = [[[1n], modifiers[22]], [[-1n], modifiers[23]]];
             if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [2, [[["@This 0", "signB"], "=", ["@Next 1 0", "signB"]], "&&", [["@This 0", "+B", "@Next 1 0"], "/B", ["@This 0", "gcdB", "@Next 1 0"], "primeFactorizeB", 2, "arr_length", "<", 2]], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+                    [2, [[["@This 0", "signB"], "=", ["@Next 1 0", "signB"]], "&&", [["@This 0", "+B", "@Next 1 0"], "/B", ["@This 0", "gcdB", "@Next 1 0", "max", 1n], "primeFactorizeB", 2, "arr_length", "<", 2]], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
                 ];
             }
             else {
                 MergeRules = [
                     [2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], true, [], 0, [true, true]],
-                    [2, [["@This 0", "+B", "@Next 1 0", "absB"], "/B", ["@This 0", "gcdB", "@Next 1 0", "absB"], "primeFactorizeB", 2, "arr_length", "<", 2], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+                    [2, [["@This 0", "+B", "@Next 1 0", "absB"], "/B", ["@This 0", "gcdB", "@Next 1 0", "absB", "max", 1n], "primeFactorizeB", 2, "arr_length", "<", 2], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
                 ];
             }
         }
@@ -13672,7 +13671,6 @@ function loadModifiers() {
             for (let sa = 0; sa < sideAngles.length; sa++) {
                 let angle = mod(Math.atan2(-sideAngles[sa][0] * (hexagonal ? Math.sqrt(3) : 1), sideAngles[sa][1]) * -180 / Math.PI - 90, 360);
                 let magnitude = abs(gcd(sideAngles[sa][0], sideAngles[sa][1]));
-                console.log(sideAngles[sa][0], sideAngles[sa][1], angle, magnitude)
                 sideAngles[sa][0] = angle;
                 sideAngles[sa][1] = magnitude;
             }
@@ -14085,24 +14083,24 @@ function loadModifiers() {
         for (let i = 1; i < TileNumAmount; i++) BlackBox.push(0);
         let temporaryHole = ["@TemporaryHole", modifiers[27]];
         for (let i = 1; i < TileNumAmount; i++) temporaryHole.push(0);
-        if (modifiers[18] > 0 || (modifiers[5] == "Custom" && indexOfNestedPrimArray(BlackBox, startingGrid) != -1)) {
+        if (modifiers[18] > 0 || (modifiers[5] == "Custom" && (indexOfNestedPrimArray("BlackBox", startingGrid) != -1 || indexOfNestedPrimArray("@BlackBox", startingGrid) != -1))) {
             TileTypes.unshift([BlackBox, "", ["@radial-gradient", "#000000", 0, 80, "#ffffff", 90], "#ffffff"]);
             for (let m = 0; m < MergeRules.length; m++) {
                 let mstart = 0;
                 if (MergeRules[m][0] === "@include_gvars") mstart = 1;
                 if ((MergeRules[m]).indexOf("@end_vars") > -1) mstart = (MergeRules[m]).indexOf("@end_vars") + 1;
-                MergeRules[m][mstart + 1].push("&&");
-                MergeRules[m][mstart + 1].push(["@This 0", "!=", "BlackBox"]);
+                let blackBoxProtect = ["@This 0", "!=", "BlackBox"];
                 let mergelength = MergeRules[m][mstart];
                 if (MergeRules[m].length > mstart + 6) mergelength = MergeRules[m][mstart + 6];
                 for (let n = 1; n < mergelength; n++) {
-                    MergeRules[m][mstart + 1].push("&&");
-                    MergeRules[m][mstart + 1].push(["@Next " + n + " 0", "!=", "BlackBox"]);
+                    blackBoxProtect.push("&&");
+                    blackBoxProtect.push(["@Next " + n + " 0", "!=", "BlackBox"]);
                 }
+                MergeRules[m][mstart + 1] = [blackBoxProtect, "&&", ["@var_retain"].concat(MergeRules[m][mstart + 1])];
             }
             for (let row = 0; row < height; row++) {
                 for (let column = 0; column < width; column++) {
-                    if (Array.isArray(Grid[row][column]) && Grid[row][column][0] == "BlackBox") {
+                    if (Array.isArray(startingGrid[row][column]) && startingGrid[row][column][0] == "BlackBox") {
                         Grid[row][column] = BlackBox;
                         startingGrid[row][column] = BlackBox;
                     }
@@ -19192,7 +19190,6 @@ function makeCustomModePlayable() { // Creates and loads a playable mode out of 
         SubsetCheck:
         for (let p = 0; p < m; p++) {
             let prevRule = customMerges[p];
-            console.log(p, m, prevRule[2].length, thisCM[2].length);
             if (prevRule[2].length == 0 || thisCM[2].length >= prevRule[2].length) continue SubsetCheck;
             // let subset = customMergeSubset(thisCM, prevRule);
             // if (subset !== false) {
