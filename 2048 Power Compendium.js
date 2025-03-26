@@ -2388,10 +2388,10 @@ for (let t = 1; t <= modes_order.length; t++) { //Adding event listeners to the 
             document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
             document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
             document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", getComputedStyle(this).getPropertyValue("--tile_font_size") * 1.25);
+            OSTDEUpdate(0);
         });
         mtile.addEventListener("mouseenter", function(){
-            otherSecretStats[2] = 0;
-            otherSecretStats[3] = 0;
+            OSTDEUpdate(0);
         });
     }
 }
@@ -2403,6 +2403,7 @@ document.getElementById("menu_tile_37").addEventListener("click", function(){
     document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
     document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
     document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", getComputedStyle(this).getPropertyValue("--tile_font_size") * 1.25);
+    OSTDEUpdate(2);
 });
 document.getElementById("menu_tile_71").addEventListener("click", function(){
     if (otherSecretStats[1]) loadMode(71.37);
@@ -2412,78 +2413,13 @@ document.getElementById("menu_tile_71").addEventListener("click", function(){
     document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
     document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
     document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", getComputedStyle(this).getPropertyValue("--tile_font_size") * 1.25);
+    OSTDEUpdate(1);
 });
 document.getElementById("menu_tile_37").addEventListener("mouseenter", function(){
-    if (otherSecretStats[2] == 2) {
-        otherSecretStats[2] = 0;
-        otherSecretStats[3] = 0;
-    }
-    else {
-        otherSecretStats[3]++;
-        otherSecretStats[2] = 2;
-    }
-    if (otherSecretStats[3] == 10) {
-        otherSecretStats[2] = 0;
-        otherSecretStats[3] = 0;
-        secretsFound[3] = true;
-        otherSecretStats[1] = !otherSecretStats[1];
-        if (otherSecretStats[1]) {
-            document.getElementById("menu_tile_37").style.setProperty("background-color", "#000000");
-            document.getElementById("menu_tile_37").style.setProperty("background-image", "linear-gradient( #ba1aff, #5405ff");
-            document.getElementById("menu_tile_37").style.setProperty("--tile_font_size", 3.2);
-            document.getElementById("menu_tile_37").innerHTML = "839,808";
-            document.getElementById("menu_tile_71").style.setProperty("background-color", "#000000");
-            document.getElementById("menu_tile_71").style.setProperty("background-image", "linear-gradient( #50b300, #ae6e04)");
-            document.getElementById("menu_tile_71").style.setProperty("--tile_font_size", 3.2);
-            document.getElementById("menu_tile_71").innerHTML = "145.965";
-        }
-        else {
-            document.getElementById("menu_tile_37").style.setProperty("background-color", "#af8c00");
-            document.getElementById("menu_tile_37").style.setProperty("background-image", "none");
-            document.getElementById("menu_tile_37").style.setProperty("--tile_font_size", 3);
-            document.getElementById("menu_tile_37").innerHTML = "2216.838";
-            document.getElementById("menu_tile_71").style.setProperty("background-color", "#000000");
-            document.getElementById("menu_tile_71").style.setProperty("background-image", "linear-gradient( #d6fb00, #f54a00)");
-            document.getElementById("menu_tile_71").style.setProperty("--tile_font_size", 2.8);
-            document.getElementById("menu_tile_71").innerHTML = "3,188,646";
-        }
-    }
+    OSTDEUpdate(2);
 });
 document.getElementById("menu_tile_71").addEventListener("mouseenter", function(){
-    if (otherSecretStats[2] == 1) {
-        otherSecretStats[2] = 0;
-        otherSecretStats[3] = 0;
-    }
-    else {
-        otherSecretStats[3]++;
-        otherSecretStats[2] = 1;
-    }
-    if (otherSecretStats[3] == 10) {
-        otherSecretStats[2] = 0;
-        otherSecretStats[3] = 0;
-        secretsFound[3] = true;
-        otherSecretStats[1] = !otherSecretStats[1];
-        if (otherSecretStats[1]) {
-            document.getElementById("menu_tile_37").style.setProperty("background-color", "#000000");
-            document.getElementById("menu_tile_37").style.setProperty("background-image", "linear-gradient( #ba1aff, #5405ff");
-            document.getElementById("menu_tile_37").style.setProperty("--tile_font_size", 3.2);
-            document.getElementById("menu_tile_37").innerHTML = "839,808";
-            document.getElementById("menu_tile_71").style.setProperty("background-color", "#000000");
-            document.getElementById("menu_tile_71").style.setProperty("background-image", "linear-gradient( #50b300, #ae6e04)");
-            document.getElementById("menu_tile_71").style.setProperty("--tile_font_size", 3.2);
-            document.getElementById("menu_tile_71").innerHTML = "145.965";
-        }
-        else {
-            document.getElementById("menu_tile_37").style.setProperty("background-color", "#af8c00");
-            document.getElementById("menu_tile_37").style.setProperty("background-image", "none");
-            document.getElementById("menu_tile_37").style.setProperty("--tile_font_size", 3);
-            document.getElementById("menu_tile_37").innerHTML = "2216.838";
-            document.getElementById("menu_tile_71").style.setProperty("background-color", "#000000");
-            document.getElementById("menu_tile_71").style.setProperty("background-image", "linear-gradient( #d6fb00, #f54a00)");
-            document.getElementById("menu_tile_71").style.setProperty("--tile_font_size", 2.8);
-            document.getElementById("menu_tile_71").innerHTML = "3,188,646";
-        }
-    }
+    OSTDEUpdate(1);
 });
 document.getElementById("GaussianDIVE_enter_button").addEventListener("click", function(){
     loadMode(50.1);
@@ -3367,7 +3303,7 @@ function switchScreen(screen, subscreen) {
             inputAvailable = false;
             createCustomArrows();
         }
-        if (subScreen == 7) {
+        if (subScreen == 6) {
             if (auto_directions.length == 0) screenVars = [-1];
             else screenVars = [0];
         }
@@ -20054,7 +19990,44 @@ function displaySaveCodeMode(screen, mode) {
     }
 }
 
-//Hidden Tile Viewer
+// Some secret stuff
+
+function OSTDEUpdate(index) {
+    if (otherSecretStats[2] == index || index <= 0) {
+        otherSecretStats[2] = 0;
+        otherSecretStats[3] = 0;
+    }
+    else {
+        otherSecretStats[3]++;
+        otherSecretStats[2] = index;
+    }
+    if (otherSecretStats[3] == 10) {
+        otherSecretStats[2] = 0;
+        otherSecretStats[3] = 0;
+        secretsFound[3] = true;
+        otherSecretStats[1] = !otherSecretStats[1];
+        if (otherSecretStats[1]) {
+            document.getElementById("menu_tile_37").style.setProperty("background-color", "#000000");
+            document.getElementById("menu_tile_37").style.setProperty("background-image", "linear-gradient( #ba1aff, #5405ff");
+            document.getElementById("menu_tile_37").style.setProperty("--tile_font_size", 3.2);
+            document.getElementById("menu_tile_37").innerHTML = "839,808";
+            document.getElementById("menu_tile_71").style.setProperty("background-color", "#000000");
+            document.getElementById("menu_tile_71").style.setProperty("background-image", "linear-gradient( #50b300, #ae6e04)");
+            document.getElementById("menu_tile_71").style.setProperty("--tile_font_size", 3.2);
+            document.getElementById("menu_tile_71").innerHTML = "145.965";
+        }
+        else {
+            document.getElementById("menu_tile_37").style.setProperty("background-color", "#af8c00");
+            document.getElementById("menu_tile_37").style.setProperty("background-image", "none");
+            document.getElementById("menu_tile_37").style.setProperty("--tile_font_size", 3);
+            document.getElementById("menu_tile_37").innerHTML = "2216.838";
+            document.getElementById("menu_tile_71").style.setProperty("background-color", "#000000");
+            document.getElementById("menu_tile_71").style.setProperty("background-image", "linear-gradient( #d6fb00, #f54a00)");
+            document.getElementById("menu_tile_71").style.setProperty("--tile_font_size", 2.8);
+            document.getElementById("menu_tile_71").innerHTML = "3,188,646";
+        }
+    }
+}
 
 let tileViewerOrder = ["Wildcard 2048", "mod 27", "1321", "180", "DIVE", "2295", "3069", "Odds-Only 3069", "SQUART", "Turatin", "3307", "Bitwise 2048", "SCAPRIM", "1845", "3385", "LOCEF", "TRIGAT", "Gaussian DIVE"]
 
