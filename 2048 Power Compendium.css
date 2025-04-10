@@ -2769,6 +2769,9 @@ ul {
 .guide_bottomspace {
     height: calc(var(--base_size) * 9);
 }
+#secretOffice_title {
+    font-size: calc(var(--base_size) * 5);
+}
 #secretOffice_cluesBox {
     font-size: calc(var(--base_size) * 3);
 }

@@ -2403,7 +2403,6 @@ document.getElementById("menu_tile_37").addEventListener("click", function(){
     document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
     document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
     document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", getComputedStyle(this).getPropertyValue("--tile_font_size") * 1.25);
-    OSTDEUpdate(2);
 });
 document.getElementById("menu_tile_71").addEventListener("click", function(){
     if (otherSecretStats[1]) loadMode(71.37);
@@ -2413,7 +2412,6 @@ document.getElementById("menu_tile_71").addEventListener("click", function(){
     document.getElementById("gm_big_tile").innerHTML = this.innerHTML;
     document.getElementById("gm_big_tile").style.setProperty("background-image", getComputedStyle(this).getPropertyValue("background-image"));
     document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", getComputedStyle(this).getPropertyValue("--tile_font_size") * 1.25);
-    OSTDEUpdate(1);
 });
 document.getElementById("menu_tile_37").addEventListener("mouseenter", function(){
     OSTDEUpdate(2);
