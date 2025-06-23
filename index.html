@@ -21,7 +21,7 @@
                 <div class="menu_tile hover_grow" style="background-color: #c3ff00">3125</div>
                 <div class="menu_tile hover_grow" style="background-color: #00a6ff">1296</div>
                 <div class="menu_tile hover_grow" style="background-color: #ff9d00">2401</div>
-                <div class="menu_tile hover_grow" style="background-color: #1900ff;">4096</div>
+                <div class="menu_tile hover_grow" style="background-color: #1900ff">4096</div>
                 <div class="menu_tile hover_grow" style="background-color: #00f2ff">6561</div>
                 <div class="menu_tile hover_grow" style="background-color: #ff5100">1000</div>
                 <div class="menu_tile hover_grow" style="background-color: #00ff00">1331</div>
@@ -49,8 +49,8 @@
                 <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff3030 0%, #ff00d9 25% 75%, #3030ff 100%); --tile_font_size: 3.2;">Bicolor 2187</div>
                 <div class="menu_tile hover_grow" style="background-image: linear-gradient(#8fba00 0%, #c3ff00 25% 75%, #8fba00 100%); --tile_font_size: 3.2;">Harder 3125</div>
                 <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff77eb 0% 50%, #6c005c 50% 100%); --tile_font_size: 3.2;">Partial Absorb 243</div>
-                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#d18cff 0% 50%, #5c0099 50% 100%); --tile_font_size: 3.2;">Partial Absorb 255</div>
-                <div class="menu_tile hover_grow" style="background-color: #990059">1280</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ff8cbc 0% 50%, #990040 50% 100%); --tile_font_size: 3.2;">Partial Absorb 257</div>
+                <div class="menu_tile hover_grow" style="background-image: linear-gradient(#ffe08c 0% 50%, #997500 50% 100%); --tile_font_size: 3.2;">Partial Absorb 270</div>
                 <div class="menu_tile hover_grow" style="background-color: #af8c00; --tile_font_size: 3">2216.838</div>
                 <div class="menu_tile hover_grow" style="background-color: #ffff4d; --tile_font_size: 6.4;">180</div>
                 <div class="menu_tile hover_grow" style="background-color: #00a068">2592</div>
@@ -250,18 +250,28 @@
                     </div>
                 </div>
                 <div id="XXXX_vars" class="gm_var_line">
-                    <div id="XXXX_min" class="gm_var_container">
+                    <div id="XXXX_min" class="gm_var_switch_container">
                         <p id="XXXX_min_title" class="gm_var_title">Minimum Merge Length:</p>
                         <p id="XXXX_min_counter" class="gm_var_counter"></p>
                         <div id="XXXX_min_plus" class="gm_grid_button plus_button">+</div>
                         <div id="XXXX_min_minus" class="gm_grid_button minus_button">-</div>
                     </div>
-                    <div id="XXXX_max" class="gm_var_container">
+                    <div id="XXXX_max" class="gm_var_switch_container">
                         <p id="XXXX_max_title" class="gm_var_title">Maximum Merge Length:</p>
                         <p id="XXXX_max_counter" class="gm_var_counter"></p>
                         <div id="XXXX_max_plus" class="gm_grid_button plus_button">+</div>
                         <div id="XXXX_max_minus" class="gm_grid_button minus_button">-</div>
                     </div>
+                    <div id="XXXX_mergeListEnable" class="gm_var_switch_container">
+                        <p id="XXXX_mergeListEnable_text" class="gm_var_text">The allowed merge lengths are given as a minimum and maximum.</p>
+                        <div id="XXXX_mergeListEnable_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="XXXX_mergeLengthList" class="gm_var_line_multiForm">
+                    <p class="gm_var_text" style="color: #986f00">Allowed Merge Lengths: </p>
+                    <form id="XXXX_mergeLengthList_form0" class="customForm_size2">
+                        <input type="number" step="1" id="XXXX_mergeLengthList_input0" name="XXXX_mergeLengthList_input0">
+                    </form>
                 </div>
                 <div id="Isotopic256_vars" class="gm_var_line">
                     <div id="Isotopic256_halfLife" class="gm_var_container">
@@ -276,6 +286,36 @@
                         <p id="2584_previousNegative_text" class="gm_var_text">The only tiles of opposite signs that can merge are those with equal absolute value.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="2584_previousNegative_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="PA243_vars" class="gm_var_line">
+                    <div id="PA243_submode" class="gm_var_switch_container">
+                        <p id="PA243_submode_text" class="gm_var_text">There's a mix of regular and Partial Absorb merges.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PA243_submode_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="PA257_vars" class="gm_var_line">
+                    <div id="PA257_pow2diff" class="gm_var_switch_container">
+                        <p id="PA257_pow2diff_text" class="gm_var_text">Tiles are 1 more than a power of two.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PA257_pow2diff_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="PA257_mergeLength" class="gm_var_switch_container">
+                        <p id="PA257_mergeLength_text" class="gm_var_text">Two tiles merge, making a bigger tile and a small tile.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PA257_mergeLength_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="PA270_vars" class="gm_var_line">
+                    <div id="PA270_submode" class="gm_var_switch_container">
+                        <p id="PA270_submode_text" class="gm_var_text">Factors of 3 and 5 are uncapped, factors of 2 are capped.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PA270_submode_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
                 </div>
@@ -306,6 +346,16 @@
                             <input type="number" step="any" id="180_firstGoalMinimum_change" name="180_firstGoalMinimum_change">
                         </form>
                     </div>
+                    <div id="Arrangement180_midMove" class="gm_var_switch_container">
+                        <p id="Arrangement180_midMove_text" class="gm_var_text">Tiles only merge at the end of a move.</p>
+                        <div id="Arrangement180_midMove_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="180_mergeLengthList" class="gm_var_line_multiForm">
+                    <p class="gm_var_text" style="color: #986f00">Allowed Merge Lengths: </p>
+                    <form id="180_mergeLengthList_form0" class="customForm_size2">
+                        <input type="number" step="1" id="180_mergeLengthList_input0" name="180_mergeLengthList_input0">
+                    </form>
                 </div>
                 <div id="2592_vars" class="gm_var_line">
                     <div id="2592_switch" class="gm_var_switch_container">
@@ -336,23 +386,39 @@
                     </div>
                 </div>
                 <div id="XpowY_vars" class="gm_var_line">
-                    <div id="XpowY_pow" class="gm_var_container">
+                    <div id="XpowY_pow" class="gm_var_switch_container">
                         <p id="XpowY_pow_title" class="gm_var_title">Highest Prime Power:</p>
                         <p id="XpowY_pow_counter" class="gm_var_counter"></p>
                         <div id="XpowY_pow_plus" class="gm_grid_button plus_button">+</div>
                         <div id="XpowY_pow_minus" class="gm_grid_button minus_button">-</div>
                     </div>
-                    <div id="XpowY_merge" class="gm_var_container">
+                    <div id="XpowY_merge" class="gm_var_switch_container">
                         <p id="XpowY_merge_title" class="gm_var_title">Maximum Merge Length:</p>
                         <p id="XpowY_merge_counter" class="gm_var_counter"></p>
                         <div id="XpowY_merge_plus" class="gm_grid_button plus_button">+</div>
                         <div id="XpowY_merge_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="XpowY_randomGoals" class="gm_var_switch_container">
+                        <p id="XpowY_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="XpowY_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="XpowY_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="XpowY_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="XpowY_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="XpowY_firstGoalMinimum_change" name="XpowY_firstGoalMinimum_change">
+                        </form>
                     </div>
                 </div>
                 <div id="1321_vars" class="gm_var_line">
                     <div id="1321_evensOnly" class="gm_var_switch_container">
                         <p id="1321_evensOnly_text" class="gm_var_text">+1s can merge with any tile.</p>
                         <div id="1321_evensOnly_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                    <div id="1321_plusCombine" class="gm_var_switch_container">
+                        <p id="1321_plusCombine_text" class="gm_var_text">Two +1s merge into a +2.</p>
+                        <div id="1321_plusCombine_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                     </div>
                     <div id="1321_randomGoals" class="gm_var_switch_container">
                         <p id="1321_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
@@ -367,7 +433,25 @@
                         <div id="1321_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                 </div>
-                <div id="2100_vars" class="gm_var_line">
+                <div id="mod27_vars" class="gm_var_line">
+                    <div id="mod27_start" class="gm_var_switch_container" style="color:#ff00d9;">
+                        <p id="mod27_start_title" class="gm_var_title">Starting Modulus:</p>
+                        <p id="mod27_start_counter" class="gm_var_counter"></p>
+                        <div id="mod27_start_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="mod27_start_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="mod27_increment" class="gm_var_switch_container" style="color: #00ff33;">
+                        <p id="mod27_increment_title" class="gm_var_title">Modulus Increment:</p>
+                        <p id="mod27_increment_counter" class="gm_var_counter"></p>
+                        <div id="mod27_increment_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="mod27_increment_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="mod27_negativeOffset" class="gm_var_switch_container">
+                        <p id="mod27_negativeOffset_text" class="gm_var_text">The numbers range between 0 and modulus - 1.</p>
+                        <div id="mod27_negativeOffset_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
+                </div>
+                <div id="2100_varsLevel" class="gm_var_line">
                     <div id="2100_switch" class="gm_var_switch_container">
                         <p id="2100_difficulty_text" class="gm_var_text">Hard: rightwards is X + X, downwards is X + 2X, leftwards is X + 4X, upwards is 3X + 4X.</p>
                         <div class="gmSwitchButtonLine">
@@ -376,16 +460,42 @@
                         </div>
                     </div>
                 </div>
+                <div id="2100_vars" class="gm_var_line">
+                    <div id="2100_randomGoals" class="gm_var_switch_container">
+                        <p id="2100_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2100_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2100_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="2100_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="2100_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="2100_firstGoalMinimum_change" name="2100_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
                 <div id="378_vars" class="gm_var_line">
-                    <div id="378_goal" class="gm_var_switch_container" style="width:25%">
+                    <div id="378_goal" class="gm_var_switch_container">
                         <p id="378_goal_text" class="gm_var_text">You have to make the triangular numbers in order.</p>
                         <div id="378_goal_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                     </div>
-                    <div id="378_merge" class="gm_var_container" style="color:#950095;">
+                    <div id="378_merge" class="gm_var_switch_container" style="color:#950095;">
                         <p id="378_merge_title" class="gm_var_title">Maximum Merge Length:</p>
                         <p id="378_merge_counter" class="gm_var_counter"></p>
                         <div id="378_merge_plus" class="gm_grid_button plus_button">+</div>
                         <div id="378_merge_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="378_randomGoals" class="gm_var_switch_container">
+                        <p id="378_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="378_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="378_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="378_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="378_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="378_firstGoalMinimum_change" name="378_firstGoalMinimum_change">
+                        </form>
                     </div>
                 </div>
                 <div id="DIVE_vars" class="gm_var_line_wrapping many_vars">
@@ -475,6 +585,18 @@
                             <div id="2700_level_increase" class="gmSwitchModifier gmIncreaseModifier hover_grow">Increase Level</div>
                         </div>
                     </div>
+                    <div id="2700_randomGoals" class="gm_var_switch_container">
+                        <p id="2700_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2700_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2700_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="2700_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="2700_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="2700_firstGoalMinimum_change" name="2700_firstGoalMinimum_change">
+                        </form>
+                    </div>
                 </div>
                 <div id="1825_vars" class="gm_var_line">
                     <div id="1825_randomGoals" class="gm_var_switch_container">
@@ -488,6 +610,26 @@
                         <p id="1825_firstGoalMinimum_counter" class="gm_var_counter"></p>
                         <div id="1825_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
                         <div id="1825_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="2295_vars" class="gm_var_line">
+                    <div id="2295_timeless" class="gm_var_switch_container">
+                        <p id="2295_timeless_text" class="gm_var_text">The allowed merge rule changes based on the turn number.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2295_timeless_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2295_randomGoals" class="gm_var_switch_container">
+                        <p id="2295_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2295_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2295_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="2295_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="2295_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="2295_firstGoalMinimum_change" name="2295_firstGoalMinimum_change">
+                        </form>
                     </div>
                 </div>
                 <div id="3069_vars" class="gm_var_line">
@@ -511,6 +653,12 @@
                     </div>
                 </div>
                 <div id="1762_vars" class="gm_var_line">
+                    <div id="1762_harder" class="gm_var_switch_container">
+                        <p id="1762_harder_text" class="gm_var_text">The two tiles may have a difference of 1.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="1762_harder_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="1762_randomGoals" class="gm_var_switch_container">
                         <p id="1762_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -530,6 +678,34 @@
                         <div class="gmSwitchButtonLine">
                             <div id="2205_level_decrease" class="gmSwitchModifier gmDecreaseModifier hover_grow">Decrease Level</div>
                             <div id="2205_level_increase" class="gmSwitchModifier gmIncreaseModifier hover_grow">Increase Level</div>
+                        </div>
+                    </div>
+                    <div id="2205_randomGoals" class="gm_var_switch_container">
+                        <p id="2205_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2205_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="2205_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="2205_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="2205_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="2205_firstGoalMinimum_change" name="2205_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="232_240_vars" class="gm_var_line">
+                    <div id="232_240_ordered_coprime" class="gm_var_switch_container">
+                        <p id="232_240_ordered_coprime_text" class="gm_var_text">The two tiles must match in the same position.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="232_240_ordered_coprime_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="16+16i_vars" class="gm_var_line">
+                    <div id="16+16i_complexType" class="gm_var_switch_container">
+                        <p id="16+16i_complexType_text" class="gm_var_text">The tiles are Gaussian integers.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="16+16i_complexType_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
                 </div>
@@ -562,6 +738,12 @@
                     </div>
                 </div>
                 <div id="SQUART_vars" class="gm_var_line">
+                        <div id="SQUART_mergeLength" class="gm_var_switch_container">
+                        <p id="SQUART_mergeLength_text" class="gm_var_text">Merges occur between two tiles.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="SQUART_mergeLength_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="SQUART_randomGoals" class="gm_var_switch_container">
                         <p id="SQUART_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -602,6 +784,18 @@
                             <div id="3307_equalVariant_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
+                    <div id="3307_randomGoals" class="gm_var_switch_container">
+                        <p id="3307_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3307_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3307_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="3307_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="3307_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="3307_firstGoalMinimum_change" name="3307_firstGoalMinimum_change">
+                        </form>
+                    </div>
                 </div>
                 <div id="1668_vars" class="gm_var_line">
                     <div id="1668_randomGoals" class="gm_var_switch_container">
@@ -618,6 +812,18 @@
                     </div>
                 </div>
                 <div id="1847_vars" class="gm_var_line">
+                    <div id="1847_ratio" class="gm_var_switchForm_container">
+                        <p id="1847_ratio_text" class="gm_var_title" style="color:#a23ac2">Approximate Merge Ratio:</p>
+                        <div id="1847_ratio_formLine" class="gm_var_rationalFormLine">
+                            <form id="1847_ratio_numerator_form" class="gm_var_form">
+                                <input type="number" step="any" id="1847_ratio_numerator_change" name="1847_ratio_numerator_change">
+                            </form>
+                            <p style="color:#a23ac2" class="gm_var_rationalForm_middle">/</p>
+                            <form id="1847_ratio_denominator_form" class="gm_var_form">
+                                <input type="number" step="any" id="1847_ratio_denominator_change" name="1847_ratio_denominator_change">
+                            </form>
+                        </div>
+                    </div>
                     <div id="1847_randomGoals" class="gm_var_switch_container">
                         <p id="1847_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -629,6 +835,26 @@
                         <p id="1847_firstGoalMinimum_counter" class="gm_var_counter"></p>
                         <div id="1847_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
                         <div id="1847_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="3240_vars" class="gm_var_line">
+                    <div id="3240_homogenous" class="gm_var_switch_container">
+                        <p id="3240_homogenous_text" class="gm_var_text">4&#215;9 and 6&#215;6 are different tiles.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3240_homogenous_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3240_randomGoals" class="gm_var_switch_container">
+                        <p id="3240_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3240_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3240_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="3240_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="3240_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="3240_firstGoalMinimum_change" name="3240_firstGoalMinimum_change">
+                        </form>
                     </div>
                 </div>
                 <div id="1429_vars" class="gm_var_line">
@@ -668,6 +894,12 @@
                     </div>
                 </div>
                 <div id="2669_vars" class="gm_var_line">
+                    <div id="2669_inARow" class="gm_var_switch_container" style="color:#a71300;">
+                        <p id="2669_inARow_title" class="gm_var_title">Maximum Same Merges in a Row:</p>
+                        <p id="2669_inARow_counter" class="gm_var_counter"></p>
+                        <div id="2669_inARow_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="2669_inARow_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
                     <div id="2669_randomGoals" class="gm_var_switch_container">
                         <p id="2669_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -681,12 +913,32 @@
                         </form>
                     </div>
                 </div>
+                <div id="Bitwise2048_vars" class="gm_var_line">
+                    <div id="Bitwise2048_base" class="gm_var_container" style="color:#004dac;">
+                        <p id="Bitwise2048_base_title" class="gm_var_title">Base:</p>
+                        <p id="Bitwise2048_base_counter" class="gm_var_counter"></p>
+                        <div id="Bitwise2048_base_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="Bitwise2048_base_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
                 <div id="FACTUP_vars" class="gm_var_line">
                     <div id="FACTUP_crazy" class="gm_var_switch_container">
                         <p id="FACTUP_crazy_text" class="gm_var_text">The result of a merge must have more factors than its components.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="FACTUP_crazy_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
+                    </div>
+                    <div id="FACTUP_mlengthMin" class="gm_var_switch_container" style="color:#447900">
+                        <p id="FACTUP_mlengthMin_title" class="gm_var_title">Minimum Merge Length:</p>
+                        <p id="FACTUP_mlengthMin_counter" class="gm_var_counter"></p>
+                        <div id="FACTUP_mlengthMin_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="FACTUP_mlengthMin_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="FACTUP_mlengthMax" class="gm_var_switch_container" style="color:#970097">
+                        <p id="FACTUP_mlengthMax_title" class="gm_var_title">Maximum Merge Length:</p>
+                        <p id="FACTUP_mlengthMax_counter" class="gm_var_counter"></p>
+                        <div id="FACTUP_mlengthMax_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="FACTUP_mlengthMax_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                     <div id="FACTUP_randomGoals" class="gm_var_switch_container">
                         <p id="FACTUP_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
@@ -702,6 +954,18 @@
                     </div>
                 </div>
                 <div id="2496_vars" class="gm_var_line">
+                    <div id="2496_mlengthMin" class="gm_var_switch_container" style="color:#447900">
+                        <p id="2496_mlengthMin_title" class="gm_var_title">Minimum Merge Length:</p>
+                        <p id="2496_mlengthMin_counter" class="gm_var_counter"></p>
+                        <div id="2496_mlengthMin_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="2496_mlengthMin_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="2496_mlengthMax" class="gm_var_switch_container" style="color:#970097">
+                        <p id="2496_mlengthMax_title" class="gm_var_title">Maximum Merge Length:</p>
+                        <p id="2496_mlengthMax_counter" class="gm_var_counter"></p>
+                        <div id="2496_mlengthMax_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="2496_mlengthMax_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
                     <div id="2496_randomGoals" class="gm_var_switch_container">
                         <p id="2496_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -730,6 +994,12 @@
                     </div>
                 </div>
                 <div id="SCAPRIM_vars" class="gm_var_line">
+                    <div id="SCAPRIM_integerRatio" class="gm_var_switch_container">
+                        <p id="SCAPRIM_integerRatio_text" class="gm_var_text">The ratio between merging tiles does not have to be an integer.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="SCAPRIM_integerRatio_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="SCAPRIM_randomGoals" class="gm_var_switch_container">
                         <p id="SCAPRIM_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -744,6 +1014,12 @@
                     </div>
                 </div>
                 <div id="TRIGAT_vars" class="gm_var_line">
+                    <div id="TRIGAT_spawn2s" class="gm_var_switch_container">
+                        <p id="TRIGAT_spawn2s_text" class="gm_var_text">Only 3s spawn.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="TRIGAT_spawn2s_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="TRIGAT_randomGoals" class="gm_var_switch_container">
                         <p id="TRIGAT_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -754,6 +1030,32 @@
                         <p id="TRIGAT_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
                         <form id="TRIGAT_firstGoalMinimum_form" class="gm_var_form">
                             <input type="number" step="any" id="TRIGAT_firstGoalMinimum_change" name="TRIGAT_firstGoalMinimum_change">
+                        </form>
+                    </div>
+                </div>
+                <div id="3385_vars" class="gm_var_line">
+                    <div id="3385_exponent" class="gm_var_switch_container" style="color:#78ffa5;">
+                        <p id="3385_exponent_title" class="gm_var_title">Perfect Power Exponent:</p>
+                        <p id="3385_exponent_counter" class="gm_var_counter"></p>
+                        <div id="3385_exponent_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="3385_exponent_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="3385_ratioProduct" class="gm_var_switch_container">
+                        <p id="3385_ratioProduct_text" class="gm_var_text">Two tiles merge if their ratio is a perfect power.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3385_ratioProduct_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3385_randomGoals" class="gm_var_switch_container">
+                        <p id="3385_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3385_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="3385_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="3385_firstGoalMinimum_title" class="gm_var_title">The first random goal will be at least:</p>
+                        <form id="3385_firstGoalMinimum_form" class="gm_var_form">
+                            <input type="number" step="any" id="3385_firstGoalMinimum_change" name="3385_firstGoalMinimum_change">
                         </form>
                     </div>
                 </div>
@@ -777,6 +1079,28 @@
                         </form>
                     </div>
                 </div>
+                <div id="ProAddUct_vars" class="gm_var_line">
+                    <div id="ProAddUct_mlengthMin" class="gm_var_switch_container" style="color:#447900">
+                        <p id="ProAddUct_mlengthMin_title" class="gm_var_title">Minimum Merge Length:</p>
+                        <p id="ProAddUct_mlengthMin_counter" class="gm_var_counter"></p>
+                        <div id="ProAddUct_mlengthMin_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="ProAddUct_mlengthMin_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div id="ProAddUct_mlengthMax" class="gm_var_switch_container" style="color:#970097">
+                        <p id="ProAddUct_mlengthMax_title" class="gm_var_title">Maximum Merge Length:</p>
+                        <p id="ProAddUct_mlengthMax_counter" class="gm_var_counter"></p>
+                        <div id="ProAddUct_mlengthMax_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="ProAddUct_mlengthMax_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="PA377_vars" class="gm_var_line">
+                    <div id="PA377_PA233" class="gm_var_switch_container">
+                        <p id="PA377_PA233_text" class="gm_var_text">The first merge is between three 1s.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PA377_PA233_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="Alternate5040_vars" class="gm_var_line">
                     <div id="Alternate5040_baseFactorials" class="gm_var_switch_container">
                         <p id="Alternate5040_baseFactorials_text" class="gm_var_text" style="color:#989800">Tiles progress through factorials.</p>
@@ -791,6 +1115,12 @@
                         </form>
                         <div id="Alternate5040_base_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                     </div>
+                    <div id="Alternate5040_baseListIntro" class="gm_var_switch_container">
+                        <p id="Alternate5040_baseListIntro_text" class="gm_var_text" style="color:#4c0098">Tiles progress through a cycle of different bases.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="Alternate5040_baseListIntro_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="Alternate5040_baseRational" class="gm_var_switchForm_container">
                         <p id="Alternate5040_baseRational_text" class="gm_var_title" style="color:#c52400">Tiles progress through powers of</p>
                         <div id="Alternate5040_baseRational_formLine" class="gm_var_rationalFormLine">
@@ -804,12 +1134,24 @@
                         </div>
                         <div id="Alternate5040_baseRational_button" class="gmSwitchModifier gmSwitchModifier_inRationalForm hover_grow">Switch This Modifier!</div>
                     </div>
+                    <div id="Alternate5040_basePrimorials" class="gm_var_switch_container">
+                        <p id="Alternate5040_basePrimorials_text" class="gm_var_text" style="color:#00a1a9">Tiles progress through primorials.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="Alternate5040_basePrimorials_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="Alternate5040_variant" class="gm_var_switch_container">
                         <p id="Alternate5040_variant_text" class="gm_var_text">The merges are based on paths to tiles in 1762.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="Alternate5040_variant_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
+                </div>
+                <div id="Alternate5040_baseList" class="gm_var_line_multiForm">
+                    <p class="gm_var_text" style="color:#4c0098">Base cycle: </p>
+                    <form id="Alternate5040_baseList_form0" class="customForm_size2">
+                        <input type="text" id="Alternate5040_baseList_input0" name="Alternate5040_baseList_input0">
+                    </form>
                 </div>
                 <div id="GaussianDIVE_vars" class="gm_var_line_wrapping many_vars">
                     <div id="GaussianDIVE_startSeeds" class="gm_var_switch_container">
@@ -855,12 +1197,70 @@
                         </form>
                     </div>
                 </div>
+                <div id="839808_vars" class="gm_var_line">
+                    <div id="839808_randomGoals" class="gm_var_switch_container">
+                        <p id="839808_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="839808_randomGoals_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="839808_firstGoalMinimum" class="gm_var_switch_container firstGoalMinimum">
+                        <p id="839808_firstGoalMinimum_title" class="gm_var_title">The first random goal has n factors of 3, n =</p>
+                        <p id="839808_firstGoalMinimum_counter" class="gm_var_counter"></p>
+                        <div id="839808_firstGoalMinimum_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="839808_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                </div>
+                <div id="PPPA377_vars" class="gm_var_line">
+                    <div id="PPPA377_equalMerges" class="gm_var_switch_container">
+                        <p id="PPPA377_equalMerges_text" class="gm_var_text">Three equal tiles merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PPPA377_equalMerges_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="gm_return" class="hover_grow">Return to menu</div>
             <div id="GaussianDIVE_enter_button" class="secretMode_enter_button hover_grow">Enter the Second Dimension</div>
             <div id="MergeOverflow256_enter_button" class="secretMode_enter_button hover_grow">Overflow This Mode</div>
             <div id="reciprocal512_enter_button" class="secretMode_enter_button hover_grow">Split the Tiles</div>
-            <div id="PA19683_enter_button" class="secretMode_enter_button hover_grow">Take a Shortcut</div>
+            <div id="PPPA377_enter_button" class="secretMode_enter_button hover_grow">Begin Pair Production</div>
+            <div id="Arrangement180_presetLine">
+                <img src="Previous.svg" id="Arrangement180_previous_preset" class="previous_arrow_button">
+                <p id="Arrangement180_presetText">Current Preset: Custom</p>
+                <img src="Next.svg" id="Arrangement180_next_preset" class="next_arrow_button">
+            </div>
+            <p id="Arrangement180_customParagraph">
+                Customize the allowed arrangements below. The tile highlighted in black is where the center of the arrangement is considered to be,
+                dark yellow tiles are part of the arrangement, light yellow tiles are not. Click a non-center tile to switch whether it's part of the arrangement.
+                If the pattern does rotate with the movement direction, the diagram here uses rightwards to represent the movement direction.
+            </p>
+            <div id="Arrangement180_gridZone">
+                <div id="Arrangement180_gridLine_0" class="Arrangement180_gridLine">
+                    <div id="Arrangement180_arrangementSize_0" class="gm_var_switch_container Arrangement180_arrangementSizeCounter">
+                        <p id="Arrangement180_arrangementSize_0_title" class="gm_var_title">Arrangement Grid Size:</p>
+                        <p id="Arrangement180_arrangementSize_0_counter" class="gm_var_counter"></p>
+                        <div id="Arrangement180_arrangementSize_0_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="Arrangement180_arrangementSize_0_minus" class="gm_grid_button minus_button">-</div>
+                    </div>
+                    <div class="Arrangement180_gridHolder">
+                        <div id="Arrangement180_arrangementGrid_0" class="Arrangement180_arrangementGrid"></div>
+                    </div>
+                    <div id="Arrangement180_movementRotate_0" class="gm_var_switch_container Arrangement180_arrangementRotateSwitch">
+                        <p id="Arrangement180_movementRotate_0_text" class="gm_var_text">This arrangement does rotate with the movement direction.</p>
+                        <div id="Arrangement180_movementRotate_0_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        <div id="Arrangement180_removeArrangement_0_button" class="gmSwitchModifier Arrangement180_removeArrangement hover_grow">Remove This Arrangement!</div>
+                    </div>
+                </div>
+            </div>
+            <div id="Arrangement180_addArrangement" class="gmSwitchModifier hover_grow">Add An Arrangement!</div>
+            <div id="Arrangement180_muralLine">
+                <img src="Guide Images/Arrangement Mural.png" id="Arrangement180_mural">
+                <p id="Arrangement180_muralText">What is this mysterious mural?</p>
+                <p id="Arrangement180_muralTextSecretHint">(If you need a hint, perhaps the Office 0f Secrets will know more.)</p>
+                <p id="Arrangement180_muralTextSolved">It seems you've figured out the mural's secret.</p>
+                <p id="Arrangement180_muralTextSolvedReminder">(Remember to go report this to the Office 0f Secrets so it'll be saved on reloads!)</p>
+            </div>
         </div>
 
         <div id="modifiers">
@@ -878,6 +1278,12 @@
                             <p id="modifiers_animationSpeed_title" class="gm_var_title">Animation Speed Multiplier:</p>
                             <form id="modifiers_animationSpeed_form" class="gm_var_form">
                                 <input type="number" step="any" id="modifiers_animationSpeed_change" name="modifiers_animationSpeed_change">
+                            </form>
+                        </div>
+                        <div id="modifiers_replaySpeed" class="modifiers_var_container">
+                            <p id="modifiers_replaySpeed_title" class="gm_var_title">Time Between Moves in Replays (ms):</p>
+                            <form id="modifiers_replaySpeed_form" class="gm_var_form">
+                                <input type="number" step="any" id="modifiers_replaySpeed_change" name="modifiers_replaySpeed_change">
                             </form>
                         </div>
                     </div>
@@ -993,6 +1399,7 @@
                             </div>
                         </div>
                     </div>
+                    <p id="Arrangement180_muralMatched" style="color:#65740f">Something has opened elsewhere... (though you may wish to return the grid to a more regular state before investigating this.)</p>
                 </div>
                 <div id="modifiers_page_3.2" class="modifiers_page">
                     <div id="modifiers_customDirectionsLine">
@@ -1088,7 +1495,7 @@
                         </div>
                         <div class="modifiers_box_2x2_entry">
                             <p id="modifiers_negativetiles_text" class="modifier_text">Negative Tiles: OFF</p>
-                            <p id="modifiers_negativetiles_info" class="modifier_subtext">When this modifier is on, both positive tiles and negative tiles can spawn. Tiles only merge with other tiles of their own sign (in 2049's case, -1s fuel positive merges and 1s fuel negative merges), and you must get the winning tile in both positive and negative forms to win (in modes with multiple win conditions, you need to get twice as many winning tiles to win, but they don't necessarily have to have a mix of positive and negative), but if this modifier is set to Interacting, then when a tile and its own negative collide, they're both destroyed.</p>
+                            <p id="modifiers_negativetiles_info" class="modifier_subtext">When this modifier is on, both positive tiles and negative tiles can spawn. Tiles only merge with other tiles of their own sign, and you must get the winning tile in both positive and negative forms to win (in modes with multiple win conditions, you need to get twice as many winning tiles to win, but they don't necessarily have to have a mix of positive and negative), but if this modifier is set to Interacting, then when a tile and its own negative collide, they're both destroyed (some modes have additional special behavior with Interacting Negatives on!).</p>
                             <div id="modifiers_negativetiles_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
                         </div>
                         <div id="modifiers_negativetiles_SpawnRatios" class="modifiers_box_2x2_entry">
@@ -1220,12 +1627,14 @@
                         <div id="game_over_screen">
                             <p>Game Over!</p>
                             <div id="go_again">Play again</div>
+                            <div id="view_loss_replay">Get replay</div>
                         </div>
                         <div id="win_screen">
                             <p>You win!</p>
                             <div id="win_continue">Continue</div>
                             <div id="win_again">Play again</div>
                             <div id="lone_win_again">Play again</div>
+                            <div id="view_win_replay">Get replay</div>
                         </div>
                     </div>
                 </div>
@@ -1833,7 +2242,7 @@
                         (It's recommended that you don't alter any of the other modifiers other than Animation Speed Multiplier until you've played a few games and gotten
                         used to the various modes). Progress isn't automatically saved, but you can save your progress yourself by clicking "Get save code" in the middle of
                         a game and copying the code there, then clicking "Resume From Save Code" on the menu and pasting that save code there when you want to resume the
-                        game.
+                        game. Also, upon finishing a game, there's an option to get a save code to view a replay of that game.
                     </p>
                     <p>If you have any other questions, then read on. Otherwise, click "Return to menu" and enjoy the 2048 Power Compendium!</p>
                 </div>
@@ -1966,6 +2375,12 @@
                 <div id="guide_credits" class="guide_box">
                     <h2>Credits</h2>
                     <p>
+                        Almost all of the code for this project was written by MathCookie, but not <i>all</i> of it:
+                        the feature of viewing replays of finished games was implemented by Quasitruncated Hexahedron.
+                    </p>
+                    <p>
+                        While everything in the 2048 Power Compendium other than the above was coded by MathCookie,
+                        many of the concepts came from other places first.
                         2048 was created by Gabriele Cirulli, and the official version can be found <a href="https://play2048.co/">here</a>. However, those who are
                         familiar with 2048 probably already know that the true origin of the concept comes from <a href="https://asherv.com/threes/">Threes!</a>, which is a
                         premium mobile game with a free web version <a href="http://threesjs.com/">here</a>; the 2048 Power Compendium's 3072 is based on Threes!. As for
@@ -2020,14 +2435,19 @@
                         <ul>
                             <li>
                                 The following modes and modifiers were suggested by Michael Darrow:
-                                Partial Absorb 361, 3,188,646, 3026, 1847, FACTUP, 3385, SCAPRIM, 2058, the Partial Absorb variant of Alternate 5040 (which inspired the creation of Alternate 5040 as a whole),
+                                Partial Absorb 361, 3,188,646, 3026, 1847, FACTUP, 3385, SCAPRIM (including its Integer Ratios Only variant), 2058, the Partial Absorb 243 variant of Alternate 5040
+                                (which inspired the creation of Alternate 5040 as a whole and was then backported into the default ruleset of PA243 in v2.2),
                                 the "1+1+1=1.5+1.5" variant of 2216.838, the "1+0.5=1.5" mode modifier in the Partial Absorb variant of 2216.838,
                                 the "merge number changes based on merges instead of turns" Turatin mode modifier, the "tiles can merge with the previous negative tile" 2584 mode modifier,
+                                the Partial Absorb 19,683 variant of Partial Absorb 243, the "integer ratios only" variant of SCAPRIM,
                                 Tricolor Tiles, the "chance of occurring" automatic moves property, clicking Discovered Tiles boxes to switch their display, and some elements of the structure of the Custom Mode maker.
-                                Partial credit also goes to him for Bitwise 2048.
+                                Partial credit also goes to him for Bitwise 2048, the "also spawn 2s" modifier in TRIGAT, and Three-Tile SQUART.
                             </li>
                             <li>
-                                16+16i and Partial Absorb 377 were suggested by Toni Brown.
+                                16+16i and Partial Absorb 377 (including the PA233 variant) were suggested by Toni Brown.
+                            </li>
+                            <li>
+                                Partial Absorb 257 was suggested by aren12345.
                             </li>
                         </ul>
                         All the other modes, as far as I'm aware, are unique to the 2048 Power Compendium. I'll also note that The 2048 Power Compendium was originally
@@ -2275,8 +2695,25 @@
                       </li>
                       <br>
                       <li>
-                        <b>
                             v2.1.16 (Jun. 15, 2025) [Current Version]: Fixed typos with the 156,250 tile in 3125 and the 362,880 tile in 5040.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.2 (Jun. 23, 2025) [Current Version]:
+                            Replaced Partial Absorb 243's merge rules, replaced Partial Absorb 255 with Partial Absorb 257, and replaced 1280 with Partial Absorb 270;
+                            their old rules, as well as a new setting for each of them, are available as mode modifiers.
+                            Added the ability to view replays of finished games (credit to Quasitruncated Hexahedron for implementing this feature!).
+                            Added two new variants (Partial Absorb 257 variant and SCAPRIM variant) and two new base options (primorials, custom base cycle) to Alternate 5040.
+                            Added random goals to 2700, 2205, 3240, 3385, 3307, X^Y, 378, 2295, and Directional Merges.
+                            Added several more mode modifiers: changing the base in Bitwise 2048, Timeless 2295,
+                            Partial Absorb 233 (which is a modifier for PA377), changing the maximum same merges in a row in 2669, Unordered and Coprime (232, 240), changing the exponent
+                            and whether ratio or product matters in 3385, Harder 1762, SCAPRIM (Integer Ratios Only), Homogenous 3240, two Eisenstein integers variants of 16+16i, changing how two +1s merge in 1321,
+                            Three-Tile SQUART, merge ratio in 1847, start and increment adjusting and a "half of the tiles are negative" mode modifier for mod 27, Levels 0 and -1 of 2700 and 2205, spawning 2s in TRIGAT,
+                            merge length options for 2496, FACTUP, and Pro-Add-Uct, and a more customizable merge length option for XXXX and 180.
+                            Changed 2216.838's mode with &#247;2 tiles to use box spawns.
+                            Fixed a couple bugs with large numbers in Wildcard 2048, fixed Alternate 5040 (1668 Variant) with a base of 2, fixed bugs with Interacting Negatives in 900 and SCAPRIM,
+                            and fixed a bug where the text disappeared when loading a save code of a game with Tricolor Tiles enabled.
                         </b>
                       </li>
                     </ul>
@@ -2591,16 +3028,6 @@
                             Secret found! <b>1/512</b>: Found by clicking "Switch this Modifier" sixteen times in 2048. [Added in v2.1] {Spoiler Code: RTFSH}
                         </p>
                     </div>
-                    <div id="secretOffice_secret6">
-                        <ul class="secretOffice_cluesList">
-                            <li>
-                                Want to get powers of 3 faster? For an incomplete solution to this, turn on a modifier that says it doesn't work there.
-                            </li>
-                        </ul>
-                        <p>
-                            Secret found! <b>Partial Absorb 19,683</b>: Found by turning on Tricolor Tiles and selecting Partial Absorb 243. [Added in v2.1. This mode was suggested by Michael Darrow.] {Spoiler Code: PTANS}
-                        </p>
-                    </div>
                     <div id="secretOffice_secret3">
                         <ul class="secretOffice_cluesList">
                             <li>
@@ -2608,7 +3035,7 @@
                             </li>
                         </ul>
                         <p>
-                            Secret found! <b>839,808</b> and <b>145.965</b>: Found by alternating hovering between 3,188,646 and 2216.838 five times each on the menu. (P.S. You can do this again to change them back) (P.P.S. If your device doesn't support hovering, you can do this by alternating entering the two modes then leaving them before starting instead of hovering - this won't work on devices where you do hover). [Added in v2.1] {Spoiler Code: OSTDE}
+                            Secret found! <b>839,808</b> and <b>145.965</b>: Found by alternating hovering between 3,188,646 and 2216.838 five times each on the menu. (P.S. You can do this again to change them back) (P.P.S. If your device doesn't support hovering, you can do this by alternating entering the two modes then leaving them before starting instead of hovering). [Added in v2.1, random goals were added to 839,808 in v2.2] {Spoiler Code: OSTDE}
                         </p>
                     </div>
                     <div id="secretOffice_secret4">
@@ -2624,12 +3051,40 @@
                     <div id="secretOffice_secret2">
                         <ul class="secretOffice_cluesList">
                             <li>
-                                At the edge of the world, two things must be made non-whole.
+                                At the edge of the world, two things must be made non-whole. One of them relates to three.
                             </li>
                         </ul>
                         <p>
-                            Secret found! <b>Alternate 5040, Partial Absorb variant with a rational base</b>: Found by entering a non-whole number into the "Tiles progress through powers of" box in Alternate 5040's Partial Absorb variant. [Added in v2.1] {Spoiler Code: ARFPQ}
+                            Secret found! <b>Alternate 5040, Partial Absorb 243 variant with a rational base</b>: Found by entering a non-whole number into the "Tiles progress through powers of" box in Alternate 5040's Partial Absorb 243 variant. [Added in v2.1] {Spoiler Code: ARFPQ}
                         </p>
+                    </div>
+                    <div id="secretOffice_secret7">
+                        <ul class="secretOffice_cluesList">
+                            <li>
+                                Go two steps forward and two steps back, then throw it in the trash!
+                            </li>
+                        </ul>
+                        <p>
+                            Secret found! <b>Pair Production Partial Absorb 377</b>: Found by turning on Garbage 0s and selecting Partial Absorb 377. [Added in v2.2. This mode was suggested by Toni Brown.] {Spoiler Code: FISTB}
+                        </p>
+                    </div>
+                    <div id="secretOffice_secret8">
+                        <ul class="secretOffice_cluesList">
+                            <li>
+                                There may be an undiscovered type of supermerging...
+                            </li>
+                        </ul>
+                        <p>
+                            Secret found! <b>Arrangement 180</b>: Found by recreating the pattern on the mural in 180's fifth setting in the Custom Grid. [Added in v2.2] {Spoiler Code: SPMAG}
+                        </p>
+                    </div>
+                    <div id="secretOffice_secret6" style="color:black">
+                        <ul class="secretOffice_cluesList secretOffice_cluesListDeclassified">
+                            <li>
+                                Partial Absorb 19,683 was originally a secret mode added in v2.1, but as of v2.2 it has been declassified and is now
+                                a mode modifier setting for Partial Absorb 243. Its spoiler code was PTANS.
+                            </li>
+                        </ul>
                     </div>
                 </div>
                 <div id="secretOffice_headingBox" class="guide_box" style="background-image: linear-gradient(#cc7b09, #f0991e, #cc7b09); color: #fbd6a1; border: solid 5px #fbd6a1; width: 65%">
@@ -2693,6 +3148,12 @@
                 <p id="viewer_base_text" class="tile_viewer_var_text">Base:</p>
                 <form id="viewer_base_form" class="tile_viewer_form">
                     <input type="number" step="1" id="viewer_base_change" name="viewer_base_change">
+                </form>
+            </div>
+            <div id="viewer_exponent" class="viewer_var_container">
+                <p id="viewer_exponent_text" class="tile_viewer_var_text">Exponent:</p>
+                <form id="viewer_exponent_form" class="tile_viewer_form">
+                    <input type="number" step="1" id="viewer_exponent_change" name="viewer_exponent_change">
                 </form>
             </div>
             <div id="tile_viewer_return" class="hover_grow">Return to menu</div>

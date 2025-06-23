@@ -26,7 +26,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color : #827818; /* This is just here so I have an easy place to choose colors from */
+    color : #ca1e1e; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -465,6 +465,13 @@ html {
     justify-content: space-around;
     flex-wrap: wrap;
 }
+.gm_var_line_multiForm {
+    width: 100%;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
 #gm_size_line {
     display: flex;
 }
@@ -569,6 +576,11 @@ html {
     color: #aa15a7;
     border-color: #aa15a7;
 }
+#PPPA377_enter_button {
+    background-color: #3e3840;
+    color: #87788c;
+    border-color: #87788c;
+}
 .gm_var_switchForm_container > .gmSwitchModifier {
     top: 8vh;
 }
@@ -641,6 +653,9 @@ html {
 .firstGoalMinimum {
     color: #724e7d;
 }
+#Alternate5040_baseList_form0 {
+    display: none;
+}
 #gm_return {
     background-color: var(--grid-color);
     font-size: 3vh;
@@ -660,6 +675,91 @@ html {
 }
 #gm_4D_depth {
     color: #484800;
+}
+#Arrangement180_muralLine {
+    display: none;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+    margin-top: 3vh;
+}
+#Arrangement180_mural {
+    width: 40vh;
+    height: auto;
+}
+#Arrangement180_customParagraph, #Arrangement180_gridZone {
+    display: none;
+}
+.Arrangement180_gridLine {
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.Arrangement180_gridHolder {
+    width: 100vh;
+    display: block;
+    margin: auto;
+    position: relative;
+}
+.Arrangement180_arrangementGrid {
+    background-color: #a8a8a8;
+    width: 40vh;
+    height: 40vh;
+    position: relative;
+    margin: auto;
+    display: block;
+}
+.Arrangement180_arrangementTile {
+    width: 90%;
+    height: 90%;
+    top: 5%;
+    left: 5%;
+    position: absolute;
+    background-color: #ece0c2;
+}
+.Arrangement180_arrangementSizeCounter {
+    color: #8d8824;
+}
+.Arrangement180_modifierLine {
+    display: flex;
+}
+.Arrangement180_removeArrangement {
+    width: 35vh;
+    font-size: 2.25vh;
+    background-color: #9400b9;
+    color: #e76ecb;
+    border: 0.56vh solid #e76ecb;
+    font-weight: bold;
+    margin: auto;
+    padding: 0.75vh;
+    margin-top: 1.5vh;
+    position: relative;
+}
+#Arrangement180_addArrangement {
+    width: 50vh;
+    font-size: 2.5vh;
+    background-color: #1fb900;
+    color: #e7dd6e;
+    border: 0.75vh solid #bde76e;
+    font-weight: bold;
+    margin: auto;
+    padding: 1vh;
+    margin-top: 3vh;
+    position: relative;
+}
+#Arrangement180_presetLine {
+    display: none;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    font-size: 3vh;
+    font-weight: bold;
+}
+#gamemode .previous_arrow_button, #gamemode .next_arrow_button {
+    height: 6vh;
+    width: auto;
 }
 @media screen and (max-aspect-ratio: 33/20) {
     #gamemode {
@@ -749,6 +849,40 @@ html {
         padding: calc(0.75vw * var(--gm_scale));
         border-width: calc(0.336vw * var(--gm_scale));
     }
+    #Arrangement180_muralLine {
+        margin-top: calc(1.81vw * var(--gm_scale));
+    }
+    #Arrangement180_mural {
+        width: calc(24.24vw * var(--gm_scale));
+    }
+    .Arrangement180_gridLine {
+        margin-top: calc(1.81vw * var(--gm_scale));
+        margin-bottom: calc(1.81vw * var(--gm_scale));
+    }
+    .Arrangement180_gridHolder {
+        width: calc(60.6vw * var(--gm_scale));
+    }
+    .Arrangement180_arrangementGrid {
+        width: calc(24.24vw * var(--gm_scale));
+        height: calc(24.24vw * var(--gm_scale));
+    }
+    .Arrangement180_removeArrangement {
+        width: calc(19.39vw * var(--gm_scale));
+        font-size: calc(1.36vw * var(--gm_scale));
+        border: calc(0.34vw * var(--gm_scale)) solid #e76ecb;
+        padding: calc(0.45vw * var(--gm_scale));
+        margin-top: calc(0.9vw * var(--gm_scale));
+    }
+    #Arrangement180_addArrangement {
+        width: calc(30vw * var(--gm_scale));
+        font-size: calc(1.51vw * var(--gm_scale));
+        border: calc(0.45vw * var(--gm_scale)) solid #bde76e;
+        padding: calc(0.6vw * var(--gm_scale));
+        margin-top: calc(1.81vw * var(--gm_scale));
+    }
+    #Arrangement180_presetLine {
+        font-size: calc(1.81vw * var(--gm_scale));
+    }
 }
 @media screen and (max-aspect-ratio: 21/20) {
     #gamemode {
@@ -763,10 +897,23 @@ html {
     .many_vars > .gm_var_container, .many_vars > .gm_var_switch_container, .many_vars > .gm_var_switchForm_container {
         width : 50%;
     }
+    .Arrangement180_arrangementGrid {
+        width: calc(20vw * var(--gm_scale));
+        height: calc(20vw * var(--gm_scale));
+    }
 }
 @media screen and (max-aspect-ratio: 13/20) {
     #gamemode {
         --gm_scale: 2;
+    }
+    .Arrangement180_gridLine {
+        flex-direction: column;
+    }
+    .Arrangement180_gridHolder {
+        width: 100%;
+    }
+    .Arrangement180_gridLine {
+        margin-bottom: calc(6vw * var(--gm_scale));
     }
 }
 @media screen and (max-aspect-ratio: 7/20) {
@@ -1039,6 +1186,9 @@ html {
     height: calc(var(--modifiers_base_size) * 15);
     position: relative;
     width: 100%;
+}
+#Arrangement180_muralMatched {
+    display: none;
 }
 #modifiers_customDirectionsLine {
     width: 100%;
@@ -1623,13 +1773,13 @@ html {
     position: relative;
     bottom: calc(var(--grid_height) / 6);
 }
-#go_again, #lone_win_again {
+#go_again, #lone_win_again, #win_again, #win_continue, #view_win_replay, #view_loss_replay {
     display: flex;
     align-items: center;
     justify-content: center;
     position: absolute;
     top: calc(var(--grid_height) * 0.65);
-    left: calc(50% - calc(var(--grid_width) / 6));
+    left: calc(25% - calc(var(--grid_width) / 6));
     background-color: var(--grid-color);
     width: calc(var(--grid_width) / 3);
     padding-top: calc(var(--grid_height) * 0.02);
@@ -1660,38 +1810,6 @@ html {
     text-shadow: 0px 0px 0.2em white;
     position: relative;
     bottom: calc(var(--grid_height) / 6);
-}
-#win_again {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: calc(var(--grid_height) * 0.65);
-    left: calc(75% - calc(var(--grid_width) / 6));
-    background-color: var(--grid-color);
-    width: calc(var(--grid_width) / 3);
-    padding-top: calc(var(--grid_height) * 0.02);
-    padding-bottom: calc(var(--grid_height) * 0.02);
-    margin: auto;
-    color: #fff;
-    font-size: calc(var(--grid_width) / 16);
-    border: calc(var(--grid_width) / 300) solid white;
-}
-#win_continue {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: calc(var(--grid_height) * 0.65);
-    left: calc(25% - calc(var(--grid_width) / 6));
-    background-color: var(--grid-color);
-    width: calc(var(--grid_width) / 3);
-    padding-top: calc(var(--grid_height) * 0.02);
-    padding-bottom: calc(var(--grid_height) * 0.02);
-    margin: auto;
-    color: #fff;
-    font-size: calc(var(--grid_width) / 16);
-    border: calc(var(--grid_width) / 300) solid white;
 }
 #left_of_grid {
     position: absolute;
@@ -2775,8 +2893,12 @@ ul {
 #secretOffice_cluesBox {
     font-size: calc(var(--base_size) * 3);
 }
-.secretOffice_cluesList {
+.secretOffice_cluesList:not(.secretOffice_cluesListDeclassified) {
     font-style: italic;
+}
+.secretOffice_cluesListDeclassified {
+    font-style: none;
+    color: #340e06;
 }
 #secretOffice_trackingOff {
     color: #5a160d;
@@ -2888,14 +3010,14 @@ ul {
     position: absolute;
     height: calc(var(--base_size) * 6);
     width: auto;
-    left: calc(50% - calc(var(--base_size) * 40));
+    left: calc(50% - calc(var(--base_size) * 50));
     top: calc(var(--base_size) * 3);
 }
 #tile_viewer .next_arrow_button {
     position: absolute;
     height: calc(var(--base_size) * 6);
     width: auto;
-    right: calc(50% - calc(var(--base_size) * 40));
+    right: calc(50% - calc(var(--base_size) * 50));
     top: calc(var(--base_size) * 3);
 }
 #viewer_tile {
