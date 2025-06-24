@@ -1010,9 +1010,12 @@ class BigRational {
      * Greatest common denominator of two bigints
      */
     static #gcdB(a, b) {
-        if (b == 0n) {
-            return a;
+        let temp;
+        while (b != 0n) {
+            temp = b;
+            b = a % b;
+            a = temp;
         }
-        return BigRational.#gcdB(b, a % b);
+        return a;
     }
 }
