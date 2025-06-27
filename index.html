@@ -652,6 +652,14 @@
                         </form>
                     </div>
                 </div>
+                <div id="PA361_vars" class="gm_var_line">
+                    <div id="PA361_PA378" class="gm_var_switch_container">
+                        <p id="PA361_PA378_text" class="gm_var_text">The tiles are square numbers.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PA361_PA378_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="1762_vars" class="gm_var_line">
                     <div id="1762_harder" class="gm_var_switch_container">
                         <p id="1762_harder_text" class="gm_var_text">The two tiles may have a difference of 1.</p>
@@ -1626,15 +1634,19 @@
                         <div id="grid"></div> <!--JavaScript is responsible for this-->
                         <div id="game_over_screen">
                             <p>Game Over!</p>
-                            <div id="go_again">Play again</div>
-                            <div id="view_loss_replay">Get replay</div>
+                            <div class="game_end_button_line">
+                                <div id="go_again">Play again</div>
+                                <div id="view_loss_replay">Get replay</div>
+                            </div>
                         </div>
                         <div id="win_screen">
                             <p>You win!</p>
-                            <div id="win_continue">Continue</div>
-                            <div id="win_again">Play again</div>
-                            <div id="lone_win_again">Play again</div>
-                            <div id="view_win_replay">Get replay</div>
+                            <div class="game_end_button_line">
+                                <div id="win_continue">Continue</div>
+                                <div id="win_again">Play again</div>
+                                <div id="lone_win_again">Play again</div>
+                                <div id="view_win_replay">Get replay</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2435,7 +2447,7 @@
                         <ul>
                             <li>
                                 The following modes and modifiers were suggested by Michael Darrow:
-                                Partial Absorb 361, 3,188,646, 3026, 1847, FACTUP, 3385, SCAPRIM (including its Integer Ratios Only variant), 2058, the Partial Absorb 243 variant of Alternate 5040
+                                Partial Absorb 361 (including its PA378 variant), 3,188,646, 3026, 1847, FACTUP, 3385, SCAPRIM (including its Integer Ratios Only variant), 2058, the Partial Absorb 243 variant of Alternate 5040
                                 (which inspired the creation of Alternate 5040 as a whole and was then backported into the default ruleset of PA243 in v2.2),
                                 the "1+1+1=1.5+1.5" variant of 2216.838, the "1+0.5=1.5" mode modifier in the Partial Absorb variant of 2216.838,
                                 the "merge number changes based on merges instead of turns" Turatin mode modifier, the "tiles can merge with the previous negative tile" 2584 mode modifier,
@@ -2716,9 +2728,14 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v2.2.1 (Jun. 24, 2025) [Current Version]: Fixed a bunch of bugs and typos that v2.2 added, because as it turns out that release was very buggy.
+                            v2.2.1 (Jun. 24, 2025): Fixed a bunch of bugs and typos that v2.2 added, because as it turns out that release was very buggy.
                             (Bugs related to replays with certain modifiers have not been fixed yet)
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.2.2 (Jun. 26, 2025) [Current Version]: Fixed bugs involving replays that included automatic moves or random goals, fixed a UI issue upon winning a game that the replay option was causing,
+                            changed the default grid size of two-tile merge Partial Absorb 255 to 3x3, and added Partial Absorb 378 (a modifier for Partial Absorb 361).
                         </b>
                       </li>
                     </ul>

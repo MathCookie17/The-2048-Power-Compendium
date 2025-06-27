@@ -147,6 +147,7 @@ let currentMovePlayed = []; //The current move being played
 let isPlayingReplay = false;
 let otherRandomEvents = [0]; //Any other random events that have occurred
 let rngIndex = 0; //Index into otherRandomEvents
+let replayOtherSpawns = []; // What tile spawns have occurred thanks to sources other than movesPlayed? (currently from automatic moves)
 
 // These arrays are used to keep track of Custom Mode things
 let customSpawningTiles = [];
@@ -639,6 +640,10 @@ document.getElementById("3069_firstGoalMinimum_change").addEventListener("change
 document.getElementById("3069_oddsOnly_button").addEventListener("click", function(){
     mode_vars[2] = !mode_vars[2];
     loadGridSize(61, mode_vars);
+    gmDisplayVars();
+});
+document.getElementById("PA361_PA378_button").addEventListener("click", function(){
+    mode_vars[0] = !mode_vars[0];
     gmDisplayVars();
 });
 document.getElementById("1762_randomGoals_button").addEventListener("click", function(){
@@ -6468,6 +6473,7 @@ function loadMode(mode) {
     else if (mode == 62) { // Partial Absorb 361
         // width = 5; height = 5;
         TileNumAmount = 1;
+        mode_vars = [false]; // If true, PA378 instead
         TileTypes = [
             [[1], 1, "#000000", "#f8e2db"],
             [[1.5], 2, "#666666", "#f8e2db"],
@@ -6491,14 +6497,12 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("--grid-color", "#eeb765");
         document.documentElement.style.setProperty("--tile-color", "#e67d49");
         document.documentElement.style.setProperty("--text-color", "#483027");
-        // displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between four 1s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
-        // ["p", "Spawning tiles: 1 (90%), 4 (10%)"]);
-        // displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between four 1s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
-        // ["p", "Spawning tiles: 1 (90%), 4 (10%)"]);
         displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between two 1s, between two 2s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
         displayRules("gm_rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between two 1s, between two 2s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("PA361_vars").style.setProperty("display", "flex");
     }
     else if (mode == 63) { // Harder 3375
         // width = 5; height = 5;
@@ -8317,7 +8321,7 @@ function loadGridSize(mode, mvars = []) {
     else if (size7.indexOf(mode) != -1) defaultSize = 7;
     else if (size8.indexOf(mode) != -1) defaultSize = 8;
     else if (mode == 35) { // Partial Absorb 257
-        if (mvars[0] && !mvars[1]) defaultSize = 4;
+        if (mvars[0] && !mvars[1]) defaultSize = 3;
         else defaultSize = 5;
     }
     else if (mode == 36) { // Partial Absorb 270
@@ -10125,6 +10129,34 @@ function gmDisplayVars() {
         }
         document.getElementById("3069_firstGoalMinimum").style.setProperty("display", (mode_vars[0] == 0) ? "none" : "block");
         document.getElementById("3069_firstGoalMinimum_change").value = mode_vars[1];
+    }
+    else if (gamemode == 62) { // Partial Absorb 361
+        if (mode_vars[0]) {
+            document.getElementById("PA361_PA378_text").innerHTML = "The tiles are triangular numbers.";
+            document.getElementById("PA361_PA378_text").style.setProperty("color", "#63cede");
+                document.documentElement.style.setProperty("background-image", "radial-gradient(#4dd6ef 0%, #000 150%)");
+            document.documentElement.style.setProperty("--background-color", "linear-gradient(#b1eef8, #3d757f)");
+            document.documentElement.style.setProperty("--grid-color", "#4dded9");
+            document.documentElement.style.setProperty("--tile-color", "#46a7c0");
+            document.documentElement.style.setProperty("--text-color", "#1a3446");
+            displayRules("rules_text", ["h2", "Triangular Numbers"], ["h1", "Partial Absorb 378"], ["p", "Three 1s merge completely, as do two 3s. For larger tiles, merges occur between two equal tiles and a 1, and they merge into one of the next tile and one of the previous tile. Get to the 378 tile to win!"],
+            ["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
+            displayRules("gm_rules_text", ["h2", "Triangular Numbers"], ["h1", "Partial Absorb 378"], ["p", "Three 1s merge completely, as do two 3s. For larger tiles, merges occur between two equal tiles and a 1, and they merge into one of the next tile and one of the previous tile. Get to the 378 tile to win!"],
+            ["p", "Spawning tiles: 1 (95%), 3 (5%)"]);
+        }
+        else {
+            document.getElementById("PA361_PA378_text").innerHTML = "The tiles are square numbers.";
+            document.getElementById("PA361_PA378_text").style.setProperty("color", "#efac4e");
+            document.documentElement.style.setProperty("background-image", "radial-gradient(#ff9a60 0%, #000 150%)");
+            document.documentElement.style.setProperty("--background-color", "linear-gradient(#ffe1cd, #936d61)");
+            document.documentElement.style.setProperty("--grid-color", "#eeb765");
+            document.documentElement.style.setProperty("--tile-color", "#e67d49");
+            document.documentElement.style.setProperty("--text-color", "#483027");
+            displayRules("rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between two 1s, between two 2s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+            displayRules("gm_rules_text", ["h2", "Square Numbers"], ["h1", "Partial Absorb 361"], ["p", "Merges may occur between two 1s, between two 2s, between two 4s and a 1, or between an n^2 tile, an (n+1)^2 tile, and a 4 tile (for any positive integer n above 1). The latter case merges into two tiles: an (n+2)^2 tile and an (n-1)^2 tile. Get to the 361 tile to win!"],
+            ["p", "Spawning tiles: 1 (85%), 2 (10%), 4 (5%)"]);
+        }
     }
     else if (gamemode == 67) { // 1762
         if (mode_vars[0] == 0) {
@@ -12881,6 +12913,7 @@ function startGame() {
     currentMovePlayed = [-1];
     otherRandomEvents = [0];
     rngIndex = 0;
+    replayOtherSpawns = []
     isPlayingReplay = false;
 
     Grid = [];
@@ -16463,6 +16496,28 @@ function loadModifiers() {
                 if (modifiers[13] != "None") sBox.push("arr_push", 1);
                 if (modifiers[24]) sBox.push("arr_push", 1);
                 statBoxes.push(["Current Goal", sBox, false, false, "Tile", "3069"], ["Goals Reached", "@GVar 2"]);
+            }
+        }
+        else if (gamemode == 62) { // Partial Absorb 361
+            if (mode_vars[0]) {
+                TileNumAmount = 1;
+                mode_vars = [false]; // If true, PA378 instead
+                TileTypes = [
+                    [[1], 1, "#ffffff", "#2c2700"],
+                    [true, ["@This 0", "+", 1, "*", "@This 0", "/", 2], ["@radial-gradient", ["@HSLA", [34, "*", "@This 0", "-", 8], ["@This 0", "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1], ["@HSLA", [34, "*", "@This 0", "*", 0.995, "-", 8], ["@This 0", "*", 0.995, "%", 320, "-", 160, "abs", "/", 2, "+", 20], ["@This 0", "*", 0.995, "%", 81, "-", 40, "abs", "*", 2, "+", 10], 1]], "#ffffff"]
+                ];
+                MergeRules = [
+                    // [4, [["@This 0", "=", 1], "&&", ["@Next 1 0", "=", 1], "&&", ["@Next 2 0", "=", 1], "&&", ["@Next 3 0", "=", 1]], true, [[2]], 4, [false, true, true, true]],
+                    [3, [["@This 0", "=", 1], "&&", ["@Next 1 0", "=", 1], "&&", ["@Next 2 0", "=", 1]], true, [[2]], 3, [false, true, true]],
+                    [2, [["@This 0", "=", 2], "&&", ["@Next 1 0", "=", 2]], true, [[3]], 6, [false, true]],
+                    [3, [["@This 0", ">", 2], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@Next 2 0", "=", 1]], false, [[["@This 0", "+", 1]], [["@This 0", "-", 1]]], [["@This 0", "+", 1], "^", 2, "+", ["@This 0", "+", 1], "/", 2], [false, false, true]]
+                ];
+                startTileSpawns = [[[1], 95], [[2], 5]];
+                winConditions = [[27]];
+                winRequirement = 1;
+                knownMergeMaxLength = 3;
+                knownMergeLookbackDistance = 0;
+                tileValueFunction = ["@This 0", "^", 2, "+", "@This 0", "/", 2, "round", 1];
             }
         }
         else if (gamemode == 67) { // 1762
@@ -21332,7 +21387,7 @@ function RandomTiles(amount, vdir, hdir) { // This is what spawns the random til
             let spawnedtile = spawnConveyorSelect();
             //Do the spawning
             Grid[row][column] = compendiumStructuredClone(spawnedtile);
-            if (!isPlayingReplay) currentMovePlayed.push([compendiumStructuredClone(spawnedtile), row, column]);
+            if (!isPlayingReplay) (arguments[4] ? replayOtherSpawns[replayOtherSpawns.length - 1] : currentMovePlayed).push([compendiumStructuredClone(spawnedtile), row, column]);
             spawnedTiles.push(compendiumStructuredClone(spawnedtile))
             spawned++;
             TileChoices.splice(choice, 1);
@@ -21473,7 +21528,7 @@ function forcedSpawnTiles(timing, vdir, hdir) {
                 //Do the spawning
                 Grid[row][column] = compendiumStructuredClone(tilesToSpawn[0]);
                 spawnedTiles.push(compendiumStructuredClone(tilesToSpawn[0]));
-                if (!isPlayingReplay) currentMovePlayed.push([compendiumStructuredClone(tilesToSpawn[0]), row, column]);
+                if (!isPlayingReplay) (arguments[4] ? replayOtherSpawns[replayOtherSpawns.length - 1] : currentMovePlayed).push([compendiumStructuredClone(tilesToSpawn[0]), row, column]);
                 TileChoices.splice(choice, 1);
                 tilesToSpawn.shift();
                 gameOverPossible.shift();
@@ -21492,7 +21547,7 @@ function forcedSpawnTiles(timing, vdir, hdir) {
 }
 
 function spawnKnownTiles(tiles) {
-    for (tile of tiles) {
+    for (let tile of tiles) {
         row = tile[1];
         column = tile[2];
         Grid[row][column] = compendiumStructuredClone(tile[0]);
@@ -21615,8 +21670,12 @@ async function MoveHandler(direction_num) {
     let manual = true;
     let tilesSpawned = [];
     if (direction_num instanceof Array) {
-    	tilesSpawned = direction_num.slice(1);
+    	tilesSpawned = direction_num.slice(1)
     	direction_num = direction_num[0];
+    }
+    else if (arguments[2] == true) { // This is set to be true when the move is an automatic move considered separate from its original move, done during a replay.
+        tilesSpawned = replayOtherSpawns.pop();
+        if (tilesSpawned === undefined) alert("An error related to tile spawns with automatic moves has occurred in this replay. Please report this to the developer, as this message should not occur.")
     }
     if (arguments.length > 1) manual = arguments[1];
     let direction = [];
@@ -21667,7 +21726,7 @@ async function MoveHandler(direction_num) {
         for (let a = 0; a < auto_directions.length; a++) {
             if (auto_directions[a][1] == "Before" && (auto_directions[a].length < 3 || CalcArray(auto_directions[a][2], 0, 0, vdir, hdir, [1, slideAmount, moveType]) === true)) {
                 if (auto_directions[a][0].length > 5) randomAutoOccured++;
-                let subMoved = await MoveHandler(a, false);
+                let subMoved = await MoveHandler(a, false, (auto_directions[a][0][4][0] == 0 && isPlayingReplay));
                 if (subMoved) movementOccurred = true;
             }
         }
@@ -21945,7 +22004,7 @@ async function MoveHandler(direction_num) {
         for (let a = 0; a < auto_directions.length; a++) {
             if (auto_directions[a][1] == "Between" && (auto_directions[a].length < 3 || CalcArray(auto_directions[a][2], 0, 0, vdir, hdir, [1, slideAmount, moveType]) === true)) {
                 if (auto_directions[a][0].length > 5) randomAutoOccured++;
-                let subMoved = await MoveHandler(a, false);
+                let subMoved = await MoveHandler(a, false, (auto_directions[a][0][4][0] == 0 && isPlayingReplay));
                 if (subMoved) movementOccurred = true;
             }
         }
@@ -22072,6 +22131,9 @@ async function MoveHandler(direction_num) {
             if (manualStrength[0] > -1) moves_where_merged++;
             merges_before_now += mergeCount;
         }
+        if (manualStrength[0] == 0 && !isPlayingReplay) {
+            replayOtherSpawns.push([]);
+        }
         if (tilesSpawned.length > 0 && manualStrength[0] > -1) {
             if (manualStrength[3]) {
                 scriptSignals = [];
@@ -22081,7 +22143,7 @@ async function MoveHandler(direction_num) {
             spawnKnownTiles(spawnedTiles);
             if (manualStrength[3]) {
                 scriptSignals = [];
-                executeScripts("PostSpawn", 0, 0, vdir, hdir, [1, slideAmount, moveType], Grid, [], [spawnedTiles]);
+                executeScripts("PostSpawn", 0, 0, vdir, hdir, [1, slideAmount, moveType], Grid, [], [spawnedTiles.map(x => x[0])]);
             }
         }
         else if (CalcArray(spawnConditions) === true && manualStrength[0] > -1) {
@@ -22091,9 +22153,9 @@ async function MoveHandler(direction_num) {
             }
             let spawnedTiles = [];
             spawnedTiles = spawnedTiles.concat(
-                forcedSpawnTiles("BeforeSpawns", vdir, hdir, [1, slideAmount, moveType]),
-                RandomTiles(randomTileAmount, vdir, hdir, [1, slideAmount, moveType]),
-                forcedSpawnTiles("AfterSpawns", vdir, hdir, [1, slideAmount, moveType]),
+                forcedSpawnTiles("BeforeSpawns", vdir, hdir, [1, slideAmount, moveType], (manualStrength[0] == 0 && !isPlayingReplay)),
+                RandomTiles(randomTileAmount, vdir, hdir, [1, slideAmount, moveType], (manualStrength[0] == 0 && !isPlayingReplay)),
+                forcedSpawnTiles("AfterSpawns", vdir, hdir, [1, slideAmount, moveType], (manualStrength[0] == 0 && !isPlayingReplay)),
             );
             if (manualStrength[3]) {
                 scriptSignals = [];
@@ -22112,7 +22174,7 @@ async function MoveHandler(direction_num) {
         for (let a = 0; a < auto_directions.length; a++) {
             if (auto_directions[a][1] == "After" && (auto_directions[a].length < 3 || CalcArray(auto_directions[a][2], 0, 0, vdir, hdir, [1, slideAmount, moveType]) === true)) {
                 if (auto_directions[a][0].length > 5) randomAutoOccured++;
-                let subMoved = await MoveHandler(a, false);
+                let subMoved = await MoveHandler(a, false, (auto_directions[a][0][4][0] == 0 && isPlayingReplay));
                 if (subMoved) movementOccurred = true;
             }
         }
@@ -22330,12 +22392,12 @@ async function GameOver() {
     document.getElementById("game_over_screen").style.setProperty("opacity", 0);
     document.getElementById("game_over_screen").style.setProperty("display", "flex");
     if (isPlayingReplay) {
-    	document.getElementById("go_again").style.setProperty("left", "calc(50% - calc(var(--grid_width) / 6))")
+    	// document.getElementById("go_again").style.setProperty("left", "calc(50% - calc(var(--grid_width) / 6))")
         document.getElementById("view_loss_replay").style.setProperty("display", "none");;
     } else {
-		document.getElementById("go_again").style.setProperty("left", "calc(25% - calc(var(--grid_width) / 6))");
+		// document.getElementById("go_again").style.setProperty("left", "calc(25% - calc(var(--grid_width) / 6))");
         document.getElementById("view_loss_replay").style.setProperty("display", "flex");;
-		document.getElementById("view_loss_replay").style.setProperty("left", "calc(75% - calc(var(--grid_width) / 6))");
+		// document.getElementById("view_loss_replay").style.setProperty("left", "calc(75% - calc(var(--grid_width) / 6))");
 	}
     let frames = 100;
     if (modifiers[16] > 0) {
@@ -22357,28 +22419,28 @@ async function winScreen() {
     document.getElementById("win_screen").style.setProperty("display", "flex");
     if (isPlayingReplay) {
     	document.getElementById("win_again").style.setProperty("display", "flex");
-        document.getElementById("win_again").style.setProperty("left", "calc(25% - calc(var(--grid_width) / 6))");
+        // document.getElementById("win_again").style.setProperty("left", "calc(25% - calc(var(--grid_width) / 6))");
         document.getElementById("win_continue").style.setProperty("display", "flex");
-        document.getElementById("win_continue").style.setProperty("left", "calc(75% - calc(var(--grid_width) / 6))");
+        // document.getElementById("win_continue").style.setProperty("left", "calc(75% - calc(var(--grid_width) / 6))");
         document.getElementById("view_win_replay").style.setProperty("display", "none");
         document.getElementById("lone_win_again").style.setProperty("display", "none");
     }
     else if (postgameAllowed) {
         document.getElementById("win_again").style.setProperty("display", "flex");
-        document.getElementById("win_again").style.setProperty("left", "calc(50% - calc(var(--grid_width) / 6))");
+        // document.getElementById("win_again").style.setProperty("left", "calc(50% - calc(var(--grid_width) / 6))");
         document.getElementById("win_continue").style.setProperty("display", "flex");
-        document.getElementById("win_continue").style.setProperty("left", "calc(10% - calc(var(--grid_width) / 6))");
+        // document.getElementById("win_continue").style.setProperty("left", "calc(10% - calc(var(--grid_width) / 6))");
         document.getElementById("view_win_replay").style.setProperty("display", "flex");
-        document.getElementById("view_win_replay").style.setProperty("left", "calc(90% - calc(var(--grid_width) / 6))");
+        // document.getElementById("view_win_replay").style.setProperty("left", "calc(90% - calc(var(--grid_width) / 6))");
         document.getElementById("lone_win_again").style.setProperty("display", "none");
     }
     else {
         document.getElementById("win_again").style.setProperty("display", "none");
         document.getElementById("win_continue").style.setProperty("display", "none");
         document.getElementById("lone_win_again").style.setProperty("display", "flex");
-        document.getElementById("lone_win_again").style.setProperty("left", "calc(25% - calc(var(--grid_width) / 6))");
+        // document.getElementById("lone_win_again").style.setProperty("left", "calc(25% - calc(var(--grid_width) / 6))");
         document.getElementById("view_win_replay").style.setProperty("display", "flex");
-        document.getElementById("view_win_replay").style.setProperty("left", "calc(75% - calc(var(--grid_width) / 6))");
+        // document.getElementById("view_win_replay").style.setProperty("left", "calc(75% - calc(var(--grid_width) / 6))");
     }
     let frames = 100;
     if (modifiers[16] > 0) {
@@ -22413,6 +22475,7 @@ async function PlayAgain() {
     currentMovePlayed = [-1];
     otherRandomEvents = [0];
     rngIndex = 0;
+    replayOtherSpawns = [];
     isPlayingReplay = false;
     knownTileDisplayArrays = [];
     knownTileDisplayNodes = [];
@@ -23670,7 +23733,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
         let SaveCode = "";
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "2.2|"
+        SaveCode += "2.2.2|"
         SaveCode += window.btoa(String(width));
         SaveCode += "|";
         SaveCode += window.btoa(String(height));
@@ -23794,6 +23857,8 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
             SaveCode += "|";
             SaveCode += window.btoa(String(rngIndex));
             SaveCode += "|";
+            SaveCode += window.btoa(SCstringify(replayOtherSpawns));
+            SaveCode += "|";
         }
         document.getElementById("save_code_box").value = SaveCode;
     }
@@ -23804,7 +23869,7 @@ function exportSave(midgame) { // A save code where midgame = true saves a game 
 
 function exportReplay(gameWon) {
     try {
-        let SaveCode = "@2048PowCompReplay|2.2|"
+        let SaveCode = "@2048PowCompReplay|2.2.2|"
         SaveCode += window.btoa(String(width));
         SaveCode += "|";
         SaveCode += window.btoa(String(height));
@@ -23891,6 +23956,9 @@ function exportReplay(gameWon) {
         SaveCode += "|";
         SaveCode += window.btoa(String(gameWon));
         SaveCode += "|";
+        SaveCode += window.btoa(SCstringify(replayOtherSpawns));
+        SaveCode += "|";
+        console.log(SaveCode.split("|"));
         document.getElementById("save_code_box").value = SaveCode;
     }
     catch (error) {
@@ -23948,7 +24016,7 @@ function exportModifiersSave() {
     }
 }
 
-let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4", "2.1.13", "2.1.14", "2.2"];
+let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4", "2.1.13", "2.1.14", "2.2", "2.2.2"];
 
 function importSave(code) {
     try {
@@ -24038,6 +24106,9 @@ function importSave(code) {
 						coderesults.push(SCparse(window.atob(codebits[midgameStart + 19]))); //coderesults[midgameStart + 19] is currentMovePlayed
 						coderesults.push(SCparse(window.atob(codebits[midgameStart + 20]))); //coderesults[midgameStart + 20] is otherRandomEvents
 						coderesults.push(Number(window.atob(codebits[midgameStart + 21]))); //coderesults[midgameStart + 21] is rngIndex
+					}
+                    if (validSaveCodeVersions.indexOf(codebits[1]) > 12) {
+						coderesults.push(SCparse(window.atob(codebits[midgameStart + 22]))); //coderesults[midgameStart + 22] is replayOtherSpawns
 					}
                 }
                 //If we've gotten this far, the import is a success, so it's time to do the actual importing
@@ -24143,6 +24214,21 @@ function importSave(code) {
                     	currentMovePlayed = [];
                     	otherRandomEvents = [0];
                     	rngIndex = 0;
+                        replayOtherSpawns = [];
+                    }
+                    if (validSaveCodeVersions.indexOf(codebits[1]) > 12) {
+                        replayOtherSpawns = coderesults[midgameStart + 22];
+                    }
+                    else {
+                        replayOtherSpawns = [];
+                        let autoProblematic = false;
+                        for (let a of auto_directions) {
+                            if (a[4][0] == 0) {
+                                autoProblematic = true;
+                                break;
+                            }
+                        }
+                        if (autoProblematic && validSaveCodeVersions.indexOf(codebits[1]) > 11) alert("Warning: A replay produced continuing from this point will not play properly.");
                     }
                     displayGrid();
                     displayButtons(true);
@@ -24282,6 +24368,7 @@ function importSave(code) {
 					currentMovePlayed = [];
 					otherRandomEvents = [0];
 					rngIndex = 0;
+                    replayOtherSpawns = [];
                     displayGrid();
                     displayButtons(true);
                 }
@@ -24350,7 +24437,7 @@ function importSave(code) {
             else throw "Invalid update";
         }
         else if (codebits[0] == "@2048PowCompReplay") {
-            if (codebits[1] == "2.2") {
+            if (codebits[1] == "2.2" || codebits[1] == "2.2.2") {
                 coderesults.push(Number(window.atob(codebits[2]))); //coderesults[0] is width
                 if (isNaN(coderesults[0]) || coderesults[0] < 1 || (coderesults[0] % 1) != 0) throw "Invalid width";
                 coderesults.push(Number(window.atob(codebits[3]))); //coderesults[1] is height
@@ -24394,11 +24481,13 @@ function importSave(code) {
 				coderesults.push(Number(window.atob(codebits[38]))); //coderesults[36] is knownMergeLookbackDistance
                 coderesults.push(Number(window.atob(codebits[39]))); //coderesults[37] is knownMergeMaxLength
                 coderesults.push(Number(window.atob(codebits[40]))); //coderesults[38] is tileValueFunction
-                coderesults.push(SCparse(window.atob(codebits[41]))); //coderesults[38] is movesPlayed
-				coderesults.push(SCparse(window.atob(codebits[42]))); //coderesults[39] is currentMovePlayed
-				coderesults.push(SCparse(window.atob(codebits[43]))); //coderesults[40] is otherRandomEvents
-				coderesults.push(Number(window.atob(codebits[44]))); //coderesults[41] is rngIndex
-				coderesults.push(Number(window.atob(codebits[45]))); //coderesults[42] is gameWon
+                coderesults.push(SCparse(window.atob(codebits[41]))); //coderesults[39] is movesPlayed
+				coderesults.push(SCparse(window.atob(codebits[42]))); //coderesults[40] is currentMovePlayed
+				coderesults.push(SCparse(window.atob(codebits[43]))); //coderesults[41] is otherRandomEvents
+				coderesults.push(Number(window.atob(codebits[44]))); //coderesults[42] is gameWon
+                if (codebits[1] == "2.2.2") {
+                    coderesults.push(SCparse(window.atob(codebits[45]))); //coderesults[43] is replayOtherSpawns
+                }
                 //If we've gotten this far, the import is a success, so it's time to do the actual importing
                 width = coderesults[0];
                 height = coderesults[1];
@@ -24446,8 +24535,21 @@ function importSave(code) {
                 movesPlayed = coderesults[replayStart];
 				movesPlayed.push(coderesults[replayStart + 1]);
 				otherRandomEvents = coderesults[replayStart + 2];
-				rngIndex = coderesults[replayStart + 3];
-				gameWon = coderesults[replayStart + 4];
+				gameWon = coderesults[replayStart + 3];
+                if (codebits[1] == "2.2.2") {
+                    replayOtherSpawns = coderesults[replayStart + 4].reverse();
+                }
+                else {
+                    replayOtherSpawns = [];
+                    let autoProblematic = false;
+                    for (let a of auto_directions) {
+                        if (a[0][4][0] == 0) {
+                            autoProblematic = true;
+                            break;
+                        }
+                    }
+                    if (autoProblematic) alert("Warning: Replays created before v2.2.2 with automatic moves that count as separate moves do not function properly.");
+                }
 				isPlayingReplay = true;
 				displayGrid();
 				playReplay();

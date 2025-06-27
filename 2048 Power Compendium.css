@@ -1751,10 +1751,9 @@ html {
     font-size: 3vw;
     position: absolute;
 }
-#game_over_screen {
+#game_over_screen, #win_screen {
     display: none;
     opacity: 0;
-    background-color: #0006;
     position: relative;
     width: var(--grid_width);
     height: var(--grid_height);
@@ -1762,54 +1761,55 @@ html {
     z-index: 2;
     font-weight: bold;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
     margin: auto;
     top: calc(50% - var(--grid_height) / 2);
+    flex-direction: column;
+}
+#game_over_screen {
+    background-color: #0006;
+}
+#win_screen {
+    background-color: #fff6;
 }
 #game_over_screen > p {
     font-size: calc(var(--grid_width) / 8);
     color: #000;
     text-shadow: 0px 0px 0.2em white;
     position: relative;
-    bottom: calc(var(--grid_height) / 6);
-}
-#go_again, #lone_win_again, #win_again, #win_continue, #view_win_replay, #view_loss_replay {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: calc(var(--grid_height) * 0.65);
-    left: calc(25% - calc(var(--grid_width) / 6));
-    background-color: var(--grid-color);
-    width: calc(var(--grid_width) / 3);
-    padding-top: calc(var(--grid_height) * 0.02);
-    padding-bottom: calc(var(--grid_height) * 0.02);
-    margin: auto;
-    color: #fff;
-    font-size: calc(var(--grid_width) / 16);
-    border: calc(var(--grid_width) / 300) solid white;
-}
-#win_screen {
-    display: none;
-    opacity: 0;
-    background-color: #fff6;
-    position: relative;
-    width: var(--grid_width);
-    height: var(--grid_height);
-    text-align: center;
-    z-index: 2;
-    font-weight: bold;
-    align-items: center;
-    justify-content: center;
-    margin: auto;
-    top: calc(50% - var(--grid_height) / 2);
+    /* bottom: calc(var(--grid_height) / 6); */
 }
 #win_screen > p {
     font-size: calc(var(--grid_width) / 8);
     color: #000;
     text-shadow: 0px 0px 0.2em white;
     position: relative;
-    bottom: calc(var(--grid_height) / 6);
+    /* bottom: calc(var(--grid_height) / 6); */
+}
+.game_end_button_line {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    text-align: center;
+    /* position: absolute;
+    top: calc(var(--grid_height) * 0.65); */
+    width: var(--grid_width);
+}
+#go_again, #lone_win_again, #win_again, #win_continue, #view_win_replay, #view_loss_replay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background-color: var(--grid-color);
+    width: calc(var(--grid_width) / 3);
+    padding-top: calc(var(--grid_height) * 0.02);
+    padding-bottom: calc(var(--grid_height) * 0.02);
+    margin-top: calc(var(--grid_height) * 0.02);
+    margin-bottom: calc(var(--grid_height) * 0.02);
+    color: #fff;
+    font-size: calc(var(--grid_width) / 16);
+    border: calc(var(--grid_width) / 300) solid white;
 }
 #left_of_grid {
     position: absolute;
