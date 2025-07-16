@@ -296,7 +296,7 @@ class BigRational {
             return (this._numerator * other._denominator == this._denominator * other._numerator);
         }
         else {
-            return (this._numerator == other._numerator && this._numerator != 0n);
+            return (this.isFinite() == other.isFinite() && this._numerator == other._numerator && this._numerator != 0n);
         }
     }
     /**

@@ -346,6 +346,10 @@
                             <input type="number" step="any" id="180_firstGoalMinimum_change" name="180_firstGoalMinimum_change">
                         </form>
                     </div>
+                    <div id="180_partialAbsorb" class="gm_var_switch_container">
+                        <p id="180_partialAbsorb_text" class="gm_var_text">Tiles merge fully.</p>
+                        <div id="180_partialAbsorb_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                    </div>
                     <div id="Arrangement180_midMove" class="gm_var_switch_container">
                         <p id="Arrangement180_midMove_text" class="gm_var_text">Tiles only merge at the end of a move.</p>
                         <div id="Arrangement180_midMove_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
@@ -354,7 +358,7 @@
                 <div id="180_mergeLengthList" class="gm_var_line_multiForm">
                     <p class="gm_var_text" style="color: #986f00">Allowed Merge Lengths: </p>
                     <form id="180_mergeLengthList_form0" class="customForm_size2">
-                        <input type="number" step="1" id="180_mergeLengthList_input0" name="180_mergeLengthList_input0">
+                        <input type="text" id="180_mergeLengthList_input0" name="180_mergeLengthList_input0">
                     </form>
                 </div>
                 <div id="2592_vars" class="gm_var_line">
@@ -2733,9 +2737,15 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v2.2.2 (Jun. 26, 2025) [Current Version]: Fixed bugs involving replays that included automatic moves or random goals, fixed a UI issue upon winning a game that the replay option was causing,
+                            v2.2.2 (Jun. 26, 2025): Fixed bugs involving replays that included automatic moves or random goals, fixed a UI issue upon winning a game that the replay option was causing,
                             changed the default grid size of two-tile merge Partial Absorb 255 to 3x3, and added Partial Absorb 378 (a modifier for Partial Absorb 361).
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.2.3 (Jul. 16, 2025) [Current Version]: Fixed the following bugs: The continue button showing up in winning game replays, Partial Absorb 270's win condition
+                            being set incorrectly, 10 not being affected by positive and negative spawn ratios with Negative Tiles on, and a bug with Alternate 5040 (Partial Absorb 257 Variant)'s merges.
+                            Also, added a Partial Absorb modifier for 180.
                         </b>
                       </li>
                     </ul>
@@ -3158,6 +3168,16 @@
                     <input type="number" step="1" id="viewer_gaussian_imaginary_change" name="viewer_gaussian_imaginary_change">
                 </form>
                 <p id="viewer_gaussian_number_i" class="tile_viewer_var_text">i</p>
+            </div>
+            <div id="viewer_rational_number" class="viewer_var_container">
+                <p id="viewer_rational_number_text" class="tile_viewer_var_text">Number:</p>
+                <form id="viewer_rational_numerator_form" class="tile_viewer_form">
+                    <input type="number" step="1" id="viewer_rational_numerator_change" name="viewer_rational_numerator_change">
+                </form>
+                <p id="viewer_rational_number_bar" class="tile_viewer_var_text">/</p>
+                <form id="viewer_rational_denominator_form" class="tile_viewer_form">
+                    <input type="number" step="1" id="viewer_rational_denominator_change" name="viewer_rational_denominator_change">
+                </form>
             </div>
             <div id="viewer_WildcardText_button" class="tile_viewer_button">The text on the tile shows all the possibilities.</div>
             <div id="viewer_primes" class="viewer_var_container">
