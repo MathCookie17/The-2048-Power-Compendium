@@ -26,7 +26,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color : #ff26b3; /* This is just here so I have an easy place to choose colors from */
+    color : #b09367; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -1025,11 +1025,22 @@ html {
     height: calc(var(--modifiers_base_size) * 5);
     top: calc(var(--modifiers_base_size) * 7.5);
 }
+#replay_changeSpeed {
+    --modifiers_base_size: 1vh;
+    font-size: calc(var(--modifiers_base_size) * 3);
+    height: calc(var(--modifiers_base_size) * 5);
+    width: 80%;
+    top: calc(var(--modifiers_base_size) * 7.5);
+    text-align: center;
+}
 .modifiers_flexbox {
     width: 100%;
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
+}
+.button, .hover_grow {
+       cursor: pointer;
 }
 .modifiers_var_container {
     font-size: calc(var(--modifiers_base_size) * 3);
