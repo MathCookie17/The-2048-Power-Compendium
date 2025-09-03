@@ -527,7 +527,7 @@ document.getElementById("DIVE_1s_button").addEventListener("click", function(){
     gmDisplayVars();
 });
 document.getElementById("DIVE_unlockRules_button").addEventListener("click", function(){
-    mode_vars[2] = (mode_vars[2] + 1) % 5;
+    mode_vars[2] = (mode_vars[2] + 1) % 4;
     gmDisplayVars();
 });
 document.getElementById("DIVE_randomGoals_button").addEventListener("click", function(){
@@ -1192,7 +1192,7 @@ document.getElementById("GaussianDIVE_seedsFirstQuadrant_button").addEventListen
     gmDisplayVars();
 });
 document.getElementById("GaussianDIVE_unlockRules_button").addEventListener("click", function(){
-    mode_vars[4] = (mode_vars[4] + 1) % 5;
+    mode_vars[4] = (mode_vars[4] + 1) % 4;
     gmDisplayVars();
 });
 document.getElementById("GaussianDIVE_quadrant0SpawnRatio_change").addEventListener("change", function() {
