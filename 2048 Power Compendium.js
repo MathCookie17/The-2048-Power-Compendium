@@ -527,7 +527,7 @@ document.getElementById("DIVE_1s_button").addEventListener("click", function(){
     gmDisplayVars();
 });
 document.getElementById("DIVE_unlockRules_button").addEventListener("click", function(){
-    mode_vars[2] = (mode_vars[2] + 1) % 4;
+    mode_vars[2] = (mode_vars[2] + 1) % 5;
     gmDisplayVars();
 });
 document.getElementById("DIVE_randomGoals_button").addEventListener("click", function(){
@@ -1192,7 +1192,7 @@ document.getElementById("GaussianDIVE_seedsFirstQuadrant_button").addEventListen
     gmDisplayVars();
 });
 document.getElementById("GaussianDIVE_unlockRules_button").addEventListener("click", function(){
-    mode_vars[4] = (mode_vars[4] + 1) % 4;
+    mode_vars[4] = (mode_vars[4] + 1) % 5;
     gmDisplayVars();
 });
 document.getElementById("GaussianDIVE_quadrant0SpawnRatio_change").addEventListener("change", function() {
@@ -3262,7 +3262,7 @@ function prime(n) {//Returns the nth prime; uses numbers or BigInts depending on
 }
 
 function gaussian_prime(n) {//Returns the nth gaussian prime.
-    while (primes.length < n) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
+    while (gaussian_primes.length < n) gaussianPrimesUpdate(gaussian_primes[gaussian_primes.length - 1].norm() * 2n);
     if ((typeof n == "number") && (n % 1 != 0)) return undefined;
     let an = Math.abs(Number(n));
     let answer = 0n;
@@ -4751,7 +4751,7 @@ function loadMode(mode) {
         ]
         MergeRules = [
             [3, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 2 0", "=", "@This 0"], "&&", ["@Next 2 1", "=", "@This 1"], "&&", ["@This 1", "<=", 0], "&&", ["@This 1", ">", -2]], true, [["@This 0", ["@This 1", "-", 1]]], [25, "^", "@This 0", "*", [3, "^", ["@This 1", "*", -1], "*", 3]], [false, true, true]],
-            [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", ">=", 0], "&&", ["@This 1", "<", 4]], true, [["@This 0", ["@This 1", "+", 1]]], [25, "^", "@This 0", "*", [2, "^", "@This 1", "*", 2]], [false, true]],
+            [2, [["@NextNE -1 0", "!=", "@This 0"], "||", ["@NextNE -1 1", "!=", "@This 1"], "||", ["@This 1", "!=", 0], "&&", ["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@This 1", ">=", 0], "&&", ["@This 1", "<", 4]], true, [["@This 0", ["@This 1", "+", 1]]], [25, "^", "@This 0", "*", [2, "^", "@This 1", "*", 2]], [false, true]],
             [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", -2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 0]], [25, "^", "@This 0", "*", 25], [false, true]],
         ]
         startTileSpawns = [[[0, 0], 90], [[0, 1], 5], [[0, -1], 5]];
@@ -7460,9 +7460,9 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("--tile-color", "#ff693b");
         document.documentElement.style.setProperty("--text-color", "#4f3b1a");
         displayRules("rules_text", ["h2", "Pascal's Triangle"], ["h1", "1716"], ["p", "Tiles can be thought of as (unordered) pairs. An (a, b) tile can merge with an (a - 1, b + 1) tile to make a (a, b + 1) tile, or with an (a + 1, b - 1) tile to make an (a + 1, b) tile. Also, two equal (n, n + 1) tiles can merge into an (n + 1, n + 1 tile), and a 1 tile can serve as (1, n) for any n, meaning a (2, n) tile merges with a 1 to make a (2, n + 1) tile. Get to the 1716 (7, 8) tile to win!"],
-        ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (8%)"]);
+        ["p", "Spawning tiles: 1 (84%), 2 (8%), 3 (8%)"]);
         displayRules("gm_rules_text", ["h2", "Pascal's Triangle"], ["h1", "1716"], ["p", "Tiles can be thought of as (unordered) pairs. An (a, b) tile can merge with an (a - 1, b + 1) tile to make a (a, b + 1) tile, or with an (a + 1, b - 1) tile to make an (a + 1, b) tile. Also, two equal (n, n + 1) tiles can merge into an (n + 1, n + 1 tile), and a 1 tile can serve as (1, n) for any n, meaning a (2, n) tile merges with a 1 to make a (2, n + 1) tile. Get to the 1716 (7, 8) tile to win!"],
-        ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (8%)"]);
+        ["p", "Spawning tiles: 1 (84%), 2 (8%), 3 (8%)"]);
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("1716_vars").style.setProperty("display", "flex");
     }
@@ -8938,7 +8938,6 @@ function gmDisplayVars() {
                             v = this.value.split("/");
                             if (v.length != 2) throw new Error();
                             v = v.map(x => abs(BigInt(x)));
-                            console.log(v);
                             if (v[0] === 0n || v[1] === 0n || v[0] === v[1]) throw new Error();
                             if (v[0] < v[1] && !(secretsFound[4] || secretsFound[5])) {
                                 let temp = v[1];
@@ -9822,6 +9821,11 @@ function gmDisplayVars() {
             document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked smallest to largest.";
             document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#fa6756");
             seedCheckDescription = " (Seeds are checked smallest to largest.) "
+        }
+        else if (mode_vars[2] == 4) {
+            document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, the maximum possibility is always chosen. (This may be laggy.)";
+            document.getElementById("DIVE_unlockRules_text").style.setProperty("color", "#e219d1");
+            seedCheckDescription = " (Seeds are checked in a way that gives the maximum possible outcome.) "
         }
         else {
             document.getElementById("DIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked in the order they were unlocked.";
@@ -10973,17 +10977,17 @@ function gmDisplayVars() {
             document.getElementById("1716_equalDisappear_text").innerHTML = "Any two equal tiles can merge, disappearing if that's not a valid merge."
             document.getElementById("1716_equalDisappear_text").style.setProperty("color", "#932e0f");
             displayRules("rules_text", ["h2", "Pascal's Triangle"], ["h1", "1716"], ["p", "Tiles can be thought of as (unordered) pairs. An (a, b) tile can merge with an (a - 1, b + 1) tile to make a (a, b + 1) tile, or with an (a + 1, b - 1) tile to make an (a + 1, b) tile. Also, two equal (n, n + 1) tiles can merge into an (n + 1, n + 1 tile), and a 1 tile can serve as (1, n) for any n, meaning a (2, n) tile merges with a 1 to make a (2, n + 1) tile. If any two equal tiles other than the aforementioned cases collide, they'll disappear. Get to the 1716 (7, 8) tile to win!"],
-            ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (8%)"]);
+            ["p", "Spawning tiles: 1 (84%), 2 (8%), 3 (8%)"]);
             displayRules("gm_rules_text", ["h2", "Pascal's Triangle"], ["h1", "1716"], ["p", "Tiles can be thought of as (unordered) pairs. An (a, b) tile can merge with an (a - 1, b + 1) tile to make a (a, b + 1) tile, or with an (a + 1, b - 1) tile to make an (a + 1, b) tile. Also, two equal (n, n + 1) tiles can merge into an (n + 1, n + 1 tile), and a 1 tile can serve as (1, n) for any n, meaning a (2, n) tile merges with a 1 to make a (2, n + 1) tile. If any two equal tiles other than the aforementioned cases collide, they'll disappear. Get to the 1716 (7, 8) tile to win!"],
-            ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (8%)"]);
+            ["p", "Spawning tiles: 1 (84%), 2 (8%), 3 (8%)"]);
         }
         else {
             document.getElementById("1716_equalDisappear_text").innerHTML = "Only valid equal tile merges can occur."
             document.getElementById("1716_equalDisappear_text").style.setProperty("color", "#99861a");
             displayRules("rules_text", ["h2", "Pascal's Triangle"], ["h1", "1716"], ["p", "Tiles can be thought of as (unordered) pairs. An (a, b) tile can merge with an (a - 1, b + 1) tile to make a (a, b + 1) tile, or with an (a + 1, b - 1) tile to make an (a + 1, b) tile. Also, two equal (n, n + 1) tiles can merge into an (n + 1, n + 1 tile), and a 1 tile can serve as (1, n) for any n, meaning a (2, n) tile merges with a 1 to make a (2, n + 1) tile. A merge only gives score if both entries in the resulting tile's pair are at least 3. Get to the 1716 (7, 8) tile to win!"],
-            ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (8%)"]);
+            ["p", "Spawning tiles: 1 (84%), 2 (8%), 3 (8%)"]);
             displayRules("gm_rules_text", ["h2", "Pascal's Triangle"], ["h1", "1716"], ["p", "Tiles can be thought of as (unordered) pairs. An (a, b) tile can merge with an (a - 1, b + 1) tile to make a (a, b + 1) tile, or with an (a + 1, b - 1) tile to make an (a + 1, b) tile. Also, two equal (n, n + 1) tiles can merge into an (n + 1, n + 1 tile), and a 1 tile can serve as (1, n) for any n, meaning a (2, n) tile merges with a 1 to make a (2, n + 1) tile. A merge only gives score if both entries in the resulting tile's pair are at least 3. Get to the 1716 (7, 8) tile to win!"],
-            ["p", "Spawning tiles: 1 (85%), 2 (8%), 3 (8%)"]);
+            ["p", "Spawning tiles: 1 (84%), 2 (8%), 3 (8%)"]);
         }
     }
     else if (gamemode == 85) { // 2669
@@ -11291,9 +11295,9 @@ function gmDisplayVars() {
             document.getElementById("TRIGAT_spawn2s_text").innerHTML = "Both 3s and 2s spawn.";
             document.getElementById("TRIGAT_spawn2s_text").style.setProperty("color", "#ca1e1e");
             displayRules("rules_text", ["h1", "TRIGAT"], ["p", 'Two tiles can merge if they are equal or if the smaller tile is a multiple of (the ratio between the two tiles * 2 - 1): for example, 30 and 12 can merge because 12 is a multiple of (30/12 * 2 - 1 = 4). (Another way of thinking about it is "a smaller tile can merge with its triangular number, even if they\'re not integers, and if a + b = c is a valid merge, then so is na + nb = nc for an integer n". This rule is equivalent to the "ratio * 2 - 1" rule). This mode has a lot of possible tiles, so it doesn\'t have a win condition. If you want a goal to strive for, see how many triangular numbers you can make multiples of.'],
-            ["p", "Spawning tiles: 2 (50%), 3 (50%)"]);
+            ["p", "Spawning tiles: 3 (50%), 2 (50%)"]);
             displayRules("gm_rules_text", ["h1", "TRIGAT"], ["p", 'Two tiles can merge if they are equal or if the smaller tile is a multiple of (the ratio between the two tiles * 2 - 1): for example, 30 and 12 can merge because 12 is a multiple of (30/12 * 2 - 1 = 4). (Another way of thinking about it is "a smaller tile can merge with its triangular number, even if they\'re not integers, and if a + b = c is a valid merge, then so is na + nb = nc for an integer n". This rule is equivalent to the "ratio * 2 - 1" rule). This mode has a lot of possible tiles, so it doesn\'t have a win condition. If you want a goal to strive for, see how many triangular numbers you can make multiples of.'],
-            ["p", "Spawning tiles: 2 (50%), 3 (50%)"]);
+            ["p", "Spawning tiles: 3 (50%), 2 (50%)"]);
         }
         else {
             document.getElementById("TRIGAT_spawn2s_text").innerHTML = "Only 3s spawn.";
@@ -12337,6 +12341,11 @@ function gmDisplayVars() {
             document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked smallest to largest.";
             document.getElementById("GaussianDIVE_unlockRules_text").style.setProperty("color", "#fa6756");
             seedCheckDescription = " (Seeds are checked smallest to largest.) "
+        }
+        else if (mode_vars[4] == 4) {
+            document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, the maximum possibility is always chosen. (This may be laggy.)";
+            document.getElementById("GaussianDIVE_unlockRules_text").style.setProperty("color", "#e219d1");
+            seedCheckDescription = " (Seeds are checked in a way that gives the maximum possible outcome.) "
         }
         else {
             document.getElementById("GaussianDIVE_unlockRules_text").innerHTML = "When deciding what new seed to unlock, seeds are checked in the order they were unlocked.";
@@ -13738,7 +13747,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 tile.style.setProperty("background-image", (evaluateColor(["@linear-gradient", 90].concat(background), vcoord, hcoord, container, vars)));
                 if (negative) textColor = ["@rotate", 180, true, textColor];
                 tile.style.setProperty("color", (evaluateColor(textColor, vcoord, hcoord, container, vars)));
-                if (params.length > 0 && params[0]) {
+                if (params.length > 0 && params[0] && !hiddenTileText) {
                     tile.firstElementChild.innerHTML = textArray.join(" ");
                     let fontmin = 2;
                     let fontmax = tile.firstElementChild.textContent.length * 0.7;
@@ -15538,7 +15547,6 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     } 
                 }
                 if (all_factors[0].eq(-1)) {
-                    console.log(["@HSLA", startColor[0] + 180, startColor[1], 100 - startColor[2], 0.75]);
                     pImage = document.createElement("div");
                     pImage.classList.add("primeImage");
                     tile.appendChild(pImage);
@@ -16735,9 +16743,9 @@ function loadModifiers() {
         }
         else if (gamemode == 40) { // Wildcard 2048
             if (mode_vars[0] == 1) {
-                MergeRules[0][5] = [[["@This 0", "+", "@Next 1 0"]]];
+                MergeRules[0][5] = [[["@This 0", "+B", "@Next 1 0"]]];
                 MergeRules[0][6] = ["@This 0", "+B", "@Next 1 0", "@edit_gvar", 0, ["@Parent -2", "logB", 2n, "max", "@GVar 0"]]
-                if (modifiers[13] != "None") MergeRules[0][5] = [[["@This 0", "+", "@Next 1 0"], "@This 1"]];
+                if (modifiers[13] != "None") MergeRules[0][5] = [[["@This 0", "+B", "@Next 1 0"], "@This 1"]];
                 if (modifiers[13] == "Interacting") {
                     MergeRules[1] = [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", "@Next 1 1"]], true, [], 0, [true, true]];
                     MergeRules.push([["@This 0", "bit&B", "@Next 1 0"], "@end_vars", 2, ["@var_retain", "@Var 0", ">", 0, "&&", ["@This 1", "=", 1], "&&", ["@Next 1 1", "=", -1], "&&", ["@This 0", "!=", "@Next 1 0"]], false, [[["@This 0", "-B", "@Next 1 0", "absB", "@edit_gvar", 0, ["@Parent -2", "logB", 2n, "max", "@GVar 0"]], ["@This 0", "-B", "@Next 1 0", "sign"]]], 0, [false, true]]);
@@ -16756,10 +16764,10 @@ function loadModifiers() {
             }
             if (mode_vars[1]) {
                 if (modifiers[13] == "None") {
-                    startTileSpawns = [[[[2, "^", ["@GVar 0", "rand_float", 1], "round", 1, "-", 1, "max", 1]], 1]];
+                    startTileSpawns = [[[[2, "^", ["@GVar 0", "rand_float", 1], "round", 1, "-", 1, "max", 1, "BigInt"]], 1]];
                 }
                 else {
-                    startTileSpawns = [[[[2, "^", ["@GVar 0", "rand_float", 1], "round", 1, "-", 1, "max", 1], 1], modifiers[22]], [[[2, "^", ["@GVar 0", "rand_float", 1], "round", 1, "-", 1, "max", 1], -1], modifiers[23]]]
+                    startTileSpawns = [[[[2, "^", ["@GVar 0", "rand_float", 1], "round", 1, "-", 1, "max", 1, "BigInt"], 1], modifiers[22]], [[[2, "^", ["@GVar 0", "rand_float", 1], "round", 1, "-", 1, "max", 1, "BigInt"], -1], modifiers[23]]]
                 }
             }
         }
@@ -17229,7 +17237,9 @@ function loadModifiers() {
                 start_game_vars[3] = mode_vars[1];
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
-                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*B", 2n, "+B", [(mode_vars[2] ? 0n : -1n), "rand_bigint", 1n]], "@end-if"], "EndTurn"])
+                    scripts.push([
+                        [0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*B", 2n, "+B", [(mode_vars[2] ? 0n : -1n), "rand_bigint", 1n]], "@end-if"], 
+                    "EndTurn"])
                 }
                 else {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2n, "^B", ["@GVar 1", "+B", "@GVar 3", "-B", 1n], "+B", (mode_vars[2] ? 0n : 1n)], "rand_bigint", [2n, "^B", ["@GVar 1", "+B", "@GVar 3"], "-B", (mode_vars[2] ? 1n : 0n)]], "@end-if"], "EndTurn"])
@@ -17926,7 +17936,7 @@ function loadModifiers() {
                 }
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[2] == 1) {
-                    scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@GVar 4", "arr_length", ">", "@Var 1"], "@if", ["@GVar 4", "arr_elem", "@Var 1", ">", "@GVar 1"], "@edit_var", 1, 1e300, "@end-if", "@else-if", mergeableExpression, "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 4", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "console.log", "@Var 0", "console.log", "@GVar 1", "2nd", ["@GVar 1", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0, "console.log", "@Parent -1"]]], "console.log", "@Parent -1", "@edit_gvar", 1, "@Parent -1", "@edit_gvar", 4, ["@GVar 4", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
+                    scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@GVar 4", "arr_length", ">", "@Var 1"], "@if", ["@GVar 4", "arr_elem", "@Var 1", ">", "@GVar 1"], "@edit_var", 1, 1e300, "@end-if", "@else-if", mergeableExpression, "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 4", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 1", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 1, "@Parent -1", "@edit_gvar", 4, ["@GVar 4", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
                 else if (mode_vars[2] == 2) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@GVar 4", "arr_length", ">", "@Var 1"], "@if", ["@GVar 4", "arr_elem", "@Var 1", ">", "@GVar 1"], "@edit_var", 1, 1e300, "@end-if", "@else-if", mergeableExpression, "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 4", "arr_elem", "@Var 1", "+B", "@GVar 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "@edit_gvar", 1, ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]], "@edit_var", 1, 0, "@repeat", ["@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@GVar 4", "arr_indexOf", ["@Var 0", "arr_elem", "@Var 1"], "=", -1], "@edit_gvar", 4, ["@GVar 4", "arr_binaryInsert", ["@Var 0", "arr_elem", "@Var 1"]], "@end-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "@end-if"], "EndTurn"])
@@ -18337,7 +18347,11 @@ function loadModifiers() {
                         }
                     }
                     else if (Array.isArray(startTileSpawns[i][j])) {
-                        if (startTileSpawns[i][j][0] == "@CalcArray") {
+                        if (indexOfNestedPrimArray("@Signless", startTileSpawns[i][j]) != -1) {
+                            positiveSpawns[i][j].push(0);
+                            negativeSpawns[i][j].push(0);
+                        }
+                        else if (startTileSpawns[i][j][0] == "@CalcArray") {
                             positiveSpawns[i][j].push("arr_push", 1);
                             negativeSpawns[i][j].push("arr_push", -1);
                         }
@@ -19278,7 +19292,6 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = getRndInteger(Math.ceil(n1), Math.floor(n2));
-                console.log("rand_int", n1, n2);
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -19291,7 +19304,6 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = getRndFloat(n1, n2);
-                console.log("rand_float", n1, n2);
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -19548,7 +19560,6 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = weightedRandomArrayEntry(n1, n2);
-                console.log("weightedRandomArrayEntry", n1, n2);
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -19584,7 +19595,6 @@ function operation(n1, operator, n2) {
                rngIndex++;
             }
             else {
-                console.log("rand_bigint", n1, n2);
                 result = getRndBigInt(n1, n2);
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
@@ -19976,7 +19986,7 @@ function CalcArray(arr) {
                 }
                 to_pop = position;
             }
-            else if (operator == "@if") { // The operations between the entry after "@if" and "@end_if" only occur if the entry after "@if" evaluates to true
+            else if (operator == "@if") { // The operations between the entry after "@if" and "@end-if" only occur if the entry after "@if" evaluates to true
                 let nesting = 1;
                 let position = 3;
                 let nestarray = [];
@@ -21925,7 +21935,7 @@ function ArraytoRGB(rgb) {
 
 function DIVESeedUnlock(tile, seeds, mode) {
     if (tile == 0n) return 1n;
-    mode = mod(mode, 4);
+    mode = mod(mode, 5);
     tile = abs(tile);
     seeds = compendiumStructuredClone(seeds);
     if (seeds.indexOf(1n) != -1) seeds.splice(seeds.indexOf(1n), 1);
@@ -21941,6 +21951,7 @@ function DIVESeedUnlock(tile, seeds, mode) {
     else {
         // Mode 1 guarantees the minimum possible result by going through every possible combination.
         // To reduce lag, it speeds this up by finding a decently-sized set of coprime seeds - that one set can be treated as one unit in the subsequent testing, as since they're coprime, they can't affect each other, i.e. they won't "steal possibilities" from each other.
+        // Mode 4 is like Mode 1, except it goes for the *maximum* result instead of the minimum.
         let coprimesAndSeeds = [[], []];
         let potentialCAS = [[], []];
         let coprimeValue = 1n;
@@ -21969,14 +21980,14 @@ function DIVESeedUnlock(tile, seeds, mode) {
         let coprimes = coprimesAndSeeds[0];
         let remainingSeeds = coprimesAndSeeds[1];
         let seedPowers = Array(remainingSeeds.length).fill(0n);
-        let minimum = tile;
+        let minimum = (mode == 4) ? 1n : tile; // In mode 4 this is the maximum instead
         let index = 0;
         let seededTile = tile;
         while (true) {
             for (let c = 0; c < coprimes.length; c++) {
                 while (tile % coprimes[c] == 0n) tile /= coprimes[c];
             }
-            if (tile < minimum) minimum = tile;
+            if ((tile < minimum) == (mode == 1)) minimum = tile;
             if (remainingSeeds.length == 0) return minimum;
             tile = seededTile;
             index = 0;
@@ -21995,7 +22006,7 @@ function DIVESeedUnlock(tile, seeds, mode) {
 
 function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
     if (tile.eq(0n, 0n)) return 1n;
-    mode = mod(mode, 4);
+    mode = mod(mode, 5);
     seeds = compendiumStructuredClone(seeds);
     seeds = seeds.filter(value => value.norm() > 1n);
     if (seeds.length == 0) return tile;
@@ -22011,6 +22022,7 @@ function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
     else {
         // Mode 1 guarantees the minimum possible result by going through every possible combination.
         // To reduce lag, it speeds this up by finding a decently-sized set of coprime seeds - that one set can be treated as one unit in the subsequent testing, as since they're coprime, they can't affect each other, i.e. they won't "steal possibilities" from each other.
+        // Mode 4 is like Mode 1, except it goes for the *maximum* result instead of the minimum.
         let coprimesAndSeeds = [[], []];
         let potentialCAS = [[], []];
         let coprimeValue = new GaussianBigInt(1n, 0n);
@@ -22031,14 +22043,14 @@ function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
         let coprimes = coprimesAndSeeds[0];
         let remainingSeeds = coprimesAndSeeds[1];
         let seedPowers = Array(remainingSeeds.length).fill(0n);
-        let minimum = compendiumStructuredClone(tile);
+        let minimum = (mode == 4) ? new GaussianBigInt(1n, 0n) : compendiumStructuredClone(tile); // In mode 4 this is the maximum instead
         let index = 0;
         let seededTile = compendiumStructuredClone(tile);
         while (true) {
             for (let c = 0; c < coprimes.length; c++) {
                 while (tile.mod(coprimes[c]).eq(0n, 0n)) tile = tile.div(coprimes[c]);
             }
-            if (tile.norm() < minimum.norm()) minimum = compendiumStructuredClone(tile);
+            if ((tile.norm() < minimum.norm()) == (mode == 1)) minimum = compendiumStructuredClone(tile);
             if (remainingSeeds.length == 0) {
                 if (firstQuadrant) minimum = minimum.toFirstQuadrant();
                 return minimum;
@@ -22063,7 +22075,7 @@ function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
 
 function customDIVESeedUnlock(tile, seeds, mode, multiplication, division, modZero, sortFunc, coprime, one, valid = (value) => true, isOne = ((value) => eqPrimArrays(value, one))) {
     if (!valid(tile)) return one;
-    mode = mod(mode, 4);
+    mode = mod(mode, 5);
     seeds = compendiumStructuredClone(seeds).filter(t => !isOne(t));
     if (seeds.length == 0) return tile;
     if (mode == 1 || mode == 2) sortedSeeds = seeds.sort((a, b) => sortFunc(a, b));
@@ -22079,6 +22091,7 @@ function customDIVESeedUnlock(tile, seeds, mode, multiplication, division, modZe
     else {
         // Mode 1 guarantees the minimum possible result by going through every possible combination.
         // To reduce lag, it speeds this up by finding a decently-sized set of coprime seeds - that one set can be treated as one unit in the subsequent testing, as since they're coprime, they can't affect each other, i.e. they won't "steal possibilities" from each other.
+        // Mode 4 is like Mode 1, except it goes for the *maximum* result instead of the minimum.
         let coprimesAndSeeds = [[], []];
         let potentialCAS = [[], []];
         let coprimeValue = one;
@@ -22099,14 +22112,14 @@ function customDIVESeedUnlock(tile, seeds, mode, multiplication, division, modZe
         let coprimes = coprimesAndSeeds[0];
         let remainingSeeds = coprimesAndSeeds[1];
         let seedPowers = Array(remainingSeeds.length).fill(0n);
-        let minimum = tile;
+        let minimum = (mode == 4) ? one : compendiumStructuredClone(tile); // In mode 4 this is the maximum instead
         let index = 0;
         let seededTile = tile;
         while (true) {
             for (let c = 0; c < coprimes.length; c++) {
                 while (modZero(tile, coprimes[c])) tile = division(tile, coprimes[c]);
             }
-            if (sortFunc(tile, minimum) < 0) minimum = tile;
+            if ((sortFunc(tile, minimum) < 0) == (mode == 1)) minimum = tile;
             if (remainingSeeds.length == 0) return minimum;
             tile = seededTile;
             index = 0;
@@ -22597,7 +22610,6 @@ async function MoveHandler(direction_num) {
         	rngIndex++;
         } else {
         	occured = Math.random() * 100;
-            console.log("automoveOccured", direction);
         	otherRandomEvents[rngIndex] = occured;
         	rngIndex++;
         	if(rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -23784,7 +23796,6 @@ async function displayCustomMode(subscreen, vars) {
                 document.getElementById("customColors_gradientSelection_previous").style.setProperty("display", "none");
                 document.getElementById("customColors_gradientSelection_next").style.setProperty("display", "none");
             }
-            console.log("gradient start display", customColors[screenVars[0]][4], customColors[screenVars[0]][4][0] == "@linear-gradient", customColors[screenVars[0]][4][0] == "@conic-gradient");
             if (customColors[screenVars[0]][4][0] == "@linear-gradient") {
                 document.getElementById("customColors_gradientType").style.setProperty("background-image", "linear-gradient(#ff00ff, #00a2ff)");
                 document.getElementById("customColors_gradientType").innerHTML = "Gradient Type: Linear";
@@ -24915,7 +24926,6 @@ function importSave(code) {
         let codebits = code.split("|");
         if (codebits[0] == "@2048PowCompGame" || codebits[0] == "@2048PowCompMode") {
             if (validSaveCodeVersions.indexOf(codebits[1]) > 0) {
-                console.log(codebits);
                 coderesults.push(Number(window.atob(codebits[2]))); //coderesults[0] is width
                 if (isNaN(coderesults[0]) || coderesults[0] < 1 || (coderesults[0] % 1) != 0) throw "Invalid width";
                 coderesults.push(Number(window.atob(codebits[3]))); //coderesults[1] is height
