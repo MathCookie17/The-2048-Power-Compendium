@@ -527,7 +527,7 @@ document.getElementById("DIVE_1s_button").addEventListener("click", function(){
     gmDisplayVars();
 });
 document.getElementById("DIVE_unlockRules_button").addEventListener("click", function(){
-    mode_vars[2] = (mode_vars[2] + 1) % 4;
+    mode_vars[2] = (mode_vars[2] + 1) % 5;
     gmDisplayVars();
 });
 document.getElementById("DIVE_randomGoals_button").addEventListener("click", function(){
@@ -977,6 +977,10 @@ document.getElementById("2496_mlengthMax_minus").addEventListener("click", funct
     else mode_vars[3]--;
     gmDisplayVars();
 });
+document.getElementById("RF3375_othersSmaller_button").addEventListener("click", function(){
+    mode_vars[0] = !(mode_vars[0]);
+    gmDisplayVars();
+});
 document.getElementById("1845_randomGoals_button").addEventListener("click", function(){
     mode_vars[0] = (mode_vars[0] + 1) % 3;
     gmDisplayVars();
@@ -1031,6 +1035,10 @@ document.getElementById("TRIGAT_firstGoalMinimum_change").addEventListener("chan
 });
 document.getElementById("TRIGAT_spawn2s_button").addEventListener("click", function(){
     mode_vars[2] = !(mode_vars[2]);
+    gmDisplayVars();
+});
+document.getElementById("RF9261_othersSmaller_button").addEventListener("click", function(){
+    mode_vars[0] = !(mode_vars[0]);
     gmDisplayVars();
 });
 document.getElementById("3385_exponent_plus").addEventListener("click", function(){
@@ -1192,7 +1200,7 @@ document.getElementById("GaussianDIVE_seedsFirstQuadrant_button").addEventListen
     gmDisplayVars();
 });
 document.getElementById("GaussianDIVE_unlockRules_button").addEventListener("click", function(){
-    mode_vars[4] = (mode_vars[4] + 1) % 4;
+    mode_vars[4] = (mode_vars[4] + 1) % 5;
     gmDisplayVars();
 });
 document.getElementById("GaussianDIVE_quadrant0SpawnRatio_change").addEventListener("change", function() {
@@ -7717,6 +7725,7 @@ function loadMode(mode) {
         // width = 5; height = 5;
         TileNumAmount = 3;
         start_game_vars = [0]; // Used to help with merges
+        mode_vars = [true]; // Whether the "two other tiles are smaller" rule applies
         TileTypes = [
         [["@This 2", "<", 15n], ["@This 2", "Number"], ["@HSLA", [43, "*", "@This 2", "-", 43], 65, ["@This 2", "*", -4, "+", 104], 1], "#464d52"],
         [true, ["@This 2", "Number"], ["@CalcArray", 0, "@if", ["@This 0", "<", 7], "2nd", [["@Literal", "#ffffff", "#71f1ff", "#e3ff71", "#ff855d", "#5f5fff", "#ffeb6c", "#ff7bff"], "arr_elem", "@This 0"], "@end-if", "@else", "2nd", ["@Literal", "@HSVA", [-97, "*", "@This 0", "+", 889], 60, [0.9, "^", ["@This 0", "-", 6], "*", 100], 1], "@end-else", "evaluateColor"], ["#665b57", "@if", ["@This 0", ">", 6], "2nd", "#f0dfd8", "@end-if"], "none", 2, 0, 
@@ -7730,10 +7739,10 @@ function loadMode(mode) {
         ]
         ];
         MergeRules = [
-            [3, [["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2", "<", 15n], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "%B", "@Next 2 2", "=", 0n]], false, [[0, "@This 1", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
-            [3, [["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2", "=", 15n], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "%B", "@Next 2 2", "=", 0n]], false, [[1, ["@Literal", false, false, false, false, false, false, false], 15n]], 6, [false, true, true]],
-            [3, [["@Next 2 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 6], "&&", [["@This 2", "<=", "@Next 2 2"], "&&", ["@Next 1 2", "<=", "@Next 2 2"]], "&&", ["@This 2", "+B", "@Next 1 2", "%B", 2n, "=", 0n], "&&", ["@This 2", "+B", "@Next 1 2", "*B", ["@Next 2 1", "arr_indexOf", false, "*B", 2n, "+B", 1n], "/B", 2n, "=", "@Next 2 2"]], false, [[["@Next 2 0", "+", 1], [["@Literal"], "@repeat", 7, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
-            [3, [false, "@edit_gvar", 0, ["@Next 2 2", "/BR", ["@This 2", "+B", "@Next 1 2"], "*BR", 2n], "@if", [["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@Next 2 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 2n, "!=", new BigRational(1)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n, "/B", 2n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 7n], "&&", ["@Next 2 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], false, [["@Next 2 0", ["@Next 2 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]]
+            [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2", "<", 15n], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "%B", "@Next 2 2", "=", 0n]], false, [[0, "@This 1", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+            [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2", "=", 15n], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "%B", "@Next 2 2", "=", 0n]], false, [[1, ["@Literal", false, false, false, false, false, false, false], 15n]], 6, [false, true, true]],
+            [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@Next 2 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 6], "&&", [["@This 2", "<=", "@Next 2 2"], "&&", ["@Next 1 2", "<=", "@Next 2 2"]], "&&", ["@This 2", "+B", "@Next 1 2", "%B", 2n, "=", 0n], "&&", ["@This 2", "+B", "@Next 1 2", "*B", ["@Next 2 1", "arr_indexOf", false, "*B", 2n, "+B", 1n], "/B", 2n, "=", "@Next 2 2"]], false, [[["@Next 2 0", "+", 1], [["@Literal"], "@repeat", 7, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+            [3, [false, "@edit_gvar", 0, ["@Next 2 2", "/BR", ["@This 2", "+B", "@Next 1 2"], "*BR", 2n], "@if", [["@This 2", ">", "@Next 2 2"], "||", ["@Next 1 2", ">", "@Next 2 2"], "||", ["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@Next 2 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 2n, "!=", new BigRational(1)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n, "/B", 2n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 7n], "&&", ["@Next 2 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], false, [["@Next 2 0", ["@Next 2 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]]
         ]
         startTileSpawns = [[[0, ["@Literal", true, true, true, true, true, true, true], 1n], 90], [[0, ["@Literal", true, true, true, true, true, true, true], 3n], 10]];
         winConditions = [[3, [false, false, false, false, false, false, false], 3375n]];
@@ -7750,6 +7759,8 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
         displayRules("gm_rules_text", ["h1", "Ratio-Fill 3375"], ["p","Three tiles less than 15 can merge if one of them is a multiple of the other two and their sum is not greater than 15. To get from one power of 15 to the next, a tile must merge with two tiles not larger than itself that add up to double itself, two-thirds of itself, two-fifths of itself, two-sevenths of itself, two-ninths of itself, two-elevenths of itself, or two-thirteenths of itself, once each in any order. Get to the 3375 tile to win!"],
         ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("RF3375_vars").style.setProperty("display", "flex");
     }
     else if (mode == 91) { // 1845
         // width = 4; height = 4;
@@ -7878,6 +7889,7 @@ function loadMode(mode) {
     else if (mode == 94) { // Ratio-Fill 9261
         TileNumAmount = 3;
         start_game_vars = [0]; // Used to help with merges
+        mode_vars = [true]; // Whether the "two other tiles are smaller" rule applies
         TileTypes = [
         [true, ["@This 2", "Number"], ["@CalcArray", 0, "@if", ["@This 0", "<", 6], "2nd", [["@Literal", "#c6ffc6", "#ffff80", "#6bddff", "#ff72ff", "#ff6363", "#6767ff"], "arr_elem", "@This 0"], "@end-if", "@else", "2nd", ["@Literal", "@HSVA", [113, "*", "@This 0", "-", 648], 66, [0.9, "^", ["@This 0", "-", 5], "*", 100], 1], "@end-else", "evaluateColor"], ["#554051", "@if", ["@This 0", ">", 5], "2nd", "#f3e7f1", "@end-if"], "none", 2, 0, 
             ["PrimeImage", ["@linear-gradient", ["@HSLA", 0, 60, [15, "@if", ["@This 1", "arr_elem", 0], "2nd", 75, "@end-if"], 1], 0, "#0000", 25, 75, ["@HSLA", 0, 60, [15, "@if", ["@This 1", "arr_elem", 0], "2nd", 75, "@end-if"], 1], 100], ["@linear-gradient", 90, "#0000", 0, 0, "#000", 0, 20, "#0000", 20]],
@@ -7888,10 +7900,10 @@ function loadMode(mode) {
         ]
         ];
         MergeRules = [
-            [3, [["@Next 2 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 4], "&&", [["@This 2", "<=", "@Next 2 2"], "&&", ["@Next 1 2", "<=", "@Next 2 2"]], "&&", [["@This 2", "+B", "@Next 1 2", "%B", 2n, "=", 0n], "||", ["@Next 2 1", "arr_indexOf", false, "%", 2, "=", 1]], "&&", ["@This 2", "+B", "@Next 1 2", "*B", ["@Next 2 1", "arr_indexOf", false, "+B", 1n], "/B", 2n, "=", "@Next 2 2"]], false, [[["@Next 2 0", "+", 1], [["@Literal"], "@repeat", 5, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
-            [3, [false, "@edit_gvar", 0, ["@Next 2 2", "/BR", ["@This 2", "+B", "@Next 1 2"], "*BR", 2n], "@if", [["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@Next 2 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 5n], "&&", ["@Next 2 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], false, [["@Next 2 0", ["@Next 2 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
-            [2, [["@Next 1 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 4], "&&", ["@This 2", "<=", "@Next 1 2"], "&&", [["@This 2", "%B", 2n, "=", 0n], "||", ["@Next 1 1", "arr_indexOf", false, "%", 2, "=", 1]], "&&", ["@This 2", "*B", ["@Next 1 1", "arr_indexOf", false, "+B", 1n], "/B", 2n, "=", "@Next 1 2"], "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]]], false, [[["@Next 1 0", "+", 1], [["@Literal"], "@repeat", 5, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]],
-            [2, [[false, "@edit_gvar", 0, ["@Next 1 2", "/BR", "@This 2", "*BR", 2n], "@if", [["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 5n], "&&", ["@Next 1 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], "@add_var", "@GVar 0", "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]], "@edit_gvar", 0, "@Var 0"], false, [["@Next 1 0", ["@Next 1 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]]
+            [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@Next 2 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 4], "&&", [["@This 2", "<=", "@Next 2 2"], "&&", ["@Next 1 2", "<=", "@Next 2 2"]], "&&", [["@This 2", "+B", "@Next 1 2", "%B", 2n, "=", 0n], "||", ["@Next 2 1", "arr_indexOf", false, "%", 2, "=", 1]], "&&", ["@This 2", "+B", "@Next 1 2", "*B", ["@Next 2 1", "arr_indexOf", false, "+B", 1n], "/B", 2n, "=", "@Next 2 2"]], false, [[["@Next 2 0", "+", 1], [["@Literal"], "@repeat", 5, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+            [3, [false, "@edit_gvar", 0, ["@Next 2 2", "/BR", ["@This 2", "+B", "@Next 1 2"], "*BR", 2n], "@if", [["@This 2", ">", "@Next 2 2"], "||", ["@Next 1 2", ">", "@Next 2 2"], "||", ["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@Next 2 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 5n], "&&", ["@Next 2 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], false, [["@Next 2 0", ["@Next 2 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+            [2, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 1 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 4], "&&", ["@This 2", "<=", "@Next 1 2"], "&&", [["@This 2", "%B", 2n, "=", 0n], "||", ["@Next 1 1", "arr_indexOf", false, "%", 2, "=", 1]], "&&", ["@This 2", "*B", ["@Next 1 1", "arr_indexOf", false, "+B", 1n], "/B", 2n, "=", "@Next 1 2"], "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]]], false, [[["@Next 1 0", "+", 1], [["@Literal"], "@repeat", 5, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]],
+            [2, [[false, "@edit_gvar", 0, ["@Next 1 2", "/BR", "@This 2", "*BR", 2n], "@if", [["@This 2", ">", "@Next 1 2"], "||", ["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 5n], "&&", ["@Next 1 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], "@add_var", "@GVar 0", "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]], "@edit_gvar", 0, "@Var 0"], false, [["@Next 1 0", ["@Next 1 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]]
         ]
         startTileSpawns = [[[0, ["@Literal", false, false, false, false, false], 1n], 100]];
         winConditions = [[3, [false, false, false, false, false], 9261n]];
@@ -7908,6 +7920,8 @@ function loadMode(mode) {
         ["p", "Spawning tiles: 1 (100%)"]);
         displayRules("gm_rules_text", ["h1", "Ratio-Fill 9261"], ["p","To get from one power of 21 to the next, a tile must merge with one or two tiles not larger than itself that add up to double itself, equal to itself, two-thirds of itself, two-fourths of itself, or two-fifths of itself, once each in any order. Get to the 9261 tile to win!"],
         ["p", "Spawning tiles: 1 (100%)"]);
+        document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("RF9261_vars").style.setProperty("display", "flex");
     }
     else if (mode == 95) { // 3385
         // width = 4; height = 4;
@@ -8111,7 +8125,7 @@ function loadMode(mode) {
         ["p", "At first, only 1+1i tiles spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is not a unit, that leftover value (rotated into the first quadrant) is added as a new spawning tile. If there are no remaining multiples of a spawning tile on the board, that tile is removed from the spawn pool, and you gain points based on its value."]);
         statBoxes = [["Score", "@Score"], ["Seeds", "@GVar 0", false, false, "TileArray", "Self"], ["Seeds Seen", ["@GVar 1", "arr_length"], ...[,,,,], ["@GVar 4", "=", 0], [0, "@edit_gvar", 4, 1], true], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "Self", ["@GVar 4", "=", 1], [0, "@edit_gvar", 4, 0], true]];
         scripts = [
-            [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "GaussianDIVESeedUnlock", "@GVar 0", "@GVar 4", true, "@if", [["@Parent -3", "normGB", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
+            [["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "arr_elem", 0], "@end_vars", "@Var -1", "GaussianDIVESeedUnlock", "@GVar 0", "@GVar 4", true, "@if", [["@Parent -3", "normGB", ">", 1n], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"],
             [["@GVar 0", 0, new GaussianBigInt(0n, 0n), "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 2, "arr_filter", ["@Var -1", "typeof", "=", "gaussianbigint", "&&", ["@var_retain", "@Var 1", "!=", new GaussianBigInt(0n, 0n)]], "arr_reduce", true, ["@var_retain", "@if", ["@var_retain", "@Var -1", "modGB", "@Var 2", "=", new GaussianBigInt(0n, 0n)], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
             [[0, new GaussianBigInt(0n, 0n), "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "gaussianSort", "@Var -1"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", ["@GVar 2", "arr_elem", 0, "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 2", "arr_elem", 1, "String", "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@Var -1", "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
             [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "String", "@if", "@GVar 5", "2nd", "?", "@end-if", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "@if", "@GVar 5", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1", "normGB", "^", 1/2], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
@@ -10502,7 +10516,7 @@ function gmDisplayVars() {
                 displayRules("gm_rules_text", ["h1", "Coprime (232, 240)"], ["p", "Tiles are ordered pairs, and two tiles can merge if they share at least one absolute value number in common (even if that common number is in opposite positions). When two tiles merge, the resulting numbers are divided by their GCD, so that the two numbers in any tile are always coprime. This variant doesn't have a win condition - see what tiles you can discover, or how balanced of a ratio other than (1, 1) itself you can get! (In this variant you tend never to lose, so just play until you've grown bored of it or accomplish some goal)"],
                 ["p", "Spawning tiles: (1, 0) (12.5%), (0, 1) (12.5%), (1, 1) (12.5%), (-1, 0) (12.5%), (0, -1) (12.5%), (-1, -1) (12.5%), (1, -1) (12.5%), (-1, 1) (12.5%)"]);
             }
-            scripts.push([["@global_var_retain", [["@Var -1", "arr_elem", 0], "/BR", ["@Var -1", "arr_elem", 1], "absBR"], "@if", [["@Parent -3", "numeratorBR", "!=", 0n], "&&", ["@Parent -3", "denominatorBR", "!=", 0n], "&&", ["@Parent -3", "!=", new BigRational(1n)]], "@if", ["@Parent -2", "<", 1n], "recipBR", "@end-if", "-BR", 1n, "recipBR", "+BR", 1n, "@if", ["@Parent -2", ">", "@GVar 2"], "@edit_gvar", 2, ["@Parent -2", "Number"], "@end-if", "@end-if"], "Merge"])
+            scripts.push([["@global_var_retain", [["@Var -1", "arr_elem", 0, "arr_elem", 0], "/BR", ["@Var -1", "arr_elem", 0, "arr_elem", 1], "absBR"], "@if", [["@Parent -3", "numeratorBR", "!=", 0n], "&&", ["@Parent -3", "denominatorBR", "!=", 0n], "&&", ["@Parent -3", "!=", new BigRational(1n)]], "@if", ["@Parent -2", "<", 1n], "recipBR", "@end-if", "-BR", 1n, "recipBR", "+BR", 1n, "@if", ["@Parent -2", ">", "@GVar 2"], "@edit_gvar", 2, ["@Parent -2", "Number"], "@end-if", "@end-if"], "Merge"])
         }
     }
     if (gamemode == 70) { // 16+16i
@@ -11228,6 +11242,24 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 1 (90%), 2 (10%)"]);
         }
     }
+    else if (gamemode == 90) { // Ratio-Fill 3375
+        if (!mode_vars[0]) {
+            document.getElementById("RF3375_othersSmaller_text").innerHTML = "The tile that's getting a ratio filled does not have to be the largest tile in the merge.";
+            document.getElementById("RF3375_othersSmaller_text").style.setProperty("color", "#2b849b");
+            displayRules("rules_text", ["h1", "Ratio-Fill 3375"], ["p","Three tiles less than 15 can merge if one of them is a multiple of the other two and their sum is not greater than 15. To get from one power of 15 to the next, a tile must merge with two tiles that add up to double itself, two-thirds of itself, two-fifths of itself, two-sevenths of itself, two-ninths of itself, two-elevenths of itself, or two-thirteenths of itself, once each in any order. Get to the 3375 tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+            displayRules("gm_rules_text", ["h1", "Ratio-Fill 3375"], ["p","Three tiles less than 15 can merge if one of them is a multiple of the other two and their sum is not greater than 15. To get from one power of 15 to the next, a tile must merge with two tiles that add up to double itself, two-thirds of itself, two-fifths of itself, two-sevenths of itself, two-ninths of itself, two-elevenths of itself, or two-thirteenths of itself, once each in any order. Get to the 3375 tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        }
+        else {
+            document.getElementById("RF3375_othersSmaller_text").innerHTML = "The tile that's getting a ratio filled has to be the largest tile in the merge.";
+            document.getElementById("RF3375_othersSmaller_text").style.setProperty("color", "#9b412b");
+            displayRules("rules_text", ["h1", "Ratio-Fill 3375"], ["p","Three tiles less than 15 can merge if one of them is a multiple of the other two and their sum is not greater than 15. To get from one power of 15 to the next, a tile must merge with two tiles not larger than itself that add up to double itself, two-thirds of itself, two-fifths of itself, two-sevenths of itself, two-ninths of itself, two-elevenths of itself, or two-thirteenths of itself, once each in any order. Get to the 3375 tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+            displayRules("gm_rules_text", ["h1", "Ratio-Fill 3375"], ["p","Three tiles less than 15 can merge if one of them is a multiple of the other two and their sum is not greater than 15. To get from one power of 15 to the next, a tile must merge with two tiles not larger than itself that add up to double itself, two-thirds of itself, two-fifths of itself, two-sevenths of itself, two-ninths of itself, two-elevenths of itself, or two-thirteenths of itself, once each in any order. Get to the 3375 tile to win!"],
+            ["p", "Spawning tiles: 1 (90%), 3 (10%)"]);
+        }
+    }
     else if (gamemode == 91) { // 1845
         if (mode_vars[0] == 0) {
             document.getElementById("1845_randomGoals_text").innerHTML = "Random goals are disabled.";
@@ -11306,6 +11338,24 @@ function gmDisplayVars() {
             ["p", "Spawning tiles: 3 (100%)"]);
             displayRules("gm_rules_text", ["h1", "TRIGAT"], ["p", 'Two tiles can merge if they are equal or if the smaller tile is a multiple of (the ratio between the two tiles * 2 - 1): for example, 30 and 12 can merge because 12 is a multiple of (30/12 * 2 - 1 = 4). (Another way of thinking about it is "a smaller tile can merge with its triangular number, even if they\'re not integers, and if a + b = c is a valid merge, then so is na + nb = nc for an integer n". This rule is equivalent to the "ratio * 2 - 1" rule). This mode has a lot of possible tiles, so it doesn\'t have a win condition. If you want a goal to strive for, see how many triangular numbers you can make multiples of.'],
             ["p", "Spawning tiles: 3 (100%)"]);
+        }
+    }
+    else if (gamemode == 94) { // Ratio-Fill 9261
+        if (!mode_vars[0]) {
+            document.getElementById("RF9261_othersSmaller_text").innerHTML = "The tile that's getting a ratio filled does not have to be the largest tile in the merge.";
+            document.getElementById("RF9261_othersSmaller_text").style.setProperty("color", "#2b849b");
+            displayRules("rules_text", ["h1", "Ratio-Fill 9261"], ["p","To get from one power of 21 to the next, a tile must merge with one or two tiles that add up to double itself, equal to itself, two-thirds of itself, two-fourths of itself, or two-fifths of itself, once each in any order. Get to the 9261 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h1", "Ratio-Fill 9261"], ["p","To get from one power of 21 to the next, a tile must merge with one or two tiles that add up to double itself, equal to itself, two-thirds of itself, two-fourths of itself, or two-fifths of itself, once each in any order. Get to the 9261 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+        }
+        else {
+            document.getElementById("RF9261_othersSmaller_text").innerHTML = "The tile that's getting a ratio filled has to be the largest tile in the merge.";
+            document.getElementById("RF9261_othersSmaller_text").style.setProperty("color", "#9b412b");
+            displayRules("rules_text", ["h1", "Ratio-Fill 9261"], ["p","To get from one power of 21 to the next, a tile must merge with one or two tiles not larger than itself that add up to double itself, equal to itself, two-thirds of itself, two-fourths of itself, or two-fifths of itself, once each in any order. Get to the 9261 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
+            displayRules("gm_rules_text", ["h1", "Ratio-Fill 9261"], ["p","To get from one power of 21 to the next, a tile must merge with one or two tiles not larger than itself that add up to double itself, equal to itself, two-thirds of itself, two-fourths of itself, or two-fifths of itself, once each in any order. Get to the 9261 tile to win!"],
+            ["p", "Spawning tiles: 1 (100%)"]);
         }
     }
     else if (gamemode == 95) { // 3385
@@ -13218,7 +13268,10 @@ function createGrid() {
             newTilep.classList.add("tile_text");
         }
     }
-    visibleNextTiles = document.getElementById("next_tiles").children;
+    visibleNextTiles = [];
+    for (c of document.getElementById("next_tiles").children) {
+        visibleNextTiles.push(c.id);
+    }
 }
 
 function createArrows() {
@@ -13405,15 +13458,14 @@ function displayGrid() {
         }
         displayTile("Grid", tile, vcoord, hcoord, Grid, Grid[vcoord][hcoord]);
     }
-    for (let t of visibleNextTiles) {  //Displaying the next spawning tiles
+    for (let t of visibleNextTiles) { //Displaying the next spawning tiles
         let char = 9;
         let nextnum = "";
-        while (char < t.id.length) {nextnum += t.id[char]; char++;}
+        while (char < t.length) {nextnum += t[char]; char++;}
         nextnum = Number(nextnum);
-        let tile = t;
-        displayTile("NextTiles", tile, nextnum, "None", spawnConveyor, spawnConveyor[nextnum]);
-        if (nextnum < randomTileAmount) tile.style.setProperty("border-style", "solid");
-        else tile.style.setProperty("border-style", "none");
+        displayTile("NextTiles", document.getElementById(t), nextnum, "None", spawnConveyor, spawnConveyor[nextnum]);
+        if (nextnum < randomTileAmount) document.getElementById(t).style.setProperty("border-style", "solid");
+        else document.getElementById(t).style.setProperty("border-style", "none");
     }
     for (let b = 0; b < statBoxes.length; b++) {
         let box = document.getElementById("stat_container_" + b);
@@ -16131,12 +16183,12 @@ function displayRules(ID, ...elements) { //This basically just clears the elemen
 }
 
 function loadModifiers() {
-    randomTileAmount = modifiers[1];
-    startTileAmount = modifiers[2];
-    multiMerge = modifiers[3];
-    spawnLocation = modifiers[4];
-    start_modifier_vars = [];
     if (gamemode != 0) {
+        randomTileAmount = modifiers[1];
+        startTileAmount = modifiers[2];
+        multiMerge = modifiers[3];
+        spawnLocation = modifiers[4];
+        start_modifier_vars = [];
         if (gamemode == 1) { // 2048
             if (mode_vars[0]) startTileSpawns = [[[1], 90], [[2], 10]];
         }
@@ -16594,7 +16646,7 @@ function loadModifiers() {
                             ];
                         }
                         if (mode_vars[1] > 0 && !(mode_vars[0] == 3 && mode_vars[3].map(x => new BigRational(x)).filter(x => x.gt(1)).length == 0)) {
-                            scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absBR", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                            scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absBR", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                             if (mode_vars[0] == 3) {
                                 if (mode_vars[1] == 1) {
                                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [["@Literal"].concat(mode_vars[3].map(x => new BigRational(x)).filter(x => x.gt(1))), "weightedRandomArrayEntry", "@GVar 3", "*BR", "@GVar 0"], "@end-if"], "EndTurn"])
@@ -16642,7 +16694,7 @@ function loadModifiers() {
                             if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*BR", -1n, "=", "@Next 1 0"], false, [], 0]);
                         }
                         if (mode_vars[1] > 0) {
-                            scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                            scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                             if (mode_vars[0] == 3) {
                                 if (mode_vars[1] == 1) {
                                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [["@Literal"].concat(mode_vars[3]), "weightedRandomArrayEntry", "@GVar 3", "*B", "@GVar 0"], "@end-if"], "EndTurn"])
@@ -16663,7 +16715,7 @@ function loadModifiers() {
                         }
                     }
                     else if (mode_vars[1] > 0) {
-                        scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 3, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                        scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 3, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                         if (mode_vars[1] == 1) {
                             scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "rand_float", 1, "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2]], "@end-if", "@else-if", ["@Parent -2", "<", "@GVar 4"], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2]], "@end-else-if", "@else", "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1], ["@CalcArray", "@GVar 0", "arr_elem", 2, "+", 1]], "@end-else", "@end-if"], "EndTurn"])
                         }
@@ -16779,7 +16831,7 @@ function loadModifiers() {
             }
             if (mode_vars[2] > 0) {
                 start_game_vars[5] = mode_vars[3];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 scripts.push([["@global_var_retain_inner", ["@Literal"], ["@Literal"], 2n, [2n, "^B", ["@GVar 2", "+", 1n], "*B", "@GVar 5"], 0n, 0n, ["@Literal"], "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@Var 3", "*B", 2n, "rootB", "@Var 2", ">=", 2n], "@edit_var", 4, ["@Var 3", "rootB", "@Var 2", "@if", ["@Parent -2", "^B", "@Var 2", "<", "@Var 3"], "+B", 1n, "@end-if"], "@edit_var", 5, ["@Var 3", "*B", 2n, "rootB", "@Var 2"], "@edit_var", 0, ["@Var 0", "arr_push", [["@Literal"], "arr_push", "@Var 4", "arr_push", "@Var 5"]], "@edit_var", 1, ["@Var 1", "arr_push", ["@Var 5", "-", "@Var 4", "+", 1]], "@edit_var", 6, ["@Var 6", "arr_push", ["@Var 2", "-B", 2]], "@edit_var", 2, ["@Var 2", "+", 1], "@end-repeat", "@edit_var", 2, ["@Var 6", "weightedRandomArrayEntry", "@Var 1"], "@edit_var", 0, ["@Var 0", "arr_elem", "@Var 2"], "@edit_var", 0, [["@Var 0", "arr_elem", 0], "rand_bigint", ["@Var 0", "arr_elem", 1], "Array", "arr_push", ["@Var 2", "+B", 2n]], "@edit_gvar", 1, [["@Var 0", "arr_elem", 0], "^B", ["@Var 0", "arr_elem", 1], "perfectPowerFormB", mode_vars[0], "arr_slice", 0, 2], "@end-if"], "EndTurn"])
                 let sBox = ["@GVar 1"];
                 if (modifiers[13]) sBox.push("arr_push", 1);
@@ -16817,7 +16869,7 @@ function loadModifiers() {
             }
             if (mode_vars[1] > 0) {
                 start_game_vars[3] = mode_vars[2];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "abs", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "abs", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*", 2, "+", [0, "rand_int", 1]], "@end-if"], "EndTurn"])
                 }
@@ -16846,7 +16898,7 @@ function loadModifiers() {
         else if (gamemode == 45) { // Directional Merges
             if (mode_vars[1] > 0) {
                 start_game_vars[5] = mode_vars[2];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 6, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 6, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 2) {
                     if (mode_vars[0] < 2) {
                         scripts.push([["@global_var_retain_inner", ["@Literal", 0, 0, 0, 0, 0, 0], [[2, "^", ["@GVar 1", "arr_elem", 0]], "*", [3, "^", ["@GVar 1", "arr_elem", 1]], "*", [5, "^", ["@GVar 1", "arr_elem", 2]], "*", [7, "^", ["@GVar 1", "arr_elem", 3]], "*", [11, "^", ["@GVar 1", "arr_elem", 4]], "*", [13, "^", ["@GVar 1", "arr_elem", 5]]], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", [[2, "^", ["@Var 0", "arr_elem", 0]], "*", [3, "^", ["@Var 0", "arr_elem", 1]], "*", [5, "^", ["@Var 0", "arr_elem", 2]], "*", [7, "^", ["@Var 0", "arr_elem", 3]], "*", [11, "^", ["@Var 0", "arr_elem", 4]], "*", [13, "^", ["@Var 0", "arr_elem", 5]], "<=", "@Var 1"], "@edit_var", 2, [["@Literal", 0, 1], "weightedRandomArrayEntry", "@GVar 4"], "@edit_var", 0, ["@Var 0", "arr_edit_elem", "@Var 2", ["@Var 0", "arr_elem", "@Var 2", "+", 1]], "@end-repeat", "@edit_gvar", 1, "@Var 0", "@end-if"], "EndTurn"])
@@ -16970,7 +17022,7 @@ function loadModifiers() {
                 MergeRules.pop();
                 if (mode_vars[2] > 0) {
                     start_game_vars[4] = (-1 + Math.sqrt(mode_vars[3] * 8 + 1))/2;
-                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                     scripts.push([[0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@edit_gvar", 1, [[1.4, "^", "@GVar 2", "*", "@GVar 4", "ceil", 1], "rand_int", [1.4, "^", ["@GVar 2", "+", 1], "*", "@GVar 4", "floor", 1]], "@end-if"], "EndTurn"])
                     let sBox = ["@Literal", ["@CalcArray", "@GVar 1"]];
                     if (modifiers[13]) sBox.push("arr_push", 1);
@@ -17005,7 +17057,7 @@ function loadModifiers() {
             start_game_vars[4] = mode_vars[2];
             if (mode_vars[3] > 0) {
                 start_game_vars[9] = mode_vars[4];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 5"], "@edit_gvar", 7, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 5"], "@edit_gvar", 7, true, "@end-if"], "Merge"]);
                 scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "=", "@GVar 5"], "@edit_gvar", 7, true, "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "PostSpawn"]);
                 if (mode_vars[3] == 1) {
                     scripts.push([[0, "@if", "@GVar 7", "@edit_gvar", 6, ["@var_retain", "@GVar 6", "+", 1], "@edit_gvar", 7, false, "@edit_gvar", 5, ["@GVar 5", "+B", [0, "rand_bigint", ["@GVar 5", "logB", 2n]], "*B", [0, "rand_float", 1, "@if", ["@Parent -2", "=", 0], "2nd", 1, "@end-if", "log", 2, "*", -1, "floor", 1, "+", 2, "BigInt"]], "@end-if"], "EndTurn"])
@@ -17020,7 +17072,7 @@ function loadModifiers() {
         else if (gamemode == 54) { // 3888
             if (mode_vars[0] > 0) {
                 start_game_vars[4] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 2], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
                 }
@@ -17036,7 +17088,7 @@ function loadModifiers() {
         else if (gamemode == 55) { // 2000
             if (mode_vars[0] > 0) {
                 start_game_vars[4] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 1], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 2], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 3], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
                 }
@@ -17051,7 +17103,7 @@ function loadModifiers() {
         else if (gamemode == 56) { // 3645
             if (mode_vars[0] > 0) {
                 start_game_vars[4] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@if", ["@GVar 0", "arr_elem", 0, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 0], "@end-if", "@if", ["@GVar 0", "arr_elem", 1, ">", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "arr_push", 1], "@end-if", "rand_float", 1, "@if", ["@var_retain", "@Var 0", "arr_length", "=", 1], "2nd", ["@var_retain", "@Var 0", "arr_elem", 0], "@end-if", "@else", "2nd", ["@var_retain", "@Var 0", "arr_elem", [0, "@if", ["@Parent -4", "<", "@GVar 3"], "2nd", 1, "@end-if"]], "@end-else", "@if", ["@Parent -2", "=", 0], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "-", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-if", "@if", ["@Parent -2", "=", 1], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 2], ["@CalcArray", "@GVar 0", "arr_elem", 1, "-", 1]], "@end-if", "@end-if"], "EndTurn"])
                 }
@@ -17067,7 +17119,7 @@ function loadModifiers() {
         else if (gamemode == 57) { // 2700
             if (mode_vars[2] > 0) {
                 start_game_vars[5] = mode_vars[3];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 3, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 3, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[2] == 2) {
                     scripts.push([["@global_var_retain_inner", ["@Literal", 0, 0, 0], [[2, "^", ["@GVar 1", "arr_elem", 0]], "*", [3, "^", ["@GVar 1", "arr_elem", 1]], "*", [5, "^", ["@GVar 1", "arr_elem", 2]]], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", [[2, "^", ["@Var 0", "arr_elem", 0]], "*", [3, "^", ["@Var 0", "arr_elem", 1]], "*", [5, "^", ["@Var 0", "arr_elem", 2]], "<=", "@Var 1"], "@edit_var", 2, [["@Literal", 0, 1, 2], "weightedRandomArrayEntry", "@GVar 4"], "@edit_var", 0, ["@Var 0", "arr_edit_elem", "@Var 2", ["@Var 0", "arr_elem", "@Var 2", "+", 1]], "@end-repeat", "@edit_gvar", 1, "@Var 0", "@end-if"], "EndTurn"])
                 }
@@ -17113,7 +17165,7 @@ function loadModifiers() {
         else if (gamemode == 59) { // 1825
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*", [2, "^", [2, "-", ["@GVar 0", "expomod", 2]]], "-", [1, "rand_int", ["@GVar 0", "^", 0.5, "floor", 1], "@if", ["@Parent -2", "%", 4, "=", 0], "-", 1, "@end-if"]], "@end-if"], "EndTurn"])
                 }
@@ -17156,7 +17208,7 @@ function loadModifiers() {
             }
             if (mode_vars[1] > 0) {
                 start_game_vars[4] = mode_vars[2];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "abs", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "abs", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([[0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@edit_var", 0, [0, "rand_float", 1, "log", "@GVar 5", "floor", 1], "@if", ["@var_retain", "@Var 0", ">", ["@var_retain", "@GVar 1", "expomod", 2]], "@edit_var", 0, 0, "@end-if", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "/", ["@var_retain", 2, "^", "@Var 0"], "*", ["@var_retain", 2, "^", "@Var 0", "+", 1]], "@end-if"], "EndTurn"])
                 }
@@ -17180,7 +17232,7 @@ function loadModifiers() {
                 ];
                 if (mode_vars[0] > 0) {
                     start_game_vars[4] = (mode_vars[1] + 1n) / 2n;
-                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                     if (mode_vars[0] == 1) {
                         scripts.push([[0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@add_var", ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@add_var", ["@var_retain", "@Var -1", "arr_copy"], "@if", ["@GVar 2", "%", 4, "=", 1], "@edit_gvar", 1, ["@GVar 1", "arr_unshift", 2n], "@edit_gvar", 1, [[0, "rand_int", ["@GVar 1", "arr_length", "-", 1]], "@end_vars", "@GVar 1", "arr_edit_elem", "@Var 0", ["@var_retain", "@GVar 1", "arr_elem", "@Var 0", "+B", 1n]], "@end-if", "@else", "@repeat", ["@var_retain", "@Var -2", "*B", 3n, "/B", 2n, ">", "@Var -1"], "@edit_gvar", 1, [[0, "rand_int", ["@GVar 1", "arr_length", "-", 1]], "@end_vars", "@GVar 1", "arr_edit_elem", "@Var 0", ["@var_retain", "@GVar 1", "arr_elem", "@Var 0", "+B", 1n]], "@edit_var", -1, ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@end-repeat", "@end-else", "@edit_gvar", 1, ["@GVar 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if"], "EndTurn"])
                     }
@@ -17197,7 +17249,7 @@ function loadModifiers() {
             }  
             else if (mode_vars[0] > 0) {
                 start_game_vars[4] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 3", "@edit_gvar", 2, ["@var_retain", "@GVar 2", "+", 1], "@edit_gvar", 3, false, "@add_var", ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@add_var", ["@var_retain", "@Var -1", "arr_copy"], "@if", ["@GVar 2", "%", 3, "=", 1], "@edit_gvar", 1, ["@GVar 1", "arr_unshift", 1n], "@edit_gvar", 1, [[0, "rand_int", ["@GVar 1", "arr_length", "-", 1]], "@end_vars", "@GVar 1", "arr_edit_elem", "@Var 0", ["@var_retain", "@GVar 1", "arr_elem", "@Var 0", "+B", 1n]], "@end-if", "@else", "@repeat", ["@var_retain", "@Var -2", "*B", 3n, "/B", 2n, ">", "@Var -1"], "@edit_gvar", 1, [[0, "rand_int", ["@GVar 1", "arr_length", "-", 1]], "@end_vars", "@GVar 1", "arr_edit_elem", "@Var 0", ["@var_retain", "@GVar 1", "arr_elem", "@Var 0", "+B", 1n]], "@edit_var", -1, ["@GVar 1", "arr_reduce", 1n, ["*B", ["@var_retain", "@Var -1", "prime"]]], "@end-repeat", "@end-else", "@edit_gvar", 1, ["@GVar 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if"], "EndTurn"])
                 }
@@ -17235,7 +17287,7 @@ function loadModifiers() {
         else if (gamemode == 67) { // 1762
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([
                         [0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*B", 2n, "+B", [(mode_vars[2] ? 0n : -1n), "rand_bigint", 1n]], "@end-if"], 
@@ -17284,7 +17336,7 @@ function loadModifiers() {
         else if (gamemode == 68) { // 2205
             if (mode_vars[1] > 0) {
                 start_game_vars[5] = mode_vars[2];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 3, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 3, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 2) {
                     scripts.push([["@global_var_retain_inner", ["@Literal", 0, 0, 0], [[3, "^", ["@GVar 1", "arr_elem", 0]], "*", [5, "^", ["@GVar 1", "arr_elem", 1]], "*", [7, "^", ["@GVar 1", "arr_elem", 2]]], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", [[3, "^", ["@Var 0", "arr_elem", 0]], "*", [5, "^", ["@Var 0", "arr_elem", 1]], "*", [7, "^", ["@Var 0", "arr_elem", 2]], "<=", "@Var 1"], "@edit_var", 2, [["@Literal", 0, 1, 2], "weightedRandomArrayEntry", "@GVar 4"], "@edit_var", 0, ["@Var 0", "arr_edit_elem", "@Var 2", ["@Var 0", "arr_elem", "@Var 2", "+", 1]], "@end-repeat", "@edit_gvar", 1, "@Var 0", "@end-if"], "EndTurn"])
                 }
@@ -17410,7 +17462,7 @@ function loadModifiers() {
             }
             if (mode_vars[1] > 0) {
                 start_game_vars[8] = mode_vars[2];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 4"], "@edit_gvar", 6, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 4"], "@edit_gvar", 6, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([[0, "@if", "@GVar 6", "@edit_gvar", 5, ["@var_retain", "@GVar 5", "+", 1], "@edit_gvar", 6, false, "@edit_gvar", 4, [["@Literal", 2, 2], "@if", [[["@GVar 4", "arr_elem", 0], "=", ["@GVar 4", "arr_elem", 1]], "||", [0, "rand_float", 1, "<", "@GVar 7"]], "2nd", ["@Literal", ["@CalcArray", "@GVar 4", "arr_elem", 0], ["@CalcArray", "@GVar 4", "arr_elem", 1, "+", 1]], "@end-if", "@else", "2nd", ["@Literal", ["@CalcArray", "@GVar 4", "arr_elem", 0, "+", 1], ["@CalcArray", "@GVar 4", "arr_elem", 1]]], "@end-if"], "EndTurn"])
                 }
@@ -17451,7 +17503,7 @@ function loadModifiers() {
                 knownMergeMaxLength = 3;
             }
             if (mode_vars[0] > 0) {
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", "@GVar 0", "=", 0n], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 0", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
@@ -17511,7 +17563,7 @@ function loadModifiers() {
         }
         else if (gamemode == 75) { // 3307
             if (mode_vars[1] > 0) {
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@GVar 4", "arr_length", ">", "@Var 1"], "@if", ["@GVar 4", "arr_elem", "@Var 1", ">=", "@GVar 1"], "@edit_var", 1, 1e300, "@end-if", "@else-if", [["@GVar 4", "arr_elem", "@Var 1", "^B", 2, "%B", "@GVar 1", "=", 0n], "&&", ["@GVar 4", "arr_indexOf", ["@GVar 4", "arr_elem", "@Var 1", "^B", 2, "/B", "@GVar 1"], "!=", -1]], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 4", "arr_elem", "@Var 1", "+B", ["@GVar 4", "arr_elem", "@Var 1", "^B", 2, "/B", "@GVar 1"]]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "@if", [mode_vars[0], "!=", 1], "@edit_var", 0, ["@Var 0", "arr_push", "@GVar 1"], "@end-if", "@if", [mode_vars[0], "!=", 0], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 1", "*B", 2n]], "@end-if", "2nd", ["@GVar 1", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 1, "@Parent -1", "@edit_gvar", 4, ["@GVar 4", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
@@ -17530,7 +17582,7 @@ function loadModifiers() {
         else if (gamemode == 77) { // 1668
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*B", 3n, "+B", [-1n, "rand_bigint", 1n]], "@end-if"], "EndTurn"])
                 }
@@ -17555,7 +17607,7 @@ function loadModifiers() {
             }
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*BR", mode_vars[2].recip().plus(1), "@if", [0n, "rand_bigint", 1n], "floorBR", 1, "@end-if", "@else", "ceilBR", 1, "@end-else", "BigInt", "max", 2n], "@end-if"], "EndTurn"])
                 }
@@ -17623,7 +17675,7 @@ function loadModifiers() {
             if (mode_vars[1] > 0) {
                 start_game_vars[5] = mode_vars[2];
                 if (mode_vars[0]) {
-                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                     if (mode_vars[1] == 2) {
                         scripts.push([["@global_var_retain_inner", 1n, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@Var 0", "<=", "@GVar 1"], "@edit_var", 0, [["@Literal", 4n, 6n, 9n, 10n, 14n, 15n], "weightedRandomArrayEntry", "@GVar 4", "*B", "@Var 0"], "@end-repeat", "@edit_gvar", 1, "@Var 0", "@end-if"], "EndTurn"])
                     }
@@ -17647,7 +17699,7 @@ function loadModifiers() {
                     statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 2"]);
                 }
                 else {
-                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 6, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                    scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 6, "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                     if (mode_vars[1] == 2) {
                         scripts.push([["@global_var_retain_inner", ["@Literal", 0, 0, 0, 0, 0, 0], [[4, "^", ["@GVar 1", "arr_elem", 0]], "*", [6, "^", ["@GVar 1", "arr_elem", 1]], "*", [9, "^", ["@GVar 1", "arr_elem", 2]], "*", [10, "^", ["@GVar 1", "arr_elem", 3]], "*", [14, "^", ["@GVar 1", "arr_elem", 4]], "*", [15, "^", ["@GVar 1", "arr_elem", 5]]], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", [[4, "^", ["@Var 0", "arr_elem", 0]], "*", [6, "^", ["@Var 0", "arr_elem", 1]], "*", [9, "^", ["@Var 0", "arr_elem", 2]], "*", [10, "^", ["@Var 0", "arr_elem", 3]], "*", [14, "^", ["@Var 0", "arr_elem", 4]], "*", [15, "^", ["@Var 0", "arr_elem", 5]], "<=", "@Var 1"], "@edit_var", 2, [["@Literal", 0, 1, 2, 3, 4, 5], "weightedRandomArrayEntry", "@GVar 4"], "@edit_var", 0, ["@Var 0", "arr_edit_elem", "@Var 2", ["@Var 0", "arr_elem", "@Var 2", "+", 1]], "@end-repeat", "@edit_gvar", 1, "@Var 0", "@end-if"], "EndTurn"])
                     }
@@ -17675,7 +17727,7 @@ function loadModifiers() {
         else if (gamemode == 80) { // 1429
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "*B", 2n, "+B", [0n, "rand_bigint", 1n, "*B", 2n, "-B", 1n]], "@end-if"], "EndTurn"])
                 }
@@ -17758,7 +17810,7 @@ function loadModifiers() {
                 knownMergeMaxLength = mode_vars[4];
             }
             if (mode_vars[1] > 0 && mode_vars[4] == 2) {
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", [["@GVar 3", "arr_elem", "@Var 1", "+B", "@GVar 0", "factorAmountB"], factorInequality, [["@GVar 3", "arr_elem", "@Var 1", "factorAmountB"], "max", ["@GVar 0", "factorAmountB"]]], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 0", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
@@ -17787,13 +17839,13 @@ function loadModifiers() {
                 else {
                     if (modifiers[13] == "Non-Interacting") {
                         MergeRules = [
-                            [mode_vars[2], [[["@This 0", "signB"], "=", ["@Next 1 0", "signB"]], "&&", ["@This 1", "=", "@Next 1 1"]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "min", "@This 1", "*B", ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "signB"]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "max", "@This 1"]]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "*", "@This 1", "abs"], [], 2, [0, 1], 1, Math.min(mode_vars[3], width, height)]
+                            [mode_vars[2], [[["@This 0", "signB"], "=", ["@Next 1 0", "signB"]], "&&", ["@This 1", "=", "@Next 1 1"], "&&", [["@NextNE -1 1", "!=", "@This 1"], "||", ["@MLength", "=", mode_vars[3]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "min", "@This 1", "*B", ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "signB"]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "max", "@This 1"]]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "*", "@This 1", "abs"], [], 2, [0, 1], 1, Math.min(mode_vars[3], width, height)]
                         ];
                     }
                     else {
                         MergeRules = [
                             [2, [["@This 0", "*B", -1n, "=", "@Next 1 0"], "&&", ["@This 1", "=", "@Next 1 1"]], true, [], 0, [true, true]],
-                            [mode_vars[2], [["@This 1", "=", "@Next 1 1"]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "min", "@This 1", "*B", ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "signB"]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "max", "@This 1"]]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "*", "@This 1", "abs"], [], 2, [0, 1], 1, Math.min(mode_vars[3], Math.max(width, height))]
+                            [mode_vars[2], [["@This 1", "=", "@Next 1 1"], "&&", [["@NextNE -1 1", "!=", "@This 1"], "||", ["@MLength", "=", mode_vars[3]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "min", "@This 1", "*B", ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "signB"]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "absB", "max", "@This 1"]]], ["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]], "*", "@This 1", "abs"], [], 2, [0, 1], 1, Math.min(mode_vars[3], Math.max(width, height))]
                         ];
                     }
                     startTileSpawns = [[[1n, 1n], modifiers[22]], [[-1n, 1n], modifiers[23]]];
@@ -17803,7 +17855,7 @@ function loadModifiers() {
             }
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "arr_map", ["@Var -1", "absB"], "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "arr_map", ["@Var -1", "absB"], "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [["@Literal"], "arr_push", ["@GVar 0", "arr_elem", 1], "@if", ["@GVar 0", "arr_elem", 1, "/B", [mode_vars[2], "^B", ["@GVar 0", "arr_elem", 1, "expomodB", mode_vars[2]]], "=", 1n], "arr_push", ["@GVar 0", "arr_elem", 0, "+B", [["@GVar 0", "arr_elem", 1, "/B", mode_vars[2]], "rand_bigint", ["@GVar 0", "arr_elem", 1]], "@if", ["@Parent -2", "%B", mode_vars[2] - 1, "!=", 1n, "&&", mode_vars[2] > 2n], "/B", mode_vars[2] - 1, "*B", mode_vars[2] - 1, "+B", 1n, "@end-if"], "@end-if", "@else", "arr_push", ["@GVar 0", "arr_elem", 0, "*B", mode_vars[2]]], "@end-if"], "EndTurn"])
                 }
@@ -17816,10 +17868,20 @@ function loadModifiers() {
                 statBoxes.push(["Current Goal", sBox, false, false, "Tile", "Self"], ["Goals Reached", "@GVar 1"]);
             }
         }
+        else if (gamemode == 90) { // Ratio-Fill 3375
+            if (!mode_vars[0]) {
+                MergeRules = [
+                    [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2", "<", 15n], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "%B", "@Next 2 2", "=", 0n]], false, [[0, "@This 1", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+                    [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2", "=", 15n], "&&", ["@This 2", "%B", "@Next 1 2", "=", 0n], "&&", ["@This 2", "%B", "@Next 2 2", "=", 0n]], false, [[1, ["@Literal", false, false, false, false, false, false, false], 15n]], 6, [false, true, true]],
+                    [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@Next 2 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 6], "&&", ["@This 2", "+B", "@Next 1 2", "%B", 2n, "=", 0n], "&&", ["@This 2", "+B", "@Next 1 2", "*B", ["@Next 2 1", "arr_indexOf", false, "*B", 2n, "+B", 1n], "/B", 2n, "=", "@Next 2 2"]], false, [[["@Next 2 0", "+", 1], [["@Literal"], "@repeat", 7, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+                    [3, [false, "@edit_gvar", 0, ["@Next 2 2", "/BR", ["@This 2", "+B", "@Next 1 2"], "*BR", 2n], "@if", [["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@Next 2 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 2n, "!=", new BigRational(1)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n, "/B", 2n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 7n], "&&", ["@Next 2 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], false, [["@Next 2 0", ["@Next 2 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]]
+                ]
+            }
+        }
         else if (gamemode == 91) { // 1845
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@GVar 0", "@add_var", ["@GVar 0", "factorListB", "arr_elem", [0, "rand_int", ["@Parent -3", "arr_length", "-", 1]]], "/B", "@Var 0", "*B", ["@var_retain", "@Var 0", "*B", 2n, "+B", [0n, "rand_bigint", 1n, "*B", 2n, "-B", 1n], "@if", ["@var_retain", "@Var 0", "=", 1n], "2nd", 2n, "@end-if"]], "@end-if"], "EndTurn"])
                 }
@@ -17835,7 +17897,7 @@ function loadModifiers() {
         else if (gamemode == 92) { // SCAPRIM
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [[2n, "^B", ["@GVar 1", "BigInt"], "*B", "@GVar 3"], "rand_bigint", [2n, "^B", ["@GVar 1", "+B", 1n], "*B", "@GVar 3", "-B", 1n]], "@end-if"], "EndTurn"])
                 let sBox = ["@Literal", ["@CalcArray", "@GVar 0"]];
                 if (modifiers[24]) sBox.push("arr_push", 1);
@@ -17866,7 +17928,7 @@ function loadModifiers() {
         }
         else if (gamemode == 93) { // TRIGAT
             if (mode_vars[0] > 0) {
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", ["@GVar 0", "*B", 2n, "-B", ["@GVar 3", "arr_elem", "@Var 1"]], "=", 0n], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 0", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
@@ -17888,6 +17950,16 @@ function loadModifiers() {
                 else {
                     startTileSpawns = [[[3n], modifiers[22]], [[-3n], modifiers[23]], [[2n], modifiers[22]], [[-2n], modifiers[23]]];
                 }
+            }
+        }
+        else if (gamemode == 94) { // Ratio-Fill 9261
+            if (!mode_vars[0]) {
+                MergeRules = [
+                    [3, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 2 2", "typeof", "=", "bigint"], "&&", ["@Next 2 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 4], "&&", [["@This 2", "+B", "@Next 1 2", "%B", 2n, "=", 0n], "||", ["@Next 2 1", "arr_indexOf", false, "%", 2, "=", 1]], "&&", ["@This 2", "+B", "@Next 1 2", "*B", ["@Next 2 1", "arr_indexOf", false, "+B", 1n], "/B", 2n, "=", "@Next 2 2"]], false, [[["@Next 2 0", "+", 1], [["@Literal"], "@repeat", 5, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+                    [3, [false, "@edit_gvar", 0, ["@Next 2 2", "/BR", ["@This 2", "+B", "@Next 1 2"], "*BR", 2n], "@if", [["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@Next 2 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 5n], "&&", ["@Next 2 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], false, [["@Next 2 0", ["@Next 2 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2", "+B", "@Next 2 2"]]], ["@This 2", "+", "@Next 1 2", "+", "@Next 2 2"], [false, true, true]],
+                    [2, [["@This 2", "typeof", "=", "bigint"], "&&", ["@Next 1 2", "typeof", "=", "bigint"], "&&", ["@Next 1 1", "arr_reduce", 0, ["+", "@Var -1"], "=", 4], "&&", [["@This 2", "%B", 2n, "=", 0n], "||", ["@Next 1 1", "arr_indexOf", false, "%", 2, "=", 1]], "&&", ["@This 2", "*B", ["@Next 1 1", "arr_indexOf", false, "+B", 1n], "/B", 2n, "=", "@Next 1 2"], "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]]], false, [[["@Next 1 0", "+", 1], [["@Literal"], "@repeat", 5, "arr_push", false, "@end-repeat"], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]],
+                    [2, [[false, "@edit_gvar", 0, ["@Next 1 2", "/BR", "@This 2", "*BR", 2n], "@if", [["@This 2", "typeof", "!=", "bigint"], "||", ["@Next 1 2", "typeof", "!=", "bigint"], "||", ["@GVar 0", "modBR", 1n, "!=", new BigRational(0)]], "2nd", false, "@end-if", "@else", "@edit_gvar", 0, ["@GVar 0", "BigInt", "-B", 1n], "2nd", [["@GVar 0", ">", -1n], "&&", ["@GVar 0", "<", 5n], "&&", ["@Next 1 1", "arr_elem", "@GVar 0", "!"]], "@end-else"], "@add_var", "@GVar 0", "&&", [[0, "mergeRuleApplies", -1, "!"], "&&", [1, "mergeRuleApplies", -1, "!"]], "@edit_gvar", 0, "@Var 0"], false, [["@Next 1 0", ["@Next 1 1", "arr_edit_elem", "@GVar 0", true], ["@This 2", "+B", "@Next 1 2"]]], ["@This 2", "+", "@Next 1 2"], [false, true]]
+                ]
             }
         }
         else if (gamemode == 95) { // 3385
@@ -17934,7 +18006,7 @@ function loadModifiers() {
                 else {
                     mergeableExpression = [(mode_vars[2] == 3 ? "@Var 2" : "@GVar 1"), "/BR", ["@GVar 4", "arr_elem", "@Var 1"], "perfectPowerFormBR", mode_vars[0], "arr_elem", 1, "%B", mode_vars[0], "=", 0n]
                 }
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 1"], "@edit_gvar", 3, true, "@end-if"], "Merge"]);
                 if (mode_vars[2] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 3", "@edit_gvar", 2, ["@GVar 2", "+", 1], "@edit_gvar", 3, false, "@repeat", ["@GVar 4", "arr_length", ">", "@Var 1"], "@if", ["@GVar 4", "arr_elem", "@Var 1", ">", "@GVar 1"], "@edit_var", 1, 1e300, "@end-if", "@else-if", mergeableExpression, "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 4", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 1", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 1, "@Parent -1", "@edit_gvar", 4, ["@GVar 4", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
@@ -17953,7 +18025,7 @@ function loadModifiers() {
         }
         else if (gamemode == 96) { // LOCEF
             if (mode_vars[1] > 0) {
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@GVar 0", "%B", ["@GVar 3", "arr_elem", "@Var 1"], "=", 0n], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 0", "*B", 2n, "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
                 }
@@ -18032,7 +18104,7 @@ function loadModifiers() {
         else if (gamemode == 37.71) { // 839,808
             if (mode_vars[0] > 0) {
                 start_game_vars[3] = mode_vars[1];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([[["@Literal"], "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [["@Literal"], "arr_push", ["@GVar 0", "arr_elem", 0, "+", [0, "rand_float", 1, "log", "@GVar 4", "floor", 1]], "arr_push", ["@GVar 0", "arr_elem", 1, "+", 1]], "@end-if"], "EndTurn"])
                 }
@@ -18219,6 +18291,7 @@ function loadModifiers() {
                 if ((MergeRules[m]).indexOf("@end_vars") > -1) mstart = (MergeRules[m]).indexOf("@end_vars") + 1;
                 MergeRules[m][mstart + 1].push("&&", [["@VDir", "arr_push", "@HDir", "arr_push", "@SlideAmount"], "=", ("@MVar " + mnum)]);
             }
+            mergeResultKnownLevel = 0;
         }
         hiddenTileText = modifiers[21];
     }
@@ -21940,9 +22013,9 @@ function DIVESeedUnlock(tile, seeds, mode) {
     seeds = compendiumStructuredClone(seeds);
     if (seeds.indexOf(1n) != -1) seeds.splice(seeds.indexOf(1n), 1);
     if (seeds.length == 0) return tile;
-    if (mode == 1 || mode == 2) sortedSeeds = seeds.sort((a, b) => Number(a - b));
+    if (mode == 1 || mode == 2 || mode == 4) sortedSeeds = seeds.sort((a, b) => Number(a - b));
     else if (mode == 0) sortedSeeds = seeds.sort((a, b) => Number(b - a));
-    if (mode != 1) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
+    if (mode != 1 && mode != 4) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
         for (let i = 0; i < seeds.length; i++) {
             while (tile % seeds[i] == 0) tile /= seeds[i];
         }
@@ -21987,7 +22060,16 @@ function DIVESeedUnlock(tile, seeds, mode) {
             for (let c = 0; c < coprimes.length; c++) {
                 while (tile % coprimes[c] == 0n) tile /= coprimes[c];
             }
-            if ((tile < minimum) == (mode == 1)) minimum = tile;
+            if (mode == 4) {
+                if (tile > minimum) {
+                    let nondivisible = true;
+                    for (s of seeds) {
+                        if (tile % s == 0n) {nondivisible = false; console.log("divisible"); break;}
+                    }
+                    if (nondivisible) minimum = tile;
+                }
+            }
+            else if (tile < minimum) minimum = tile;
             if (remainingSeeds.length == 0) return minimum;
             tile = seededTile;
             index = 0;
@@ -22010,9 +22092,9 @@ function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
     seeds = compendiumStructuredClone(seeds);
     seeds = seeds.filter(value => value.norm() > 1n);
     if (seeds.length == 0) return tile;
-    if (mode == 1 || mode == 2) sortedSeeds = seeds.sort(gaussianSort);
+    if (mode == 1 || mode == 2 || mode == 4) sortedSeeds = seeds.sort(gaussianSort);
     else if (mode == 0) sortedSeeds = seeds.sort((a, b) => gaussianSort(b, a));
-    if (mode != 1) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
+    if (mode != 1 && mode != 4) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
         for (let i = 0; i < seeds.length; i++) {
             while (tile.mod(seeds[i]).eq(0n, 0n)) tile = tile.div(seeds[i]);
         }
@@ -22050,7 +22132,16 @@ function GaussianDIVESeedUnlock(tile, seeds, mode, firstQuadrant) {
             for (let c = 0; c < coprimes.length; c++) {
                 while (tile.mod(coprimes[c]).eq(0n, 0n)) tile = tile.div(coprimes[c]);
             }
-            if ((tile.norm() < minimum.norm()) == (mode == 1)) minimum = compendiumStructuredClone(tile);
+            if (mode == 4) {
+                if (tile.norm() > minimum.norm()) {
+                    let nondivisible = true;
+                    for (s of seeds) {
+                        if (tile.mod(s).eq(0n, 0n)) {nondivisible = false; break;}
+                    }
+                    if (nondivisible) minimum = compendiumStructuredClone(tile);
+                }
+            }
+            else if (tile.norm() < minimum.norm()) minimum = compendiumStructuredClone(tile);
             if (remainingSeeds.length == 0) {
                 if (firstQuadrant) minimum = minimum.toFirstQuadrant();
                 return minimum;
@@ -22078,9 +22169,9 @@ function customDIVESeedUnlock(tile, seeds, mode, multiplication, division, modZe
     mode = mod(mode, 5);
     seeds = compendiumStructuredClone(seeds).filter(t => !isOne(t));
     if (seeds.length == 0) return tile;
-    if (mode == 1 || mode == 2) sortedSeeds = seeds.sort((a, b) => sortFunc(a, b));
+    if (mode == 1 || mode == 2 || mode == 4) sortedSeeds = seeds.sort((a, b) => sortFunc(a, b));
     else if (mode == 0) sortedSeeds = seeds.sort((a, b) => sortFunc(b, a));
-    if (mode != 1) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
+    if (mode != 1 && mode != 4) { // Runs through each seed. Mode 0 is "largest to smallest", Mode 2 is "smallest to largest", Mode 3 is "in whatever order the seeds happen to be in"
         for (let i = 0; i < seeds.length; i++) {
             while (modZero(tile, seeds[i])) {
                 tile = division(tile, seeds[i]);
@@ -22119,7 +22210,16 @@ function customDIVESeedUnlock(tile, seeds, mode, multiplication, division, modZe
             for (let c = 0; c < coprimes.length; c++) {
                 while (modZero(tile, coprimes[c])) tile = division(tile, coprimes[c]);
             }
-            if ((sortFunc(tile, minimum) < 0) == (mode == 1)) minimum = tile;
+            if (mode == 4) {
+                if (sortFunc(tile, minimum) > 0) {
+                    let nondivisible = true;
+                    for (s of seeds) {
+                        if (modZero(tile, s)) {nondivisible = false; break;}
+                    }
+                    if (nondivisible) minimum = compendiumStructuredClone(tile);
+                }
+            }
+            else if (sortFunc(tile, minimum) < 0) minimum = tile;
             if (remainingSeeds.length == 0) return minimum;
             tile = seededTile;
             index = 0;
@@ -22463,7 +22563,7 @@ function spawnKnownTiles(tiles) {
     displayGrid();
 }
 
-function mergeRuleApplies(rule, vcoord, hcoord, vdir, hdir) { // Tests whether a given merge rule can be used. Returns an array with two entries: the first is the permutation of the rule that can be used if there is one, false if there isn't. The second is the variables.
+function mergeRuleApplies(rule, vcoord, hcoord, vdir, hdir) { // Tests whether a given merge rule can be used. Returns an array with five entries: the first is the permutation of the rule that can be used if there is one, false if there isn't. The second is the variables, the third is the merge length, the fourth is the overflow type, the fifth is if the start position is reversed.
     let addInfo = [Infinity, 0]; let gri = Grid; let offset = 0; let overflowSafe = true;
     if (arguments.length > 5) addInfo = arguments[5];
     if (arguments.length > 6) gri = arguments[6]; // If we're looking at a grid that isn't the regular Grid, this specifies what the grid is
@@ -22741,7 +22841,7 @@ async function MoveHandler(direction_num) {
                         checkedTiles.push(compendiumStructuredClone(Grid[position[0]][position[1]]));
                         let index = 0;
                         while (checkedTiles.length < knownMergeMaxLength && index < nexttiles.length) {
-                            if (mergeable[nextindices[index]] === false) break;
+                            if (mergeable[nextindices[index]] === false && !multiMerge) break;
                             checkedTiles.push(compendiumStructuredClone(Grid[nextpositions[index][0]][nextpositions[index][1]]));
                             index++;
                         }
@@ -22798,6 +22898,7 @@ async function MoveHandler(direction_num) {
                             if (mergeResultRules[0] == "@CalcArray") mergeResultRules = CalcArray(mergeResultRules.slice(1), position[0], position[1], paramV, paramH, [rule[0], paramSlide, moveType], Grid, [], vars);
                             for (let i = 0; i < mlength; i++) {
                                 if (i > 0) {
+                                    if (typeof CalcArray(["@Next 1 @Position"], vcoordMM, hcoordMM, paramV, paramH) == "string") console.log(rule, vcoordMM, hcoordMM, paramV, paramH, applies);
                                     [vcoordMM, hcoordMM] = CalcArray(["@Next 1 @Position"], vcoordMM, hcoordMM, paramV, paramH);
                                 }
                                 outputpositions.push([vcoordMM, hcoordMM]);
@@ -22861,7 +22962,7 @@ async function MoveHandler(direction_num) {
                                 knownMergeResultOutputs.push([rule[0], overflowArray.concat((reverseMergePosition ? ["@MergeStartReverse"] : []), mergeResults), scoreAdd, rule[5]])
                             }
                             scriptSignals = [];
-                            executeScripts("Merge", position[0], position[1], paramV, paramH, [rule[0], paramSlide], Grid, [], vars.concat(["@Literal"].concat(mergeResults)));
+                            executeScripts("Merge", position[0], position[1], paramV, paramH, [rule[0], paramSlide], Grid, [], vars.concat([["@Literal"].concat(mergeResults)]));
                             tileDiscoveryCheck();
                             movementOccurred = true;
                             mergeCount++;

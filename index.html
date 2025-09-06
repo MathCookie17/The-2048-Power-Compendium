@@ -769,20 +769,20 @@
                         </form>
                     </div>
                 </div>
-                <div id="Turatin_vars" class="gm_var_line">
+                <div id="Turatin_vars" class="gm_var_line_wrapping many_vars">
                     <div id="Turatin_interval" class="gm_var_container" style="color:#ffc4ff;">
                         <p id="Turatin_interval_title" class="gm_var_title">Turns Between Merge Changes:</p>
                         <p id="Turatin_interval_counter" class="gm_var_counter"></p>
                         <div id="Turatin_interval_plus" class="gm_grid_button plus_button">+</div>
                         <div id="Turatin_interval_minus" class="gm_grid_button minus_button">-</div>
                     </div>
-                    <div id="Turatin_nonIntegerRatio" class="gm_var_switch_container" style="width:25%">
+                    <div id="Turatin_nonIntegerRatio" class="gm_var_switch_container">
                         <p id="Turatin_nonIntegerRatio_text" class="gm_var_text">The ratio between merging tiles must be an integer.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="Turatin_nonIntegerRatio_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
-                    <div id="Turatin_switch" class="gm_var_switch_container" style="width:25%">
+                    <div id="Turatin_switch" class="gm_var_switch_container">
                         <p id="Turatin_switch_text" class="gm_var_text">The merge number changes based on the amount of turns so far.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="Turatin_switch_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
@@ -991,6 +991,14 @@
                         <div id="2496_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                 </div>
+                <div id="RF3375_vars" class="gm_var_line">
+                    <div id="RF3375_othersSmaller" class="gm_var_switch_container">
+                        <p id="RF3375_othersSmaller_text" class="gm_var_text">The tile that's getting a ratio filled has to be the largest tile in the merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="RF3375_othersSmaller_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
                 <div id="1845_vars" class="gm_var_line">
                     <div id="1845_randomGoals" class="gm_var_switch_container">
                         <p id="1845_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
@@ -1043,6 +1051,14 @@
                         <form id="TRIGAT_firstGoalMinimum_form" class="gm_var_form">
                             <input type="number" step="any" id="TRIGAT_firstGoalMinimum_change" name="TRIGAT_firstGoalMinimum_change">
                         </form>
+                    </div>
+                </div>
+                <div id="RF9261_vars" class="gm_var_line">
+                    <div id="RF9261_othersSmaller" class="gm_var_switch_container">
+                        <p id="RF9261_othersSmaller_text" class="gm_var_text">The tile that's getting a ratio filled has to be the largest tile in the merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="RF9261_othersSmaller_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
                     </div>
                 </div>
                 <div id="3385_vars" class="gm_var_line">
@@ -2455,7 +2471,7 @@
                                 (which inspired the creation of Alternate 5040 as a whole and was then backported into the default ruleset of PA243 in v2.2),
                                 the "1+1+1=1.5+1.5" variant of 2216.838, the "1+0.5=1.5" mode modifier in the Partial Absorb variant of 2216.838,
                                 the "merge number changes based on merges instead of turns" Turatin mode modifier, the "tiles can merge with the previous negative tile" 2584 mode modifier,
-                                the Partial Absorb 19,683 variant of Partial Absorb 243, the "integer ratios only" variant of SCAPRIM,
+                                the Partial Absorb 19,683 variant of Partial Absorb 243, the "integer ratios only" variant of SCAPRIM, the "maximum outcome" DIVE seed checking modifier setting,
                                 Tricolor Tiles, the "chance of occurring" automatic moves property, clicking Discovered Tiles boxes to switch their display, and some elements of the structure of the Custom Mode maker.
                                 Partial credit also goes to him for Bitwise 2048, the "also spawn 2s" modifier in TRIGAT, and Three-Tile SQUART.
                             </li>
@@ -2756,11 +2772,21 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v2.2.5 (Sep. 3, 2025) [Current Version]: Fixed hidden tile numbers not working on
+                            v2.2.5 (Sep. 3, 2025): Fixed hidden tile numbers not working on
                             wildcard tiles in Wildcard 2048, fixed a bug with the combination of Multitile 2048 and all crazy spawns in Wildcard 2048, 
                             fixed 0 tiles being creatable in Melting Pot Wildcard 2048 with Interacting Negatives, fixed the broken display of &#247;2 tiles
                             in 2216.838 with Negative Tiles on, fixed a merge order bug in 625, and fixed some other small bugs.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.2.6 (Sep. 5, 2025): Fixed the following bugs: Maximum Merge Length in 2496 not working when Negative Tiles is on,
+                            the "A tile that was just merged can itself be part of another merge on the same move." and "To merge tiles, you must move in the same direction twice in a row."
+                            modifiers breaking the game, Ratio-Fill 3375 and Ratio-Fill 9261 not properly checking which tile in the merge is the largest
+                            (which could create tiles that don't properly promote to the next tier; a version of the previous behavior that doesn't have that issue
+                            has been added as a mode modifier for these modes), the border on Visible Next Spawning Tiles to indicate which tile(s) are about to spawn disappearing,
+                            Garbage 0s preventing seeds from unlocking in DIVE, and save codes not correctly loading a few modifiers (such as the tiles spawned per turn modifiers).
+                            Also, added "maximum outcome" to the seed checking mode modifier options in DIVE.
                         </b>
                       </li>
                     </ul>
