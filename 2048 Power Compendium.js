@@ -16697,10 +16697,10 @@ function loadModifiers() {
                             scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                             if (mode_vars[0] == 3) {
                                 if (mode_vars[1] == 1) {
-                                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [["@Literal"].concat(mode_vars[3]), "weightedRandomArrayEntry", "@GVar 3", "*B", "@GVar 0"], "@end-if"], "EndTurn"])
+                                    scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, [["@Literal"].concat(mode_vars[3].map(x => x[0])), "weightedRandomArrayEntry", "@GVar 3", "*B", "@GVar 0"], "@end-if"], "EndTurn"])
                                 }
                                 else {
-                                    scripts.push([[1n, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, "@repeat", ["@var_retain", "@Var 0", "<=", "@GVar 0"], "@edit_var", 0, ["@var_retain", ["@Literal"].concat(mode_vars[3]), "weightedRandomArrayEntry", "@GVar 3", "*B", "@Var 0"], "@end-repeat", "2nd", "@Var 0"], "@end-if"], "EndTurn"])
+                                    scripts.push([[1n, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "@edit_gvar", 0, ["@var_retain", 0, "@repeat", ["@var_retain", "@Var 0", "<=", "@GVar 0"], "@edit_var", 0, ["@var_retain", ["@Literal"].concat(mode_vars[3].map(x => x[0])), "weightedRandomArrayEntry", "@GVar 3", "*B", "@Var 0"], "@end-repeat", "2nd", "@Var 0"], "@end-if"], "EndTurn"])
                                 }
                             }
                             else {
@@ -18044,18 +18044,18 @@ function loadModifiers() {
         else if (gamemode == 97) { // Pro-Add-Uct
             if (modifiers[13] == "None") {
                 MergeRules = [
-                    [mode_vars[0], [[[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]]], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "!=", [["@NextNE -1 0", "max", 1n], "*B", ["@NextNE -1 1", "max", 1n]]], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "*", ["@var_retain", "@Var -1", "arr_elem", 1]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
+                    [mode_vars[0], [[[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]]], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "!=", [["@NextNE -1 0", "max", 1n], "*B", ["@NextNE -1 1", "max", 1n]]], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1", "abs"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "abs"], "*", ["@var_retain", "@Var -1", "arr_elem", 1, "abs"]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
                 ];
             }
             else if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [mode_vars[0], [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]], "&&", ["@This 2", "=", "@Next 1 2"], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "!=", [["@NextNE -1 0", "max", 1n], "*B", ["@NextNE -1 1", "max", 1n]]], "||", ["@This 2", "!=", "@NextNE -1 2"], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "*", ["@var_retain", "@Var -1", "arr_elem", 1]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
+                    [mode_vars[0], [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]], "&&", ["@This 2", "=", "@Next 1 2"], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "!=", [["@NextNE -1 0", "max", 1n], "*B", ["@NextNE -1 1", "max", 1n]]], "||", ["@This 2", "!=", "@NextNE -1 2"], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1", "abs"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "abs"], "*", ["@var_retain", "@Var -1", "arr_elem", 1, "abs"]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
                 ];
             }
             else {
                 MergeRules = [
                     [2, [["@This 0", "*B", -1n, "=", "@Next 1 0"], "&&", ["@This 1", "*B", -1n, "=", "@Next 1 1"]], true, [], 0, [true, true]],
-                    [mode_vars[0], [[["@This 0", "absB", "max", 1n], "*B", ["@This 1", "absB", "max", 1n]], "=", [["@Next 1 0", "absB", "max", 1n], "*B", ["@Next 1 1", "absB", "max", 1n]], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "absB", "max", 1n], "*B", ["@This 1", "absB", "max", 1n]], "!=", [["@NextNE -1 0", "absB", "max", 1n], "*B", ["@NextNE -1 1", "absB", "max", 1n]]], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "*", ["@var_retain", "@Var -1", "arr_elem", 1]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
+                    [mode_vars[0], [[["@This 0", "absB", "max", 1n], "*B", ["@This 1", "absB", "max", 1n]], "=", [["@Next 1 0", "absB", "max", 1n], "*B", ["@Next 1 1", "absB", "max", 1n]], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "absB", "max", 1n], "*B", ["@This 1", "absB", "max", 1n]], "!=", [["@NextNE -1 0", "absB", "max", 1n], "*B", ["@NextNE -1 1", "absB", "max", 1n]]], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1", "abs"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "abs"], "*", ["@var_retain", "@Var -1", "arr_elem", 1, "abs"]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
                 ];
             }
             knownMergeMaxLength = mode_vars[1];
@@ -18723,7 +18723,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
                 }
                 else if (mode_vars[0] == 3 || mode_vars[0] == 4) {
                     start_game_vars[3] = [];
-                    let arrayOfMults = (mode_vars[0] == 4) ? start_game_vars[7].map(a => a.length) : mode_vars[3].map(a => a[0]);
+                    let arrayOfMults = (mode_vars[0] == 4) ? start_game_vars[7].map(a => BigInt(a.length)) : mode_vars[3].map(a => a[0]);
                     for (let n = 0; n < arrayOfMults.length; n++) {
                         start_game_vars[3].push(Math.random())
                     }
@@ -19556,6 +19556,8 @@ function operation(n1, operator, n2) {
                     while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
+                    if (Array.isArray(a)) a = ["@Literal"].concat(a);
+                    if (Array.isArray(b)) b = ["@Literal"].concat(b);
                     nn2.splice(vpos, 0, a, b);
                     return CalcArray(nn2, ...additional[0]);
                 }
@@ -19569,6 +19571,7 @@ function operation(n1, operator, n2) {
                     while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
+                    if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos, 0, index, value);
                     return CalcArray(nn2, ...additional[0]);
                 }
@@ -19582,6 +19585,7 @@ function operation(n1, operator, n2) {
                     while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
+                    if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos, 0, index, value);
                     return CalcArray(nn2, ...additional[0]);
                 }
@@ -19597,6 +19601,7 @@ function operation(n1, operator, n2) {
                     while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
+                    if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos + 1, 0, total);
                     nn2.splice(vpos, 0, index, value);
                     return CalcArray(nn2, ...additional[0]);
@@ -19611,6 +19616,7 @@ function operation(n1, operator, n2) {
                     while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
+                    if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos + 1, 0, total);
                     nn2.splice(vpos, 0, index, value);
                     return CalcArray(nn2, ...additional[0]);
