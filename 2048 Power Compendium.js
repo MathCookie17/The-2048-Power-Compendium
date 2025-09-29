@@ -7932,7 +7932,7 @@ function loadMode(mode) {
             [true, ["@This 0"], "@ColorScheme", "3385", ["@This 0", 2n]]
         ];
         MergeRules = [
-            [2, [["@This 0", "/BR", "@Next 1 0", "perfectPowerFormBR", 2n, "arr_elem", 1, "%", 2n, "=", 0n]], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
+            [2, [["@This 0", "/BR", "@Next 1 0", "perfectPowerFormBR", 2n, "arr_elem", 1, "%B", 2n, "=", 0n]], true, [[["@This 0", "+B", "@Next 1 0"]]], ["@This 0", "+", "@Next 1 0"], [false, true]]
         ];
         startTileSpawns = [[[1n], 1]];
         winConditions = [[3385n]];
@@ -16558,7 +16558,7 @@ function loadModifiers() {
                     ],
                     [["@global_var_retain_inner", 0, 0, "@end_vars", 0, "@repeat", ["@Var 0", "<", height], "@edit_var", 1, 0, "@repeat", ["@Var 1", "<", width], "@if", ["@Grid", "arr_elem", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "2nd", [["@Parent -3", "typeof", "=", "bigint"], "||", ["@Parent -3", "typeof", "=", "bigrational"]]], "@replace_tile", "@Var 0", "@Var 1", ["@Grid", "arr_elem", "@Var 0", "arr_elem", "@Var 1", "arr_edit_elem", 1, 0], "@end-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "EndTurn"] // Makes all tiles mergeable again
                 ];
-                statBoxes = [["Discovered Tiles From Merges", ["@GVar 8", "arr_length"], false, ...[,,,], ["@GVar 6", "=", 0], [0, "@edit_gvar", 6, 1], true], ["Discovered Tiles Larger Than 1", ["@GVar 8", "arr_map", ["@Var -1", "Array", "arr_push", 0]], true, false, "TileArray", "Self", ["@GVar 6", "=", 1], [0, "@edit_gvar", 6, 0], true], ["Score", "@Score"]];
+                statBoxes = [["Discovered Tiles From Merges", ["@GVar 8", "arr_length"], false, ...[,,,], ["@GVar 6", "=", 0], [0, "@edit_gvar", 6, 1], true], ["Discovered Tiles From Merges", ["@GVar 8", "arr_map", ["@Var -1", "Array", "arr_push", 0]], true, false, "TileArray", "Self", ["@GVar 6", "=", 1], [0, "@edit_gvar", 6, 0], true], ["Score", "@Score"]];
                 // start_game_vars[7] = [[true, [1, 0], [-1, 0], [0, 1], [0, -1]], [false, [0, 1], [0, 2], [0, 3]], [true, [1, 1], [1, -1]]];
                 TileNumAmount = 2;
                 if (mode_vars[8]) {
@@ -16747,12 +16747,15 @@ function loadModifiers() {
                             newRule[3].push(tArr);
                         }
                         if (mode_vars[3][m][0] < mode_vars[3][m][1]) newRule[3].unshift((mode_vars[3][m][0] == 1n) ? "@MergeOverflowEmpty" : "@MergeOverflowOverwrite");
-                        newRule[4] = [["@This 0", "*", mode_vars[3][m][0]], "abs"];
+                        newRule[4] = [["@This 0", "*", mode_vars[3][m][0]], "abs", "@if", ["@GVar 8", "arr_indexOf", ["@This 0", (listPA ? "*BR" : "*B"), mode_vars[3][m][0], (listPA ? "/BR" : "/B"), mode_vars[3][m][1]], "=", -1], "@edit_gvar", 8, ["@GVar 8", "arr_push", ["@This 0", (listPA ? "*BR" : "*B"), mode_vars[3][m][0], (listPA ? "/BR" : "/B"), mode_vars[3][m][1]]]];
                         for (let i = 0; i < mode_vars[3][m][0]; i++) newRule[5].push(false);
                         for (let i = mode_vars[3][m][0]; i < mode_vars[3][m][1]; i++) newRule[5].push(true);
                         MergeRules.push(newRule);
                     }
-                    if (listPA) MergeRules.push([0, ["@This 1", "=", 1], true, [["@This 0", 0]], 0]);
+                    if (listPA) {
+                        MergeRules.push([0, ["@This 1", "=", 1], true, [["@This 0", 0]], 0]);
+                        statBoxes = [["Discovered Tiles From Merges", ["@GVar 8", "arr_length"], false, ...[,,,], ["@GVar 6", "=", 0], [0, "@edit_gvar", 6, 1], true], ["Discovered Tiles From Merges", ["@GVar 8", "arr_map", ["@Var -1", "Array", "arr_push", 0]], true, false, "TileArray", "Self", ["@GVar 6", "=", 1], [0, "@edit_gvar", 6, 0], true], ["Score", "@Score"]];
+                    }
                 }
             }
         }
@@ -18049,7 +18052,7 @@ function loadModifiers() {
             }
             else if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [mode_vars[0], [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]], "&&", ["@This 2", "=", "@Next 1 2"], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "!=", [["@NextNE -1 0", "max", 1n], "*B", ["@NextNE -1 1", "max", 1n]]], "||", ["@This 2", "!=", "@NextNE -1 2"], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]]]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1", "abs"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "abs"], "*", ["@var_retain", "@Var -1", "arr_elem", 1, "abs"]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
+                    [mode_vars[0], [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]], "&&", ["@This 2", "=", "@Next 1 2"], "&&", [["@NextNE -1 0", "typeof", "!=", "bigint"], "||", [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "!=", [["@NextNE -1 0", "max", 1n], "*B", ["@NextNE -1 1", "max", 1n]]], "||", ["@This 2", "!=", "@NextNE -1 2"], "||", ["@MLength", "=", mode_vars[1]]]], true, [[["@Next", "arr_reduce", "@This 0", ["+B", ["@var_retain", "@Var -1", "arr_elem", 0]]], ["@Next", "arr_reduce", "@This 1", ["+B", ["@var_retain", "@Var -1", "arr_elem", 1]]], "@This 2"]], ["@Next", "arr_reduce", ["@This 0", "*", "@This 1", "abs"], ["+", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0, "abs"], "*", ["@var_retain", "@Var -1", "arr_elem", 1, "abs"]]], "/", ["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "/", [["@Next", "arr_reduce", "@This 0", ["gcdB", ["@var_retain", "@Var -1", "arr_elem", 0]], "abs"], "abs"]], [], 2, [0, 1], 1, Math.min(mode_vars[1], Math.max(width, height))]
                 ];
             }
             else {
@@ -23305,7 +23308,7 @@ async function playReplay() {
 function tileDiscoveryCheck() { // Adds newly-discovered tiles into discoveredTiles if there are any
     for (let row = 0; row < height; row++) {
         for (let column = 0; column < width; column++) {
-            if (indexOfPrimArray(Grid[row][column], discoveredTiles) == -1 && !(Grid[row][column] == "@Empty" || Grid[row][column] == "@Void"))
+            if (indexOfPrimArray(Grid[row][column], discoveredTiles) == -1 && !(Grid[row][column] == "@Empty" || Grid[row][column] == "@Void"  || Grid[row][column] == "@Slippery" || Grid[row][column].includes("@TemporaryHole")))
                 discoveredTiles.push(Grid[row][column]);
         }
     }
