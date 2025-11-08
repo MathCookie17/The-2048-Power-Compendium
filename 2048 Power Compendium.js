@@ -3004,7 +3004,7 @@ function indexOfPrimArray(inner, outer) {//Checks for the index of inner within 
     if (!("length" in outer) || outer.length == 0) return -1;
     let from = 0;
     if (arguments.length > 2) from = arguments[2];
-    for (let i = 0; i < outer.length; i++) {
+    for (let i = from; i < outer.length; i++) {
         if (eqPrimArrays(outer[i], inner)) return i;
     }
     return -1;
@@ -3014,7 +3014,7 @@ function lastIndexOfPrimArray(inner, outer) {//Checks for the index of inner wit
     if (!("length" in outer) || outer.length == 0) return -1;
     let from = outer.length - 1;
     if (arguments.length > 2) from = arguments[2];
-    for (let i = outer.length - 1; i >= 0; i--) {
+    for (let i = from; i >= 0; i--) {
         if (eqPrimArrays(outer[i], inner)) return i;
     }
     return -1;
@@ -13799,7 +13799,7 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 tile.style.setProperty("background-image", (evaluateColor(["@linear-gradient", 90].concat(background), vcoord, hcoord, container, vars)));
                 if (negative) textColor = ["@rotate", 180, true, textColor];
                 tile.style.setProperty("color", (evaluateColor(textColor, vcoord, hcoord, container, vars)));
-                if (params.length > 0 && params[0] && !hiddenTileText) {
+                if (params.length > 0 && params[0] && !hiddenTileText && dType != "Subtile") {
                     tile.firstElementChild.innerHTML = textArray.join(" ");
                     let fontmin = 2;
                     let fontmax = tile.firstElementChild.textContent.length * 0.7;
@@ -14801,30 +14801,32 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                     background = ["@rotate", 180, true, background]
                 }
                 tile.style.setProperty("background-image", evaluateColor(background));
-                let fontmin = 2;
-                let fontmax = tile.firstElementChild.textContent.length * 0.7;
-                //Normally, the font size on a tile is dependent on the size of the text, but if the TileTypes entry has more than four entries, the 4th and 5th entries place restrictions on the font size
-                if (display[5] !== undefined) {
-                    if (Array.isArray(display[5])) fontmin = CalcArray(display[5], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
-                    else fontmin = display[5];
-                    if (fontmin == 0) fontmin = 2.5;
-                    if (fontmin < 0) fontmin = tile.firstElementChild.textContent.length * Math.abs(fontmin);
+                if (!hiddenTileText && dType != "Subtile") {
+                     let fontmin = 2;
+                    let fontmax = tile.firstElementChild.textContent.length * 0.7;
+                    //Normally, the font size on a tile is dependent on the size of the text, but if the TileTypes entry has more than four entries, the 4th and 5th entries place restrictions on the font size
+                    if (display[5] !== undefined) {
+                        if (Array.isArray(display[5])) fontmin = CalcArray(display[5], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+                        else fontmin = display[5];
+                        if (fontmin == 0) fontmin = 2.5;
+                        if (fontmin < 0) fontmin = tile.firstElementChild.textContent.length * Math.abs(fontmin);
+                    }
+                    if (display[6] !== undefined) {
+                        if (Array.isArray(display[6])) fontmax = CalcArray(display[6], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
+                        else fontmax = display[6];
+                        if (fontmax == 0) fontmax = -0.7;
+                        if (fontmax < 0) fontmax = tile.firstElementChild.textContent.length * Math.abs(fontmax);
+                    }
+                    if (dType == "Viewer") tile.style.setProperty("font-size", "calc(var(--secondary_size) * " + (40 / Math.max(fontmin, fontmax)) * (hexagonal ? Math.sqrt(3)/2 : 1) + ")");
+                    else {
+                        if (dType == "Grid") sizeExpression = (tsize / 100 / Math.max(fontmin, fontmax));
+                        else if (dType == "Score" || dType == "ScoreSelf") sizeExpression = (6/33 / Math.max(fontmin, fontmax));
+                        else sizeExpression = (4/33 / Math.max(fontmin, fontmax));
+                        sizeExpression *= ((hexagonal) ? Math.sqrt(3)/2 : 1)
+                        tile.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + sizeExpression + ")");
+                    }
+                    extraentries.push(["Innerscript", baseConvert(value, base, true), "bottom-center", 6, 0]);
                 }
-                if (display[6] !== undefined) {
-                    if (Array.isArray(display[6])) fontmax = CalcArray(display[6], vcoord, hcoord, 0, 0, [1, Infinity, 0], container, [], vars);
-                    else fontmax = display[6];
-                    if (fontmax == 0) fontmax = -0.7;
-                    if (fontmax < 0) fontmax = tile.firstElementChild.textContent.length * Math.abs(fontmax);
-                }
-                if (dType == "Viewer") tile.style.setProperty("font-size", "calc(var(--secondary_size) * " + (40 / Math.max(fontmin, fontmax)) * (hexagonal ? Math.sqrt(3)/2 : 1) + ")");
-                else {
-                    if (dType == "Grid") sizeExpression = (tsize / 100 / Math.max(fontmin, fontmax));
-                    else if (dType == "Score" || dType == "ScoreSelf") sizeExpression = (6/33 / Math.max(fontmin, fontmax));
-                    else sizeExpression = (4/33 / Math.max(fontmin, fontmax));
-                    sizeExpression *= ((hexagonal) ? Math.sqrt(3)/2 : 1)
-                    tile.style.setProperty("font-size", "calc(1vw * var(--grid_vw) * " + sizeExpression + ")");
-                }
-                extraentries.push(["Innerscript", baseConvert(value, base, true), "bottom-center", 6, 0]);
             }
             else if (display[3] == "SCAPRIM" || display[3] == "1845") {
                 let prime_amount = (display[3] == "1845") ? 1229 : Infinity;
@@ -16090,11 +16092,11 @@ function displayTile(dType, tile, vcoord, hcoord, container, location) {
                 let fontmax = innerscript.textContent.length * 0.7;
                 if (innerdisplay.length > 2) {
                     if (innerdisplay[2] > 0) fontmin = innerdisplay[2];
-                    else if (innerdisplay[2] < 0) fontmin = innerscript.textContent.length * innerdisplay[2];
+                    else if (innerdisplay[2] < 0) fontmin = innerscript.textContent.length * abs(innerdisplay[2]);
                 }
                 if (innerdisplay.length > 3) {
                     if (innerdisplay[3] > 0) fontmax = innerdisplay[3];
-                    else if (innerdisplay[3] < 0) fontmax = innerscript.textContent.length * innerdisplay[3];
+                    else if (innerdisplay[3] < 0) fontmax = innerscript.textContent.length * abs(innerdisplay[3]);
                 }
                 if (dType == "Viewer") innerscript.style.setProperty("font-size", "calc(var(--secondary_size) * " + (40 / Math.max(fontmin, fontmax)) * (hexagonal ? Math.sqrt(3)/2 : 1) + ")");
                 else {
@@ -16571,7 +16573,7 @@ function loadModifiers() {
                     }
                     else {
                         startTileSpawns = [[[new BigRational(1n), 0], 100 * modifiers[22]], [[new BigRational(-1n), 0], 100 * modifiers[23]]];
-                        if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*BR", -1n, "=", "@Next 1 0", "&&", ["@This 1", "=", 0], "&&", ["@Next 1 1", "=", 0]], false, [], 0]);
+                        if (modifiers[13] == "Interacting") MergeRules.unshift([2, ["@This 0", "*BR", -1n, "=", "@Next 1 0", "&&", ["@This 1", "=", 0], "&&", ["@Next 1 1", "=", 0]], false, [], 0]);
                     }
                 }
                 else {
@@ -16584,7 +16586,7 @@ function loadModifiers() {
                     }
                     else {
                         startTileSpawns = [[[1n, 0], 100 * modifiers[22]], [[-1n, 0], 100 * modifiers[23]]];
-                        if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*B", -1n, "=", "@Next 1 0", "&&", ["@This 1", "=", 0], "&&", ["@Next 1 1", "=", 0]], false, [], 0]);
+                        if (modifiers[13] == "Interacting") MergeRules.unshift([2, ["@This 0", "*B", -1n, "=", "@Next 1 0", "&&", ["@This 1", "=", 0], "&&", ["@Next 1 1", "=", 0]], false, [], 0]);
                     }
                 }
                 if (mode_vars[1] > 0) {
@@ -16627,7 +16629,7 @@ function loadModifiers() {
                             startTileSpawns = (mode_vars[0] == 3) ? [[[new BigRational(1n), 0], 100 * modifiers[22]], [[new BigRational(-1n), 0], 100 * modifiers[23]]] : [[[new BigRational(1n)], 100 * modifiers[22]], [[new BigRational(-1n)], 100 * modifiers[23]]];
                             winConditions = [["@This 0", "=", new BigRational(675n, 8n)], ["@This 0", "=", new BigRational(-675n, 8n)]];
                             winRequirement = 2;
-                            if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*BR", -1n, "=", "@Next 1 0"], false, [], 0]);
+                            if (modifiers[13] == "Interacting") MergeRules.unshift([2, ["@This 0", "*BR", -1n, "=", "@Next 1 0"], false, [], 0]);
                         }
                         if (mode_vars[0] == 0) {
                             MergeRules = [
@@ -16673,7 +16675,7 @@ function loadModifiers() {
                             [true, "@This 0", "@ColorScheme", "180", ["@This 0"]]
                         ];
                         MergeRules = [
-                            [2, [["@NextNE -1 0", "!=", "@This 0"], "&&", [["@NextNE", "arr_elem", ["@MLength", "-", 1], "arr_elem", 0], "!=", "@This 0"], "&&", ["@Next 1 0", "=", "@This 0"]], true, [[["@This 0", "*B", "@MLength"]]], ["@This 0", "*B", "@MLength"], [], 2, [0, 1, 1], 1, Math.max(width, height)]
+                            [2, [["@NextNE -1 0", "!=", "@This 0"], "&&", [["@NextNE", "arr_elem", ["@MLength", "-", 1], "arr_elem", 0], "!=", "@This 0"], "&&", ["@Next 1 0", "=", "@This 0"]], true, [[["@This 0", "*B", "@MLength"]]], ["@This 0", "*B", "@MLength", "abs"], [], 2, [0, 1, 1], 1, Math.max(width, height)]
                         ];
                         knownMergeMaxLength = Infinity;
                         knownMergeLookbackDistance = 2;
@@ -16691,7 +16693,7 @@ function loadModifiers() {
                             startTileSpawns = [[[1n], 100 * modifiers[22]], [[-1n], 100 * modifiers[23]]];
                             winConditions = [[180n], [-180n]];
                             winRequirement = 2;
-                            if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", "*BR", -1n, "=", "@Next 1 0"], false, [], 0]);
+                            if (modifiers[13] == "Interacting") MergeRules.unshift([2, ["@This 0", "*B", -1n, "=", "@Next 1 0"], false, [], 0]);
                         }
                         if (mode_vars[1] > 0) {
                             scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
@@ -16732,6 +16734,7 @@ function loadModifiers() {
                 }
                 if (mode_vars[0] == 3) {
                     MergeRules = [];
+                    if (modifiers[13] == "Interacting") MergeRules.push([2, ["@This 0", (listPA ? "*BR" : "*B"), -1n, "=", "@Next 1 0"], false, [], 0]);
                     for (let m = 0; m < mode_vars[3].length; m++) {
                         let mergeLength = Number(mode_vars[3][m][0]);
                         if (mergeLength == 1) mergeLength = 0;
@@ -20318,7 +20321,7 @@ function CalcArray(arr) {
                 n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 additional_args.push(CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
-            else if (operator == "arr_push" || operator == "arr_unshift" || operator == "str_indexOf" || operator == "arr_indexOf" || operator == "arr_binarySearch" || operator == "arr_binaryInsert") {
+            else if (operator == "arr_push" || operator == "arr_unshift" || operator == "str_indexOf" || operator == "str_lastIndexOf" || operator == "arr_indexOf" || operator == "arr_lastIndexOf" || operator == "arr_binarySearch" || operator == "arr_binaryInsert") {
                 to_pop = 2;
                 n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
             }
@@ -22252,6 +22255,9 @@ function refillSpawnConveyor() { // This function ensures that nextTiles is alwa
         if (spawnConveyor[s] == "@Empty") {
             let weighttotal = 0;
             let cSpawns = compendiumStructuredClone(TileSpawns);
+            for (let p = 0; p < cSpawns.length; p++) {
+                if (cSpawns[p][0] == "@CalcArray") cSpawns[p] = CalcArray(cSpawns[p].slice(1));
+            }
             for (let p of cSpawns) {
                 if (Array.isArray(p[1])) p[1] = CalcArray(p[1]);
                 weighttotal += p[1]; // weighttotal is the sum of the spawn chances of each tile
@@ -22854,11 +22860,9 @@ async function MoveHandler(direction_num) {
                             checkedTiles.push(compendiumStructuredClone(Grid[nextpositions[index][0]][nextpositions[index][1]]));
                             index++;
                         }
-                        if (checkedTiles.length == knownMergeMaxLength) {
-                            while (frontTiles.length < knownMergeLookbackDistance - 1 && index < nexttiles.length) {
-                                frontTiles.push(compendiumStructuredClone(Grid[nextpositions[index][0]][nextpositions[index][1]]));
-                                index++;
-                            }
+                        while (frontTiles.length < knownMergeLookbackDistance - 1 && index < nexttiles.length) {
+                            frontTiles.push(compendiumStructuredClone(Grid[nextpositions[index][0]][nextpositions[index][1]]));
+                            index++;
                         }
                         index = -1;
                         while (backTiles.length < knownMergeLookbackDistance) {
@@ -23500,6 +23504,11 @@ async function PlayAgain() {
     TileSpawns = compendiumStructuredClone(startTileSpawns);
     game_vars = compendiumStructuredClone(start_game_vars);
     modifier_vars = compendiumStructuredClone(start_modifier_vars);
+    SpawnBoxes = [];
+    for (let i = 0; i < TileSpawns.length; i++) {
+        SpawnBoxes.push([]);
+        if (TileSpawns[i][0] == "Box") refillSpawnBox(i);
+    }
     spawnConveyor = [];
     for (let i = 0; i < Math.max(nextTiles, 1); i++) spawnConveyor.push("@Empty");
     refillSpawnConveyor();
