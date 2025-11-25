@@ -1557,6 +1557,12 @@
                             <div id="modifiers_randomUnmovingTiles_plus" class="gm_grid_button plus_button">+</div>
                             <div id="modifiers_randomUnmovingTiles_minus" class="gm_grid_button minus_button">-</div>
                         </div>
+                        <div id="modifiers_randomUnmergingTiles" class="modifiers_var_container" style="color:#7b9600">
+                            <p id="modifiers_randomUnmergingTiles_title" class="gm_var_title" style="font-size:0.85em">Random Unmerging Tiles Each Turn:</p>
+                            <p id="modifiers_randomUnmergingTiles_counter" class="gm_var_counter"></p>
+                            <div id="modifiers_randomUnmergingTiles_plus" class="gm_grid_button plus_button">+</div>
+                            <div id="modifiers_randomUnmergingTiles_minus" class="gm_grid_button minus_button">-</div>
+                        </div>
                     </div>
                 </div>
                 <div id="modifiers_page_2" class="modifiers_page">
@@ -3017,22 +3023,19 @@
                             some score and merge bugs in 180 with Interacting Negatives, and a few internal bugs.                    
                       </li>
                       <br>
-                      <span class="guide_wavesModesHidden">
                       <li>
-                        <b>
-                            v2.2.10 (Nov. 24, 2025) [Current Version]: Added Temporary Holes as a Garbage Tiles option, and fixed the long-standing bug where mode modifier buttons can clip into the "Return to Menu" button.
-                        </b>
-                      </li>
-                      </span>
-                      <span class="guide_wavesModesShown">
-                      <li>
-                        <b>
-                            v2.3 (Nov. 24, 2025) [Current Version]: Added the first thirteen waves modes: Aquatic 2496, Aquatic 1845, Aquatic SQUART, FRUSEE, HICEM, Wildcard DIVE, Gaussian DIVE, Dual-Tile DIVE,
-                            Div-Add-Tor, Partial Flow DIVE, DOFFET, RACUTE, and DIVE-3.
+                            v2.3 (Nov. 24, 2025): Added the first thirteen waves modes: Aquatic 2496, Aquatic 1845, Aquatic SQUART, FRUSEE, HICEM, Wildcard DIVE, Gaussian DIVE, Dual-Tile DIVE,
+                            Div-Add-Tor, Partial Flow DIVE, DOFFET, RACUTE, and DIVE-3 (go to DIVE if you want to access these).
                             Added Temporary Holes as a Garbage Tiles option, and fixed the long-standing bug where mode modifier buttons can clip into the "Return to Menu" button.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.3.1 (Nov. 25, 2025) [Current Version]: Un-hid v2.3 (which was hidden as a mere "v2.2.10" when released). Fixed new replays being broken
+                            (replays generated in v2.3 still won't work, but replays from before then or from this point on should), added the Seeds Seen box to Dual-Tile DIVE,
+                            seed eliminations in Partial Flow DIVE no longer give score, and DOFFET's description now properly updates to mention that negative offsets change the spawning tiles.
                         </b>
                       </li>
-                      </span>
                     </ul>
                 </div>
                 <div id="regularGuide_bottomspace" class="guide_bottomspace"></div>
@@ -3324,27 +3327,7 @@
                         The spoiler code for discussion of the Office 0f Secrets itself is ZOSHC. This system was suggested by Michael Darrow.)
                     </p>
                 </div>
-                <div id="secretOffice_wavesNotice" class="guide_box guide_wavesModesShownBlock" style="background-image: linear-gradient(#125a8e, #1b397e, #125a8e); color: #86d9ff; border: solid 5px #4bfaf4; width: 75%">
-                    <h3>
-                        Notice about the recent floodings:
-                    </h3>
-                    <p>
-                        To reduce public unrest, we have been hiding the news of the unleashing of the waves from the general populous.
-                        However, the fact you have discovered the truth means that our efforts are failing. If the effects are this large, it would be better to not keep it under wraps after all.
-                        Please alert the one in charge that the suppression effort has failed, so that the matter may be made public.
-                    </p>
-                </div>
                 <div id="secretOffice_cluesBox" class="guide_box" style="background-image: linear-gradient(#eba16d, #dc8b51, #eba16d); color: #722412; border: solid 5px #722412">
-                    <div id="secretOffice_secret1" class="guide_wavesModesHiddenBlock">
-                        <ul class="secretOffice_cluesList">
-                            <li>
-                                We're not positive about this one, but if you dive into your search, it should be hard to miss.
-                            </li>
-                        </ul>
-                        <p>
-                            Secret found! <b>Gaussian DIVE</b>: Found by turning on Interacting Negatives and selecting DIVE. [Added in v1.5] {Spoiler Code: GDUCI}
-                        </p>
-                    </div>
                     <div id="secretOffice_secret5">
                         <ul class="secretOffice_cluesList">
                             <li>
@@ -3412,7 +3395,8 @@
                             </li>
                         </ul>
                         <p>
-                            Secret found! <b>Random Unmoving Tiles per Turn</b>: Found by winning a mode without any tiles moving or merging, which is done in Zero-Sides 1. [Added in <span class="guide_wavesModesHidden">v2.2.10</span><span class="guide_wavesModesShown">v2.3</span>] {Spoiler Code: MCSOZ}
+                            Secret found! <b>Random Unmoving Tiles Each Turn and Random Unmerging Tiles Each Turn</b>: Found by winning a mode without any tiles moving or merging, which is done in Zero-Sides 1.
+                            [Random Unmoving Tiles Each Turn added in v2.3, Random Unmerging Tiles Each Turn added in v2.3.1] {Spoiler Code: MCSOZ}
                         </p>
                     </div>
                     <div id="secretOffice_secret6" style="color:black">
@@ -3423,7 +3407,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div id="secretOffice_secret1Waves" style="color:black" class="guide_wavesModesShownBlock">
+                    <div id="secretOffice_secret1" style="color:black">
                         <ul class="secretOffice_cluesList secretOffice_cluesListDeclassified">
                             <li>
                                 Gaussian DIVE was originally a secret mode added in v1.5, but the unleashing of the waves in v2.3 has made
@@ -3446,7 +3430,7 @@
                     <p>
                         As a reward, we'll let you in on one last secret: enter "View Color Schemes" (without the quotes) anywhere in the Compendium where save codes are imported and import that,
                         and you'll get to look at tiles of your choice in some of the Compendium's more "special" tile color schemes.
-                        (This will work even if you aren't registered as having found every secret, but color schemes of secret modes will be hidden if you haven't found those.)
+                        (This will work even if you aren't registered as having found every secret, but color schemes of secret modes will be hidden if you haven't found those... though right now there are not any secret modes with special color schemes.)
                         [This was added back in v1.2, but had remained completely hidden until we found it.] {Spoiler Code: TVRCE}
                     </p>
                 </div>
