@@ -26,7 +26,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color : #9b412b; /* This is just here so I have an easy place to choose colors from */
+    color : #42a3a3; /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -42,6 +42,16 @@ html {
     color: #ffff8d;
     font-size: 4vh;
     --menu_grid_size: 75vh;
+}
+#waves_background {
+    z-index: -1;
+    background-image: repeating-linear-gradient(#00f, #0000, #00f 15%);
+    mask-image: linear-gradient(#0000, #0008);
+    height: 105vh;
+    width: 105vw;
+    position: absolute;
+    left: -5vw;
+    top: -5vh;
 }
 #compendium_title {
     font-size: 8vh;
@@ -77,6 +87,12 @@ html {
     box-shadow: none;
     border: calc(var(--menu_grid_size) * 0.4 / 75) solid black;
     box-sizing: border-box;
+    text-shadow: none;
+}
+.waves_tile {
+    border-color: #0043b6;
+    text-shadow: 0px 0px 5px #00007e;
+    color: #97cbff
 }
 .menu_button {
     width: 33vh;
@@ -477,19 +493,19 @@ html {
 }
 .gm_var_container {
     font-size: 3vh;
-    height: 15vh;
+    min-height: 15vh;
     position: relative;
     width: 25%;
 }
 .gm_var_switch_container {
     font-size: 3vh;
-    height: 15vh;
+    min-height: 15vh;
     position: relative;
     width: 100%;
 }
 .gm_var_switchForm_container {
     font-size: 3vh;
-    height: 20vh;
+    min-height: 20vh;
     position: relative;
     width: 100%;
 }
@@ -555,6 +571,16 @@ html {
     position: relative;
     border-style: solid;
     border-width: 0.56vh;
+}
+#UnleashTheWaves_button {
+    background-color: #002d58;
+    color: #0073ff;
+    border-color: #003dad;
+}
+#RetractTheWaves_button {
+    background-color: #e8c677;
+    color: #df6800;
+    border-color: #dba621;
 }
 #GaussianDIVE_enter_button {
     background-color: #5e6644;
@@ -779,11 +805,11 @@ html {
     }
     #gamemode .gm_var_container, #gamemode .gm_var_switch_container {
         font-size: calc(1.8vw * var(--gm_scale));
-        height: calc(9.09vw * var(--gm_scale));
+        min-height: calc(9.09vw * var(--gm_scale));
     }
     #gamemode .gm_var_switchForm_container {
         font-size: calc(1.8vw * var(--gm_scale));
-        height: calc(12.12vw * var(--gm_scale));
+        min-height: calc(12.12vw * var(--gm_scale));
     }
     .gmSwitchModifier {
         width: calc(15.15vw * var(--gm_scale));
@@ -1040,7 +1066,7 @@ html {
     flex-wrap: wrap;
 }
 .button, .hover_grow {
-       cursor: pointer;
+    cursor: pointer;
 }
 .modifiers_var_container {
     font-size: calc(var(--modifiers_base_size) * 3);
@@ -1073,7 +1099,7 @@ html {
 .negativeTiles_spawnFormBox {
     width: 50%;
 }
-#modifiers_temporaryHoles_numeric {
+#modifiers_temporaryHoles_numeric, #modifiers_garbageTemporaryHoles_lifespan {
     color: #222;
 }
 .modifier_text {
@@ -1152,6 +1178,9 @@ html {
     margin-bottom: calc(var(--modifiers_base_size) * -2);
     position: relative;
     display: block;
+}
+.modifiers_straightLineInput > * {
+    display: inline-block;
 }
 #modifiers_customGrid {
     --custom_grid_width: calc(var(--modifiers_base_size) * 56 * min(1, calc(var(--width) / var(--height))));
@@ -2807,6 +2836,11 @@ html {
     background-color: #3c5a67;
     color: #6ee109;
     border-color: #6ee109;
+}
+#guide_wavesModes {
+    background-color: #001c68;
+    color: #55a1ff;
+    border-color: #55a1ff;
 }
 #customGuide_intro, #guide_customModeTeaser {
     background-color: #f86aff;
