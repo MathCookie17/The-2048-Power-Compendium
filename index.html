@@ -1307,12 +1307,32 @@
                         </form>
                     </div>
                 </div>
-                <div id="PartialFlowDIVE_vars" class="gm_var_line">
+                <div id="Aquatic2496_vars" class="gm_var_line">
+                    <div id="Aquatic2496_productLimit" class="gm_var_switch_container">
+                        <p id="Aquatic2496_productLimit_text" class="gm_var_text">Spawning tiles can be larger than all existing tiles.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="Aquatic2496_productLimit_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="PartialFlowDIVE_vars" class="gm_var_line many_vars">
                     <div id="PartialFlowDIVE_coprimeMerge" class="gm_var_switch_container">
                         <p id="PartialFlowDIVE_coprimeMerge_text" class="gm_var_text">Coprime tiles can merge.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="PartialFlowDIVE_coprimeMerge_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
+                    </div>
+                    <div id="PartialFlowDIVE_fullMoveReplenish" class="gm_var_switch_container">
+                        <p id="PartialFlowDIVE_fullMoveReplenish_text" class="gm_var_text">When the grid is full, you lose immediately.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="PartialFlowDIVE_fullMoveReplenish_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="PartialFlowDIVE_fullGridMoves" class="gm_var_switch_container" style="color: #450031">
+                        <p id="PartialFlowDIVE_fullGridMoves_title" class="gm_var_title">Full Grid Moves Before Losing:</p>
+                        <p id="PartialFlowDIVE_fullGridMoves_counter" class="gm_var_counter"></p>
+                        <div id="PartialFlowDIVE_fullGridMoves_plus" class="gm_grid_button plus_button">+</div>
+                        <div id="PartialFlowDIVE_fullGridMoves_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                 </div>
                 <div id="DualTileDIVE_vars" class="gm_var_line">
@@ -1328,6 +1348,12 @@
                         <p id="DivAddTor_232_240_merges_text" class="gm_var_text">(232, 240)-style merges are not allowed.</p>
                         <div class="gmSwitchButtonLine">
                             <div id="DivAddTor_232_240_merges_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
+                    <div id="DivAddTor_DualTileSeeds" class="gm_var_switch_container">
+                        <p id="DivAddTor_DualTileSeeds_text" class="gm_var_text">Members of a product are treated independently for seed checks.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="DivAddTor_DualTileSeeds_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
                         </div>
                     </div>
                 </div>
@@ -2693,6 +2719,7 @@
                                 the "1+1+1=1.5+1.5" variant of 2216.838, the "1+0.5=1.5" mode modifier in the Partial Absorb variant of 2216.838,
                                 the "merge number changes based on merges instead of turns" Turatin mode modifier, the "tiles can merge with the previous negative tile" 2584 mode modifier,
                                 the Partial Absorb 19,683 variant of Partial Absorb 243, the "integer ratios only" variant of SCAPRIM, the "maximum outcome" DIVE seed checking modifier setting,
+                                the Full Grid Moves mode modifiers in Partial Flow DIVE,
                                 Tricolor Tiles, the "chance of occurring" automatic moves property, clicking Discovered Tiles boxes to switch their display, and some elements of the structure of the Custom Mode maker.
                                 Partial credit also goes to him for Bitwise 2048, the "also spawn 2s" modifier in TRIGAT, and Three-Tile SQUART.
                             </li>
@@ -2700,7 +2727,7 @@
                                 16+16i and Partial Absorb 377 (including the PA233 variant) were suggested by Toni Brown.
                             </li>
                             <li>
-                                Partial Absorb 257 was suggested by aren12345. Partial credit also goes to him for Level 0 of 2700 and 2205.
+                                Partial Absorb 257 was suggested by aren12345, as was the Dual-Tile DIVE seeds mode modifier in Div-Add-Tor. Partial credit also goes to him for Level 0 of 2700 and 2205.
                             </li>
                         </ul>
                         All the other modes, as far as I'm aware, are unique to the 2048 Power Compendium. I'll also note that The 2048 Power Compendium was originally
@@ -3030,10 +3057,18 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v2.3.1 (Nov. 25, 2025) [Current Version]: Un-hid v2.3 (which was hidden as a mere "v2.2.10" when released). Fixed new replays being broken
+                            v2.3.1 (Nov. 25, 2025): Un-hid v2.3 (which was hidden as a mere "v2.2.10" when released). Fixed new replays being broken
                             (replays generated in v2.3 still won't work, but replays from before then or from this point on should), added the Seeds Seen box to Dual-Tile DIVE,
                             seed eliminations in Partial Flow DIVE no longer give score, and DOFFET's description now properly updates to mention that negative offsets change the spawning tiles.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.3.2 (Nov. 29, 2025) [Current Version]: Removed the "spawning tile can't be larger than the largest discovered tile" rule in Aquatic 2496 by default (because it allowed
+                            trivial chaining to exponential scores; there's now a mode modifier to bring it back if you wish), added options for extra turns after the grid fills up before the game ends
+                            in Partial Flow DIVE, and added a mode modifier to Div-Add-Tor to make seed checks work like in Dual-Tile DIVE.
+                            Fixed a bug where Alternate 5040's goal with base cycle could be 1 if the first base was huge, and fixed a bug where the "seeds are unlocked permanently"
+                            mode modifier in Unordered Dual-Tile DIVE did not work.
                         </b>
                       </li>
                     </ul>

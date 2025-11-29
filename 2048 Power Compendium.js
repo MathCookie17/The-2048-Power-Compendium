@@ -1357,9 +1357,26 @@ document.getElementById("GaussianDIVE_quadrant3SpawnRatio_change").addEventListe
     }
     gmDisplayVars();
 });
+document.getElementById("Aquatic2496_productLimit_button").addEventListener("click", function(){
+    mode_vars[3] = !mode_vars[3];
+    gmDisplayVars();
+});
 document.getElementById("PartialFlowDIVE_coprimeMerge_button").addEventListener("click", function(){
     mode_vars[3] = !mode_vars[3];
     loadGridSize(34.50118, mode_vars);
+    gmDisplayVars();
+});
+document.getElementById("PartialFlowDIVE_fullMoveReplenish_button").addEventListener("click", function(){
+    mode_vars[6] = (mode_vars[6] + 1) % 3;
+    mode_vars[7] = [0, 1, 4][mode_vars[6]];
+    gmDisplayVars();
+});
+document.getElementById("PartialFlowDIVE_fullGridMoves_plus").addEventListener("click", function(){
+    mode_vars[7]++;
+    gmDisplayVars();
+});
+document.getElementById("PartialFlowDIVE_fullGridMoves_minus").addEventListener("click", function(){
+    mode_vars[7]--;
     gmDisplayVars();
 });
 document.getElementById("DualTileDIVE_unordered_button").addEventListener("click", function(){
@@ -1368,6 +1385,11 @@ document.getElementById("DualTileDIVE_unordered_button").addEventListener("click
 });
 document.getElementById("DivAddTor_232_240_merges_button").addEventListener("click", function(){
     mode_vars[3] = (mode_vars[3] + 1) % 3;
+    gmDisplayVars();
+});
+document.getElementById("DivAddTor_DualTileSeeds_button").addEventListener("click", function(){
+    mode_vars[4] = (mode_vars[4] + 1) % 3;
+    loadGridSize(97.50118, mode_vars);
     gmDisplayVars();
 });
 document.getElementById("WildcardDIVE_possibilityChance_change").addEventListener("change", function() {
@@ -8406,8 +8428,8 @@ function loadMode(mode) {
     else if (mode == 34.50118) { // Partial Flow DIVE
         // width = 3; height = 3;
         TileNumAmount = 1;
-        mode_vars = [0, false, 0, true, 0, 4n]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry is whether coprime tiles can merge. The fifth entry controls the random goals, and the sixth entry is the minimum for the first random goal.
-        start_game_vars = [[2n], [2n], [], [], false, 0, 0, 4n, 0, false, 4n] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry is used when tile text is hidden to replace the announcement numbers with question marks. The sixth entry controls the display of "all seeds seen". The seventh entry matches the third entry of mode_vars. The eighth entry is the current random goal, the ninth entry is how many random goals you've gotten so far, the tenth entry is whether a random goal has been met this turn, and the eleventh entry is the minimum for the first random goal.
+        mode_vars = [0, false, 0, true, 0, 4n, 0, 0]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry is whether coprime tiles can merge. The fifth entry controls the random goals, and the sixth entry is the minimum for the first random goal. The seventh entry controls the "full grid moves before losing" type, and the eighth entry is the full grid moves before losing amount.
+        start_game_vars = [[2n], [2n], [], [], false, 0, 0, 4n, 0, false, 4n, 0] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry is used when tile text is hidden to replace the announcement numbers with question marks. The sixth entry controls the display of "all seeds seen". The seventh entry matches the third entry of mode_vars. The eighth entry is the current random goal, the ninth entry is how many random goals you've gotten so far, the tenth entry is whether a random goal has been met this turn, and the eleventh entry is the minimum for the first random goal. The twelfth entry is the amount of full grid moves before losing remaining.
         TileTypes = [
             [true, "@This 0", "@ColorScheme", "DIVE", ["@This 0"]]
         ];
@@ -8659,7 +8681,7 @@ function loadMode(mode) {
     else if (mode == 89.50118) { // Aquatic 2496
         // width = 4; height = 4;
         TileNumAmount = 2;
-        mode_vars = [0, false, 0]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time.
+        mode_vars = [0, false, 0, true]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. Fourth entry is whether spawning tiles can be larger than existing tiles.
         start_game_vars = [[2n], [2n], [], [], false, 0, 0, [[2n, 2n]], 4n, 0] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry is used when tile text is hidden to replace the announcement numbers with question marks. The sixth entry controls the display of "all seeds seen". The seventh entry matches the third entry of mode_vars. The eighth entry is the list of possible spawning tiles, the ninth entry is the largest tile discovered so far, and the tenth entry is used for spawns.
         TileTypes = [
             [["@This 0", ">", 0n], ["@This 0", "*B", "@This 1"], "#000000", "#ffffff", "0px 0px 5px #000000", 2.5, 0, ["Innerscript", [["@This 0", "defaultAbbrevB"], "str_concat", " × ", "str_concat", ["@This 1", "defaultAbbrevB"]], "bottom-center", 6, 0], ["PrimeImage", ["@ColorScheme", "mod 27", ["@This 0", "absB"], 180, false]], ["PrimeImage", ["@ColorScheme", "mod 27", "@This 1", 180, false], ["@linear-gradient", 90, "#0000", 0, 30, "#000", 70, 100]]],
@@ -8709,13 +8731,14 @@ function loadMode(mode) {
             [["@global_var_retain_inner", 0, 0, ["@GVar 0", "arr_sort", ["@Var -2", "-", "@Var -1", "Number"]], "@end_vars", 0, "@edit_gvar", 7, ["@Literal"], "@repeat", ["@Var 2", "arr_length", ">", "@Var 0"], "@edit_var", 1, "@Var 0", "@repeat", ["@Var 2", "arr_length", ">", "@Var 1"], "@if", [["@Var 2", "arr_elem", "@Var 0"], "*B", ["@Var 2", "arr_elem", "@Var 1"], "<=", "@GVar 8"], "@edit_gvar", 7, ["@GVar 7", "arr_push", [["@Literal"], "arr_push", ["@Var 2", "arr_elem", "@Var 0"], "arr_push", ["@Var 2", "arr_elem", "@Var 1"]]], "@end-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "EndMovement"]
         ];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
+        document.getElementById("Aquatic2496_vars").style.setProperty("display", "flex");
         document.getElementById("WavesModes_vars").style.setProperty("display", "flex");
     }
     else if (mode == 97.50118) { // Div-Add-Tor
         // width = 5; height = 5;
         TileNumAmount = 2;
-        mode_vars = [0, false, 0, 0]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry is whether (232, 240) merges are allowed: none for 0, ordered for 1, unordered for 2.
-        start_game_vars = [[2n], [2n], [], [], false, 0, 0] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry is used when tile text is hidden to replace the announcement numbers with question marks. The sixth entry controls the display of "all seeds seen". The seventh entry matches the third entry of mode_vars.
+        mode_vars = [0, false, 0, 0, 0]; // For the first entry, 0 means seeds can be unlocked and eliminated, -1 means seeds can be unlocked but not eliminated. The second entry is whether 1s can spawn. The third entry controls the seed unlock testing rules: 0 is largest to smallest, 2 is smallest to largest, 3 is "whatever order the seeds happen to be in", and 1 guarantees the minimum result but runs in exponential time. The fourth entry is whether (232, 240) merges are allowed: none for 0, ordered for 1, unordered for 2. The fifth entry controls whether seed unlocks behave like in Dual-Tile DIVE: no for 0, yes for 1, unordered yes for 2.
+        start_game_vars = [[2n], [2n], [], [], false, 0, 0, 0] // The first entry is the current seeds, the second entry is all seeds discovered, the third entry is the seeds that are currently being added, the fourth entry is the seeds that are currently being removed. The fifth entry is used when tile text is hidden to replace the announcement numbers with question marks. The sixth entry controls the display of "all seeds seen". The seventh entry matches the third entry of mode_vars. The eighth entry is used for spawns in Dual-Tile spawns.
         TileTypes = [
             [true, [["@This 0", "defaultAbbrev"], "str_concat", " × ", "str_concat", ["@This 1", "defaultAbbrev"]], "#00000", "#ffffff", "0px 0px 5px #000000", 2.5, 0, ["PrimeImage", ["@ColorScheme", "DIVE", ["@This 0", "*B", "@This 1"]]], ["PrimeImage", ["@ColorScheme", "DIVE", "@This 0"], ["@conic-gradient", -90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["PrimeImage", ["@ColorScheme", "DIVE", "@This 1"], ["@conic-gradient", 90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["Innerscript", ["@This 0", "*B", "@This 1", "defaultAbbrevB"], "bottom-center", 6, 0]]
         ];
@@ -9118,7 +9141,7 @@ function loadGridSize(mode, mvars = []) {
     if (modifiers[5] == "Custom") return;
     let size3 = [31, 86];
     let size4 = [1, 2, 4, 7, 16, 17, 26, 27, 29, 30, 32, 40, 42, 47, 48, 51, 53, 54, 60, 64, 66, 69, 72, 74, 78, 79, 81, 82, 83, 84, 85, 87, 88, 89, 91, 92, 93, 101, 102, 50.1, 73.50118, 50.248, 50.7101113];
-    let size5 = [3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 23, 24, 28, 33, 34, 41, 43, 44, 46, 49, 52, 55, 56, 58, 59, 62, 63, 65, 71, 75, 76, 77, 80, 90, 94, 96, 97, 99, 96.50118, 50.22, 97.50118, 37.71, 71.37, 1.5];
+    let size5 = [3, 5, 6, 9, 10, 11, 12, 13, 14, 15, 18, 19, 20, 21, 23, 24, 28, 33, 34, 41, 43, 44, 46, 49, 52, 55, 56, 58, 59, 62, 63, 65, 71, 75, 76, 77, 80, 90, 94, 96, 97, 99, 96.50118, 50.22, 37.71, 71.37, 1.5];
     let size6 = [8, 25, 39, 45, 98, 3.24, 98.01];
     let size7 = [22];
     let size8 = [];
@@ -9178,9 +9201,13 @@ function loadGridSize(mode, mvars = []) {
         if (mvars[0] == 0 || mvars[0] == 6) defaultSize = 4;
         else defaultSize = 5;
     }
-    else if (mode == 34.50118) {
+    else if (mode == 34.50118) { // Partial Flow DiVE
         if (!mvars[3]) defaultSize = 4;
         else defaultSize = 3;
+    }
+    else if (mode == 97.50118) { // Div-Add-Tor
+        if (mvars[4] == 0) defaultSize = 5;
+        else defaultSize = 4;
     }
     else if (mode == -1) { // Custom Modes
         if (customRulesText[3] == 0) {
@@ -12653,7 +12680,7 @@ function gmDisplayVars() {
                     index = (index + 1) % mode_vars[1].length;
                     goalPow++;
                 }
-                if (Math.log(Number(uppergoal) - 2048) <= Math.log(2048 - Number(lowergoal))) arrayWinCondition = uppergoal;
+                if (Number(lowergoal) == 1 || Math.log(Number(uppergoal) - 2048) <= Math.log(2048 - Number(lowergoal))) arrayWinCondition = uppergoal;
                 else {
                     arrayWinCondition = lowergoal;
                     goalPow--;
@@ -12675,7 +12702,7 @@ function gmDisplayVars() {
                     index = (index + 1) % mode_vars[1].length;
                     goalPow++;
                 }
-                if (Math.log(Number(uppergoal) - 2048) <= Math.log(2048 - Number(lowergoal))) arrayWinCondition = uppergoal;
+                if (Number(lowergoal) == 1 || Math.log(Number(uppergoal) - 2048) <= Math.log(2048 - Number(lowergoal))) arrayWinCondition = uppergoal;
                 else {
                     arrayWinCondition = lowergoal;
                     goalPow--;
@@ -13444,10 +13471,10 @@ function gmDisplayVars() {
         }
         if (gamemode == 34.50118) { // Partial Flow DIVE
             title = "Partial Flow DIVE";
-            modeRulesDescription = "Any two tiles can merge, but the larger tile only absorbs an amount from the smaller tile equal to the GCD of the two tiles. When two tiles merge, score is only gained if the merge was full, and the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). If there are no empty spaces left on the grid, the game ends. This mode has no win condition, so just try to get as high of a score as you can!";
+            modeRulesDescription = "Any two tiles can merge, but the larger tile only absorbs an amount from the smaller tile equal to the GCD of the two tiles. When two tiles merge, score is only gained if the merge was full, and the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile).";
             if (!mode_vars[3]) {
                 title = "Non-Coprime Partial Flow DIVE";
-                modeRulesDescription = "Any two tiles can merge (unless they are coprime and neither tile has an absolute value of 1), but the larger tile only absorbs an amount from the smaller tile equal to the GCD of the two tiles. When two tiles merge, score is only gained if the merge was full, and the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). If there are no empty spaces left on the grid, the game ends. This mode has no win condition, so just try to get as high of a score as you can!"
+                modeRulesDescription = "Any two tiles can merge (unless they are coprime and neither tile has an absolute value of 1), but the larger tile only absorbs an amount from the smaller tile equal to the GCD of the two tiles. When two tiles merge, score is only gained if the merge was full, and the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile)."
             }
             modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ". Seeds are unlocked in the same way as DIVE. Seed eliminations do not give score.";
             if (mode_vars[3]) {
@@ -13457,6 +13484,28 @@ function gmDisplayVars() {
             else {
                 document.getElementById("PartialFlowDIVE_coprimeMerge_text").innerHTML = "Coprime tiles cannot merge unless one divides the other.";
                 document.getElementById("PartialFlowDIVE_coprimeMerge_text").style.setProperty("color", "#1c2b30");
+            }
+            if (mode_vars[6] == 0) {
+                modeRulesDescription += " If there are no empty spaces left on the grid, the game ends. This mode has no win condition, so just try to get as high of a score as you can!";
+                document.getElementById("PartialFlowDIVE_fullGridMoves").style.setProperty("display", "none");
+                document.getElementById("PartialFlowDIVE_fullMoveReplenish_text").innerHTML = "When the grid is full, you lose immediately.";
+                document.getElementById("PartialFlowDIVE_fullMoveReplenish_text").style.setProperty("color", "#200043");
+            }
+            else {
+                document.getElementById("PartialFlowDIVE_fullGridMoves").style.setProperty("display", "block");
+                document.getElementById("PartialFlowDIVE_fullGridMoves_counter").innerHTML = mode_vars[7];
+                if (mode_vars[7] < 2) document.getElementById("PartialFlowDIVE_fullGridMoves_minus").style.setProperty("display", "none");
+                else document.getElementById("PartialFlowDIVE_fullGridMoves_minus").style.setProperty("display", "inline-block");
+                if (mode_vars[6] == 1) {
+                    modeRulesDescription += " Once there are no empty spaces left on the grid, you have " + mode_vars[7] + " more move(s) to clear up at least one empty space, then the game ends if you fail to do so. This mode has no win condition, so just try to get as high of a score as you can!";
+                    document.getElementById("PartialFlowDIVE_fullMoveReplenish_text").innerHTML = "Full grid moves reset when the grid is no longer full.";
+                    document.getElementById("PartialFlowDIVE_fullMoveReplenish_text").style.setProperty("color", "#bf83ff");
+                }
+                else {
+                    modeRulesDescription += " The game ends once the grid has had no empty spaces on it for a total of " + (mode_vars[7] + 1) + " moves. This mode has no win condition, so just try to get as high of a score as you can!";
+                    document.getElementById("PartialFlowDIVE_fullMoveReplenish_text").innerHTML = "Full grid moves do not reset when the grid is no longer full.";
+                    document.getElementById("PartialFlowDIVE_fullMoveReplenish_text").style.setProperty("color", "#6630a1");
+                }
             }
             randomGoalsMVStart = 4;
             randomGoalsGVStart = 7;
@@ -13496,6 +13545,16 @@ function gmDisplayVars() {
             title = "Aquatic 2496";
             modeRulesDescription = "Tiles are products of two integers, and two tiles can merge if they have at least one integer in common, even if they're not in the same position: for example, a 2 × 6 tile and a 6 × 7 tile can merge into a 6 × 9 tile. If the tiles are equal, the larger number is the one considered to be matching. The score given from a merge is whatever the matching number is. This mode has no win condition, so just try to get as high of a score as you can!";
             modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ". Seeds are unlocked in the same way as DIVE, using the values of the products. Seeds are single integers, so the spawning tile is a product of two (not necessarily distinct) seeds, such that the product is not larger than the largest tile discovered so far.";
+            if (!mode_vars[3]) {
+                modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ". Seeds are unlocked in the same way as DIVE, using the values of the products. Seeds are single integers, so the spawning tile is a product of two (not necessarily distinct) seeds, such that the product is not larger than the largest tile discovered so far.";
+                document.getElementById("Aquatic2496_productLimit_text").innerHTML = "Spawning tiles cannot be larger than all existing tiles.";
+                document.getElementById("Aquatic2496_productLimit_text").style.setProperty("color", "#721c00");
+            }
+            else {
+                modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ". Seeds are unlocked in the same way as DIVE, using the values of the products. Seeds are single integers, so the spawning tile is a product of two (not necessarily distinct) seeds.";
+                document.getElementById("Aquatic2496_productLimit_text").innerHTML = "Spawning tiles can be larger than all existing tiles.";
+                document.getElementById("Aquatic2496_productLimit_text").style.setProperty("color", "#d43500");
+            }
         }
         if (gamemode == 97.50118) { // Div-Add-Tor
             if (mode_vars[3] == 0) {
@@ -13516,7 +13575,22 @@ function gmDisplayVars() {
                 document.getElementById("DivAddTor_232_240_merges_text").innerHTML = "Unordered (232, 240)-style merges are allowed.";
                 document.getElementById("DivAddTor_232_240_merges_text").style.setProperty("color", "#ff91da");
             }
-            modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ". Seeds are unlocked in the same way as DIVE, treating each member of a product independently.";
+            modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ".";
+            if (mode_vars[4] == 0) {
+                modeSpawnDescription += " Seeds are unlocked in the same way as DIVE, treating each member of a product independently."
+                document.getElementById("DivAddTor_DualTileSeeds_text").innerHTML = "Members of a product are treated independently for seed checks.";
+                document.getElementById("DivAddTor_DualTileSeeds_text").style.setProperty("color", "#6b4c7a");
+            }
+            if (mode_vars[4] == 1) {
+                modeSpawnDescription += " Seeds are unlocked in the same way as Dual-Tile DIVE."
+                document.getElementById("DivAddTor_DualTileSeeds_text").innerHTML = "Seed checks work like they do in Dual-Tile DIVE.";
+                document.getElementById("DivAddTor_DualTileSeeds_text").style.setProperty("color", "#5555af");
+            }
+            if (mode_vars[4] == 2) {
+                modeSpawnDescription += " Seeds are unlocked in the same way as Unordered Dual-Tile DIVE."
+                document.getElementById("DivAddTor_DualTileSeeds_text").innerHTML = "Seed checks work like they do in Unordered Dual-Tile DIVE.";
+                document.getElementById("DivAddTor_DualTileSeeds_text").style.setProperty("color", "#af5555");
+            }
         }
         if (gamemode == 50.248) { // Wildcard DIVE
             title = "Wildcard DIVE";
@@ -19395,69 +19469,74 @@ function loadModifiers() {
             if (!mode_vars[1]) scripts = [scripts[0], scripts[2]];
         }
         else if (wavesModeModified.indexOf(gamemode) != -1) { // The rest of the waves modes
-            if (mode_vars[1]) {
-                if (gamemode == 50.22) {
-                    start_game_vars[0].unshift([1n, 1n]);
-                    start_game_vars[1].unshift([1n, 1n]);
+            if (gamemode == 97.50118 && mode_vars[4] != 0) { // Div-Add-Tor with Dual-Tile DIVE spawns
+                statBoxes = [["Score", "@Score", false, false, "Tile", "DIVE"], ["Seeds", "@GVar 0", false, false, "TileArray", "Self"], ["Seeds Seen", ["@GVar 1", "arr_length"], ...[,,,,], ["@GVar 5", "=", 0], [0, "@edit_gvar", 5, 1], true], ["All Seeds Seen", "@GVar 1", true, false, "TileArray", "Self", ["@GVar 5", "=", 1], [0, "@edit_gvar", 5, 0], true]];
+                start_game_vars[0] = [[1n, 2n]];
+                start_game_vars[1] = [[1n, 2n]]
+                if (mode_vars[4] == 1) {
+                    if (modifiers[13] == "None") {
+                        startTileSpawns = [[[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "arr_elem", "@GVar 7", "arr_elem", 0], ["@GVar 0", "arr_elem", "@GVar 7", "arr_elem", 1]], 1]];
+                    }
+                    else {
+                        if (modifiers[13] == "Non-Interacting") {
+                            startTileSpawns = [[[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "arr_elem", "@GVar 7", "arr_elem", 0], ["@GVar 0", "arr_elem", "@GVar 7", "arr_elem", 1]], modifiers[22]], [[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "arr_elem", "@GVar 7", "arr_elem", 0, "*B", -1n], ["@GVar 0", "arr_elem", "@GVar 7", "arr_elem", 1, "*B", -1n]], modifiers[23]]];
+                        }
+                        else {
+                            startTileSpawns = [[[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "arr_elem", "@GVar 7", "arr_elem", 0, "*B", [["@Literal", 1, -1], "weightedRandomArrayEntry", ["@Literal", modifiers[22], modifiers[23]]]], ["@GVar 0", "arr_elem", "@GVar 7", "arr_elem", 1, "*B", [["@Literal", 1, -1], "weightedRandomArrayEntry", ["@Literal", modifiers[22], modifiers[23]]]]], 1]];
+                        }
+                    }
+                    scripts = [
+                        [
+                            ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", "@Var -1",
+                            "customDIVESeedUnlock", ["@GVar 0", "arr_map", ["@Var -1", "arr_map", ["@Var -1", "absB"]]], "@GVar 6",
+                            ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "*B", ["@Var -1", "arr_elem", 1]]],
+                            ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 1]]],
+                            ["@global_var_retain", [["@Var -2", "arr_elem", 0], "modB", ["@Var -1", "arr_elem", 0, "max", 1n], "=", 0n], "&&", [["@Var -2", "arr_elem", 1], "modB", ["@Var -1", "arr_elem", 1, "max", 1n], "=", 0n]],
+                            ["@global_var_retain", [0, "@if", [[["@Var -2", "arr_elem", 0], "*B", ["@Var -2", "arr_elem", 1]], "!=", [["@Var -1", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 1]]], "2nd", [["@Var -2", "arr_elem", 0], "*B", ["@Var -2", "arr_elem", 1]], "-B", [["@Var -1", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 1]], "Number", "@end-if", "@else-if", [[["@Var -2", "arr_elem", 0], "+B", ["@Var -2", "arr_elem", 1]], "!=", [["@Var -1", "arr_elem", 0], "+B", ["@Var -1", "arr_elem", 1]]], "2nd", [["@Var -2", "arr_elem", 0], "+B", ["@Var -2", "arr_elem", 1]], "-B", [["@Var -1", "arr_elem", 0], "+B", ["@Var -1", "arr_elem", 1]], "Number", "@end-else-if", "@else", "2nd", [["@Var -2", "arr_elem", 0], "-", ["@Var -1", "arr_elem", 0]], "@end-else"]],
+                            ["@global_var_retain", [["@Var -2", "arr_elem", 0], "gcdB", ["@Var -1", "arr_elem", 0], "=", 1n], "&&", [["@Var -2", "arr_elem", 1], "gcdB", ["@Var -1", "arr_elem", 1], "=", 1n]],
+                            ["@Literal", 1n, 1n],
+                            ["@global_var_retain", ["@Var -1", "arr_elem", 0, ">=", 1n], "&&", ["@Var -1", "arr_elem", 1, ">=", 1n]],
+                            ["@global_var_retain", ["@Var -1", "arr_elem", 0, "=", 1n], "&&", ["@Var -1", "arr_elem", 1, "=", 1n]],
+                            "@if", [[["@Parent -4", "arr_elem", 0, ">", 1n], "||", ["@Parent -4", "arr_elem", 1, ">", 1n]], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"
+                        ],
+                        [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_filter", ["@Var -1", "arr_elem", 0, "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "arr_elem", 0, "!=", 0n], "&&", ["@var_retain", "@Var 1", "arr_elem", 1, "!=", 0n]], "arr_reduce", true, ["@global_var_copy", "@if", [[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n]], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
+                        [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+                        [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
+                    ];
                 }
                 else {
-                    start_game_vars[0] = [1n];
-                    start_game_vars[1] = [1n];
-                    if (gamemode == 73.50118) {
-                        start_game_vars[7] = [1n];
-                        start_game_vars[8] = [1n];
+                    if (modifiers[13] == "None") {
+                        startTileSpawns = [[[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "@edit_gvar", 7, ["@GVar 0", "arr_elem", "@GVar 7"], "@if", [0, "rand_int", 1, "=", 1], "@edit_gvar", 7, ["@GVar 7", "arr_reverse"], "@end-if", "2nd", "@GVar 7", "arr_elem", 0], ["@GVar 7", "arr_elem", 1]], 1]];
                     }
-                    if (gamemode == 89.50118) {
-                        start_game_vars[7] = [[1n, 1n]];
-                        start_game_vars[8] = 1n;
+                    else {
+                        if (modifiers[13] == "Non-Interacting") {
+                            startTileSpawns = [[[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "@edit_gvar", 7, ["@GVar 0", "arr_elem", "@GVar 7"], "@if", [0, "rand_int", 1, "=", 1], "@edit_gvar", 7, ["@GVar 7", "arr_reverse"], "@end-if", "2nd", "@GVar 7", "arr_elem", 0], ["@GVar 7", "arr_elem", 1]], modifiers[22]], [[["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "@edit_gvar", 7, ["@GVar 0", "arr_elem", "@GVar 7"], "@if", [0, "rand_int", 1, "=", 1], "@edit_gvar", 7, ["@GVar 7", "arr_reverse"], "@end-if", "2nd", "@GVar 7", "arr_elem", 0, "*B", -1n], ["@GVar 7", "arr_elem", 1, "*B", -1n]], modifiers[23]]];
+                        }
+                        else {
+                            startTileSpawns = [[["@CalcArray", ["@Literal"], "arr_push", ["@GVar 0", "@edit_gvar", 7, [0, "rand_int", ["@GVar 0", "arr_length", "-", 1]], "@edit_gvar", 7, ["@GVar 0", "arr_elem", "@GVar 7"], "@if", [0, "rand_int", 1, "=", 1], "@edit_gvar", 7, ["@GVar 7", "arr_reverse"], "@end-if", "2nd", "@GVar 7", "arr_elem", 0, "*B", [["@Literal", 1, -1], "weightedRandomArrayEntry", ["@Literal", modifiers[22], modifiers[23]]]], "arr_push", ["@GVar 7", "arr_elem", 1, "*B", [["@Literal", 1, -1], "weightedRandomArrayEntry", ["@Literal", modifiers[22], modifiers[23]]]]], 1]];
+                        }
                     }
-                    if (gamemode == 97.50118) {
-                        start_game_vars[7] = [1n, 1n];
-                        start_game_vars[8] = 1n;
-                    }
+                    scripts = [
+                        [
+                            ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "@end_vars", "@Var -1",
+                            "customDIVESeedUnlock", ["@GVar 0", "arr_map", ["@Var -1", "arr_map", ["@Var -1", "absB"]]], "@GVar 6",
+                            ["@global_var_retain", ["@Literal"], "arr_push", [["@Var -2", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "*B", ["@Var -1", "arr_elem", 1]], "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]],
+                            ["@global_var_retain", ["@Literal"], "@if", [[["@Var -2", "arr_elem", 0], "modB", ["@Var -1", "arr_elem", 0, "max", 1n], "=", 0n], "&&", [["@Var -2", "arr_elem", 1], "modB", ["@Var -1", "arr_elem", 1, "max", 1n], "=", 0n]], "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 0]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 1]], "@end-if", "@else", "arr_push", [["@Var -2", "arr_elem", 0], "/B", ["@Var -1", "arr_elem", 1]], "arr_push", [["@Var -2", "arr_elem", 1], "/B", ["@Var -1", "arr_elem", 0]], "@end-else", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]],
+                            ["@global_var_retain", [[["@Var -2", "arr_elem", 0], "modB", ["@Var -1", "arr_elem", 0, "max", 1n], "=", 0n], "&&", [["@Var -2", "arr_elem", 1], "modB", ["@Var -1", "arr_elem", 1, "max", 1n], "=", 0n]], "||", [[["@Var -2", "arr_elem", 0], "modB", ["@Var -1", "arr_elem", 1, "max", 1n], "=", 0n], "&&", [["@Var -2", "arr_elem", 1], "modB", ["@Var -1", "arr_elem", 0, "max", 1n], "=", 0n]]],
+                            ["@global_var_retain", [0, "@if", [[["@Var -2", "arr_elem", 0], "*B", ["@Var -2", "arr_elem", 1]], "!=", [["@Var -1", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 1]]], "2nd", [["@Var -2", "arr_elem", 0], "*B", ["@Var -2", "arr_elem", 1]], "-B", [["@Var -1", "arr_elem", 0], "*B", ["@Var -1", "arr_elem", 1]], "Number", "@end-if", "@else-if", [[["@Var -2", "arr_elem", 0], "+B", ["@Var -2", "arr_elem", 1]], "!=", [["@Var -1", "arr_elem", 0], "+B", ["@Var -1", "arr_elem", 1]]], "2nd", [["@Var -2", "arr_elem", 0], "+B", ["@Var -2", "arr_elem", 1]], "-B", [["@Var -1", "arr_elem", 0], "+B", ["@Var -1", "arr_elem", 1]], "Number", "@end-else-if", "@else", "2nd", [["@Var -2", "arr_elem", 0], "-", ["@Var -1", "arr_elem", 0]], "@end-else"]],
+                            false,
+                            ["@Literal", 1n, 1n],
+                            ["@global_var_retain", ["@Var -1", "arr_elem", 0, ">=", 1n], "&&", ["@Var -1", "arr_elem", 1, ">=", 1n]],
+                            ["@global_var_retain", ["@Var -1", "arr_elem", 0, "=", 1n], "&&", ["@Var -1", "arr_elem", 1, "=", 1n]],
+                            "@if", [[["@Parent -4", "arr_elem", 0, ">", 1n], "||", ["@Parent -4", "arr_elem", 1, ">", 1n]], "&&", ["@GVar 2", "arr_indexOf", "@Parent -3", "=", -1], "&&", ["@GVar 0", "arr_indexOf", "@Parent -3", "=", -1]], "@edit_gvar", 2, ["@GVar 2", "arr_push", "@Parent -2"], "@end-if"], "Merge"
+                        ],
+                        [["@GVar 0", 0, 0n, "@end_vars", true, "@repeat", ["@var_retain", "@Var 0", "arr_length"], "@edit_var", 2, ["@var_retain", "@Var 0", "arr_elem", "@Var 1"], "2nd", ["@var_retain", "@Grid", "arr_flat", 1, "arr_filter", ["@Var -1", "arr_elem", 0, "typeof", "=", "bigint", "&&", ["@var_retain", "@Var 1", "arr_elem", 0, "!=", 0n], "&&", ["@var_retain", "@Var 1", "arr_elem", 1, "!=", 0n]], "arr_reduce", true, ["@global_var_copy", "@if", [[[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n]], "||", [[["@Var -1", "arr_elem", 0, "absB"], "%B", ["@Var 2", "arr_elem", 1, "absB", "max", 1n], "=", 0n], "&&", [["@Var -1", "arr_elem", 1, "absB"], "%B", ["@Var 2", "arr_elem", 0, "absB", "max", 1n], "=", 0n]]], "2nd", false, "@end-if"]], "@if", "@Parent -1", "@edit_gvar", 3, ["@var_retain", "@GVar 3", "arr_push", "@Var 1"], "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "EndMovement"],
+                        [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
+                        [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
+                    ];
                 }
             }
-            if (mode_vars[0] != 0) {
-                if (gamemode == 73.50118) {
-                    scripts = [scripts[0], scripts[2], scripts[4], scripts[6]];
-                    statBoxes.pop(); statBoxes.pop(); statBoxes.pop(); statBoxes.pop();
-                }
-                else {
-                    scripts.splice(3, 1); scripts.splice(1, 1);
-                    statBoxes.pop(); statBoxes.pop();
-                    if (mode_vars[0] == 1) {
-                        scripts.splice(1, 1); scripts.splice(0, 1);
-                        statBoxes.pop();
-                    }
-                }
-            }
-            start_game_vars[6] = mode_vars[2];
-            if (gamemode == 96.50118 && mode_vars[3] > 0) { // HICEG
-                start_game_vars[10] = mode_vars[4];
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if"], "Merge"]);
-                scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "PostSpawn"]);
-                if (mode_vars[3] == 1) {
-                    scripts.push([[0, "@if", "@GVar 9", "@edit_gvar", 8, ["@var_retain", "@GVar 8", "+", 1], "@edit_gvar", 9, false, "@edit_gvar", 7, ["@GVar 7", "-B", 1n, "/B", 2n, "rand_bigint", 1n, "*B", 2n, "+B", 1n, "+B", ["@Parent -2", "gcdB", "@GVar 7"], "+B", "@GVar 7"], "@end-if"], "EndTurn"])
-                }
-                else {
-                    scripts.push([[0, "@if", "@GVar 9", "@edit_gvar", 8, ["@var_retain", "@GVar 8", "+", 1], "@edit_gvar", 9, false, "@edit_gvar", 7, [[2n, "^B", ["@GVar 8", "BigInt", "-", 1], "*B", "@GVar 10"], "rand_bigint", [2n, "^B", ["@GVar 8", "BigInt"], "*B", "@GVar 10", "-B", 1n], "*B", 2n, "+B", 1n], "@end-if"], "EndTurn"])
-                }
-                statBoxes.push(["Current Goal", "@GVar 7", false, false, "Tile", "LOCEF"], ["Goals Reached", "@GVar 8"]);
-            }
-            if (gamemode == 34.50118) { // Partial Flow DIVE
-                if (!mode_vars[3]) {
-                    MergeRules[MergeRules.length - 2][1].push("&&", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"], ">", 1n])
-                    MergeRules[MergeRules.length - 1][1].push("&&", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"], ">", 1n])
-                }
-                if (mode_vars[4] > 0) {
-                    start_game_vars[10] = mode_vars[5];
-                    scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var -2", "arr_elem", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if", "@edit_var", -1, ["@var_retain", "@Var -1", "+", 1], "@end-repeat"], "Merge"]);
-                    scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "PostSpawn"]);
-                    scripts.push([[0, "@if", "@GVar 9", "@edit_gvar", 8, ["@var_retain", "@GVar 8", "+", 1], "@edit_gvar", 9, false, "@edit_gvar", 7, [[2n, "^B", ["@GVar 8", "BigInt"], "*B", "@GVar 10"], "rand_bigint", [2n, "^B", ["@GVar 8", "+", 1, "BigInt"], "*B", "@GVar 10", "-B", 1n]], "@end-if"], "EndTurn"])
-                    statBoxes.push(["Current Goal", "@GVar 7", false, false, "Tile", "DIVE"], ["Goals Reached", "@GVar 8"]);
-                }
-            }
-            if (gamemode == 50.22 && mode_vars[3]) { // Unordered Dual-Tile DIVE
+            if (gamemode == 50.22 && mode_vars[3]) { // Dual-Tile DIVE
                 if (modifiers[13] == "None") {
                     MergeRules = [
                         [2, [[["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", [["@Next 1 1", "modB", ["@This 1", "absB", "max", 1n], "=", 0n]]], "||", [["@Next 1 0", "modB", ["@This 1", "absB", "max", 1n], "=", 0n], "&&", ["@Next 1 1", "modB", ["@This 0", "absB", "max", 1n], "=", 0n]], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", ["@This 1", "typeof", "=", "bigint"], "&&", ["@Next 1 1", "typeof", "=", "bigint"]], false, [[[["@This 0", "+B", "@Next 1 0"], "min", ["@This 1", "+B", "@Next 1 1"]], [["@This 0", "+B", "@Next 1 0"], "max", ["@This 1", "+B", "@Next 1 1"]]]], [[["@This 0", "abs"], "+", ["@This 1", "abs"]], "min", [["@Next 1 0", "abs"], "+", ["@Next 1 1", "abs"]]], [false, true]]
@@ -19497,6 +19576,83 @@ function loadModifiers() {
                     [[0, 0n, "@end_vars", 0, "@repeat", ["@GVar 2", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 2", "arr_elem", "@Var 0"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_push", "@Var 1"], "@if", ["@var_retain", "@GVar 1", "arr_indexOf", "@Var 1", "=", -1], "@edit_gvar", 1, ["@var_retain", "@GVar 1", "arr_push", "@Var 1", "arr_sort", ["@Var -2", "-B", "@Var -1", "Number"]], "@end-if", "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@if", ["@GVar 2", "arr_length", ">", 0], "@if", ["@GVar 2", "arr_length", "=", 1], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-if", "@else-if", ["@GVar 2", "arr_length", "=", 2], "announce", [["@GVar 2", "arr_elem", 0, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 0, "arr_elem", 1], "String", "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 2", "arr_elem", 1, "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", 1, "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " unlocked!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 2", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 2", "arr_elem", ["@GVar 2", "arr_length", "-", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " unlocked!"], 2500, "@end-else", "@end-if", "@edit_gvar", 2, ["@Literal"]], "EndMovement"],
                     [[0, 0, "@end_vars", 0, "@if", [["@GVar 3", "arr_length", ">", 0], "&&", [["@GVar 3", "arr_length"], "<", ["@GVar 0", "arr_length"]]], "@if", ["@GVar 3", "arr_length", "=", 1], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-if", "@else-if", ["@GVar 3", "arr_length", "=", 2], "announce", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 0], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " and ", "str_concat", [["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", 1], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", " eliminated!"], 2500, "@end-else-if", "@else", "announce", ["@GVar 3", "arr_pop", "arr_reduce", "", ["str_concat", ["@var_retain", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 0], "str_concat", " ", "str_concat", ["@var_retain", "@GVar 0", "arr_elem", "@Var -1", "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if"], "str_concat", ", "], "str_concat", "and ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 0], "str_concat", " ", "str_concat", ["@GVar 0", "arr_elem", ["@GVar 3", "arr_elem", ["@GVar 3", "arr_length", "-", 1]], "arr_elem", 1], "@if", "@GVar 4", "2nd", "?", "@end-if", "str_concat", " eliminated!"], 2500, "@end-else", "@repeat", ["@GVar 3", "arr_length"], "@edit_var", 1, ["@var_retain", "@GVar 3", "arr_elem", "@Var 0"], "@add_score", ["@var_retain", "@GVar 0", "arr_elem", "@Var 1"], "@edit_gvar", 0, ["@var_retain", "@GVar 0", "arr_splice", ["@var_retain", "@Var 1", "-", "@Var 0"], 1, ["@Literal"]], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "@end-repeat", "@end-if", "@edit_gvar", 3, ["@Literal"]], "EndMovement"]
                 ];
+            }
+            if (gamemode == 89.50118 && mode_vars[3]) { // Aquatic 2496
+                scripts[4][0][17] = true;
+            }
+            if (mode_vars[1]) {
+                if (gamemode == 50.22 || (gamemode == 97.50118 && mode_vars[4] != 0)) {
+                    start_game_vars[0].unshift([1n, 1n]);
+                    start_game_vars[1].unshift([1n, 1n]);
+                }
+                else {
+                    start_game_vars[0] = [1n];
+                    start_game_vars[1] = [1n];
+                    if (gamemode == 73.50118) {
+                        start_game_vars[7] = [1n];
+                        start_game_vars[8] = [1n];
+                    }
+                    if (gamemode == 89.50118) {
+                        start_game_vars[7] = [[1n, 1n]];
+                        start_game_vars[8] = 1n;
+                    }
+                    if (gamemode == 97.50118 && mode_vars[4] == 0) {
+                        start_game_vars[7] = [1n, 1n];
+                        start_game_vars[8] = 1n;
+                    }
+                }
+            }
+            if (mode_vars[0] != 0) {
+                if (gamemode == 73.50118) {
+                    scripts = [scripts[0], scripts[2], scripts[4], scripts[6]];
+                    statBoxes.pop(); statBoxes.pop(); statBoxes.pop(); statBoxes.pop();
+                }
+                else {
+                    scripts.splice(3, 1); scripts.splice(1, 1);
+                    statBoxes.pop(); statBoxes.pop();
+                    if (mode_vars[0] == 1) {
+                        scripts.splice(1, 1); scripts.splice(0, 1);
+                        statBoxes.pop();
+                    }
+                }
+            }
+            start_game_vars[6] = mode_vars[2];
+            if (gamemode == 96.50118 && mode_vars[3] > 0) { // HICEG
+                start_game_vars[10] = mode_vars[4];
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "PostSpawn"]);
+                if (mode_vars[3] == 1) {
+                    scripts.push([[0, "@if", "@GVar 9", "@edit_gvar", 8, ["@var_retain", "@GVar 8", "+", 1], "@edit_gvar", 9, false, "@edit_gvar", 7, ["@GVar 7", "-B", 1n, "/B", 2n, "rand_bigint", 1n, "*B", 2n, "+B", 1n, "+B", ["@Parent -2", "gcdB", "@GVar 7"], "+B", "@GVar 7"], "@end-if"], "EndTurn"])
+                }
+                else {
+                    scripts.push([[0, "@if", "@GVar 9", "@edit_gvar", 8, ["@var_retain", "@GVar 8", "+", 1], "@edit_gvar", 9, false, "@edit_gvar", 7, [[2n, "^B", ["@GVar 8", "BigInt", "-", 1], "*B", "@GVar 10"], "rand_bigint", [2n, "^B", ["@GVar 8", "BigInt"], "*B", "@GVar 10", "-B", 1n], "*B", 2n, "+B", 1n], "@end-if"], "EndTurn"])
+                }
+                statBoxes.push(["Current Goal", "@GVar 7", false, false, "Tile", "LOCEF"], ["Goals Reached", "@GVar 8"]);
+            }
+            if (gamemode == 34.50118) { // Partial Flow DIVE
+                if (!mode_vars[3]) {
+                    MergeRules[MergeRules.length - 2][1].push("&&", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"], ">", 1n])
+                    MergeRules[MergeRules.length - 1][1].push("&&", [["@This 0", "absB"], "gcdB", ["@Next 1 0", "absB"], ">", 1n])
+                }
+                if (mode_vars[6] == 1) {
+                    start_game_vars[11] = mode_vars[7];
+                    scripts.push([[0, "@edit_gvar", 11, [mode_vars[7], "@if", ["@Grid", "arr_flat", 2, "arr_indexOf", "@Empty", "=", -1], "2nd", "@GVar 11", "-", 1, "@end-if"]], "PreSpawn"]);
+                    loseRequirement = ["@GVar 11", "=", 0];
+                    statBoxes.push(["Moves Remaining", "@GVar 11", ...[,,,,], ["@Grid", "arr_flat", 2, "arr_indexOf", "@Empty", "=", -1]]);
+                }
+                else if (mode_vars[6] == 2) {
+                    start_game_vars[11] = mode_vars[7] + 1;
+                    scripts.push([[0, "@if", ["@Grid", "arr_flat", 2, "arr_indexOf", "@Empty", "=", -1], "@edit_gvar", 11, ["@GVar 11", "-", 1], "@end-if"], "PostSpawn"]);
+                    loseRequirement = ["@GVar 11", "=", 0];
+                    statBoxes.push(["Full Grid Moves Remaining", "@GVar 11"]);
+                }
+                if (mode_vars[4] > 0) {
+                    start_game_vars[10] = mode_vars[5];
+                    scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var -2", "arr_elem", "@Var -1", "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if", "@edit_var", -1, ["@var_retain", "@Var -1", "+", 1], "@end-repeat"], "Merge"]);
+                    scripts.push([["@var_retain", 0, "@add_var", 0, "@repeat", ["@var_retain", "@Var 0", "arr_length", ">", "@Var 1"], "@if", ["@var_retain", "@Var 0", "arr_elem", "@Var 1", "arr_elem", 0, "absB", "=", "@GVar 7"], "@edit_gvar", 9, true, "@end-if", "@edit_var", 1, ["@var_retain", "@Var 1", "+", 1], "@end-repeat"], "PostSpawn"]);
+                    scripts.push([[0, "@if", "@GVar 9", "@edit_gvar", 8, ["@var_retain", "@GVar 8", "+", 1], "@edit_gvar", 9, false, "@edit_gvar", 7, [[2n, "^B", ["@GVar 8", "BigInt"], "*B", "@GVar 10"], "rand_bigint", [2n, "^B", ["@GVar 8", "+", 1, "BigInt"], "*B", "@GVar 10", "-B", 1n]], "@end-if"], "EndTurn"])
+                    statBoxes.push(["Current Goal", "@GVar 7", false, false, "Tile", "DIVE"], ["Goals Reached", "@GVar 8"]);
+                }
             }
             if (gamemode == 91.50118  && mode_vars[3] > 0) { // Aquatic 1845
                 start_game_vars[10] = mode_vars[4];
