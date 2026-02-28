@@ -52,6 +52,7 @@ html {
     position: absolute;
     left: -5vw;
     top: -5vh;
+    display: none;
 }
 #compendium_title {
     font-size: 8vh;

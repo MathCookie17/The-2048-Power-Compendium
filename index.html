@@ -622,6 +622,12 @@
                     </div> -->
                 </div>
                 <div id="3888_vars" class="gm_var_line">
+                    <div id="3888_extraMerge" class="gm_var_switch_container">
+                        <p id="3888_extraMerge_text" class="gm_var_text">n+8n is not a valid merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3888_extraMerge_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="3888_randomGoals" class="gm_var_switch_container">
                         <p id="3888_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -636,6 +642,12 @@
                     </div>
                 </div>
                 <div id="2000_vars" class="gm_var_line">
+                    <div id="2000_extraMerge" class="gm_var_switch_container">
+                        <p id="2000_extraMerge_text" class="gm_var_text">n+5n+10n is not a valid merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="2000_extraMerge_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="2000_randomGoals" class="gm_var_switch_container">
                         <p id="2000_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -650,6 +662,12 @@
                     </div>
                 </div>
                 <div id="3645_vars" class="gm_var_line">
+                    <div id="3645_extraMerge" class="gm_var_switch_container">
+                        <p id="3645_extraMerge_text" class="gm_var_text">n+5n+9n is not a valid merge.</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="3645_extraMerge_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                     <div id="3645_randomGoals" class="gm_var_switch_container">
                         <p id="3645_randomGoals_text" class="gm_var_text">Random goals are disabled.</p>
                         <div class="gmSwitchButtonLine">
@@ -3071,10 +3089,20 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v2.3.3 (Jan. 17, 2026) [Current Version]: Fixed the following bugs: Negative Tiles causing equal-tile merges in Aquatic SQUART to give score,
+                            v2.3.3 (Jan. 17, 2026): Fixed the following bugs: Negative Tiles causing equal-tile merges in Aquatic SQUART to give score,
                             negative scores with Negative Tiles in Aquatic 1845 and Partial Flow DIVE, Dual-Tile DIVE seeds not working correctly with negative tiles,
                             and several bugs with Div-Add-Tor.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v2.3.4 (Feb. 27, 2026) [Current Version]: Added an extra merge modifier to 3888, 2000, and 3645 each (the one in 3645 is on by default),
+                            and added settings to the 1s in DIVE modifier so you can start with 3 as the seed in DIVE or with 2 as the seed in DIVE-3.
+                            Fixed the following bugs: Div-Add-Tor with unordered (232, 240) merges and Interacting Negatives having 0 tiles possible,
+                            three-tile merges 54 + 27ω having the wrong merges entirely, DOFFET merges giving score like a DIVE variant instead of like a regular mode,
+                            Ratio-Fill 1024's tier colors not progressing further for very large tiles,
+                            Garbage 0s not working correctly from Modifiers save codes from older versions, the hidden tile numbers modifier not correctly hiding seed numbers
+                            in seed announcements in waves modes, and a few other small bugs.
                         </b>
                       </li>
                     </ul>
