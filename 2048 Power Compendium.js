@@ -4654,7 +4654,7 @@ function loadMode(mode) {
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "!=", "@This 1"]], false, [], 0, [true, true]]);
             startTileSpawns = [[[-1, 1], modifiers[22]], [[-1, -1], modifiers[23]]];
-            winConditions = [[11, -1], [11, -1]];
+            winConditions = [[11, 1], [11, -1]];
             winRequirement = 2;
             knownMergeMaxLength = 3;
             knownMergeLookbackDistance = 0;
@@ -7205,7 +7205,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 2]], [3, "^", "@This 0", "*", 6], [false, true]],
-                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless"]], 0, [true, true]]
             ];
             startTileSpawns = [[[0, 2], 50], [["Multiply", "@Signless"], 50]];
@@ -7224,7 +7224,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 2", "=", "@This 2"], "&&", ["@This 1", "=", 2], "&&", ["@Next 1 1", "=", 4]], false, [[["@This 0", "+", 1], 2, "@This 2"]], [3, "^", "@This 0", "*", 6], [false, true]],
-                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4, ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 1", "=", 2], "&&", ["@Next 2 1", "=", 2]], true, [[["@This 0", "+", "@Next 2 0"], 4, ["@This 2", "*", "@Next 2 2"]]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Multiply"], "&&", ["@This 0", "=", "Multiply"]], true, [["Multiply", "@Signless", 0]], 0, [true, true]]
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
@@ -8983,7 +8983,7 @@ function loadMode(mode) {
             ];
             MergeRules = [ 
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "/", 2, "=", "@Next 1 1"]], false, [[["@This 0", "+", 1], "@This 1"]], [3, "^", "@This 0", "*", "@This 1"], [false, true]],
-                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@This 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"]]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Divide"], "&&", ["@This 0", "=", "Divide"]], true, [["Divide", "@Signless"]], 0, [true, true]]
             ];
             startTileSpawns = [[[0, 2], 50], [["Divide", "@Signless"], 50]];
@@ -9000,7 +9000,7 @@ function loadMode(mode) {
             ];
             MergeRules = [
                 [2, [["@Next 1 0", "=", "@This 0"], "&&", ["@This 1", "/", 2, "=", "@Next 1 1"], "&&", ["@This 2", "=", "@Next 1 2"]], false, [[["@This 0", "+", 1], "@This 1", "@This 2"]], [3, "^", "@This 0", "*", "@This 1"], [false, true]],
-                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"], ["@This 2", "*", "@Next 2 2"]]], 0, [false, true]],
+                [3, [["@Next 1 0", "=", "Divide"], "&&", [[["@This 1", "=", 2], "||", ["@This 1", "=", 0.5]], "&&", [["@Next 2 1", "=", 2], "||", ["@Next 2 1", "=", 0.5]], "||", [["@This 0", "=", 0], "&&", ["@This 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]], "||", [["@Next 2 0", "=", 0], "&&", ["@Next 2 1", "=", 1], "&&", ["@Next 2 0", "!=", "Divide"]]]], true, [[["@This 0", "-", "@Next 2 0"], ["@This 1", "/", "@Next 2 1"], ["@This 2", "*", "@Next 2 2"]]], 0, [false, true, true]],
                 [2, [["@Next 1 0", "=", "Divide"], "&&", ["@This 0", "=", "Divide"]], true, [["Divide", "@Signless", 0]], 0, [true, true]]
             ];
             if (modifiers[13] == "Interacting") MergeRules.unshift([2, [["@Next 1 0", "=", "@This 0"], "&&", ["@Next 1 1", "=", "@This 1"], "&&", ["@Next 1 2", "!=", "@This 2"]], true, [], 0, [true, true]]);
@@ -10809,7 +10809,7 @@ function gmDisplayVars() {
             seedSpawnDescription = "At first, only " + firstSeed + "s spawn. When a new tile is made, if the value leftover after dividing that tile by all current spawning tiles as many times as you can is greater than 1, that leftover value is permanently added as a new spawning tile." + seedCheckDescription;
         }
         else {
-            if (mode_vars[1]) {
+            if (mode_vars[1] == 1) {
                 seedSpawnDescription = "The spawning tiles are 1 and the first " + mode_vars[0] + " primes, with an equal chance for each to spawn."
             }
             else {
@@ -20398,6 +20398,11 @@ function loadModifiers() {
                     if (Array.isArray(MergeRules[m][mstart + 3][r])) MergeRules[m][mstart + 3][r].push(["@Next", "arr_reduce", 1, ["min", ["@var_retain", "@Var -1", "arr_elem", stillNum]], "min", "@This " + stillNum]);
                 }
             }
+            for (let w = 0; w < winConditions.length; w++) {
+                if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigrational"]))) {
+                    winConditions[w].push(1);
+                }
+            }
             movementParameters[2] = [movementParameters[2], "*", "@This " + stillNum, "@if", ["@Parent -2", "!=", "@Parent -2"], "2nd", 0, "@end-if"]; // That reflexive != is an NaN check
             scripts.unshift(
                 [["@global_var_retain_inner", 0, "@end_vars", 0, "@repeat", ["@TileOrder", "arr_length", ">", "@Var 0"], "@if", ["@Grid", "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 0], "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 1], "typeof", "=", "array"], "@replace_tile", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 0], ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 1], ["@Grid", "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 0], "arr_elem", ["@TileOrder", "arr_elem", "@Var 0", "arr_elem", 1], "arr_edit_elem", stillNum, 1], "@end-if", "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "EndTurn"],
@@ -20446,6 +20451,11 @@ function loadModifiers() {
                 }
                 for (let r = 0; r < MergeRules[m][mstart + 3].length; r++) if (validMergeModifiers.indexOf(MergeRules[m][mstart + 3][r]) == -1) {
                     if (Array.isArray(MergeRules[m][mstart + 3][r])) MergeRules[m][mstart + 3][r].push(1);
+                }
+            }
+            for (let w = 0; w < winConditions.length; w++) {
+                if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigrational"]))) {
+                    winConditions[w].push(1);
                 }
             }
             scripts.unshift(
