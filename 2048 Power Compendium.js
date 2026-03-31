@@ -18899,7 +18899,7 @@ function loadModifiers() {
                 }
                 knownMergeMaxLength = 3;
             }
-            if (mode_vars[0] > 0) {
+            if (mode_vars[0] > 0 && !mode_vars[2]) {
                 scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_elem", 0, "absB", "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[0] == 1) {
                     scripts.push([["@global_var_retain_inner", ["@Literal"], 0, "@end_vars", 0, "@if", "@GVar 2", "@edit_gvar", 1, ["@GVar 1", "+", 1], "@edit_gvar", 2, false, "@repeat", ["@GVar 3", "arr_length", ">", "@Var 1"], "@if", ["@GVar 3", "arr_elem", "@Var 1", ">", "@GVar 0"], "@edit_var", 1, 1e300, "@end-if", "@else-if", ["@GVar 3", "arr_elem", "@Var 1", "^B", 2, "%B", "@GVar 0", "=", 0n], "@edit_var", 0, ["@Var 0", "arr_push", ["@GVar 3", "arr_elem", "@Var 1"]], "@end-else-if", "@edit_var", 1, ["@Var 1", "+", 1], "@end-repeat", "2nd", ["@GVar 0", "+B", ["@Var 0", "arr_elem", ["@Var 0", "arr_length", "-", 1, "rand_int", 0]]], "@edit_gvar", 0, "@Parent -1", "@edit_gvar", 3, ["@GVar 3", "arr_push", "@Parent -2"], "@end-if"], "EndTurn"])
@@ -20735,7 +20735,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             }
         }
         if (gamemode == 73) { // SQUART
-            if (mode_vars[0] > 0) {
+            if (mode_vars[0] > 0 && !mode_vars[2]) {
                 start_game_vars[0] = [6n, 8n][getRndInteger(0, 1)];
                 start_game_vars[3] = [1n, 2n, 4n, start_game_vars[0]];
                 game_vars = compendiumStructuredClone(start_game_vars);
@@ -20803,7 +20803,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             }
         }
         if (gamemode == 88) { // FACTUP
-            if (mode_vars[1] > 0) {
+            if (mode_vars[1] > 0 && mode_vars[4] == 2) {
                 start_game_vars[0] = 2n;
                 start_game_vars[3] = [1n, 2n];
                 game_vars = compendiumStructuredClone(start_game_vars);
@@ -20860,7 +20860,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             }
         }
         if (gamemode == 95) { // 3385
-            if (mode_vars[2] > 0) {
+            if (mode_vars[2] > 0 && !(mode_vars[0] > 2n && mode_vars[1])) {
                 start_game_vars[1] = 4n;
                 start_game_vars[4] = [1n, 2n, 4n];
                 game_vars = compendiumStructuredClone(start_game_vars);
