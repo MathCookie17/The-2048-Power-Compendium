@@ -2452,7 +2452,7 @@ document.getElementById("customColors_gradientSelection_next").addEventListener(
 document.getElementById("customColors_addGradientEntry").addEventListener("click", function(){
     for (let p = 0; p < customColors[screenVars[0]][3].length; p++) customColors[screenVars[0]][3][p] *= ((customColors[screenVars[0]][3].length - 1) / (customColors[screenVars[0]][3].length));
     customColors[screenVars[0]][2].push(compendiumStructuredClone(customColors[screenVars[0]][2][screenVars[1]]));
-    customColors[screenVars[0]][3].push(100);
+    customColors[screenVars[0]][3].push(customColors[screenVars[0]][4][0] == "@conic-gradient" ? 360 : 100);
     screenVars[1] = customColors[screenVars[0]][2].length - 1;
     displayCustomMode("Colors", screenVars);
 });
@@ -2778,7 +2778,7 @@ document.getElementById("customBackground_gradientSelection_next").addEventListe
 document.getElementById("customBackground_addGradientEntry").addEventListener("click", function(){
     for (let p = 0; p < customBackground[screenVars[0]][2].length; p++) customBackground[screenVars[0]][2][p] *= ((customBackground[screenVars[0]][2].length - 1) / (customBackground[screenVars[0]][2].length));
     customBackground[screenVars[0]][3].push(compendiumStructuredClone(customBackground[screenVars[0]][3][screenVars[1]]));
-    customBackground[screenVars[0]][2].push(100);
+    customBackground[screenVars[0]][2].push(customBackground[screenVars[0]][0] = "@conic-gradient" ? 360 : 100);
     screenVars[1] = customBackground[screenVars[0]][2].length - 1;
     displayCustomMode("Background", screenVars);
 });
@@ -22902,7 +22902,7 @@ function convertColor(col, system) { // Converts colors between systems; mostly 
     }
     else {
         let colorarray = [];
-        if (Array.isArray(color) && !(color[0] == "@RGBA" || color[0] == "@HSLA" || color[0] == "@HSVA")) color = evaluateColor(color, vcoord, hcoord, gri, vars, globalVarStat);
+        if (Array.isArray(color) && !(color[0] == "@RGBA" || color[0] == "@HSLA" || color[0] == "@HSVA")) color = CalcArray(color, vcoord, hcoord, 0, 0, [1, Infinity, 0], gri, [], vars, globalVarStat)
         if (Array.isArray(color) && (color[0] == "@RGBA" || color[0] == "@HSLA" || color[0] == "@HSVA")) colorarray = color;
         else if (typeof color == "string" && color[0] == "#") { //Any hex colors are converted to RGBA arrays first
             if (system == "@Hex") return color;
@@ -27372,7 +27372,7 @@ function importSave(code) {
                 //If we've gotten this far, the import is a success, so it's time to do the actual importing
                 let animSpeed = modifiers[16];
                 let replaySpeed = modifiers[29];
-                modifiers = coderesults[0].concat(modifiers.slice(coderesults[0].length));
+                modifiers = coderesults[0].concat(modifiers.slice(coderesults[0].length + 1));
                 modifiers.splice(16, 0, animSpeed); // Reinsert animation speed into the modifiers
                 if (modifiers.length < 30) modifiers.push(replaySpeed);
                 else modifiers[29] = replaySpeed;
