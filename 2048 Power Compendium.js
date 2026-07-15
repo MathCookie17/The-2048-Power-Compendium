@@ -3508,7 +3508,7 @@ if (SCparse(localStorage.getItem("2048PowerCompendium_secretsStored")) === true)
     otherSecretStats[0] = true;
     if (localStorage.getItem("2048PowerCompendium_secretsFound")) secretsFound = SCparse(localStorage.getItem("2048PowerCompendium_secretsFound"));
 }
-while (secretsFound.length < 11) secretsFound.push(false);
+while (secretsFound.length < 13) secretsFound.push(false);
 secretsFound[6] = null; secretsFound[1] = null; //PA19,683 and Gaussian DIVE aren't secret anymore
 document.getElementById("titleZero").addEventListener("click", function(){
     secretsFound[0] = true;
