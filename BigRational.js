@@ -1,18 +1,38 @@
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var _a, _BigRational_absB, _BigRational_modB, _BigRational_signB, _BigRational_gcdB;
 /**
  * Instances of this class represent rational numbers, with arbitrary precision like bigints have.
  * The rational numbers are always in simplest form.
  * Thanks to division by zero, Infinity, -Infinity, and NaN also have variants here.
  */
 class BigRational {
-    // Components
-    /**
-     * The numerator of the rational number.
-     */
-    _numerator;
-    /**
-     * The denominator of the rational number. If this is 0, the number is non-finite.
-     */
-    _denominator;
+    // Constructors
+    constructor(value, second) {
+        if (value !== undefined && second !== undefined) {
+            if (typeof value == "number" || typeof value == "bigint")
+                this.fromPair(value, second);
+            else
+                throw new Error("BigRational constructor called with two arguments and the first was not a bigint or number");
+        }
+        else if (typeof value == "bigint")
+            this.fromBigInt(value);
+        else if (typeof value == "number")
+            this.fromNumber(value);
+        else if (typeof value == "string")
+            this.fromString(value);
+        else if (Array.isArray(value))
+            this.fromArrayPair(value);
+        else if (value instanceof BigRational)
+            this.fromBigRational(value);
+        else {
+            this._numerator = 0n;
+            this._denominator = 1n;
+        }
+    }
     /**
      * The numerator of the rational number.
      */
@@ -38,7 +58,7 @@ class BigRational {
      */
     simplify() {
         if (this._denominator == 0n)
-            this._numerator = BigRational.#signB(this._numerator);
+            this._numerator = __classPrivateFieldGet(BigRational, _a, "m", _BigRational_signB).call(BigRational, this._numerator);
         else if (this._numerator == 0n)
             this._denominator = 1n;
         else {
@@ -46,7 +66,7 @@ class BigRational {
                 this._numerator *= -1n;
                 this._denominator *= -1n;
             }
-            let gcd = BigRational.#absB(BigRational.#gcdB(this._numerator, this._denominator));
+            let gcd = __classPrivateFieldGet(BigRational, _a, "m", _BigRational_absB).call(BigRational, __classPrivateFieldGet(BigRational, _a, "m", _BigRational_gcdB).call(BigRational, this._numerator, this._denominator));
             this._numerator /= gcd;
             this._denominator /= gcd;
         }
@@ -120,29 +140,6 @@ class BigRational {
             return true;
         return false;
     }
-    // Constructors
-    constructor(value, second) {
-        if (value !== undefined && second !== undefined) {
-            if (typeof value == "number" || typeof value == "bigint")
-                this.fromPair(value, second);
-            else
-                throw new Error("BigRational constructor called with two arguments and the first was not a bigint or number");
-        }
-        else if (typeof value == "bigint")
-            this.fromBigInt(value);
-        else if (typeof value == "number")
-            this.fromNumber(value);
-        else if (typeof value == "string")
-            this.fromString(value);
-        else if (Array.isArray(value))
-            this.fromArrayPair(value);
-        else if (value instanceof BigRational)
-            this.fromBigRational(value);
-        else {
-            this._numerator = 0n;
-            this._denominator = 1n;
-        }
-    }
     // Conversions
     fromBigInt(input) {
         this._numerator = BigInt(input);
@@ -184,7 +181,10 @@ class BigRational {
             return new BigRational(-1, 0);
         if (Number.isNaN(input))
             return new BigRational(0, 0);
-        return BigRational.fractionApproximation(input, 0).simplify();
+        let result = BigRational.fractionApproximation(Math.abs(input), 0).simplify();
+        if (Math.sign(input) === -1)
+            result._numerator *= -1n;
+        return result;
     }
     fromString(input) {
         while (input[0] == " ")
@@ -741,7 +741,7 @@ class BigRational {
                 return new BigRational(result + 1n);
         }
         else
-            return this.div(multiple).floor().mul(multiple);
+            return this.div(multiple).ceil().mul(multiple);
     }
     /**
      * "Rounds" the rational number it's called on to the nearest multiple of "multiple" that's greater than or equal to it.
@@ -867,15 +867,25 @@ class BigRational {
      * Finds the greatest common divisor of two rational numbers. (To avoid ambiguity, the result returned is always nonnegative.)
      */
     static gcd(a, b) {
-        a = new BigRational(a);
-        b = new BigRational(b);
+        a = new BigRational(a).abs();
+        b = new BigRational(b).abs();
         if (a.isNaN() || b.isNaN())
             return new BigRational(NaN);
+        let c = new BigRational(0);
+        if (b.gt(a)) {
+            c = a;
+            a = b;
+            b = c;
+        }
+        while (a.neq(0) && b.neq(0) && a.isFinite() && b.isFinite()) {
+            c = a.mod(b);
+            a = b;
+            b = c;
+        }
         if (b.eq(0) || !b.isFinite())
             return new BigRational(a).abs();
-        if (a.eq(0) || !a.isFinite())
+        else
             return new BigRational(b).abs();
-        return BigRational.gcd(b, a.mod(b));
     }
     /**
      * Finds the greatest common divisor of two rational numbers. (To avoid ambiguity, the result returned is always nonnegative.)
@@ -903,21 +913,270 @@ class BigRational {
     lcm(other) {
         return BigRational.lcm(this, other);
     }
-    // Constants
-    /** Represents 0. */
-    static zero = new BigRational(0n, 1n);
-    /** Represents 1. */
-    static one = new BigRational(1n, 1n);
-    /** Represents 2. */
-    static two = new BigRational(2n, 1n);
-    /** Represents 1/2. */
-    static one_half = new BigRational(1n, 2n);
-    /** Represents Infinity. */
-    static positive_infinity = new BigRational(1n, 0n);
-    /** Represents -Infinity. */
-    static negative_infinity = new BigRational(-1n, 0n);
-    /** Represents NaN. */
-    static NaN = new BigRational(0n, 0n);
+    // Transcendental approximations
+    /**
+     * Returns an approximation of the transcendental number e, rounded to the nearest multiple of (rounding).
+     */
+    static approxE(rounding) {
+        rounding = new BigRational(rounding).abs();
+        let result = new BigRational(5, 2);
+        let n = 3n;
+        let nextTerm = new BigRational(1, 6);
+        while (BigRational.neq(result.round(rounding), result.plus(nextTerm.mul(2)).round(rounding))) { // Each term from this point is less than 1/2 * the previous, so by geometric series the remaining sum is less than 2 * the current term
+            result = result.plus(nextTerm);
+            n += 1n;
+            nextTerm = nextTerm.div(n);
+        }
+        return result.round(rounding);
+    }
+    /**
+     * Returns an approximation of the transcendental number pi, rounded to the nearest multiple of (rounding).
+     */
+    static approxPi(rounding) {
+        // Uses the Maclaurin series for arcsin at x = 1/2 to approximate pi/6
+        rounding = new BigRational(rounding).abs();
+        let roundDiv6 = rounding.div(6);
+        let result = new BigRational(0);
+        let n = 1n;
+        let nextCoefficient = new BigRational(1);
+        let maxError = new BigRational(2); // By Taylor's Theorem logic the error is multiplied by 1/4 or smaller every iteration
+        while (BigRational.neq(result.round(roundDiv6), result.plus(maxError).round(roundDiv6))) {
+            result = result.plus(nextCoefficient.div(n).mul(new BigRational(1, 2).pow(n)));
+            maxError = maxError.div(4);
+            nextCoefficient = nextCoefficient.mul(n).div(n + 1n);
+            n += 2n;
+        }
+        return result.mul(6).round(rounding);
+    }
+    // Rounded non-rational functions
+    /**
+     * Exponentiation, rounded to the nearest multiple of (rounding) to allow non-integer exponents.
+     */
+    powRR(exponent, rounding) {
+        exponent = new BigRational(exponent);
+        rounding = new BigRational(rounding).abs();
+        if (this.isNaN() || exponent.isNaN() || !(rounding.isFinite()))
+            return new BigRational(NaN);
+        if (this.lt(0) && __classPrivateFieldGet(BigRational, _a, "m", _BigRational_modB).call(BigRational, exponent.denominator, 2n) === 0n)
+            return new BigRational(NaN); // Complex result
+        let mulSign = 1;
+        let thisVal = new BigRational(this);
+        if (thisVal.lt(0)) {
+            mulSign = -1;
+            thisVal = thisVal.abs();
+        }
+        if (__classPrivateFieldGet(BigRational, _a, "m", _BigRational_modB).call(BigRational, exponent.numerator, 2n) === 0n)
+            mulSign = 1;
+        if (exponent.eq(0) || thisVal.eq(1))
+            return new BigRational(1).mul(mulSign).round(rounding);
+        if ((thisVal.eq(Infinity) && exponent.gt(0)) || thisVal.eq(0) && exponent.lt(0))
+            return new BigRational(Infinity).mul(mulSign);
+        if ((thisVal.eq(Infinity) && exponent.lt(0)) || thisVal.eq(0) && exponent.gt(0))
+            return new BigRational(0);
+        if (thisVal.lt(1))
+            return thisVal.recip().powRR(exponent.neg(), rounding).mul(mulSign);
+        if (exponent.denominator === 1n)
+            return thisVal.pow(exponent.toBigInt()).round(rounding);
+        // Begin binary search
+        let lowerBound = thisVal.pow(exponent.floor(1).toBigInt()).floor(rounding).div(rounding).toBigInt();
+        let upperBound = thisVal.pow(exponent.ceil(1).toBigInt()).ceil(rounding).div(rounding).toBigInt();
+        let average = (lowerBound + upperBound) / 2n;
+        let averageVal = BigRational.mul(average, rounding);
+        let averagePow = new BigRational(0);
+        let basePow = thisVal.pow(exponent.numerator);
+        // Continue looping until we're down to one rounding divide
+        while (upperBound - lowerBound > 1n) {
+            average = (lowerBound + upperBound) / 2n;
+            averageVal = BigRational.mul(average, rounding);
+            averagePow = averageVal.pow(exponent.denominator);
+            if (BigRational.eq(averagePow, basePow)) {
+                upperBound = average;
+                lowerBound = average;
+            }
+            else if (BigRational.lt(averagePow, basePow)) {
+                lowerBound = average;
+            }
+            else if (BigRational.gt(averagePow, basePow)) {
+                upperBound = average;
+            }
+            else {
+                throw new Error("powRR reached noncomparable state");
+            }
+        }
+        let lowerVal = BigRational.mul(lowerBound, rounding);
+        let upperVal = BigRational.mul(upperBound, rounding);
+        averageVal = BigRational.add(lowerVal, upperVal).div(2);
+        averagePow = averageVal.pow(exponent.denominator);
+        if (BigRational.lte(averagePow, basePow))
+            return upperVal.mul(mulSign);
+        else
+            return lowerVal.mul(mulSign);
+    }
+    /**
+     * Exponentiation, rounded to the nearest multiple of (rounding) to allow non-integer exponents.
+     */
+    static powRR(value, other, rounding) {
+        return new BigRational(value).powRR(other, rounding);
+    }
+    /**
+     * Logarithm, rounded to the nearest multiple of (rounding) to allow non-integer exponents (since the idea of a logarithm doesn't make much sense without them!)
+     */
+    logRR(base, rounding) {
+        let thisVal = new BigRational(this);
+        base = new BigRational(base);
+        rounding = new BigRational(rounding).abs();
+        if (thisVal.isNaN() || base.isNaN() || !(rounding.isFinite()))
+            return new BigRational(NaN);
+        if (thisVal.lt(0) || base.lte(0) || base.eq(1))
+            return new BigRational(NaN); // Complex or nonsensical results
+        if (thisVal.eq(Infinity) || base.eq(Infinity))
+            return new BigRational(NaN);
+        if (thisVal.eq(0))
+            return new BigRational(-Infinity);
+        if (thisVal.eq(1) || base.eq(Infinity))
+            return new BigRational(0);
+        if (thisVal.lt(1))
+            return thisVal.recip().logRR(base, rounding).neg();
+        if (base.lt(1))
+            return thisVal.logRR(base.recip(), rounding).neg();
+        // Binary search
+        let upperBound = 1n;
+        while (base.pow(upperBound).lt(thisVal))
+            upperBound *= 2n;
+        let lowerBound = upperBound / 2n;
+        lowerBound = BigRational.floor(lowerBound, rounding).div(rounding).toBigInt();
+        upperBound = BigRational.floor(upperBound, rounding).div(rounding).toBigInt();
+        let average = (lowerBound + upperBound) / 2n;
+        let averageVal = BigRational.mul(average, rounding);
+        let averagePow = new BigRational(0);
+        let valPow = new BigRational(0);
+        // Continue looping until we're down to one rounding divide
+        while (upperBound - lowerBound > 1n) {
+            average = (lowerBound + upperBound) / 2n;
+            averageVal = BigRational.mul(average, rounding);
+            averagePow = base.pow(averageVal.numerator);
+            valPow = thisVal.pow(averageVal.denominator);
+            if (BigRational.eq(averagePow, valPow)) {
+                upperBound = average;
+                lowerBound = average;
+            }
+            else if (BigRational.lt(averagePow, valPow)) {
+                lowerBound = average;
+            }
+            else if (BigRational.gt(averagePow, valPow)) {
+                upperBound = average;
+            }
+            else {
+                throw new Error("logRR reached noncomparable state");
+            }
+        }
+        let lowerVal = BigRational.mul(lowerBound, rounding);
+        let upperVal = BigRational.mul(upperBound, rounding);
+        averageVal = BigRational.add(lowerVal, upperVal).div(2);
+        averagePow = base.pow(averageVal.numerator);
+        valPow = thisVal.pow(averageVal.denominator);
+        if (BigRational.lte(averagePow, valPow))
+            return upperVal;
+        else
+            return lowerVal;
+    }
+    /**
+     * Logarithm, rounded to the nearest multiple of (rounding) to allow non-integer exponents (since the idea of a logarithm doesn't make much sense without them!)
+     */
+    static logRR(value, base, rounding) {
+        return new BigRational(value).logRR(base, rounding);
+    }
+    /**
+     * Sine, rounded to the nearest multiple of (rounding).
+     */
+    sinRR(rounding) {
+        let thisVal = new BigRational(this);
+        rounding = new BigRational(rounding).abs();
+        if (!(thisVal.isFinite()) || !(rounding.isFinite()))
+            return new BigRational(NaN);
+        if (thisVal.eq(0))
+            return new BigRational(0);
+        if (thisVal.lt(0))
+            return thisVal.neg().sinRR(rounding).neg();
+        let piApprox = BigRational.approxPi(thisVal.recip().mul(rounding).mul(1e-12)); // We need a more approximate pi the larger multiple of 2pi we're knocking off
+        thisVal = thisVal.mod(piApprox.mul(2));
+        let negative = false;
+        if (thisVal.gt(piApprox)) {
+            negative = true;
+            thisVal = thisVal.sub(piApprox);
+        }
+        if (thisVal.gt(piApprox.div(2))) {
+            thisVal = piApprox.sub(thisVal);
+        }
+        // Using Taylor series for sine
+        let result = thisVal;
+        let n = 3n;
+        let sign = -1;
+        let maxError = thisVal;
+        let nextCoefficient = new BigRational(1, 6);
+        while (BigRational.lte(n, thisVal) || (BigRational.neq(result.sub(maxError).round(rounding), result.plus(maxError).round(rounding)) && maxError.gt(rounding.div(1e12)))) {
+            result = result.plus(nextCoefficient.mul(thisVal.pow(n)).mul(sign));
+            sign *= -1;
+            maxError = maxError.mul(thisVal.pow(2n)).div(n - 1n).div(n);
+            console.log(n, result.toNumber(), maxError.toNumber());
+            nextCoefficient = nextCoefficient.div(n + 1n).div(n + 2n);
+            n += 2n;
+        }
+        if (negative)
+            result = result.neg();
+        return result.round(rounding);
+    }
+    /**
+     * Sine, rounded to the nearest multiple of (rounding).
+     */
+    static sinRR(value, rounding) {
+        return new BigRational(value).sinRR(rounding);
+    }
+    /**
+     * Cosine, rounded to the nearest multiple of (rounding).
+     */
+    cosRR(rounding) {
+        let thisVal = new BigRational(this);
+        rounding = new BigRational(rounding).abs();
+        if (!(thisVal.isFinite()) || !(rounding.isFinite()))
+            return new BigRational(NaN);
+        if (thisVal.eq(0))
+            return new BigRational(1);
+        if (thisVal.lt(0))
+            return thisVal.neg().cosRR(rounding);
+        let piApprox = BigRational.approxPi(thisVal.recip().mul(rounding).mul(1e-12)); // We need a more approximate pi the larger multiple of 2pi we're knocking off
+        thisVal = thisVal.mod(piApprox.mul(2));
+        let negative = false;
+        if (thisVal.gt(piApprox)) {
+            thisVal = piApprox.mul(2).sub(thisVal);
+        }
+        if (thisVal.gt(piApprox.div(2))) {
+            negative = true;
+            thisVal = piApprox.sub(thisVal);
+        }
+        // Using Taylor series for cosine
+        let result = new BigRational(1);
+        let n = 2n;
+        let sign = -1;
+        let maxError = new BigRational(1);
+        let nextCoefficient = new BigRational(1, 2);
+        while (BigRational.lte(n, thisVal) || (BigRational.neq(result.sub(maxError).round(rounding), result.plus(maxError).round(rounding)) && maxError.gt(rounding.div(1e12)))) {
+            result = result.plus(nextCoefficient.mul(thisVal.pow(n)).mul(sign));
+            sign *= -1;
+            maxError = maxError.mul(thisVal.pow(2n)).div(n - 1n).div(n);
+            nextCoefficient = nextCoefficient.div(n + 1n).div(n + 2n);
+            n += 2n;
+        }
+        if (negative)
+            result = result.neg();
+        return result.round(rounding);
+    }
+    /**
+     * Cosine, rounded to the nearest multiple of (rounding).
+     */
+    static cosRR(value, rounding) {
+        return new BigRational(value).cosRR(rounding);
+    }
     // Utility functions
     /**
      * Uses continued fractions to approximate a floating point number as a rational number.
@@ -937,16 +1196,11 @@ class BigRational {
         let denominator = 1;
         let previous = [0, 0, 1];
         let approximation = 0;
-        let negative = false;
-        if (value < 0) {
-            value *= -1;
-            negative = true;
-        }
-        let currentValue = value;
         if (precision < 0)
             precision = Math.abs(value * precision);
         if (precision > 1)
             precision = 1;
+        let currentValue = value;
         while (Math.abs(value - approximation) > precision && denominator <= maxDenominator && numerator <= maxNumerator && continuedFraction.length < maxIterations) {
             continuedFraction.push(Math.floor(currentValue));
             previous = [whole, numerator, denominator];
@@ -972,50 +1226,55 @@ class BigRational {
             return new BigRational(0n, 1n);
         }
         else {
-            return new BigRational(numerator * (negative ? -1 : 1), denominator);
+            return new BigRational(numerator, denominator);
         }
-    }
-    /**
-     * Absolute value function for bigints
-     */
-    static #absB(b) {
-        if (b < 0n)
-            return b * -1n;
-        else
-            return b;
-    }
-    /**
-     * Floored modulo is the correct modulo mathematically, but JavaScript uses a different form. This function fixes that.
-     */
-    static #modB(a, b) {
-        if (a >= 0n && b >= 0n)
-            return a % b;
-        else if (a < 0n && b >= 0n)
-            return b - (BigRational.#absB(a) % b);
-        else
-            return -BigRational.#modB(-a, -b);
-    }
-    /**
-     * Returns the sign of a bigint
-     */
-    static #signB(a) {
-        if (a > 0n)
-            return 1n;
-        else if (a < 0n)
-            return -1n;
-        else
-            return 0n;
-    }
-    /**
-     * Greatest common denominator of two bigints
-     */
-    static #gcdB(a, b) {
-        let temp;
-        while (b != 0n) {
-            temp = b;
-            b = a % b;
-            a = temp;
-        }
-        return a;
     }
 }
+_a = BigRational, _BigRational_absB = function _BigRational_absB(b) {
+    if (b < 0n)
+        return b * -1n;
+    else
+        return b;
+}, _BigRational_modB = function _BigRational_modB(a, b) {
+    if (a >= 0n && b >= 0n)
+        return a % b;
+    else if (a < 0n && b >= 0n)
+        return b - (__classPrivateFieldGet(BigRational, _a, "m", _BigRational_absB).call(BigRational, a) % b);
+    else
+        return -__classPrivateFieldGet(BigRational, _a, "m", _BigRational_modB).call(BigRational, -a, -b);
+}, _BigRational_signB = function _BigRational_signB(a) {
+    if (a > 0n)
+        return 1n;
+    else if (a < 0n)
+        return -1n;
+    else
+        return 0n;
+}, _BigRational_gcdB = function _BigRational_gcdB(a, b) {
+    let c = 0n;
+    if (b > a) {
+        c = a;
+        a = b;
+        b = c;
+    }
+    while (b !== 0n) {
+        c = a % b;
+        a = b;
+        b = c;
+    }
+    return a;
+};
+// Constants
+/** Represents 0. */
+BigRational.zero = new BigRational(0n, 1n);
+/** Represents 1. */
+BigRational.one = new BigRational(1n, 1n);
+/** Represents 2. */
+BigRational.two = new BigRational(2n, 1n);
+/** Represents 1/2. */
+BigRational.one_half = new BigRational(1n, 2n);
+/** Represents Infinity. */
+BigRational.positive_infinity = new BigRational(1n, 0n);
+/** Represents -Infinity. */
+BigRational.negative_infinity = new BigRational(-1n, 0n);
+/** Represents NaN. */
+BigRational.NaN = new BigRational(0n, 0n);

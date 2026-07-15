@@ -18,6 +18,7 @@ html {
     --tile-color: #ece0c2;
     --text-color: #524c46;
     --tile-image: none;
+    --menu_grid_size: 75vh;
     color: var(--text-color);
     background-image: linear-gradient(90deg, #ffff00, #0099ff);
     background-size: 100vw 100vh;
@@ -26,7 +27,7 @@ html {
 #css_calculator {
     display: none;
     width: var(--tile_size); /* Actually stores the tile size numerically */
-    color : #d43500; /* This is just here so I have an easy place to choose colors from */
+    color: #30234e /* This is just here so I have an easy place to choose colors from */
 }
 .hover_grow {
     transition: scale 0.5s;
@@ -41,7 +42,6 @@ html {
     text-align: center;
     color: #ffff8d;
     font-size: 4vh;
-    --menu_grid_size: 75vh;
 }
 #waves_background {
     z-index: -1;
@@ -163,7 +163,7 @@ html {
     height: 30vh;
 }
 @media screen and (max-aspect-ratio: 8/5) {
-    #menu {
+    html {
         --menu_grid_size: 47vw;
     }
     .menu_button {
@@ -174,7 +174,7 @@ html {
     }
 }
 @media screen and (max-aspect-ratio: 7/5) {
-    #menu {
+    html {
         --menu_grid_size: 65vh;
     }
     #menu_extra {
@@ -340,8 +340,10 @@ html {
     }
 }
 @media screen and (max-aspect-ratio: 67/100) {
-    #menu {
+    html {
         --menu_grid_size: 95vw;
+    }
+    #menu {
         font-size: 3vw;
     }
     #compendium_title {
@@ -477,7 +479,7 @@ html {
     flex-wrap: nowrap;
 }
 .gm_var_line_wrapping {
-    width: 100%;
+    max-width: 100vw;
     display: none;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -487,7 +489,6 @@ html {
     display: none;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
 }
 #gm_size_line {
     display: flex;
@@ -501,14 +502,13 @@ html {
 .gm_var_switch_container {
     font-size: 3vh;
     min-height: 15vh;
+    min-width: 25%;
     position: relative;
-    width: 100%;
 }
 .gm_var_switchForm_container {
     font-size: 3vh;
     min-height: 20vh;
     position: relative;
-    width: 100%;
 }
 .many_vars > .gm_var_container, .many_vars > .gm_var_switch_container, .many_vars > .gm_var_switchForm_container {
     width : 25%;
@@ -629,6 +629,16 @@ html {
     color: #ff1500;
     border: 0.56vh solid #ff1500;
 }
+.gmWavesDepthDecrease {
+    background-color: #f2b9ff;
+    color: #cc00ff;
+    border: 0.56vh solid #cc00ff;
+}
+.gmWavesDepthIncrease {
+    background-color: #00165e;
+    color: #3960e0;
+    border: 0.56vh solid #3960e0;
+}
 .gm_var_text {
     font-size: 2.25vh;
     font-weight: bold;
@@ -682,6 +692,38 @@ html {
 }
 #Alternate5040_baseList_form0 {
     display: none;
+}
+#Alternate5040_variantGrid {
+    position: relative;
+    display: grid;
+    --A5040_grid_size: 75vh;
+    width: calc(var(--A5040_grid_size)*0.7);
+    background-color: #fdf5b3;
+    margin: auto;
+    padding: calc(var(--A5040_grid_size)*0.01);
+    flex-wrap: wrap;
+}
+.Alternate5040_variantTile {
+    width: calc(var(--A5040_grid_size) * 0.12);
+    height: calc(var(--A5040_grid_size) * 0.12);
+    --tile_font_size: 4.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: calc(var(--A5040_grid_size) * var(--tile_font_size) / 110);
+    color: #000;
+    box-shadow: none;
+    border: calc(var(--A5040_grid_size) * 0.4 / 110) solid black;
+    box-sizing: border-box;
+    text-shadow: none;
+    position: relative;
+    margin: calc(var(--A5040_grid_size)*0.01);
+}
+#Alternate5040_variantGrid_heading {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #8f8100;
 }
 #gm_return {
     background-color: var(--grid-color);
@@ -911,6 +953,11 @@ html {
         font-size: calc(1.81vw * var(--gm_scale));
     }
 }
+@media screen and (max-aspect-ratio: 7/5) {
+    #Alternate5040_variantGrid {
+        --A5040_grid_size: 56vw;
+    }
+}
 @media screen and (max-aspect-ratio: 21/20) {
     #gamemode {
         --gm_scale: 4/3;
@@ -928,6 +975,9 @@ html {
         width: calc(20vw * var(--gm_scale));
         height: calc(20vw * var(--gm_scale));
     }
+    #Alternate5040_variantGrid {
+        --A5040_grid_size: 75vw;
+    }
 }
 @media screen and (max-aspect-ratio: 13/20) {
     #gamemode {
@@ -942,6 +992,9 @@ html {
     .Arrangement180_gridLine {
         margin-bottom: calc(6vw * var(--gm_scale));
     }
+    #Alternate5040_variantGrid {
+        --A5040_grid_size: 95vw;
+    }
 }
 @media screen and (max-aspect-ratio: 7/20) {
     .gm_var_container {
@@ -951,6 +1004,7 @@ html {
         width : 100%;
     }
 }
+
 
 /* Modifiers */
 #modifiers {
@@ -962,11 +1016,12 @@ html {
 }
 #modifiers_bottomLine {
     display: flex;
-    width: calc(var(--modifiers_base_size) * 90);
+    max-width: calc(var(--modifiers_base_size) * 150);
     margin: auto;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
-#modifiers_return, #modifiers_save_code {
+.modifiers_bottomButton {
     width: calc(var(--modifiers_base_size) * 33);
     position: relative;
     font-weight: bold;
@@ -990,6 +1045,12 @@ html {
     background-color: #9e00a6;
     border: var(--modifiers_base_size) solid #db58ff;
     font-size: calc(var(--modifiers_base_size) * 3);
+}
+#modifiers_settingsSwitch {
+    color: #ffbb00;
+    background-color: #a34100;
+    border: var(--modifiers_base_size) solid #ffbb00;
+    font-size: calc(var(--modifiers_base_size) * 3.5);
 }
 #modifiers_title {
     font-size: calc(var(--modifiers_base_size) * 6);
@@ -1081,6 +1142,11 @@ html {
     position: relative;
     width: 25%;
 }
+.modifiers_var_container_stretchHV {
+    font-size: calc(var(--modifiers_base_size) * 3);
+    min-height: calc(var(--modifiers_base_size) * 15);
+    position: relative;
+}
 .modifiers_box_2x2_entry {
     width: 50%;
     height: 50%;
@@ -1111,7 +1177,7 @@ html {
     font-weight: bold;
     font-size: calc(var(--modifiers_base_size) * 2);
 }
-.SwitchModifier {
+.SwitchModifier, .SwitchModifierLong {
     width: calc(var(--modifiers_base_size) * 33);
     font-size: calc(var(--modifiers_base_size) * 3);
     background-color: #00ff91;
@@ -1120,6 +1186,9 @@ html {
     font-weight: bold;
     margin: auto;
     padding: calc(var(--modifiers_base_size) * 1);
+}
+.SwitchModifierLong {
+    width: calc(var(--modifiers_base_size) * 50);
 }
 .ActivateModifier {
     width: calc(var(--modifiers_base_size) * 40);
@@ -1387,7 +1456,7 @@ html {
     flex-wrap: wrap;
     position: relative;
 }
-#modifiers_AutoMoves_propertiesLine {
+.modifiers_propertiesLine {
     width: 100%;
     display: flex;
     justify-content: space-around;
@@ -2137,7 +2206,7 @@ html {
     background-color: #cc5eff;
     color: #000000;
 }
-#save_code_import {
+#save_code_import, #save_code_customPlay, #save_code_infusedEnter {
     color: #cc5eff;
     background-color: #000000;
 }
@@ -2149,13 +2218,17 @@ html {
     background-color: #009dff;
     color: #001684;
 }
-#save_code_customPlay {
-    background-color: #cc5eff;
-    color: #000000;
-}
 #save_code_customRestart {
     background-color: #780060;
     color: #ff173d;
+}
+#save_code_infusedEdit {
+    background-color: #687a00;
+    color: #eeff00;
+}
+#save_code_infusedUnit {
+    background-color: #784800;
+    color: #ffae00;
 }
 @media screen and (max-aspect-ratio: 7/8) {
     #save_code_heading {
@@ -2222,7 +2295,7 @@ html {
     background-color: #ff3ff9;
     border-color: solid #ff3582;
 }
-#customOpeningButtons {
+#customOpeningButtons, #infusedOpeningButtons {
     display: flex;
     justify-content: space-around;
     width: 95vw;
@@ -2273,11 +2346,11 @@ html {
 .customSpawn_text {
     font-size: calc(var(--base_size) * 3);
 }
-.customForm_size1 > input {
+.customForm_size1 > input, input.customForm_size1 {
     font-size: calc(var(--base_size) * 3);
     height: calc(var(--base_size) * 4);
 }
-.customForm_size2 > input {
+.customForm_size2 > input, input.customForm_size2 {
     font-size: calc(var(--base_size) * 2.5);
     height: calc(var(--base_size) * 3);
     width: calc(var(--base_size) * 18);
@@ -2626,6 +2699,225 @@ html {
 #customMerges_input0 > .customMerges_upperLine {
     justify-content: center;
 }
+#voidTilerIntro_passBy {
+    color: #f4e6ff;
+    background-color: #c379ff;
+    border-color: solid #f4e6ff;
+    /* font-size: calc(var(--base_size) * 4); */
+}
+#voidTilerIntro_enterVoid {
+    color: #0e001a;
+    background-color: #674681;
+    border-color: solid #0e001a;
+    /* font-size: calc(var(--base_size) * 4); */
+}
+#voidTilerIntro_fleeVoid {
+    color: #ffffff;
+    background-color: #a5a5a5;
+    border-color: solid #ffffff;
+    /* font-size: calc(var(--base_size) * 4); */
+}
+#voidTilerIntro_startGame {
+    color: #ffffff;
+    background-color: #202020;
+    border-color: solid #ffffff;
+    margin: auto;
+    /* font-size: calc(var(--base_size) * 4); */
+}
+#customModeVoidMonologue {
+    font-weight: bold;
+}
+.infusedOpeningButton {
+    width: calc(var(--base_size) * 36);
+    height: calc(var(--base_size) * 36);
+    border-width: calc(var(--base_size) * 1.5);
+    font-size: calc(var(--base_size) * 6);
+    padding: calc(var(--base_size) * 1.5);
+}
+#infusedMode_create {
+    color: #efff12;
+    background-color: #cf7c00;
+    border-color: #efff12;
+    order: 1;
+}
+#infusedMode_import {
+    color: #5c98ff;
+    background-color: #4700d4;
+    border-color: #5c98ff;
+    order: 0;
+}
+#infusedMode_manageGrid {
+    color: #0053be;
+    background-color: #b0b300;
+    border-color: #0053be;
+    order: 2;
+}
+#infusedMode_guide {
+    color: #5cffe9;
+    background-color: #007d5e;
+    border-color: #5cffe9;
+    order: 2;
+}
+#infusedMode_quit {
+    color: #df3400;
+    background-color: #552600;
+    border-color: solid #df3400;
+}
+#infusedMode_return {
+    color: #c08d00;
+    background-color: #2d0075;
+    border-color: solid #c08d00;
+}
+#infusedMode_finish {
+    color: #b384ff;
+    background-color: #7a00b3;
+    border-color: solid #b384ff;
+}
+#infusedModeCreation {
+    font-size: 0.75em;
+}
+.infusedCreationBox {
+    background-color: #c7920081;
+    border: 5px solid #c4c70081;
+    padding-bottom: calc(var(--base_size) * 2);
+    margin-top: calc(var(--base_size) * 3);
+}
+.infusedCreation_textarea {
+    width: 98%;
+    height: calc(var(--base_size) * 20);
+}
+.infusedMode_booleanButton {
+    margin: auto;
+    color: #00ff00;
+    background-color: #008000;
+    border-color: #00ff00;
+    width: calc(var(--base_size) * 20);
+}
+.infusedMode_booleanButtonLong {
+    margin: auto;
+    color: #00ff00;
+    background-color: #008000;
+    border-color: #00ff00;
+    width: calc(var(--base_size) * 50);
+}
+#infusedModeGridManager {
+    --modifiers_base_size: calc(var(--menu_grid_size) * 0.015);
+}
+#infusedGridLine {
+    width: 100%;
+    height: var(--menu_grid_size);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: calc(var(--menu_grid_size) * 0.01);
+}
+#infusedGrid {
+    --infused_grid_width: calc(var(--menu_grid_size) * min(1, calc(var(--width) / var(--height))));
+    --infused_grid_height: calc(var(--menu_grid_size) * min(1, calc(var(--height) / var(--width))));
+    position: relative;
+    display: inline-block;
+    width: var(--infused_grid_width);
+    height: var(--infused_grid_height);
+    background-color: #EFECD7;
+}
+.infusedGridTile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-weight: bold;
+    width: calc(var(--tile_size) * max(1, var(--height)/var(--width)));
+    height: calc(var(--tile_size) * max(1, var(--width)/var(--height)));
+    --tile_font_size: 4.8;
+    font-size: calc(var(--menu_grid_size) * var(--tile_font_size) / 15 / max(var(--width), var(--height)));
+    background-color: #554c00;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    box-sizing: border-box;
+    background-size: 100% 100%;
+    border-width: calc(var(--menu_grid_size) * 0.4 / 15 / max(var(--width), var(--height)));
+    border-color: #000000;
+    color: #000000;
+}
+#infusedGridSizeLine, #infusedGridEditLine {
+    width: calc((100vw - var(--menu_grid_size)) * 0.5);
+    height: calc(var(--menu_grid_size));
+    position: absolute;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+#infusedGridSizeLine {
+    right: calc(50vw - calc(var(--menu_grid_size) * 0.5) - ((100vw - var(--menu_grid_size)) * 0.5));
+}
+#infusedGridEditLine {
+    left: calc(50vw - calc(var(--menu_grid_size) * 0.5) - ((100vw - var(--menu_grid_size)) * 0.5));
+}
+#infusedGridSizeLine > .modifiers_var_container {
+    position: relative;
+    width: 100%;
+}
+#infusedGridTextarea {
+    width: 90%;
+    height: 20%;
+}
+#infusedGridInfotext {
+    font-size: calc(var(--menu_grid_size) * 0.04);
+    width: 90%;
+}
+.infusedTileButton {
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: calc(var(--menu_grid_size) * 0.01) solid;
+    font-weight: bold;
+    font-size: calc(var(--menu_grid_size) * 0.04);
+}
+#infusedTileAddButton {
+    background-color: #6d7500;
+    color: #ffdc3f;
+    border-color: #ffdc3f;
+}
+#infusedTileReplaceButton {
+    background-color: #005475;
+    color: #5980ff;
+    border-color: #5980ff;
+}
+#infusedTileRemoveButton {
+    background-color: #862600;
+    color: #ff702e;
+    border-color: #ff702e;
+}
+#infusedGrid_page_switch {
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    margin-top: calc(var(--modifiers_base_size) * -2);
+}
+#infusedGrid_page_counter {
+    display: inline-flex;
+    align-items: center;
+    font-size: calc(var(--modifiers_base_size) * 4);
+    font-weight: bold;
+}
+#infusedModeGridManager .previous_arrow_button {
+    position: absolute;
+    height: calc(var(--modifiers_base_size) * 6);
+    width: auto;
+    left: calc(50% - calc(var(--modifiers_base_size) * 20));
+    top: calc(var(--modifiers_base_size) * 3);
+}
+#infusedModeGridManager .next_arrow_button {
+    position: absolute;
+    height: calc(var(--modifiers_base_size) * 6);
+    width: auto;
+    right: calc(50% - calc(var(--modifiers_base_size) * 20));
+    top: calc(var(--modifiers_base_size) * 3);
+}
 @media screen and (max-aspect-ratio: 3/2) {
     #custom_mode {
         --base_size: 0.6vw;
@@ -2635,28 +2927,39 @@ html {
         border-width: calc(var(--base_size) * 1.5);
     }
     #customMode_start {
-        color: #7637ff;
-        background-color: #f645ff;
-        border-color: #7637ff;
         order: 0;
         width: 90%;
         font-size: calc(var(--base_size) * 8);
     }
     #customMode_import {
-        color: #5c98ff;
-        background-color: #4700d4;
-        border-color: #5c98ff;
         order: 1;
         width: 42%;
         font-size: calc(var(--base_size) * 6);
     }
     #customMode_guide {
-        color: #5cffe9;
-        background-color: #007d5e;
-        border-color: #5cffe9;
         order: 2;
         width: 42%;
         font-size: calc(var(--base_size) * 6);
+    }
+    .infusedOpeningButton {
+        width: calc(var(--base_size) * 68);
+        height: calc(var(--base_size) * 20);
+        border-width: calc(var(--base_size) * 1.5);
+        font-size: calc(var(--base_size) * 6);
+        padding: calc(var(--base_size) * 1.5);
+        margin-bottom: calc(var(--base_size) * 3);
+    }
+    #infusedGridSizeLine, #infusedGridEditLine {
+        width: 100%;
+        height: revert;
+        position: relative;
+        flex-direction: revert;
+    }
+    #infusedGridSizeLine > .modifiers_var_container {
+        width: 50%;
+    }
+    #infusedGridTextarea {
+        margin-bottom: 10px;
     }
 }
 @media screen and (max-aspect-ratio: 5/4) {
@@ -2670,13 +2973,17 @@ html {
         width: 90%;
         font-size: calc(var(--base_size) * 8);
     }
-    #customMode_import {
+    #customMode_import, #customMode_guide {
         width: 42%;
         font-size: calc(var(--base_size) * 5.25);
     }
-    #customMode_guide {
-        width: 42%;
-        font-size: calc(var(--base_size) * 5.25);
+    .infusedOpeningButton {
+        width: calc(var(--base_size) * 100);
+        height: calc(var(--base_size) * 10);
+        border-width: calc(var(--base_size) * 1);
+        font-size: calc(var(--base_size) * 6);
+        padding: calc(var(--base_size) * 1);
+        margin-bottom: calc(var(--base_size) * 2);
     }
 }
 @media screen and (max-aspect-ratio: 1/1) {
@@ -2687,11 +2994,7 @@ html {
         width: 90%;
         font-size: calc(var(--base_size) * 8);
     }
-    #customMode_import {
-        width: 42%;
-        font-size: calc(var(--base_size) * 5);
-    }
-    #customMode_guide {
+    #customMode_import, #customMode_guide {
         width: 42%;
         font-size: calc(var(--base_size) * 5);
     }
@@ -2706,16 +3009,16 @@ html {
     .customOpeningButton {
         height: calc(var(--base_size) * 15);
     }
+    .infusedOpeningButton {
+        height: calc(var(--base_size) * 12);
+        font-size: calc(var(--base_size) * 5);
+    }
     #customMode_start {
         width: 90%;
         font-size: calc(var(--base_size) * 8);
         height: calc(var(--base_size) * 20);
     }
-    #customMode_import {
-        width: 70%;
-        font-size: calc(var(--base_size) * 6);
-    }
-    #customMode_guide {
+    #customMode_import, #customMode_guide {
         width: 70%;
         font-size: calc(var(--base_size) * 6);
     }
@@ -2728,13 +3031,18 @@ html {
         width: 90%;
         font-size: calc(var(--base_size) * 6);
     }
-    #customMode_import {
+    #customMode_import, #customMode_guide {
         width: 70%;
         font-size: calc(var(--base_size) * 4);
     }
-    #customMode_guide {
-        width: 70%;
-        font-size: calc(var(--base_size) * 4);
+    #infusedGridSizeLine > .modifiers_var_container {
+        width: 100%;
+    }
+    #infusedGridSizeLine, #infusedGridEditLine {
+        flex-direction: column;
+    }
+    .infusedTileButton {
+        margin-bottom: 10px;
     }
 }
 @media screen and (max-aspect-ratio: 2/5) {
@@ -2778,16 +3086,15 @@ html {
     background-color: #000a75;
     border: calc(var(--base_size) * 0.75) solid #c100cb;
 }
+#infusedGuide_return {
+    color: #c06600;
+    background-color: #2d0075;
+    border: calc(var(--base_size) * 0.75) solid #c06600;
+}
 #secretOffice_return {
     color: #bc8332;
     background-color: #edc536;
     border: calc(var(--base_size) * 0.75) solid #bc8332;
-}
-#customMoreExamples_return {
-    color: #d2d200;
-    background-color: #0077c7;
-    border: calc(var(--base_size) * 0.75) solid #d2d200;
-    text-decoration: none;
 }
 .guide_box {
     width: 95%;
@@ -2812,6 +3119,11 @@ html {
     background-color: #004675;
     color: #ffff00;
     border-color: #ffff00;
+}
+#guide_settings {
+    background-color: #ffa885;
+    color: #cf5727;
+    border-color: #cf5727;
 }
 #guide_modifiers {
     background-color: #ffef77;
@@ -2915,12 +3227,72 @@ html {
     display: none;
     font-size: calc(var(--base_size) * 1.5);
 }
-#customGuide_moreExamplesLink {
+#customGuide_moreExamplesLink, #infusedGuide_moreExamplesLink {
     background-color: #6d008e;
     color: #ee00ff;
     width: 50%;
     border: calc(var(--base_size) * 0.75) solid #ee00ff;
     text-decoration: none;
+}
+#moreCustom_pageLine {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: calc(var(--base_size) * 1.5);
+    width: 100%;
+}
+#customMoreExamples_return {
+    color: #d2d200;
+    background-color: #0077c7;
+    border: calc(var(--base_size) * 0.75) solid #d2d200;
+    text-decoration: none;
+    font-size: calc(var(--base_size) * 3);
+    margin-left: calc(var(--base_size) * 1.5);
+    margin-right: calc(var(--base_size) * 1.5);
+}
+#customMoreExamples_switchCustom {
+    color: #b05cff;
+    background-color: #7a0092;
+    border: calc(var(--base_size) * 0.75) solid #b05cff;
+    text-decoration: none;
+    font-size: calc(var(--base_size) * 2.7);
+    margin-left: calc(var(--base_size) * 1.5);
+    margin-right: calc(var(--base_size) * 1.5);
+}
+#customMoreExamples_switchInfused {
+    color: #ffb35c;
+    background-color: #926400;
+    border: calc(var(--base_size) * 0.75) solid #ffb35c;
+    text-decoration: none;
+    font-size: calc(var(--base_size) * 2.7);
+    margin-left: calc(var(--base_size) * 1.5);
+    margin-right: calc(var(--base_size) * 1.5);
+}
+#infusedGuide_intro {
+    background-color: #4f6400;
+    color: #ebff34;
+    border-color: #ebff34;
+}
+#infusedGuide_creation {
+    background-color: #725d00;
+    color: #ffeb7d;
+    border-color: #ffeb7d;
+}
+#infusedGuide_grid {
+    background-color: #00236e;
+    color: #24baff;
+    border-color: #24baff;
+}
+#infusedGuide_Examples {
+    background-color: #667224;
+    color: #ffe1a8;
+    border-color: #ffe1a8;
+}
+.infusedGuide_example {
+    background-color: #644400;
+    color: #ffa734;
+    border-color: #ffa734;
 }
 ul {
     text-align: left;
