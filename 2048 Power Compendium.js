@@ -1715,6 +1715,10 @@ document.getElementById("VoidTiler_deepeningSize_change").addEventListener("chan
     if (v >= 0 && v < Infinity && v % 1 == 0) mode_vars[5] = v;
     gmDisplayVars();
 });
+document.getElementById("VoidTiler_lagReduction_button").addEventListener("click", function(){
+    mode_vars[6] = !mode_vars[6]
+    gmDisplayVars();
+});
 document.getElementById("Arrangement180_midMove_button").addEventListener("click", function(){
     mode_vars[4] = !mode_vars[4]
     gmDisplayVars();
@@ -3464,7 +3468,10 @@ document.getElementById("voidTilerIntro_enterVoid").addEventListener("click", fu
             mode_vars[0] = true;
             gmDisplayVars();
         }
-        else startGame();
+        else {
+            screenVars = [Date.now() - 100000];
+            switchScreen("CustomMode", "Void Monologue");
+        }
     }
     else {
         screenVars = [Date.now()];
@@ -3476,14 +3483,23 @@ document.getElementById("voidTilerIntro_fleeVoid").addEventListener("click", fun
 });
 document.getElementById("voidTilerIntro_startGame").addEventListener("click", function(){
     otherSecretStats[8] = true;
+    let mv6 = mode_vars[6];
     loadMode(0.0001);
+    mode_vars[6] = mv6;
     startGame();
+});
+document.getElementById("voidTilerIntro_lagReduction").addEventListener("click", function(){
+    mode_vars[6] = !mode_vars[6];
+    displayCustomMode("Void Monologue", screenVars)
 });
 document.getElementById("regularGuide_return").addEventListener("click", function(){
     switchScreen("Menu", 1);
 });
 document.getElementById("customGuide_return").addEventListener("click", function(){
     switchScreen("CustomMode", "Opening");
+});
+document.getElementById("customGuide_infusedLink").addEventListener("click", function(){
+    switchScreen("CustomMode", "Infused Opening");
 });
 document.getElementById("infusedGuide_return").addEventListener("click", function(){
     switchScreen("CustomMode", "Infused Opening");
@@ -3791,7 +3807,14 @@ if (localStorage.getItem("gameplayReloadSave")) {
 }
 if (localStorage.getItem("infusedGrids")) {
     infusedGrids = SCparse(localStorage.getItem("infusedGrids"));
+    infusedGridSizes = SCparse(localStorage.getItem("infusedGridSizes")) ?? [];
+    while (infusedGridSizes.length < infusedGrids.length) infusedGridSizes.push([5, 5]);
 }
+document.addEventListener("visibilitychange", function(){
+    if (currentScreen == "Gameplay" && settingModifiers[7] == 1 && !isPlayingReplay) {
+        exportSave(true, true);
+    }
+})
 
 // Ready to play!
 inputAvailable = true;
@@ -4659,7 +4682,9 @@ function switchScreen(screen, subscreen) {
         document.getElementById("menu").style.setProperty("display", "block");
         if (oldscreen != "Menu") otherSecretStats[4] = 0;
         if (otherSecretStats[5] == 2) otherSecretStats[5] = 3;
-        infusedGrids = cleanInfusedGrids(infusedGrids);
+        let IGClean = cleanInfusedGrids(infusedGrids, infusedGridSizes);
+        infusedGrids = IGClean[0];
+        infusedGridSizes = IGClean[1];
         if (tempModifiers !== undefined) {
             modifiers = compendiumStructuredClone(tempModifiers);
             tempModifiers = undefined;
@@ -8946,7 +8971,7 @@ function loadMode(mode) {
         // width = 5; height = 5;
         TileNumAmount = 1;
         mode_vars = [false, 0, 1701n]; // First entry enables Extended mode. Next two entries are random goals: second entry is the random goals setting, third entry is the first goal minimum
-        start_game_vars = [1n, 0, false, [1n, 2n], 1701n, 0] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is an array of possible tiles found by the random goals so far, and the fifth entry is the first goal minimum. Sixth entry controls the display of Discovered Tiles.
+        start_game_vars = [1n, 0, false, [1n, 2n], 1701n] // The first entry is the current random goal, the second entry is the amount of random goals met so far, the third entry is whether a random goal has been met this turn, the fourth entry is an array of possible tiles found by the random goals so far, and the fifth entry is the first goal minimum.
         TileTypes = [
             [true, ["@This 0"], "@ColorScheme", "LOCEF", ["@This 0"]]
         ];
@@ -8963,7 +8988,6 @@ function loadMode(mode) {
         tileValueFunction = ["@This 0"];
         document.documentElement.style.setProperty("--tile-color", "#b7a8e2");
         document.documentElement.style.setProperty("--text-color", "#1f1031");
-        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"], false, ...[,,,], ["@GVar 5", "=", 0], [0, "@edit_gvar", 5, 1], true], ["Discovered Tiles", ["@DiscTiles"], true, false, "TileArray", "Self", ["@GVar 5", "=", 1], [0, "@edit_gvar", 5, 0], true], ["Score", "@Score"]];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("LOCEF_vars").style.setProperty("display", "flex");
     }
@@ -9028,7 +9052,6 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("--grid-color", "#72bd89");
         document.documentElement.style.setProperty("--tile-color", "#e27989");
         document.documentElement.style.setProperty("--text-color", "#2d1f33");
-        statBoxes = [["Discovered Tiles", ["@DiscTiles", "arr_length"], false, ...[,,,], ["@GVar 0", "=", 0], [0, "@edit_gvar", 0, 1], true], ["Discovered Tiles", ["@DiscTiles"], true, false, "TileArray", "Self", ["@GVar 0", "=", 1], [0, "@edit_gvar", 0, 0], true], ["Score", "@Score"]];
         document.getElementById("mode_vars_line").style.setProperty("display", "block");
         document.getElementById("ProAddUct_vars").style.setProperty("display", "flex");
     }
@@ -9985,7 +10008,7 @@ function loadMode(mode) {
     }
     else if (mode == 0.0001) { // VS The Void Tiler
         TileNumAmount = 1;
-        mode_vars = [false, true, 5, 16, 4, 1] // Deal accepted, uses seconds instead of turns, attack interval, deepening interval, starting attack size, deepening size
+        mode_vars = [false, true, 5, 16, 4, 1, false] // Deal accepted, uses seconds instead of turns, attack interval, deepening interval, starting attack size, deepening size, lag reduction
         start_game_vars = [[], -1, 0, [], 0, 5, 16, -1, -1, 0, 4, 1] // List of attacked tiles, timestamp of last attack, attacks since last deepening, extant background spots, time since last background spot, seconds between attacks, attacks before deepening, game over animation variable, win animation variable, final win/lost status, amount of tiles attacked, deepening size
         TileTypes = [[true, [2, "^", "@This 0"], ["@HSLA", 0, 0, ["@This 0", "*", 100, "/", 8, "*", [1, "-", "@GVar 7", "min", 1], "+", ["@GVar 8", "max", 0, "*", 100]], 1], "#000", [0, 0, 0.1, ["@HSLA", 0, 0, [100, "*", [1, "-", "@GVar 7", "min", 1]], 1]], 2, 0, ["PrimeImage", ["@radial-gradient", ["#0000", "@if", ["@GVar 0", "arr_indexOf", ["@VCoord", "arr_push", "@HCoord"], "!=", -1], "2nd", "#f008", "@end-if"], "#0000"]], ["PrimeImage", ["@CalcArray", ["@Literal", "#ffffff", "#f9eee3", "#ede0c8", "#f2b179", "#f59563", "#f67c5f", "#f65e3b", "#edcf72", "#edcc61", "#edc850", "#edc53f", "#edc22e", "#f29eff", "#eb75fd", "#e53bff", "#bd00db", "#770089", "#534de8", "#2922e1", "#0a05b6", ["@HSLA", [-15, "*", "@This 0", "+", 520], 100, [0.9, "^", ["@This 0", "-", 20], "*", 36], 1]], "arr_elem", ["@This 0", "min", ["@Parent -3", "arr_length", "-", 1]]], ["@linear-gradient", ["@HSLA", 0, 0, 0, ["@GVar 8", "-", 2, "max", 0]], 0, 100]]]];
         MergeRules = [[2, ["@Next 1 0", "=", "@This 0"], true, [[["@This 0", "+", 1]]], [2, "^", ["@This 0", "+", 1]], [false, true]]];
@@ -16321,7 +16344,7 @@ function gmDisplayVars() {
                 document.getElementById("FIVE_primeAmount").style.setProperty("display", "none");
                 document.getElementById("FIVE_primeList").style.setProperty("display", "flex");
                 document.getElementById("FIVE_specificTileList").style.setProperty("display", "flex");
-                document.getElementById("FIVE_enablePrimeList_text").innerHTML = "The allowed \"prime\" factors could be any positive integers.";
+                document.getElementById("FIVE_enablePrimeList_text").innerHTML = "The allowed \"prime\" factors could be any positive integers above 1.";
                 document.getElementById("FIVE_enablePrimeList_text").style.setProperty("color", "#879100");
                 document.getElementById("FIVE_primeList_form0").style.setProperty("display", "none");
                 while (document.getElementById("FIVE_primeList").children.length > mode_vars[3].length + 3) {
@@ -16477,7 +16500,7 @@ function gmDisplayVars() {
                 document.getElementById("IsotopicDIVE_seedDecay_text").innerHTML = "Seeds have their decay timer paused.";
                 document.getElementById("IsotopicDIVE_seedDecay_text").style.setProperty("color", "#154666");
             }
-            modeRulesDescription = "DIVE, but tiles decay " + mode_vars[3] + " turns after they're formed, being subtracted by " + decayTileString + (mode_vars[6] ? "" : ". Tiles that are themselves seeds have their decay timer paused") + ". When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can! This mode has no win condition, so just try to get as high of a score as you can!";
+            modeRulesDescription = "DIVE, but tiles decay " + mode_vars[3] + " turns after they're formed, being subtracted by " + decayTileString + (mode_vars[6] ? "" : ". Tiles that are themselves seeds have their decay timer paused") + ". When two tiles merge, the score gained from the merge is only the smaller value out of the two tiles (rather than the value of the new tile). This mode has no win condition, so just try to get as high of a score as you can!";
             modeSpawnDescription = "The starting seed is " + (mode_vars[1] ? 1 : 2) + ". Seeds are unlocked in the same way as DIVE.";
             randomGoalsMVStart = 7;
             randomGoalsGVStart = 8;
@@ -16562,11 +16585,12 @@ function gmDisplayVars() {
         }
     }
     else if (gamemode == 0.0001) { // VS The Void Tiler
+        document.getElementById("VoidTiler_vars").style.setProperty("display", "flex");
         if (mode_vars[0]) {
             document.getElementById("VoidTiler_challengeVar_text").innerHTML = "Accept the deal. (The win condition is removed, but the mode modifiers are unlocked.)";
             document.getElementById("VoidTiler_challengeVar_text").style.setProperty("color", "#fff");
             document.getElementById("VoidTiler_challengeVar_text").style.setProperty("text-shadow", "0px 0px 5px #000");
-            document.getElementById("VoidTiler_vars").style.setProperty("display", "flex");
+            for (let c = 0; c < 5; c++) document.getElementById("VoidTiler_vars").children[c].style.setProperty("display", "block");
             if (mode_vars[1]) {
                 document.getElementById("VoidTiler_intervalUnit_text").innerHTML = "Attacks occur after an amount of seconds.";
                 document.getElementById("VoidTiler_attackInterval_title").innerHTML = "Seconds Between Each Attack:";
@@ -16584,7 +16608,13 @@ function gmDisplayVars() {
             document.getElementById("VoidTiler_challengeVar_text").innerHTML = "Reject the deal. (Replay the original battle.)";
             document.getElementById("VoidTiler_challengeVar_text").style.setProperty("color", "#222");
             document.getElementById("VoidTiler_challengeVar_text").style.setProperty("text-shadow", "0px 0px 5px #fff");
-            document.getElementById("VoidTiler_vars").style.setProperty("display", "none");
+            for (let c = 0; c < 5; c++) document.getElementById("VoidTiler_vars").children[c].style.setProperty("display", "none");
+        }
+        if (mode_vars[6]) {
+            document.getElementById("VoidTiler_lagReduction_text").innerHTML = "The moving background is disabled to reduce lag.";
+        }
+        else {
+            document.getElementById("VoidTiler_lagReduction_text").innerHTML = "The moving background is enabled. (This may be laggy!).";
         }
     }
     document.getElementById("Arrangement180_presetLine").style.setProperty("display", "none");
@@ -23488,59 +23518,77 @@ function loadModifiers() {
                     gameplayComponentOpacities[0] = [1, "@if", [["@GVar 7", ">=", 0], "||", ["@GVar 8", ">=", 0]], "2nd", -1];
                 }
             }
+            if (mode_vars[6]) {
+                scripts.splice(0, 1);
+                if (mode_vars[0]) {
+                    gameplayBackground = ["@CalcArray", "@global_var_retain_inner", 0, "@end_vars", ["@Literal", "@linear-gradient", ["@HSLA", 0, 0, 0, 1], 0, 100], "@if", ["@GVar 7", ">=", 1], "2nd", ["@Literal", "@HSLA", 44, 100, ["@GVar 7", "-", 1, "min", 1, "*", 93], 1], "@end-if"];
+                }
+                else {
+                    gameplayBackground = ["@CalcArray", "@global_var_retain_inner", 0, "@end_vars", ["@Literal", "@linear-gradient", ["@HSLA", 0, 0, ["@GVar 8", "-", 1, "max", 0, "*", 100], 1], 0, 100], "@if", ["@GVar 8", ">=", 2], "2nd", ["@Literal", "@HSLA", 44, 100, ["@GVar 8", "-", 2, "min", 1, "*", -7, "+", 100], 1], "@end-if"];
+                }
+                displayLagReductions[1] = [["@GVar 7", "<", -0], "&&", ["@GVar 8", "<", 0]];
+            }
         }
         else if (gamemode == -2) { // Infused Modes
             let tempVal;
             // start_game_vars needs to be loaded first so others can use it, and some others also made sense to do early
-            let indexOrder = [6, 26, 27, 0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 36, 39, 40, 41, 42]
-            for (let index of indexOrder) {
-                console.log(index);
-                tempVal = SCparse(infusedModeValues[index]);
-                if (tempVal[0] == "@InfusedCalcArray") tempVal = CalcArray(tempVal.slice(1), ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]]);
-                if (index == 0) TileNumAmount = tempVal;
-                else if (index == 1) TileTypes = tempVal;
-                else if (index == 2) MergeRules = tempVal;
-                else if (index == 3) {
-                    startTileSpawns = tempVal;
-                    TileSpawns = compendiumStructuredClone(startTileSpawns);
+            let indexOrder = [6, 26, 27, 0, 1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 36, 39, 40, 41, 42];
+            let indexIndex = 0;
+            let index = 6;
+            try {
+                for (; indexIndex < indexOrder.length; indexIndex++) {
+                    index = indexOrder[indexIndex];
+                    tempVal = SCparse(infusedModeValues[index]);
+                    if (tempVal[0] == "@InfusedCalcArray") tempVal = CalcArray(tempVal.slice(1), ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]]);
+                    if (index == 0) TileNumAmount = tempVal;
+                    else if (index == 1) TileTypes = tempVal;
+                    else if (index == 2) MergeRules = tempVal;
+                    else if (index == 3) {
+                        startTileSpawns = tempVal;
+                        TileSpawns = compendiumStructuredClone(startTileSpawns);
+                    }
+                    else if (index == 4) {
+                        start_forcedSpawns = tempVal;
+                        forcedSpawns = compendiumStructuredClone(start_forcedSpawns);
+                    }
+                    else if (index == 5) statBoxes = tempVal;
+                    else if (index == 6) {
+                        start_game_vars = tempVal;
+                        game_vars = compendiumStructuredClone(start_game_vars);
+                    }
+                    else if (index == 7) scripts = tempVal;
+                    else if (index == 8) tileDisplayKnownLevel = tempVal;
+                    else if (index == 9) mergeResultKnownLevel = tempVal;
+                    else if (index == 10) knownMergeMaxLength = tempVal;
+                    else if (index == 11) knownMergeLookbackDistance = tempVal;
+                    else if (index == 12) winConditions = tempVal;
+                    else if (index == 13) winRequirement = tempVal;
+                    else if (index == 14) loseConditions = tempVal;
+                    else if (index == 15) loseRequirement = tempVal;
+                    else if (index == 16) winPriority = tempVal;
+                    else if (index == 17) postgameAllowed = tempVal;
+                    else if (index == 18) gameplayBackground = tempVal;
+                    else if (index == 19) gridBackground = tempVal;
+                    else if (index == 20) tileBackground = tempVal;
+                    else if (index == 21) textBackground = tempVal;
+                    else if (index == 22) {
+                        if (typeof tempVal == "boolean") gameplayRulesText = gmRulesText;
+                        else gameplayRulesText = tempVal;
+                    }
+                    else if (index == 24) movementParameters = tempVal;
+                    else if (index == 25) spawnConditions = tempVal;
+                    else if (index == 26) tileValueFunction = tempVal;
+                    else if (index == 27) discoveredTilesFilter = tempVal;
+                    else if (index == 36) displayGridIntervalTime = tempVal;
+                    else if (index == 39) spawnTileBlocked = ["@var_retain", spawnTileBlocked, "||", tempVal]
+                    else if (index == 40) directionBlocked = tempVal;
+                    else if (index == 41) gameplayComponentOpacities = tempVal;
+                    else if (index == 42) displayLagReductions = tempVal;
                 }
-                else if (index == 4) {
-                    start_forcedSpawns = tempVal;
-                    forcedSpawns = compendiumStructuredClone(start_forcedSpawns);
-                }
-                else if (index == 5) statBoxes = tempVal;
-                else if (index == 6) {
-                    start_game_vars = tempVal;
-                    game_vars = compendiumStructuredClone(start_game_vars);
-                }
-                else if (index == 7) scripts = tempVal;
-                else if (index == 8) tileDisplayKnownLevel = tempVal;
-                else if (index == 9) mergeResultKnownLevel = tempVal;
-                else if (index == 10) knownMergeMaxLength = tempVal;
-                else if (index == 11) knownMergeLookbackDistance = tempVal;
-                else if (index == 12) winConditions = tempVal;
-                else if (index == 13) winRequirement = tempVal;
-                else if (index == 14) loseConditions = tempVal;
-                else if (index == 15) loseRequirement = tempVal;
-                else if (index == 16) winPriority = tempVal;
-                else if (index == 17) postgameAllowed = tempVal;
-                else if (index == 18) gameplayBackground = tempVal;
-                else if (index == 19) gridBackground = tempVal;
-                else if (index == 20) tileBackground = tempVal;
-                else if (index == 21) textBackground = tempVal;
-                else if (index == 22) {
-                    if (typeof tempVal == "boolean") gameplayRulesText = gmRulesText;
-                    else gameplayRulesText = tempVal;
-                }
-                else if (index == 24) movementParameters = tempVal;
-                else if (index == 25) spawnConditions = tempVal;
-                else if (index == 26) tileValueFunction = tempVal;
-                else if (index == 27) discoveredTilesFilter = tempVal;
-                else if (index == 36) displayGridIntervalTime = tempVal;
-                else if (index == 39) spawnTileBlocked = ["@var_retain", spawnTileBlocked, "||", tempVal]
-                else if (index == 40) directionBlocked = tempVal;
-                else if (index == 41) gameplayComponentOpacities = tempVal;
-                else if (index == 42) displayLagReductions = tempVal;
+            }
+            catch (err) {
+                alert("Your infused mode has a JSON error at index " + index + " of the infused mode values.");
+                throw (err);
             }
         }
     }
@@ -29104,6 +29152,7 @@ async function MoveHandler(direction_num) {
     which are, y'know, how the game is played. MoveHandler is asynchronous so that the delay function can be used for tile animations, but since it sets
     inputAvailable to false for the duration of the move, you can't do other things during a move.
     */
+    let prevFirstMoveTime = firstMoveTime;
     if (firstMoveTime === false && startGameTime !== false) firstMoveTime = Date.now();
     let manual = true;
     let tilesSpawned = [];
@@ -29117,6 +29166,7 @@ async function MoveHandler(direction_num) {
     }
     if (arguments.length > 1) manual = arguments[1];
     if (manual) moveInProgress = true;
+    let prevMoveStartTime = moveStartTime;
     if (manual && startGameTime !== false) moveStartTime = Date.now();
     let direction = [];
     let directionIndex;
@@ -29706,7 +29756,13 @@ async function MoveHandler(direction_num) {
         }
     }
     if (manual) moveInProgress = false;
-    if (manual && startGameTime !== false) moveEndTime = Date.now();
+    if (manual && startGameTime !== false && movementOccurred) {
+        moveEndTime = Date.now();
+    }
+    if (!movementOccurred && startGameTime !== false) {
+        firstMoveTime = prevFirstMoveTime;
+        moveStartTime = prevMoveStartTime;
+    }
     if (settingModifiers[7] == 1 && !isPlayingReplay) {
         exportSave(true, true);
     }
@@ -30791,12 +30847,16 @@ async function displayCustomMode(subscreen, vars) {
         document.getElementById("customModeVoidMonologue").style.setProperty("display", "block");
         document.getElementById("voidTilerIntro_fleeVoid").style.setProperty("display", "flex");
         document.getElementById("voidTilerIntro_startGame").style.setProperty("display", "flex");
+        document.getElementById("voidTilerIntro_lagReduction").style.setProperty("display", "flex");
         document.documentElement.style.setProperty("background-image", "linear-gradient(#000, #000)");
-        for (let c = 0; c < document.getElementById("customModeVoidMonologue").children.length - 1; c++) {
+        for (let c = 0; c < document.getElementById("customModeVoidMonologue").children.length - 3; c++) {
             document.getElementById("customModeVoidMonologue").children[c].style.setProperty("opacity", (Date.now() - screenVars[0])/3000 - c);
         }
-        let endMonologue = (document.getElementById("customModeVoidMonologue").children.length - 1) * 3000;
+        let endMonologue = (document.getElementById("customModeVoidMonologue").children.length - 3) * 3000;
         document.getElementById("voidTilerIntro_startGame").style.setProperty("display", (Date.now() - screenVars[0] < endMonologue) ? "none" : "flex");
+        document.getElementById("voidTilerIntro_lagReduction").style.setProperty("display", (Date.now() - screenVars[0] < endMonologue) ? "none" : "flex");
+        if (mode_vars[6]) document.getElementById("voidTilerIntro_lagReduction").innerHTML = "Lag Reduction: ON";
+        else document.getElementById("voidTilerIntro_lagReduction").innerHTML = "Lag Reduction: OFF";
         if (getComputedStyle(document.getElementById("voidTilerIntro_startGame")).getPropertyValue("display") == "none") setTimeout(function(){if (subScreen == "Void Monologue") {displayCustomMode(subscreen, vars)}}, 30)
     }
     else if (subscreen == "Infused Opening") {
@@ -30870,9 +30930,15 @@ async function displayCustomMode(subscreen, vars) {
         }
         if (screenVars[0] == 0) document.getElementById("infusedGrid_previous_page").style.setProperty("display", "none");
         else document.getElementById("infusedGrid_previous_page").style.setProperty("display", "inline-block");
-        let cleaned = cleanInfusedGrids(infusedGrids);
-        if (cleaned.length > 0) localStorage.setItem("infusedGrids", SCstringify(cleaned));
-        else localStorage.removeItem("infusedGrids")
+        let cleaned = cleanInfusedGrids(infusedGrids, infusedGridSizes);
+        if (cleaned[0].length > 0) {
+            localStorage.setItem("infusedGrids", SCstringify(cleaned[0]));
+            localStorage.setItem("infusedGridSizes", SCstringify(cleaned[1]));
+        }
+        else {
+            localStorage.removeItem("infusedGrids")
+            localStorage.removeItem("infusedGridSizes")
+        }
     }
 }
 
@@ -31634,12 +31700,16 @@ function createInfusedGrid() {
     }
 }
 
-function cleanInfusedGrids(infusedGrids) { // Removes any pages consisting of nothing
+function cleanInfusedGrids(infusedGrids, infusedGridSizes) { // Removes any pages consisting of nothing
     let result = [];
-    for (let g of infusedGrids) {
-        if (g.filter(function(v){return v !== false}).length > 0) result.push(compendiumStructuredClone(g));
+    let resultSizes = [];
+    for (let g = 0; g < infusedGrids.length; g++) {
+        if (infusedGrids[g].filter(function(v){return v !== false}).length > 0) {
+            result.push(compendiumStructuredClone(infusedGrids[g]));
+            resultSizes.push(compendiumStructuredClone(infusedGridSizes[g]))
+        } 
     }
-    return result;
+    return [result, resultSizes];
 }
 
 //Save codes

@@ -545,7 +545,7 @@
                         <div id="1321_firstGoalMinimum_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                 </div>
-                <div id="mod27_vars" class="gm_var_line">
+                <div id="mod27_vars" class="gm_var_line_wrapping many_vars">
                     <div id="mod27_start" class="gm_var_switch_container" style="color:#ff00d9;">
                         <p id="mod27_start_title" class="gm_var_title">Starting Modulus:</p>
                         <p id="mod27_start_counter" class="gm_var_counter"></p>
@@ -1081,7 +1081,7 @@
                         <div id="Bitwise2048_base_minus" class="gm_grid_button minus_button">-</div>
                     </div>
                 </div>
-                <div id="FACTUP_vars" class="gm_var_line">
+                <div id="FACTUP_vars" class="gm_var_line_wrapping many_vars">
                     <div id="FACTUP_crazy" class="gm_var_switch_container">
                         <p id="FACTUP_crazy_text" class="gm_var_text">The result of a merge must have more factors than its components.</p>
                         <div class="gmSwitchButtonLine">
@@ -1697,7 +1697,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="VoidTiler_vars" class="gm_var_line_wrapping">
+                <div id="VoidTiler_vars" class="gm_var_line_wrapping many_vars">
                     <div id="VoidTiler_intervalUnit" class="gm_var_switch_container" style="color: #ffffff">
                         <p id="VoidTiler_intervalUnit_text" class="gm_var_text">Attacks occur after an amount of seconds.</p>
                         <div class="gmSwitchButtonLine">
@@ -1728,6 +1728,12 @@
                             <input type="number" step="any" id="VoidTiler_deepeningSize_change" name="VoidTiler_deepeningSize_change">
                         </form>
                     </div>
+                    <div id="VoidTiler_lagReduction" class="gm_var_switch_container" style="color: #ffffff">
+                        <p id="VoidTiler_lagReduction_text" class="gm_var_text">The background effects are enabled. (This may be laggy!)</p>
+                        <div class="gmSwitchButtonLine">
+                            <div id="VoidTiler_lagReduction_button" class="gmSwitchModifier hover_grow">Switch This Modifier!</div>
+                        </div>
+                    </div>
                 </div>
                 <div id="infusedMode_varTemplates" class="gm_var_line">
                     <div id="infusedMode_OptionsTemplate" class="gm_var_switch_container">
@@ -1755,7 +1761,7 @@
                         </form>
                     </div>
                 </div>
-                <div id="infusedMode_vars" class="gm_var_line_wrapping">
+                <div id="infusedMode_vars" class="gm_var_line_wrapping many_vars">
                     <!-- createInfusedModeVariables() adds to this -->
                 </div>
             </div>
@@ -2884,6 +2890,8 @@
                 <p>Not leaving? Well, I won't ask nicely twice.</p>
                 <p>If you intend to ruin my void with your tiles, I will reduce you to nothing!</p>
                 <div id="voidTilerIntro_startGame" class="hover_grow customMode_pageButton">Bring it on!</div>
+                <br>
+                <div id="voidTilerIntro_lagReduction" class="hover_grow customMode_pageButton">Lag Reduction: OFF</div>
             </div>
             <div id="infusedModeOpening">
                 <p id="infusedOpeningHeading" class="customHeading">
@@ -2900,177 +2908,177 @@
             </div>
             <div id="infusedModeCreation">
                 <div class="infusedCreationBox">
-                    <h3>TileNumAmount</h3>
+                    <h3>TileNumAmount (0)</h3>
                     <p>The amount of entries in the arrays that determine tiles.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>TileTypes</h3>
+                    <h3>TileTypes (1)</h3>
                     <p>The tile display rules.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>MergeRules</h3>
+                    <h3>MergeRules (2)</h3>
                     <p>The rules for tile merges.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>startTileSpawns</h3>
+                    <h3>startTileSpawns (3)</h3>
                     <p>The rules for usual (random) tile spawns.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>start_forcedSpawns</h3>
+                    <h3>start_forcedSpawns (4)</h3>
                     <p>The rules for forced tile spawns.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>statBoxes</h3>
+                    <h3>statBoxes (5)</h3>
                     <p>The rules for statistic-tracking boxes that show up at the top (or bottom) of the screen.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>start_game_vars</h3>
+                    <h3>start_game_vars (6)</h3>
                     <p>The starting values of the mode's global variables.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>scripts</h3>
+                    <h3>scripts (7)</h3>
                     <p>CalcArray scripts that run at various points in the game.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>tileDisplayKnownLevel</h3>
+                    <h3>tileDisplayKnownLevel (8)</h3>
                     <p>How strong should the engine's "memory" of what tiles look like be at maximum?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>mergeResultKnownLevel</h3>
+                    <h3>mergeResultKnownLevel (9)</h3>
                     <p>How strong should the engine's "memory" of what tiles can merge be at maximum?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>knownMergeMaxLength</h3>
+                    <h3>knownMergeMaxLength (10)</h3>
                     <p>What is the longest merge length this mode has?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>knownMergeLookbackDistance</h3>
+                    <h3>knownMergeLookbackDistance (11)</h3>
                     <p>How far back before the merging tiles might the known merge results need to know?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>winConditions</h3>
+                    <h3>winConditions (12)</h3>
                     <p>What kinds of tiles will be added to Discovered Winning Tiles.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>winRequirement</h3>
+                    <h3>winRequirement (13)</h3>
                     <p>How many Discovered Winning Tiles are needed to win.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>loseConditions</h3>
+                    <h3>loseConditions (14)</h3>
                     <p>What kinds of tiles will be added to Discovered Losing Tiles.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>loseRequirement</h3>
+                    <h3>loseRequirement (15)</h3>
                     <p>How many Discovered Losing Tiles are needed to lose early.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>winPriority</h3>
+                    <h3>winPriority (16)</h3>
                     <p>If you win and lose at the same time, does winning take priority?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>postgameAllowed</h3>
+                    <h3>postgameAllowed (17)</h3>
                     <p>Can you continue playing after you win?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gameplayBackground</h3>
+                    <h3>gameplayBackground (18)</h3>
                     <p>The background color or gradient during the game.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gridBackground</h3>
+                    <h3>gridBackground (19)</h3>
                     <p>The background color or gradient of the grid.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>tileBackground</h3>
+                    <h3>tileBackground (20)</h3>
                     <p>The background color or gradient of empty tiles (and the default background color of statistic boxes).</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>textBackground</h3>
+                    <h3>textBackground (21)</h3>
                     <p>The color of the rules text.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gameplayRulesText</h3>
+                    <h3>gameplayRulesText (22)</h3>
                     <p>A list of HTML text elements that comprise the rules text during the game. (Set this to true to have it match gmRulesText)</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>Default grid size</h3>
+                    <h3>Default grid size (23)</h3>
                     <p>On a square grid, what is the default size of the grid?</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>movementParameters</h3>
+                    <h3>movementParameters (24)</h3>
                     <p>Adjustments to the vertical direction, horizontal direction, and slide amount that tiles move in.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>spawnConditions</h3>
+                    <h3>spawnConditions (25)</h3>
                     <p>New tiles won't spawn if this results in false on that turn.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>tileValueFunction</h3>
+                    <h3>tileValueFunction (26)</h3>
                     <p>This CalcArray returns what the "value" of a tile is. Not currently used for anything, but that may change someday...</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>discoveredTilesFilter</h3>
+                    <h3>discoveredTilesFilter (27)</h3>
                     <p>New tiles are run through this CalcArray before being added to Discovered Tiles, to allow detection of "duplicates" in whatever sense you need.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>infusedModeModifiers</h3>
+                    <h3>infusedModeModifiers (28)</h3>
                     <p>The list of mode modifiers that this infused mode has.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gmBackground</h3>
+                    <h3>gmBackground (29)</h3>
                     <p>The background color or gradient on the pre-game screen.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gmRulesText</h3>
+                    <h3>gmRulesText (30)</h3>
                     <p>A list of HTML text elements that comprise the rules text on the pre-game screen.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>Big tile text</h3>
+                    <h3>Big tile text (31)</h3>
                     <p>The text that's written on the big tile icon for this mode.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>Big tile font size</h3>
+                    <h3>Big tile font size (32)</h3>
                     <p>The size of the big tile's text (4.8 is the standard for four-digit names).</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>Big tile background</h3>
+                    <h3>Big tile background (33)</h3>
                     <p>The background color or gradient of the big tile.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <p>Certain Modifiers might not work well with every mode, so you can choose to have this infused mode ignore some of those problem Modifiers.</p>
+                    <p>Certain Modifiers might not work well with every mode, so you can choose to have this infused mode ignore some of those problem Modifiers. (34)</p>
                     <div class="customMode_addRemoveLine">
                         <div class="hover_grow customModeInlineButton infusedMode_booleanButtonLong">Negative Tiles:&nbsp;<span>Respected</span></div>
                     </div>
@@ -3088,42 +3096,42 @@
                     </div>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gmDisplayScript</h3>
+                    <h3>gmDisplayScript (35)</h3>
                     <p>This CalcArray is run every time any setting on the pre-game screen is changed.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>displayGridIntervalTime</h3>
+                    <h3>displayGridIntervalTime (36)</h3>
                     <p>The grid, statBoxes, etc. are re-displayed once every this many milliseconds even if you're not moving, to support things involving the real-time @ values.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>modifiersOverride</h3>
+                    <h3>modifiersOverride (37)</h3>
                     <p>An array of forced values for particular Modifiers. (Does not work on the grid and directions modifiers)</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>settingModifiersOverride</h3>
+                    <h3>settingModifiersOverride (38)</h3>
                     <p>An array of forced values for particular Settings. (Does not work on the "save on reload" settings)</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>spawnTileBlocked</h3>
+                    <h3>spawnTileBlocked (39)</h3>
                     <p>If this CalcArray returns true at a particular spot on the grid when a tile is trying to spawn, that spot will not be a valid spawning location for that tile.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>directionBlocked</h3>
+                    <h3>directionBlocked (40)</h3>
                     <p>If this CalcArray returns true on a particular direction, you cannot move in that direction this turn.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>gameplayComponentOpacities</h3>
+                    <h3>gameplayComponentOpacities (41)</h3>
                     <p>Makes various parts of the game be partially transparent, or hidden entirely if less than 0.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
                 <div class="infusedCreationBox">
-                    <h3>displayLagReductions</h3>
+                    <h3>displayLagReductions (42)</h3>
                     <p>An array of CalcArrays that cause certain parts of the game to not update their appearances if they result in true.</p>
                     <textarea class="infusedCreation_textarea"></textarea>
                 </div>
@@ -3831,8 +3839,7 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v3.0 (Jul. 15, 2026) [Current Version]: Added modding tools to create "Infused Modes" (import the word "Infuse" (without the quotes) into any
+                            v3.0 (Jul. 15, 2026): Added modding tools to create "Infused Modes" (import the word "Infuse" (without the quotes) into any
                             save code slot to access them. See the
                             <a href="https://mathcookie17.github.io/Blog%20Posts/CalcArray%20Documentation.html">CalcArray documentation</a> for more
                             information).
@@ -3854,6 +3861,11 @@
                             and added mode modifiers for the merge rule and the spawning tiles to RACUTE.
                             Added an option to include an icon tile for Custom Modes.
                             Made several touchups, bugfixes, and internal changes.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v3.0.1 (Jul. 16, 2026) [Current Version]: Fixed various small bugs and typos from v3.0.
                         </b>
                       </li>
                     </ul>
@@ -4126,6 +4138,15 @@
                         To see more examples of Custom Modes people have made, click the button below.
                     </p>
                     <a id="customGuide_moreExamplesLink" class="hover_grow guide_button" href="moreCustomModeExamples.html" target="_self">See More Examples</a>
+                </div>
+                <div id="customGuide_Infused" class="guide_box">
+                    <p>
+                        If you want to make a mode more advanced than what the Custom Mode Maker is capable of, you'll probably want to create a modded mode,
+                        which means you'll need to know how to program modes into the game.
+                        The 2048 Power Compendium has in-built tools for creating modded modes known as "Infused Modes". To access and learn about these tools,
+                        import "Infused" (without the quotes) into any save code slot, or click the button below:
+                    </p>
+                    <div id="customGuide_infusedLink" class="hover_grow guide_button">Enter Infused Mode Control Unit</div>
                 </div>
                 <div id="customGuide_bottomspace" class="guide_bottomspace"></div>
                 <div id="customGuide_return" class="hover_grow guide_return">Return to menu</div>

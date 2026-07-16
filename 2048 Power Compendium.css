@@ -489,6 +489,7 @@ html {
     display: none;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 #gm_size_line {
     display: flex;
@@ -2724,6 +2725,13 @@ html {
     margin: auto;
     /* font-size: calc(var(--base_size) * 4); */
 }
+#voidTilerIntro_lagReduction {
+    color: #ffffff;
+    background-color: #8d8d8d;
+    border-color: solid #ffffff;
+    margin: auto;
+    /* font-size: calc(var(--base_size) * 4); */
+}
 #customModeVoidMonologue {
     font-weight: bold;
 }
@@ -3200,6 +3208,11 @@ html {
     color: #fff07b;
     border-color: #fff07b;
 }
+#customGuide_Infused {
+    background-color: #9b7700;
+    color: #daff37;
+    border-color: #daff37;
+}
 .customGuide_exampleRecreation {
     background-color: #645500;
     color: #ffd900;
@@ -3232,6 +3245,13 @@ html {
     color: #ee00ff;
     width: 50%;
     border: calc(var(--base_size) * 0.75) solid #ee00ff;
+    text-decoration: none;
+}
+#customGuide_infusedLink {
+    background-color: #755000;
+    color: #ffd35c;
+    width: 50%;
+    border: calc(var(--base_size) * 0.75) solid #ffd35c;
     text-decoration: none;
 }
 #moreCustom_pageLine {
