@@ -13609,9 +13609,9 @@ function gmDisplayVars() {
                 ["p", "Spawning tiles: 1 (100%)"]);
             }
             else {
-                displayRules("rules_text", ["h1", "2740"], ["p", ["@TextE","Two tiles can merge if their ratio is a perfect power of some rational number, i.e. it can be written as x",["@Superscript","y"]," where x is a rational number and y is an integer above 1. Get to the 3450 tile to win (your first task is figuring out how to get there...), or see what other tiles you can make!", negativeBehaviorString]],
+                displayRules("rules_text", ["h1", "2740"], ["p", ["@TextE","Two tiles can merge if their ratio is a perfect power of some rational number, i.e. it can be written as x",["@Superscript","y"]," where x is a rational number and y is an integer above 1. Get to the 2740 tile to win (your first task is figuring out how to get there...), or see what other tiles you can make!", negativeBehaviorString]],
                 ["p", "Spawning tiles: 1 (100%)"]);
-                displayRules("gm_rules_text", ["h1", "2740"], ["p", ["@TextE","Two tiles can merge if their ratio is a perfect power of some rational number, i.e. it can be written as x",["@Superscript","y"]," where x is a rational number and y is an integer above 1. Get to the 3450 tile to win (your first task is figuring out how to get there...), or see what other tiles you can make!", negativeBehaviorString]],
+                displayRules("gm_rules_text", ["h1", "2740"], ["p", ["@TextE","Two tiles can merge if their ratio is a perfect power of some rational number, i.e. it can be written as x",["@Superscript","y"]," where x is a rational number and y is an integer above 1. Get to the 2740 tile to win (your first task is figuring out how to get there...), or see what other tiles you can make!", negativeBehaviorString]],
                 ["p", "Spawning tiles: 1 (100%)"]);
             }
         }
@@ -32262,7 +32262,7 @@ function importSave(code, reloadSave = false, savescumless = false) {
                     coderesults.push(SCparse(importFunction(codebits[44]))); //coderesults[42] is directionBlocked
                     coderesults.push(SCparse(importFunction(codebits[45]))); //coderesults[43] is gameplayComponentOpacities
                     coderesults.push(Number(importFunction(codebits[46]))); //coderesults[44] is displayGridIntervalIncludesTiles
-                    coderesults.push(Number(importFunction(codebits[47]))); //coderesults[45] is start_mvar_indices
+                    coderesults.push(SCparse(importFunction(codebits[47]))); //coderesults[45] is start_mvar_indices
                 }
                 if (codebits[0] == "@2048PowCompGame") {
                     let midgameStart;
