@@ -15458,46 +15458,29 @@ function gmDisplayVars() {
             document.documentElement.style.setProperty("--background-color", "repeating-conic-gradient(from -45deg, #0000, #0000, #f58505, #0000, #0000 90deg), repeating-conic-gradient(#c5c500 0deg,#eeee65 45deg,#8f8f00 90deg)");
             if(mode_vars[4] <= 2) document.getElementById("Alternate5040_num_minus").style.setProperty("display", "none");
             if(mode_vars[3] == 0) {
-                if(mode_vars[4] == Infinity) {
-                    knownMergeLookbackDistance = 0;
-                    MergeRules.push(
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", [["@Next 1 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", ["@This 1", "/", 1.618034, "round", 1, "=", ["@Next 1 1", "Number"]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", [["@Next 1 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", ["@This 1", "/", 1.618034, "round", 1, "=", ["@Next 1 1", "Number"]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@Next 1 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", ["@This 1", "+", ["@This 1", "/", 1.618034, "round", 1], ">", CAM1Entry], "&&", ["@This 1", ">", "@Next 1 1"], "&&", [[CAM1Entry, "-B", "@This 1", "zeckendorf"], "arr_elem", -1, "=", ["@Next 1 1", "Number"]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@Next 1 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", ["@This 1", "+", ["@This 1", "/", 1.618034, "round", 1], ">", CAM1Entry], "&&", ["@This 1", ">", "@Next 1 1"], "&&", [[CAM1Entry, "-B", "@This 1", "zeckendorf"], "arr_elem", -1, "=", ["@Next 1 1", "Number"]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
-                    )
-                    rulesDescription += "A tile that is F(k) * " + nfact + " can merge with a F(k - 1) * " + nfact + " if their sum is no greater than " + nonefact + ". The largest such F(k) * " + nfact + " merges with each of the tiles (besides itself) in " + none + "'s Zeckendorf representation (" + none + " as a sum using non-consecutive fibonacci numbers), where each smaller tile in " + none + "'s representation is multiplied by n!, and also starting from the smallest values of k and going up. Get to the " + goalText + " tile to win! (F(n) refers to the nth fibonacci number)";
-                    knownMergeMaxLength = 2;
-                    if(Array.isArray(mode_vars[1])) {
-                        rulesDescription = "Follow the paths to get from (n-1)! to n! (pretending the start of each tier is (n-1)!) in Alternate 5040 (Base-Phi 3375 Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
-                    }
-                    rulesTitle[1] = "Base-Phi 3375";
+                knownMergeLookbackDistance = 0;
+                let conditional = [];
+                let lastArray = [false];
+                for(let f = 1; f < mode_vars[4]; f++) {
+                    conditional.push("&&", ["@This 0", "=", "@Next " + f + " 0"], "&&", ["@This 1", "=", "@Next " + f + " 1"]);
+                    lastArray.push(true);
                 }
-                else {
-                    knownMergeLookbackDistance = 0;
-                    let conditional = [];
-                    let lastArray = [false];
-                    for(let f = 1; f < mode_vars[4]; f++) {
-                        conditional.push("&&", ["@This 0", "=", "@Next " + f + " 0"], "&&", ["@This 1", "=", "@Next " + f + " 1"]);
-                        lastArray.push(true);
-                    }
-                    MergeRules.push(
-                        [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "<", CAM1Entry]], true, [["@This 0", [BigInt(mode_vars[4]), "*B", "@This 1"]]], [], lastArray.slice()],
-                        [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()],
-                        [2, [["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", ">", CAM1Entry], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", [BigInt(mode_vars[4]), "^B", ["@Next 1 1", "expomodB", BigInt(mode_vars[4])], "=", "@Next 1 1"], "&&", [[CAM1Entry, "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]], ">", ["@This 1", "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]]], "&&", [CAM1Entry, "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])], "%B", "@Next 1 1", "=", 0n]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                        [2, [["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", ">", CAM1Entry], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", [BigInt(mode_vars[4]), "^B", ["@Next 1 1", "expomodB", BigInt(mode_vars[4])], "=", "@Next 1 1"], "&&", [[CAM1Entry, "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]], ">", ["@This 1", "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]]], "&&", [[CAM1Entry, "modB", ["@Next 1 1", "/B", BigInt(mode_vars[4])]], "=", ["@This 1", "modB", ["@Next 1 1", "/B", BigInt(mode_vars[4])]]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
-                    )
-                    rulesDescription += mode_vars[4] + " equal tiles that are each " + mode_vars[4] + "^k * " + nfact + " can merge if their sum is no greater than " + nonefact + ". The largest such " + mode_vars[4] + "^k * " + nfact + " tile merges with enough of each of the other tiles that are also some " + mode_vars[4] + "^k * " + nfact + " to make its base " + mode_vars[4] + " representation equal to " + nfact + ", starting from the smallest values of k and going up. Get to the " + goalText + " tile to win!";
-                    knownMergeMaxLength = mode_vars[4];
-                    if(Array.isArray(mode_vars[1])) {
-                        rulesDescription = "Follow the paths to get from (n-1)! to n! (pretending the start of each tier is (n-1)!) in Alternate 5040 (Base-" + mode_vars[4] + " 3375 Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
-                    }
-                    if(mode_vars[4] == 2) rulesTitle[1] = "3375";
-                    else rulesTitle[1] = "Base-" + mode_vars[4] + " 3375";
+                MergeRules.push(
+                    [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "<", CAM1Entry]], true, [["@This 0", [BigInt(mode_vars[4]), "*B", "@This 1"]]], [], lastArray.slice()],
+                    [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()],
+                    [2, [["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", ">", CAM1Entry], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", [BigInt(mode_vars[4]), "^B", ["@Next 1 1", "expomodB", BigInt(mode_vars[4])], "=", "@Next 1 1"], "&&", [[CAM1Entry, "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]], ">", ["@This 1", "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]]], "&&", [[CAM1Entry, "-B", "@This 1"], "%B", "@Next 1 1", "=", 0n]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
+                    [2, [["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", ">", CAM1Entry], "&&", ["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", ">=", "@Next 1 1"], "&&", [BigInt(mode_vars[4]), "^B", ["@Next 1 1", "expomodB", BigInt(mode_vars[4])], "=", "@Next 1 1"], "&&", [[CAM1Entry, "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]], ">", ["@This 1", "%B", ["@Next 1 1", "*B", BigInt(mode_vars[4])]]], "&&", [[CAM1Entry, "modB", ["@Next 1 1", "/B", BigInt(mode_vars[4])]], "=", ["@This 1", "modB", ["@Next 1 1", "/B", BigInt(mode_vars[4])]]]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
+                )
+                rulesDescription += mode_vars[4] + " equal tiles that are each " + mode_vars[4] + "^k * " + nfact + " can merge if their sum is no greater than " + nonefact + ". The largest such " + mode_vars[4] + "^k * " + nfact + " tile merges with enough of each of the other tiles that are also some " + mode_vars[4] + "^k * " + nfact + " to make its base " + mode_vars[4] + " representation equal to " + nfact + ", starting from the smallest values of k and going up. Get to the " + goalText + " tile to win!";
+                knownMergeMaxLength = mode_vars[4];
+                if(Array.isArray(mode_vars[1])) {
+                    rulesDescription = "Follow the paths to get from (n-1)! to n! (pretending the start of each tier is (n-1)!) in Alternate 5040 (Base-" + mode_vars[4] + " 3375 Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
                 }
+                if(mode_vars[4] == 2) rulesTitle[1] = "3375";
+                else rulesTitle[1] = "Base-" + mode_vars[4] + " 3375";
             }
             else if(mode_vars[3] == 1) { // Digitwise 3375 variant
-                if(mode_vars[4] == Infinity || mode_vars[4] == 2) {
+                if(mode_vars[4] == 2) {
                     mode_vars[4] = 3;
                     loadGridSize(100);
                     gmDisplayVars();
@@ -15528,57 +15511,33 @@ function gmDisplayVars() {
             else if(mode_vars[3] == 2) { // Easier 2401 variant
                 knownMergeMaxLength = max(width, height);
                 knownMergeLookbackDistance = 0;
-                if(mode_vars[4] == Infinity) {
-                    MergeRules.push(
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", [["@Next 1 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", ["@This 1", "/", 1.618034, "round", 1, "=", ["@Next 1 1", "Number"]], "&&", ["@This 1", "+B", "@Next 1 1", "<", CAM1Entry]], false, [["@This 0", ["@This 1", "+B", "@Next 1 1"]]], [], [false, true]],
-                        [2, [["@This 0", "=", "@Next 1 0"], "&&", ["@This 1", "!=", 0n], "&&", ["@Next 1 1", "!=", 0n], "&&", [["@This 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", [["@Next 1 1", "zeckendorf"], "arr_length", "arr_elem", 0, "=", 1], "&&", ["@This 1", "/", 1.618034, "round", 1, "=", ["@Next 1 1", "Number"]], "&&", ["@This 1", "+B", "@Next 1 1", "=", CAM1Entry]], false, [[["@This 0", "+B", 1n], baseTile]], [], [false, true]]
-                    )
-                    let conditional = [];
-                    let tileSums = ["@This 1"];
-                    let lastArray = [false];
-                    for(let f = 2; f <= max(width, height); f++) {
-                        conditional.push("&&", ["@This 0", "=", "@Next " + (f - 1) + " 0"]);
-                        tileSums.push("+B", "@Next " + (f - 1) + " 1");
-                        lastArray.push(true);
-                        MergeRules.unshift(
-                            [f, [conditional.slice(1), "&&", [[CAM1Entry, "zeckendorfB"], "arr_length", "=", f], "&&", [tileSums.slice(), "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]
-                        );
-                    }
-                    rulesDescription += "A tile that is F(k) * " + nfact + " can merge with a F(k - 1) * " + nfact + " if their sum is no greater than " + nonefact + ". The largest such F(k) * " + nfact + " merges with each of the tiles (besides itself) in " + none + "'s Zeckendorf representation (" + none + " as a sum using non-consecutive fibonacci numbers), where each smaller tile in " + none + "'s representation is multiplied by n!, all in one merge. Get to the " + goalText + " tile to win! (F(n) refers to the nth fibonacci number)";
-                    if(Array.isArray(mode_vars[1])) {
-                        rulesDescription = "Follow the paths to get from (n-1)! to n! (pretending the start of each tier is (n-1)!) in Alternate 5040 (Base-Phi Easier 2401 Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
-                    }
-                    rulesTitle[1] = "Base-Phi Easier 2401";
+                let conditional = [];
+                let lastArray = [false];
+                for(let f = 1; f < mode_vars[4]; f++) {
+                    conditional.push("&&", ["@This 0", "=", "@Next " + f + " 0"], "&&", ["@This 1", "=", "@Next " + f + " 1"]);
+                    lastArray.push(true);
                 }
-                else {
-                    let conditional = [];
-                    let lastArray = [false];
-                    for(let f = 1; f < mode_vars[4]; f++) {
-                        conditional.push("&&", ["@This 0", "=", "@Next " + f + " 0"], "&&", ["@This 1", "=", "@Next " + f + " 1"]);
-                        lastArray.push(true);
-                    }
-                    MergeRules.push(
-                        [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "<", CAM1Entry]], true, [["@This 0", [BigInt(mode_vars[4]), "*B", "@This 1"]]], [], lastArray.slice()],
-                        [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()]
-                    )
-                    conditional = [];
-                    let tileSums = ["@This 1"];
-                    lastArray = [false];
-                    for(let f = 2; f <= max(width, height); f++) {
-                        conditional.push("&&", ["@This 0", "=", "@Next " + (f - 1) + " 0"]);
-                        tileSums.push("+B", "@Next " + (f - 1) + " 1");
-                        lastArray.push(true);
-                        MergeRules.unshift(
-                            [f, [conditional.slice(1), "&&", ["@global_var_retain_inner", CAM1Entry, 0, "@end_vars", [0, "@repeat", ["@Var 0", ">", 0n], [0, "@edit_var", 1, ["@Var 1", "+", ["@Var 0", "%", mode_vars[4]]], "@edit_var", 0, ["@Var 0", "/", mode_vars[4], "floor", 1]], "@end-repeat", "2nd", [f, "=", "@Var 1"]]], "&&", [tileSums.slice(), "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]
-                        );
-                    }
-                    rulesDescription += mode_vars[4] + " equal tiles that are each " + mode_vars[4] + "^k * " + nfact + " can merge if their sum is no greater than " + nonefact + ". The largest such " + mode_vars[4] + "^k * " + nfact + " tile merges with enough of each of the other tiles that are also some " + mode_vars[4] + "^k * " + nfact + " in its base " + mode_vars[4] + " representation, all in one merge. Get to the " + goalText + " tile to win!";
-                    if(Array.isArray(mode_vars[1])) {
-                        rulesDescription = "Follow the paths to get from (n-1)! to n! (pretending the start of each tier is (n-1)!) in Alternate 5040 (Base-" + mode_vars[4] + " Easier 2401 Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
-                    }
-                    if(mode_vars[4] == 2) rulesTitle[1] = "Easier 2401";
-                    else rulesTitle[1] = "Base-" + mode_vars[4] + " Easier 2401";
+                MergeRules.push(
+                    [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "<", CAM1Entry]], true, [["@This 0", [BigInt(mode_vars[4]), "*B", "@This 1"]]], [], lastArray.slice()],
+                    [Number(mode_vars[4]), [conditional.slice(1), "&&", ["@This 1", "!=", 0n], "&&", [BigInt(mode_vars[4]), "^B", ["@This 1", "expomodB", BigInt(mode_vars[4])], "=", "@This 1"], "&&", [BigInt(mode_vars[4]), "*B", "@This 1", "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()]
+                )
+                conditional = [];
+                let tileSums = ["@This 1"];
+                lastArray = [false];
+                for(let f = 2; f <= max(width, height); f++) {
+                    conditional.push("&&", ["@This 0", "=", "@Next " + (f - 1) + " 0"]);
+                    tileSums.push("+B", "@Next " + (f - 1) + " 1");
+                    lastArray.push(true);
+                    MergeRules.unshift(
+                        [f, [conditional.slice(1), "&&", ["@global_var_retain_inner", CAM1Entry, 0, "@end_vars", [0, "@repeat", ["@Var 0", ">", 0n], [0, "@edit_var", 1, ["@Var 1", "+", ["@Var 0", "%", mode_vars[4]]], "@edit_var", 0, ["@Var 0", "/", mode_vars[4], "floor", 1]], "@end-repeat", "2nd", [f, "=", "@Var 1"]]], "&&", [tileSums.slice(), "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], 1n]], [], lastArray.slice()]
+                    );
                 }
+                rulesDescription += mode_vars[4] + " equal tiles that are each " + mode_vars[4] + "^k * " + nfact + " can merge if their sum is no greater than " + nonefact + ". The largest such " + mode_vars[4] + "^k * " + nfact + " tile merges with enough of each of the other tiles that are also some " + mode_vars[4] + "^k * " + nfact + " in its base " + mode_vars[4] + " representation, all in one merge. Get to the " + goalText + " tile to win!";
+                if(Array.isArray(mode_vars[1])) {
+                    rulesDescription = "Follow the paths to get from (n-1)! to n! (pretending the start of each tier is (n-1)!) in Alternate 5040 (Base-" + mode_vars[4] + " Easier 2401 Variant) for the following n's in a cycle: " + arrayListString + ". Get to the " + arrayWinCondition + " tile to win!";
+                }
+                if(mode_vars[4] == 2) rulesTitle[1] = "Easier 2401";
+                else rulesTitle[1] = "Base-" + mode_vars[4] + " Easier 2401";
             }
         }
         else if(mode_vars[0] == 18) { // X^Y variant
@@ -16901,6 +16860,7 @@ function gmDisplayVars() {
             document.getElementById("gm_big_tile").innerHTML = CalcArray(SCparse(infusedModeValues[31]), ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]]);
             document.getElementById("gm_big_tile").style.setProperty("--gm_tfs", CalcArray(SCparse(infusedModeValues[32]), ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]]) * 1.25);
             document.getElementById("gm_big_tile").style.setProperty("background-color", evaluateColor(SCparse(infusedModeValues[33], ...[,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]])));
+            document.getElementById("gm_big_tile").style.setProperty("background-image", "none");
             document.getElementById("gm_big_tile").style.setProperty("background-image", evaluateColor(SCparse(infusedModeValues[33], ...[,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]])));
         }
         let modifiersList = SCparse(infusedModeValues[28]);
@@ -31498,7 +31458,7 @@ function infuseFromGame() {
         infusedModeValues[32] = "false";
         infusedModeValues[33] = "false";
     }
-    infusedModeValues[34] = [true, true, true, true];
+    infusedModeValues[34] = [true, true, true, true, true];
     if (gamemode == -1 && mode_vars[0]) infusedModeValues[34][0] = false;
     infusedModeValues[35] = "[]";
     infusedModeValues[37] = "[]";
