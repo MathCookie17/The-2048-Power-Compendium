@@ -3785,8 +3785,8 @@ document.getElementById("PPPA377_enter_button").addEventListener("click", functi
 });
 
 // Load saves
-let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4", "2.1.13", "2.1.14", "2.2", "2.2.2", "2.2.3", "2.3", "3.0"];
-let validReplayCodeVersions = ["2.2", "2.2.2", "2.3.1", "3.0"];
+let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4", "2.1.13", "2.1.14", "2.2", "2.2.2", "2.2.3", "2.3", "3.0", "3.0.5"];
+let validReplayCodeVersions = ["2.2", "2.2.2", "2.3.1", "3.0", "3.0.5"];
 let inputAvailable = false;
 if (localStorage.getItem("settingsReloadSave")) {
     settingModifiers = SCparse(localStorage.getItem("settingsReloadSave"));
@@ -16994,8 +16994,9 @@ function gmDisplayVars() {
         }
     }
     document.documentElement.style.setProperty("background-image", "none");
-    document.documentElement.style.setProperty("background-color", he.encode(evaluateColor(gmBackground)));
-    document.documentElement.style.setProperty("background-image", he.encode(evaluateColor(gmBackground)));
+    let encodedBackground = he.encode(evaluateColor(gmBackground));
+    if (encodedBackground.indexOf("gradient") == -1) document.documentElement.style.setProperty("background-image", "linear-gradient(" + encodedBackground + ", " + encodedBackground + ")")
+    else document.documentElement.style.setProperty("background-image", he.encode(evaluateColor(gmBackground)));
     let tempGRT = compendiumStructuredClone(gmRulesText);
     if (tempGRT[0] == "@CalcArray") tempGRT = CalcArray(tempGRT);
     displayRulesSNO("gm_rules_text", ...tempGRT);
@@ -18648,6 +18649,12 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         let scheme = display[3];
         let prime_amount = 48;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         while (primes.length < prime_amount && primes[primes.length - 1] < abs(value)) primesUpdate(primes[primes.length - 1] * 2n);
         let subtile_size = 0.6;
         let all_factors = [];
@@ -18670,7 +18677,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             }
             if (value == 0n) {
                 tile.style.setProperty("color", "#888");
-                tile.style.setProperty("background-color", "#444");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 68, 68, 68, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "0px 0px 5px #222");
                 return;
             }
@@ -18680,13 +18687,14 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         while (factors[factors.length - 1] === 0) factors.pop();
         while (factors.length < 3) factors.push(0);
         tile.style.setProperty("background-image", "none");
-        tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative));
+        tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative, backgroundOpacity));
         if (negative) tile.style.setProperty("color", threeFactorColor(factors.slice(0, 3), scheme));
-        else tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme));
         let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
         if (getComputedStyle(tile).getPropertyValue("border-style") != "none") borderWidth = getComputedStyle(tile).getPropertyValue("border-width");
         if (factors.length > 3) {
+            tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative));
             let bcol = RGBtoArray(getComputedStyle(tile).getPropertyValue("background-color"));
+            tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, negative, backgroundOpacity));
             let rcol = "#444";
             if (bcol[0] == 0 && bcol[1] == 0 && bcol[2] == 0) rcol = "#444";
             else {
@@ -18697,21 +18705,22 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 if (factors[p] > 0) {
                     let primePower = primeFactorize(factors[p], 3);
                     if (p == 3) {
-                        for (let p = 0; p < primePower.length; p++) {
-                            let icol = threeFactorColor(primePower[p], scheme);
-                                let pImage = document.createElement("div");
-                                pImage.classList.add("primeImage");
-                                tile.appendChild(pImage);
-                                if (primeDefactorize(primePower[p]) == 1n) pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 56%, #0000 56%)");
-                                else pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 50%, " + icol + " 50% 54%, " + rcol + " 54% 56%, #0000 56%)");
-                                if (primePower.length > 1) {
-                                    if (p == 0) pImage.style.setProperty("mask-image", "conic-gradient(#000 0deg " + 360/primePower.length * 0.49 + "deg, #0000 " + 360/primePower.length * 0.49 + "deg " + (360 - 360/primePower.length * 0.49) + "deg, #000 " + (360 - 360/primePower.length * 0.49) + "deg)");
-                                    else pImage.style.setProperty("mask-image", "conic-gradient(#0000 0deg " + 360/primePower.length * (p - 0.49) + "deg, #000 " + 360/primePower.length * (p - 0.49) + "deg " + 360/primePower.length * (p + 0.49) + "deg, #0000 " + 360/primePower.length * (p + 0.49) + "deg)");
+                        for (let pm = 0; pm < primePower.length; pm++) {
+                            let icol = threeFactorColor(primePower[pm], scheme, false, backgroundOpacity);
+                            let pImage = document.createElement("div");
+                            pImage.classList.add("primeImage");
+                            tile.appendChild(pImage);
+                            if (primeDefactorize(primePower[pm]) == 1n) pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 56%, #0000 56%)");
+                            else pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 48%, " + rcol + " 48% 50%, " + icol + " 50% 54%, " + rcol + " 54% 56%, #0000 56%)");
+                            if (primePower.length > 1) {
+                                if (pm == 0) pImage.style.setProperty("mask-image", "conic-gradient(#000 0deg " + 360/primePower.length * 0.49 + "deg, #0000 " + 360/primePower.length * 0.49 + "deg " + (360 - 360/primePower.length * 0.49) + "deg, #000 " + (360 - 360/primePower.length * 0.49) + "deg)");
+                                else pImage.style.setProperty("mask-image", "conic-gradient(#0000 0deg " + 360/primePower.length * (pm - 0.49) + "deg, #000 " + 360/primePower.length * (pm - 0.49) + "deg " + 360/primePower.length * (pm + 0.49) + "deg, #0000 " + 360/primePower.length * (pm + 0.49) + "deg)");
                             }
                         }
                     }
                     else if (p < 12) {
                         let pImage = document.createElement("div");
+                        pImage.style.setProperty("opacity", effectOpacity);
                         tile.appendChild(pImage);
                         if (p == 4) {
                             pImage.classList.add("VSideBox");
@@ -18798,6 +18807,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                     if (c == 0) pImage.style.setProperty("background-image", "conic-gradient(" + post37colors[c] + " 0deg " + (width / 4) + "deg, " + rcol + " " + (width / 2) + "deg, #0000 " + (width / 2) + "deg " + (360 - width / 2) + "deg, " + rcol + " " + (360 - width / 2) + "deg, " + post37colors[c] + " " + (360 - width / 4) + "deg 360deg)")
                     else pImage.style.setProperty("background-image", "conic-gradient(#0000 0deg " + (center - width / 2) + "deg, " + rcol + " " + (center - width / 2) + "deg, " + post37colors[c] + " " + (center - width / 4) + "deg " + (center + width / 4) + "deg, " + rcol + " " + (center + width / 2) + "deg, #0000 " + (center + width / 2) + "deg)");
                     pImage.style.setProperty("mask-image", "radial-gradient(#000, #0000)");
+                    pImage.style.setProperty("opacity", effectOpacity);
                 }
             }
         }
@@ -18818,6 +18828,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity);
             display[4][0] = ["@Literal"].concat(all_factors.slice(1));
             displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display.slice(0, 5));
         }
@@ -18826,6 +18837,12 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         let scheme = display[3];
         let prime_amount = 168;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         while ((!Array.isArray(value) && primes.length < prime_amount && primes[primes.length - 1] < abs(value)) || (Array.isArray(value) && primes.length < value[0].length)) primesUpdate(primes[primes.length - 1] * 2n);
         let subtile_size = 0.5;
         let all_factors = [];
@@ -18857,7 +18874,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         while (factors[factors.length - 1] === 0) factors.pop();
         while (factors.length < 3) factors.push(0n);
         tile.style.setProperty("background-image", "none");
-        tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme));
+        tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), scheme, false, backgroundOpacity));
         let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
         if (getComputedStyle(tile).getPropertyValue("border-style") != "none") borderWidth = getComputedStyle(tile).getPropertyValue("border-width");
         if (factors.length > 3) {
@@ -19023,7 +19040,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                         }
                         pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
                     }
-                    pImage.style.setProperty("opacity", 0.5 * Number(factors[p]));
+                    pImage.style.setProperty("opacity", 0.5 * Math.min(2, Number(factors[p])) * effectOpacity);
                 }
             }
         }
@@ -19032,6 +19049,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             tile.appendChild(pImage);
             pImage.classList.add("primeImage");
             pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + threeFactorColor(factors.slice(0, 3), scheme, true) + ")");
+            pImage.style.setProperty("opacity", effectOpacity);
         }
         if (negative != scheme.includes("Anti") && value != 0n) {
             tile.style.setProperty("color", "black");
@@ -19054,6 +19072,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity);
             display[4][0] = ["@Literal"].concat(all_factors.slice(1));
             displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display.slice(0, 5));
         }
@@ -19293,6 +19312,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 tile.style.setProperty("color", "black");
                 tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
             }
+            pImage.style.setProperty("opacity", effectOpacity);
         }
         if (all_factors.length > 1) {
             let subtile = document.createElement("div");
@@ -19609,6 +19629,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             if (value == 0n) {
                 tile.style.setProperty("color", "#444");
                 tile.style.setProperty("background-color", "#888");
+                if (display[3] == "SCAPRIM" && params.length > 1) tile.style.setProperty("background-color", evaluateColor(["@RGBA", 136, 136, 136, params[1]]));
                 tile.style.setProperty("text-shadow", "none");
                 tile.style.setProperty("background-image", "none");
                 return;
@@ -19622,6 +19643,10 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         let defactoredValue = Number(primeDefactorize(all_factors[0], 2));
         let factors = all_factors[0];
         if (display[3] == "SCAPRIM") {
+            let backgroundOpacity = 1;
+            if (params.length > 1) backgroundOpacity = params[1];
+            let effectOpacity = 1;
+            if (params.length > 2) effectOpacity = params[2];
             if (negative) {
                 tile.style.setProperty("color", "#000");
                 tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
@@ -19630,8 +19655,8 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 tile.style.setProperty("color", "#fff");
                 tile.style.setProperty("text-shadow", "0px 0px 5px #000");
             }
-            let background = ["@HSLA", 200 - Math.log2(Number(defactoredValue)) * 53, 100, 90 - 90 * Number(defactoredValue)**-0.15, 1];
-            if (negative) background = ["@HSLA", 20 - Math.log2(Number(defactoredValue)) * 53, 100, 10 + 90 * Number(defactoredValue)**-0.15, 1];
+            let background = ["@HSLA", 200 - Math.log2(Number(defactoredValue)) * 53, 100, 90 - 90 * Number(defactoredValue)**-0.15, backgroundOpacity];
+            if (negative) background = ["@HSLA", 20 - Math.log2(Number(defactoredValue)) * 53, 100, 10 + 90 * Number(defactoredValue)**-0.15, backgroundOpacity];
             tile.style.setProperty("background-color", evaluateColor(background));
             if (negative) factors.unshift(-1n);
             for (let f = 0; f < factors.length; f++) {
@@ -19642,6 +19667,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 pImage.style.setProperty("height", (100 / (factors.length * 2 + 1)) + "%");
                 pImage.style.setProperty("top", (100 / (factors.length * 2 + 1) * (f * 2 + 1)) + "%");
                 pImage.style.setProperty("mask-image", "linear-gradient(#0000 0%, #000 7.5%, #4444 15%, #000 50%, #4444 85%, #000 92.5%, #0000 100%)");
+                pImage.style.setProperty("opacity", effectOpacity)
                 if (factors[f] == -1n) pImage.style.setProperty("background-image", "linear-gradient(90deg, #000 0%, #fff 100%)");
                 else if (factors[f] == 1n) {
                     pImage.style.setProperty("background-image", "linear-gradient(#fff 0%, #000 25% 75%, #fff 100%)");
@@ -19746,6 +19772,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+            if (display[3] == "SCAPRIM" && params.length > 3) subtile.style.setProperty("opacity", params[3]);
             display[4][0] = ["@Literal"].concat(all_factors.slice(1));
             displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display.slice(0, 5));
         }
@@ -19753,6 +19780,12 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
     else if (display[3] == "3385Single") {
         let prime_amount = 168;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         let negative = false;
         let all_factors;
         if (Array.isArray(value)) {
@@ -19768,7 +19801,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             }
             if (value == 0n) {
                 tile.style.setProperty("color", "#444");
-                tile.style.setProperty("background-color", "#888");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 136, 136, 136, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "none");
                 tile.style.setProperty("background-image", "none");
                 return;
@@ -19794,7 +19827,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             firstThree[2]++;
             factors.shift();
         }
-        tile.style.setProperty("background-color", threeFactorColor(firstThree, "3385"));
+        tile.style.setProperty("background-color", threeFactorColor(firstThree, "3385", false, backgroundOpacity));
         for (let f = 0; f < factors.length; f++) {
             let pImage = document.createElement("div");
             pImage.classList.add("primeImage");
@@ -19803,6 +19836,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             pImage.style.setProperty("width", (150 / (factors.length * 2 + 1)) + "%");
             pImage.style.setProperty("left", (100 / (factors.length * 2 + 1) * (f * 2 + 0.75)) + "%");
             pImage.style.setProperty("mask-image", "linear-gradient(90deg, #0000 0%, #000 45% 55%, #0000 100%)");
+            pImage.style.setProperty("opacity", effectOpacity);
             let factorValue = factors[f];
             let squares = [];
             while (factorValue != 0n) {
@@ -19847,7 +19881,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             let pImage = document.createElement("div");
             tile.appendChild(pImage);
             pImage.classList.add("primeImage");
-            pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + threeFactorColor(firstThree, "3385", true) + ")");
+            pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + threeFactorColor(firstThree, "3385", true, effectOpacity) + ")");
         }
         else {
             tile.style.setProperty("color", "#fff");
@@ -19872,6 +19906,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity)
             display[4][0] = ["@Literal"].concat(all_factors.slice(1));
             displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display.slice(0, 5));
         }
@@ -19952,6 +19987,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             tile.appendChild(pImage);
             pImage.classList.add("primeImage");
             pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + evaluateColor(rotateColor(["@RGBA"].concat(RGBtoArray((exponent == 1n) ? rightColor : leftColor).map(x => Number(x)), [1]), 180, true)) + " 100%)");
+            pImage.style.setProperty("opacity", effectOpacity);
             tile.style.setProperty("color", "#000");
             tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
         }
@@ -19992,6 +20028,12 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
     else if (display[3] == "LOCEF" || display[3] == "Three-Tile SQUARTSingle") {
         let prime_amount = 168;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         let all_factors = [];
         let negative = false;
         if (Array.isArray(value)) {
@@ -20012,7 +20054,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             }
             if (value == 0n) {
                 tile.style.setProperty("color", "#444");
-                tile.style.setProperty("background-color", "#888");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 136, 136, 136, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "none");
                 tile.style.setProperty("background-image", "none");
                 return;
@@ -20040,7 +20082,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             factors.shift();
         }
         factors.pop();
-        tile.style.setProperty("background-color", threeFactorColor(firstThree, display[3], negative));
+        tile.style.setProperty("background-color", threeFactorColor(firstThree, display[3], negative, backgroundOpacity));
         for (let f = 0; f < factors.length; f++) {
             let binaryDigits = baseConvert(factors[f][0] + 1n, 2n)[2];
             let sectionDigits = [];
@@ -20072,6 +20114,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 pImage.style.setProperty("background-image", evaluateColor(background));
                 pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + (direction + 90) + "deg, #0000 0% " + width * 3/4 + "%, #000b " + width * 3/4 + "% " + width + "%)")
                 direction += 180 / power;
+                pImage.style.setProperty("opacity", effectOpacity)
             }
         }
         if (evens > 0) {
@@ -20084,6 +20127,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 evensColor[3] = 100 - evensColor[3];
             }
             pImage.style.setProperty("background-image", evaluateColor(["@radial-gradient", "#0000", 0, 65, evensColor, 90, 100]));
+            pImage.style.setProperty("opacity", effectOpacity)
         }
         if (negative) {
             tile.style.setProperty("color", "#fff");
@@ -20112,6 +20156,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - (hexagonal ? 4/3 : 2) + "%");
             subtile.style.setProperty("border-width", "calc(" + borderWidth + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity)
             display[4][0] = ["@Literal"].concat(all_factors.slice(1));
             displayTile("Subtile", subtile, "None", "None", all_factors.slice(1), display.slice(0, 5));
         }
@@ -20132,10 +20177,14 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 value = 0n;
             }
         }
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
         let negative = false;
         if (value == 0n) {
             tile.style.setProperty("color", "#444");
-            tile.style.setProperty("background-color", "#888");
+            tile.style.setProperty("background-color", evaluateColor(["@RGBA", 136, 136, 136, backgroundOpacity]));
             tile.style.setProperty("text-shadow", "none");
             tile.style.setProperty("background-image", "none");
             return;
@@ -20187,7 +20236,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         if (polygon == 2n) {
             leftover = (currentTriangulars.length == 0) ? value : 1n;
         }
-        let color = ["@HSLA", (Math.log2(Number(leftover) + 2) - 2) * 141, (leftover == 1n ? 0 : 100), (leftover == 1n ? 0 : (80 * (1 - Number(leftover)**(-1/4)) + 10)), 1];
+        let color = ["@HSLA", (Math.log2(Number(leftover) + 2) - 2) * 141, (leftover == 1n ? 0 : 100), (leftover == 1n ? 0 : (80 * (1 - Number(leftover)**(-1/4)) + 10)), backgroundOpacity];
         let backgroundColor = evaluateColor(color);
         let rotatedBackground = evaluateColor(rotateColor(color, 180, true));
         tile.style.setProperty("background-color", backgroundColor);
@@ -20243,17 +20292,25 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             pImage.classList.add("primeImage");
             tile.appendChild(pImage);
             pImage.style.setProperty("background-image", evaluateColor(gradient));
+            pImage.style.setProperty("opacity", effectOpacity);
         }
         if (negative) {
             let pImage = document.createElement("div");
             tile.appendChild(pImage);
             pImage.classList.add("primeImage");
             pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + rotatedBackground + ")");
+            pImage.style.setProperty("opacity", effectOpacity);
         }
     }
     else if (display[3] == "Partial Absorb 180") {
         let prime_amount = 27;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         let all_factors = [];
         if (Array.isArray(value)) {
             all_factors = value;
@@ -20267,25 +20324,25 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             }
             if (value.eq(0)) {
                 tile.style.setProperty("color", "#fff");
-                tile.style.setProperty("background-color", "#000");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 0, 0, 0, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
                 return;
             }
             if (value.eq(Infinity)) {
                 tile.style.setProperty("color", "#ff0");
-                tile.style.setProperty("background-color", "#000");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 0, 0, 0, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "0px 0px 5px #ff8");
                 return;
             }
             if (value.eq(-Infinity)) {
                 tile.style.setProperty("color", "#0ff");
-                tile.style.setProperty("background-color", "#000");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 0, 0, 0, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "0px 0px 5px #8ff");
                 return;
             }
             if (value.isNaN()) {
                 tile.style.setProperty("color", "#f00");
-                tile.style.setProperty("background-color", "#000");
+                tile.style.setProperty("background-color", evaluateColor(["@RGBA", 0, 0, 0, backgroundOpacity]));
                 tile.style.setProperty("text-shadow", "0px 0px 5px #800");
                 return;
             }
@@ -20332,7 +20389,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 hue = Number(abs(factors[0])) / Number(abs(factors[0]) + abs(factors[1])) * 90 + 270;
             }
             startColor = [hue, saturation, lightness];
-            colors.push(evaluateColor(["@HSLA", hue, saturation, lightness, 1]));
+            colors.push(evaluateColor(["@HSLA", hue, saturation, lightness, backgroundOpacity]));
         }
         for (let f = 3; f < factors.length - 1; f += 2) {
             if (factors[f] == 0n && factors[f + 1] == 0n) colors.push("#0006");
@@ -20352,7 +20409,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                     hue = Number(abs(factors[f])) / Number(abs(factors[f]) + abs(factors[f + 1])) * 90 + 270;
                 }
                 hue += (f - 3) * 74.16407865 + 55.6230589875;
-                colors.push(evaluateColor(["@HSLA", hue, 100, lightness, 1]));
+                colors.push(evaluateColor(["@HSLA", hue, 100, lightness, effectOpacity]));
             }
         }
         tile.style.setProperty("background-color", colors[0]);
@@ -20405,6 +20462,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             pImage.classList.add("primeImage");
             tile.appendChild(pImage);
             pImage.style.setProperty("background-image", evaluateColor(["@radial-gradient", "#0000", 0, 45, ["@HSLA", startColor[0] + 180, startColor[1], 100 - startColor[2], 0.75], "#0000", 55, 100]));
+            pImage.style.setProperty("opacity", effectOpacity)
         }
         if (all_factors.length > 2) {
             let subtile = document.createElement("div");
@@ -20419,6 +20477,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
             subtile.style.setProperty("border-width", "calc(" + getComputedStyle(tile).getPropertyValue("border-width") + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity)
             displayTile("Subtile", subtile, "None", "None", [all_factors.slice(2)], display.slice(0, 5));
         }
     }
@@ -20426,6 +20485,12 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         let scheme = display[3];
         let prime_amount = 168;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         while ((!Array.isArray(value) && primes.length < prime_amount && primes[primes.length - 1] < max(abs(new BigRational(value).numerator), abs(new BigRational(value).denominator))) || (Array.isArray(value) && primes.length < value[0].length)) primesUpdate(primes[primes.length - 1] * 2n);
         let subtile_size = 0.5;
         let all_factors = [];
@@ -20463,7 +20528,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         while (factors[factors.length - 1] === 0) factors.pop();
         while (factors.length < 3) factors.push(0n);
         tile.style.setProperty("background-image", "none");
-        tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), "Rational DIVE"));
+        tile.style.setProperty("background-color", threeFactorColor(factors.slice(0, 3), "Rational DIVE", false, backgroundOpacity));
         let borderWidth = "calc(" + getComputedStyle(tile).getPropertyValue("width") + " / 40)";
         if (getComputedStyle(tile).getPropertyValue("border-style") != "none") borderWidth = getComputedStyle(tile).getPropertyValue("border-width");
         if (factors.length > 3) {
@@ -20616,7 +20681,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                         }
                         pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/6) + "%, #0000 " + (width * 1/6) + "% " + (width * 5/6) + "%, #000 " + (width * 5/6) + "% " + width + "%)");
                     }
-                    pImage.style.setProperty("opacity", 0.5 * Math.abs(Number(factors[p])));
+                    pImage.style.setProperty("opacity", 0.5 * Math.min(2, Math.abs(Number(factors[p]))) * effectOpacity);
                 }
             }
         }
@@ -20628,6 +20693,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             if (eqPrimArrays(factors.slice(0, 3), [0n, 0n, 0n])) negaColor = "#fff";
             else negaColor = threeFactorColor(factors.slice(0, 3), "Rational DIVE", true);
             pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + negaColor + ")");
+            pImage.style.setProperty("opacity", effectOpacity)
             tile.style.setProperty("color", "black");
             tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
         }
@@ -20644,12 +20710,19 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
             subtile.style.setProperty("border-width", "calc(" + getComputedStyle(tile).getPropertyValue("border-width") + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity)
             displayTile("Subtile", subtile, "None", "None", [all_factors.slice(2)], display.slice(0, 5));
         }
     }
     else if (display[3] == "Gaussian DIVE") {
         let prime_amount = 1232;
         if (params.length > 0) prime_amount = params[0];
+        let backgroundOpacity = 1;
+        if (params.length > 1) backgroundOpacity = params[1];
+        let effectOpacity = 1;
+        if (params.length > 2) effectOpacity = params[2];
+        let subtileOpacity = 1;
+        if (params.length > 3) subtileOpacity = params[3];
         let subtile_size = 0.5;
         let all_factors = [];
         if (Array.isArray(value)) {
@@ -20683,7 +20756,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
         let factors = all_factors[0];
         while (factors[factors.length - 1] == 0) factors.pop();
         while (factors.length < 6) factors.push(0);
-        tile.style.setProperty("background-image", "linear-gradient(" + threeFactorColor(factors.slice(0, 3), "GaussianDIVE1") + "0% 33.333%, " + threeFactorColor(factors.slice(3, 6), "GaussianDIVE2") + " 66.666% 100%)");
+        tile.style.setProperty("background-image", "linear-gradient(" + threeFactorColor(factors.slice(0, 3), "GaussianDIVE1", false, backgroundOpacity) + "0% 33.333%, " + threeFactorColor(factors.slice(3, 6), "GaussianDIVE2", false, backgroundOpacity) + " 66.666% 100%)");
         if (factors.length > 6) {
             for (let p = 6; p < factors.length; p++) {
                 if (factors[p] > 0) {
@@ -20814,7 +20887,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                         }
                         pImage.style.setProperty("mask-image", "repeating-linear-gradient(" + direction + "deg, #000 0% " + (width * 1/8) + "%, #0000 " + (width * 1/8) + "% " + (width * 7/8) + "%, #000 " + (width * 7/8) + "% " + width + "%)");
                     }
-                    pImage.style.setProperty("opacity", 0.5 * Number(factors[p]));
+                    pImage.style.setProperty("opacity", 0.5 * Math.min(2, Number(factors[p])) * effectOpacity);
                 }
             }
         }
@@ -20840,6 +20913,7 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             subtile.style.setProperty("left", 50 - subtile_size * 50 - 2 + "%");
             subtile.style.setProperty("top", 50 - subtile_size * 50 - 2 + "%");
             subtile.style.setProperty("border-width", "calc(" + getComputedStyle(tile).getPropertyValue("border-width") + " * " + subtile_size + ")");
+            subtile.style.setProperty("opacity", subtileOpacity)
             displayTile("Subtile", subtile, "None", "None", [all_factors.slice(3)], display.slice(0, 5));
         }
     }
@@ -26859,7 +26933,7 @@ function calcArrayReorder(arr, order) { // Changes which tiles the "@Next" strin
                 elem = split[0] + " " + order[position];
             }
             else if (split.length == 4 && split[0] == "@Relative") {
-                elem = "@Relative " + (split[1] + vdir * order[0]) + " " + (split[2] + hdir * order[0]) + " " + split[3];
+                elem = "@Relative " + (Number(split[1]) + vdir * order[0]) + " " + (Number(split[2]) + hdir * order[0]) + " " + Number(split[3]);
             }
         }
         carr[e] = elem;
@@ -26890,7 +26964,7 @@ function calcArrayMergeOffset(arr, offset) { // Changes which tiles the "@Next" 
                 else if (position > 0) elem = "@Next " + position + " " + split[2];
             }
             else if (split.length == 4 && split[0] == "@Relative") {
-                elem = "@Relative " + (split[1] + vdir * offset) + " " + (split[2] + hdir * offset) + " " + split[3];
+                elem = "@Relative " + (Number(split[1]) + vdir * offset) + " " + (Number(split[2]) + hdir * offset) + " " + Number(split[3]);
             }
         }
         else if (elem == "mergeRuleApplies" || elem == "mergeRuleAppliesNonRecursive") {
@@ -28187,6 +28261,8 @@ function threeFactorColor(factors, scheme) {
         else if (factors[0] >= factors[2] && factors[1] >= factors[2]) answer = HSVtoString(((factors[1] - factors[2]) / (factors[0] + factors[1] - factors[2] * 2) * 120), (0.7 ** factors[2] * 100), (lightnessPow ** (gcd((factors[0] - factors[2]), (factors[1] - factors[2])) - 1) * 100));
         else if (factors[1] >= factors[0] && factors[2] >= factors[0]) answer = HSVtoString(((factors[2] - factors[0]) / (factors[1]  + factors[2] - factors[0] * 2) * 120 + 120), (0.7 ** factors[0] * 100), (lightnessPow ** (gcd((factors[2] - factors[0]), (factors[1] - factors[0])) - 1) * 100));
         else if (factors[2] >= factors[1] && factors[0] >= factors[1]) answer = HSVtoString(((factors[0] - factors[1]) / (factors[2] + factors[0] - factors[1] * 2) * 120 + 240), (0.7 ** factors[1] * 100), (lightnessPow ** (gcd((factors[2] - factors[1]), (factors[0] - factors[1])) - 1) * 100));
+        answer = answer.split(", ");
+        answer = answer[0] + ", " + answer[1] + ", " + answer[2] + ", " + alpha + ")";
         if (invert) {
             answer = answer.split(", ");
             answer[0] = "hsla(" + (Number(answer[0].slice(5)) + 180);
@@ -31795,7 +31871,7 @@ function exportSave(midgame, reloadSave = false) { // A save code where midgame 
         let exportFunction = function(s){return window.btoa(he.encode(s, {'allowUnsafeSymbols': true}))}
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "3.0|"
+        SaveCode += "3.0.5|"
         SaveCode += exportFunction(String(width));
         SaveCode += "|";
         SaveCode += exportFunction(String(height));
@@ -31967,7 +32043,7 @@ function exportSave(midgame, reloadSave = false) { // A save code where midgame 
 
 function exportReplay(gameWon) {
     try {
-        let SaveCode = "@2048PowCompReplay|3.0|"
+        let SaveCode = "@2048PowCompReplay|3.0.5|"
         let exportFunction = function(s){return window.btoa(he.encode(s, {'allowUnsafeSymbols': true}))}
         SaveCode += exportFunction(String(width));
         SaveCode += "|";
@@ -32138,7 +32214,7 @@ function exportModifiersSave(reloadSave = false) {
 
 function exportInfusedSave() {
     try {
-        let SaveCode = "@2048PowCompInfused|3.0|";
+        let SaveCode = "@2048PowCompInfused|3.0.5|";
         let exportFunction = function(s){return window.btoa(he.encode(s, {'allowUnsafeSymbols': true}))}
         SaveCode += exportFunction(SCstringify(infusedModeValues));
         SaveCode += "|";
@@ -32958,7 +33034,7 @@ function importSave(code, reloadSave = false, savescumless = false) {
         }
         else if (codebits[0] == "@2048PowCompInfused") {
             let importFunction = function(s){return he.decode(window.atob(s))}
-            if (codebits[1] == "3.0") {
+            if (codebits[1] == "3.0" || codebits[1] == "3.0.5") {
                 infusedModeValues = SCparse(importFunction(codebits[2]));
                 if (infusedModeValues.length < 34) throw "Infused mode values too short"
                 if (infusedModeValues.length == 34) infusedModeValues.push([true, true, true, true, true])
@@ -33349,6 +33425,7 @@ function changeViewerScheme(increment) {
     }
     else if (subScreen == "180") {
         screenVars[1] = 48;
+        screenVars[3] = 1;
     }
     else if (subScreen == "mod 27") {
         screenVars[1] = 180;
@@ -33360,6 +33437,7 @@ function changeViewerScheme(increment) {
     else if (subScreen == "DIVE" || subScreen == "SQUART" || subScreen == "Three-Tile SQUART" || subScreen == "3385" || subScreen == "LOCEF" || subScreen == "RACUTE" || subScreen == "Anti-DIVE") {
         screenVars[1] = 168;
         if (subScreen == "3385") screenVars[3] = 2;
+        else screenVars[3] = 1;
     }
     else if (subScreen == "3069" || subScreen == "Odds-Only 3069") {
         screenVars[1] = 96;
@@ -33369,18 +33447,22 @@ function changeViewerScheme(increment) {
     }
     else if (subScreen == "SCAPRIM") {
         screenVars[1] = Infinity;
+        screenVars[3] = 1;
     }
     else if (subScreen == "1845") {
         screenVars[1] = 1229;
     }
     else if (subScreen == "TRIGAT") {
         screenVars[1] = 3;
+        screenVars[3] = 1;
     }
     else if (subScreen == "Partial Absorb 180") {
         screenVars[1] = 27;
+        screenVars[3] = 1;
     }
     else if (subScreen == "Gaussian DIVE") {
         screenVars[1] = 1232;
+        screenVars[3] = 1;
     }
     switchScreen("Tile Viewer", subScreen);
 }
