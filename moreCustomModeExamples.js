@@ -37,7 +37,7 @@ function displayExamples() {
         document.getElementById("customMoreExamples_switchCustom").style.setProperty("display", "none");
     }
     else if (category == "Infused") {
-        document.documentElement.style.setProperty("background-image", "radial-gradient( #644d00, #e98400)");
+        document.documentElement.style.setProperty("background-image", "radial-gradient( #644d00, #e9be00)");
         document.getElementById("guide").style.setProperty("color", "#f9ffa1");
         document.getElementById("MoreInfusedExamples").style.setProperty("display", "block");
         document.getElementById("customMoreExamples_switchInfused").style.setProperty("display", "none");

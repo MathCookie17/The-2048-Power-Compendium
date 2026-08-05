@@ -3300,19 +3300,19 @@ document.getElementById("customOther_loseConditionAmount_plus").addEventListener
     displayCustomMode("Other", screenVars);
 });
 document.getElementById("customOther_rulesHeadingInput").addEventListener("change", function() {
-    customRulesText[0] = he.encode(this.value);
+    customRulesText[0] = this.value;
     displayCustomMode("Other", screenVars);
 });
 document.getElementById("customOther_rulesTitleInput").addEventListener("change", function() {
-    customRulesText[1] = he.encode(this.value);
+    customRulesText[1] = this.value;
     displayCustomMode("Other", screenVars);
 });
 document.getElementById("customOther_rulesDescriptionInput").addEventListener("change", function() {
-    customRulesText[2] = he.encode(this.value);
+    customRulesText[2] = this.value;
     displayCustomMode("Other", screenVars);
 });
 document.getElementById("customOther_iconTileTextInput").addEventListener("change", function() {
-    customRulesText[4] = he.encode(this.value);
+    customRulesText[4] = this.value;
     displayCustomMode("Other", screenVars);
 });
 document.getElementById("customOther_defaultSize_minus").addEventListener("click", function(){
@@ -4754,6 +4754,7 @@ function switchScreen(screen, subscreen) {
             if ((window.screen.width / window.screen.height) <= 3/4) document.getElementById("menu_extra").innerHTML = "Switch Pages (" + subScreen + " / 4)" 
             else document.getElementById("menu_extra").innerHTML = "Switch Pages<br>(" + subScreen + " / 4)"; 
         }
+        document.getElementById("titleZero").style.setProperty("animation-delay", ((secretsFound.slice(1).indexOf(true) > -1 && secretsFound[0] === false) ? "-60s" : "0s"))
     }
     else if (screen == "Gamemode") {
         document.getElementById("gamemode").style.setProperty("display", "block");
@@ -9014,7 +9015,7 @@ function loadMode(mode) {
             TileNumAmount = 3;
             TileTypes = [
                 [["@This 2", "=", 1n], ["@TextE", ["@This 0", "defaultAbbrev"], " × ", ["@This 1", "defaultAbbrev"]], "#000", "#000000", "none", 2.5, 0, ["PrimeImage", ["@ColorScheme", "1321", [["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n], "*B", 2n], 1]], ["PrimeImage", ["@ColorScheme", "1321", ["@This 0", "*B", 2n], 1], ["@conic-gradient", -90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["PrimeImage", ["@ColorScheme", "1321", ["@This 1", "*B", 2n], 1], ["@conic-gradient", 90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["Innerscript", [["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n], "defaultAbbrevB"], "bottom-center", 6, 0]],
-                [["@This 2", "=", -1n], ["-", ["@This 0", "defaultAbbrev"], " × ", ["@This 1", "defaultAbbrev"]], "#000", "#ffffff", "none", 2.5, 0, ["PrimeImage", ["@ColorScheme", "1321", [["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n], "*B", -2n], 1]], ["PrimeImage", ["@ColorScheme", "1321", ["@This 0", "*B", -2n], 1], ["@conic-gradient", -90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["PrimeImage", ["@ColorScheme", "1321", ["@This 1", "*B", -2n], 1], ["@conic-gradient", 90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["Innerscript", [["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n], "*B", -1n, "defaultAbbrevB"], "bottom-center", 6, 0]]
+                [["@This 2", "=", -1n], ["@TextE", "-", ["@This 0", "defaultAbbrev"], " × ", ["@This 1", "defaultAbbrev"]], "#000", "#ffffff", "none", 2.5, 0, ["PrimeImage", ["@ColorScheme", "1321", [["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n], "*B", -2n], 1]], ["PrimeImage", ["@ColorScheme", "1321", ["@This 0", "*B", -2n], 1], ["@conic-gradient", -90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["PrimeImage", ["@ColorScheme", "1321", ["@This 1", "*B", -2n], 1], ["@conic-gradient", 90, "#0000", 0, 15, "#000", 60, 120, "#0000", 165]], ["Innerscript", [["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n], "*B", -1n, "defaultAbbrevB"], "bottom-center", 6, 0]]
             ];
             MergeRules = [
                 [2, [[["@This 0", "max", 1n], "*B", ["@This 1", "max", 1n]], "=", [["@Next 1 0", "max", 1n], "*B", ["@Next 1 1", "max", 1n]], "&&", ["@This 2", "=", "@Next 1 2"]], true, [[["@This 0", "+B", "@Next 1 0"], ["@This 1", "+B", "@Next 1 1"], "@This 2"]], [["@This 0", "*", "@This 1", "abs"], "+", ["@Next 1 0", "*", "@Next 1 1", "abs"], "/", ["@This 0", "gcdB", "@Next 1 0", "abs"], "/", ["@This 1", "gcdB", "@Next 1 1", "abs"]], [false, true]]
@@ -13977,6 +13978,7 @@ function gmDisplayVars() {
                 tileValueFunction = ["@This 0", "factorial", "*", "@This 1"];
             }
             if (mode_vars[0] == 10 && mode_vars[3] == 0) winConditions = [[7n, 8n]];
+            else if (mode_vars[0] == 21) winConditions = [[7n, CalcArray(["@global_var_retain_inner", 1, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<=", [nextCAM1Entry, "-", 1, "*", mode_vars[4], "Number"]], "arr_push", false, "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "None", "None", 0, 0, [1, Infinity, 0, 0], [6n]), 1n]]
             else winConditions = [[7n, 1n]];
         }
         else if (mode_vars[1] === false) {
@@ -14038,6 +14040,7 @@ function gmDisplayVars() {
                 tileValueFunction = [[0, "@end_vars", 1, "@repeat", ["@This 0", "+", 0], "@edit_var", 0, ["@var_retain", "@Var 0", "+", 1], "*", ["@var_retain", "@Var 0", "prime"], "@end-repeat"], "*", "@This 1"];
             }   
             if (mode_vars[0] == 10 && mode_vars[3] == 0) winConditions = [[5n, 13n]];
+            else if (mode_vars[0] == 21) winConditions = [[5n, CalcArray(["@global_var_retain_inner", 1, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<=", [nextCAM1Entry, "-", 1, "*", mode_vars[4], "Number"]], "arr_push", false, "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "None", "None", 0, 0, [1, Infinity, 0, 0], [4n]), 1n]]
             else winConditions = [[5n, 1n]];
         }
         else if (Array.isArray(mode_vars[1])) {
@@ -14222,6 +14225,7 @@ function gmDisplayVars() {
             }
             winConditions = [[goalPow, 1n]];
             if (mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
+            else if (mode_vars[0] == 21) winConditions = [[goalPow, CalcArray(["@global_var_retain_inner", 1, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<=", [nextCAM1Entry, "-", 1, "*", mode_vars[4], "Number"]], "arr_push", false, "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "None", "None", 0, 0, [1, Infinity, 0, 0], [goalPow-1n]), 1n]]
             if(arrayContainsRational) goalText = defaultAbbreviate(arrayWinCondition);
             else goalText = arrayWinCondition;
             rulesTitle = [defaultAbbreviate(arrayWinCondition) + " (Alternate 5040, ", ""];
@@ -14325,6 +14329,8 @@ function gmDisplayVars() {
             else if (mode_vars[1] < 256n) goalPow = 2n;
             else goalPow = 1n;
             winConditions = [[goalPow, 1n]];
+            if (mode_vars[0] == 10 && mode_vars[3] == 0) winConditions[0][1] = mode_vars[1];
+            else if (mode_vars[0] == 21) winConditions = [[goalPow, CalcArray(["@global_var_retain_inner", 1, "@end_vars", ["@Literal"], "@repeat", ["@Var 0", "<=", [nextCAM1Entry, "-", 1, "*", mode_vars[4], "Number"]], "arr_push", false, "@edit_var", 0, ["@Var 0", "+", 1], "@end-repeat"], "None", "None", 0, 0, [1, Infinity, 0, 0], [goalPow-1n]), 1n]]
             goalText = mode_vars[1]**goalPow;
             rulesTitle = [mode_vars[1]**goalPow + " (Alternate 5040, ", ""];
         }
