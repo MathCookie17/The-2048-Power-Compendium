@@ -2318,19 +2318,23 @@
             <div id="save_code_heading"></div>
             <textarea id="save_code_box"></textarea>
             <div id="save_code_button_container_1" class="save_code_button_container">
+                <div id="save_code_type" class="save_code_button_smallText hover_grow">Code Type: In-Progress Game</div>
+                <div id="save_code_txtImport" class="save_code_button hover_grow">Import from .txt file</div>
                 <div id="save_code_import" class="save_code_button hover_grow">Import Save Code</div>
-                <div id="save_code_type" class="save_code_button hover_grow">Code Type: In-Progress Game</div>
                 <div id="save_code_return_menu" class="save_code_button hover_grow">Return to menu</div>
                 <div id="save_code_return_game" class="save_code_button hover_grow">Return to game</div>
+                <div id="save_code_txtFile" class="save_code_button hover_grow">Save as .txt file</div>
             </div>
             <div id="save_code_button_container_custom" class="save_code_button_container">
                 <div id="save_code_customPrevious" class="save_code_button_smallText hover_grow">Back to Previous Page</div>
                 <div id="save_code_customPlay" class="save_code_button hover_grow">Play This Mode</div>
+                <div id="save_code_customtxtFile" class="save_code_button hover_grow">Save as .txt file</div>
                 <div id="save_code_customRestart" class="save_code_button_smallText hover_grow">Back to First Page</div>
             </div>
             <div id="save_code_button_container_infused" class="save_code_button_container">
                 <div id="save_code_infusedEdit" class="save_code_button_smallText hover_grow">Back to Editing</div>
                 <div id="save_code_infusedEnter" class="save_code_button hover_grow">Enter This Mode</div>
+                <div id="save_code_infusedtxtFile" class="save_code_button hover_grow">Save as .txt file</div>
                 <div id="save_code_infusedUnit" class="save_code_button_smallText hover_grow">Back to Control Unit</div>
             </div>
         </div>
@@ -3890,9 +3894,15 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v3.0.5 (Aug. 5, 2026) [Current Version]: Fixed a couple small bugs, and added additional internal parameters to some special color schemes
+                            v3.0.5 (Aug. 5, 2026): Fixed a couple small bugs, and added additional internal parameters to some special color schemes
                             (like DIVE's and SCAPRIM's) to make them more versatile for infused mode making.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v3.0.6 (Aug. 9, 2026) [Current Version]: Fixed bugs with infused grid and custom direction button heights,
+                            and added buttons to the save code screens to save the codes as .txt files and import from .txt files,
+                            in case they're too big for your device's copy/paste.
                         </b>
                       </li>
                     </ul>
@@ -4548,6 +4558,7 @@
     
         <div id="css_calculator"></div> <!-- Not an actual element -->
         <div id="announcements"></div>
+        <input id="saveCodeImportFileInput" style="display:none" type="file" accept=".txt">
         <script type="text/javascript" src="mathiasbynens-he/he.js"></script>
         <script type="text/javascript" src="gaussianBigInt.js"></script>
         <script type="text/javascript" src="BigRational.js"></script>

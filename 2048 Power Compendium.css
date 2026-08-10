@@ -2215,6 +2215,10 @@ html {
     color: #e8b7ff;
     background-color: #510076;
 }
+#save_code_txtFile, #save_code_txtImport, #save_code_customtxtFile, #save_code_infusedtxtFile {
+    color: #c1a5ce;
+    background-color: #633c75;
+}
 #save_code_customPrevious {
     background-color: #009dff;
     color: #001684;

@@ -1828,6 +1828,38 @@ document.getElementById("save_code_type").addEventListener("click", function(){
     displaySaveCodeMode("Save Code", screenVars[0])
     exportSave(screenVars[0] == 0);
 });
+document.getElementById("save_code_txtFile").addEventListener("click", function(){
+    let scblob = new Blob([document.getElementById("save_code_box").value], { type: 'text/plain;charset=utf-8' });
+    let scbu = URL.createObjectURL(scblob);
+    let downloadLink = document.createElement('a');
+    downloadLink.href = scbu;
+    downloadLink.download = subScreen == "Modifiers" ? '2048PCModifiersSaveCode.txt' : (screenVars[0] == 1 ? '2048PCModeSaveCode.txt' : '2048PCGameSaveCode.txt');
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(scbu);
+});
+document.getElementById("save_code_txtImport").addEventListener("click", function(e){
+    document.getElementById("saveCodeImportFileInput").click();
+});
+document.getElementById("saveCodeImportFileInput").addEventListener("change", function(e){
+    let scFile = e.target.files[0];
+    console.log("Here!")
+    if (!scFile || scFile.type != "text/plain") {
+        document.getElementById("save_code_box").value = "A text file was not provided."
+        return;
+    }
+    let reader = new FileReader();
+    reader.onload = () => {
+        document.getElementById("save_code_box").value = reader.result;
+    };
+    reader.onerror = () => {
+        document.getElementById("save_code_box").value = "An error occurred with reading the file."
+        return;
+    };
+    reader.readAsText(scFile);
+});
 document.getElementById("modifiers_settingsSwitch").addEventListener("click", function(){
     if (subScreen < 0) switchScreen("Modifiers", 1);
     else switchScreen("Modifiers", -1)
@@ -2392,7 +2424,7 @@ document.getElementById("modifiers_customArrow_height_change").addEventListener(
     if (isNaN(v)) v = 0;
     if (v < 0) v = 0;
     if (v > 100) v = 100;
-    directions[screenVars[0]][2] = v / 100;
+    directions[screenVars[0]][3] = v / 100;
     displayModifiers(3.2);
 });
 document.getElementById("modifiers_customArrow_fontsize_change").addEventListener("change", function() {
@@ -3332,6 +3364,18 @@ document.getElementById("save_code_customPlay").addEventListener("click", functi
 document.getElementById("save_code_customRestart").addEventListener("click", function(){
     switchScreen("CustomMode", "SpawningTiles");
 });
+document.getElementById("save_code_customtxtFile").addEventListener("click", function(){
+    let scblob = new Blob([document.getElementById("save_code_box").value], { type: 'text/plain;charset=utf-8' });
+    let scbu = URL.createObjectURL(scblob);
+    let downloadLink = document.createElement('a');
+    downloadLink.href = scbu;
+    downloadLink.download = '2048PCCustomSaveCode.txt'
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(scbu);
+});
 document.getElementById("infusedMode_quit").addEventListener("click", function(){
     switchScreen("CustomMode", "Infused Opening");
 });
@@ -3378,6 +3422,18 @@ document.getElementById("save_code_infusedEdit").addEventListener("click", funct
 });
 document.getElementById("save_code_infusedUnit").addEventListener("click", function(){
     switchScreen("CustomMode", "Infused Opening");
+});
+document.getElementById("save_code_infusedtxtFile").addEventListener("click", function(){
+    let scblob = new Blob([document.getElementById("save_code_box").value], { type: 'text/plain;charset=utf-8' });
+    let scbu = URL.createObjectURL(scblob);
+    let downloadLink = document.createElement('a');
+    downloadLink.href = scbu;
+    downloadLink.download = '2048PCInfusedSaveCode.txt'
+    downloadLink.style.display = 'none';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+    URL.revokeObjectURL(scbu);
 });
 document.getElementById("infusedGridWidth_plus").addEventListener("click", function(){
     infusedGridSizes[screenVars[0]][1]++;
@@ -31670,7 +31726,7 @@ function createInfusedGrid() {
     while (infusedGrids.length <= screenVars[0]) {
         let index = infusedGrids.length;
         infusedGrids.push([]);
-        for (let i = 0; i < infusedGridSizes[index][0] * infusedGridSizes[0][1]; i++) infusedGrids[index].push(false);
+        for (let i = 0; i < infusedGridSizes[index][0] * infusedGridSizes[index][1]; i++) infusedGrids[index].push(false);
     }
     let varHeight = infusedGridSizes[screenVars[0]][0];
     let varWidth = infusedGridSizes[screenVars[0]][1];
@@ -33083,6 +33139,8 @@ function displaySaveCodeMode(screen, mode) {
             document.getElementById("save_code_return_menu").style.setProperty("display", "inline-block");
             document.getElementById("save_code_import").style.setProperty("display", "inline-block");
             document.getElementById("save_code_type").style.setProperty("display", "none");
+            document.getElementById("save_code_txtFile").style.setProperty("display", "none");
+            document.getElementById("save_code_txtImport").style.setProperty("display", "inline-block");
             displayRules("save_code_heading", ["h2", "Import Save Code"], ["p", 'Paste your save code in the text box below, then click "Import Save Code" to resume your saved game.']);
         }
         else {
@@ -33090,6 +33148,8 @@ function displaySaveCodeMode(screen, mode) {
             document.getElementById("save_code_return_menu").style.setProperty("display", "none");
             document.getElementById("save_code_import").style.setProperty("display", "none");
             document.getElementById("save_code_type").style.setProperty("display", "inline-block");
+            document.getElementById("save_code_txtFile").style.setProperty("display", "inline-block");
+            document.getElementById("save_code_txtImport").style.setProperty("display", "none");
             if (mode == 0) {
                 document.getElementById("save_code_type").innerHTML = "Code Type: In-Progress Game";
                 displayRules("save_code_heading", ["h2", "Export Save Code"], ["p", 'Copy this save code, then if you want to resume your game at a later time, click the "Resumed Saved Game" button on the menu and paste the code there.']);
@@ -33106,6 +33166,8 @@ function displaySaveCodeMode(screen, mode) {
             document.getElementById("save_code_return_menu").style.setProperty("display", "inline-block");
             document.getElementById("save_code_import").style.setProperty("display", "inline-block");
             document.getElementById("save_code_type").style.setProperty("display", "none");
+            document.getElementById("save_code_txtFile").style.setProperty("display", "none");
+            document.getElementById("save_code_txtImport").style.setProperty("display", "inline-block");
             displayRules("save_code_heading", ["h2", "Import Custom Game Save Code"], ["p", 'Paste your save code in the text box below, then click "Import Save Code" to view and alter that Custom Mode\'s settings.']);
         }
         else {
@@ -33120,6 +33182,8 @@ function displaySaveCodeMode(screen, mode) {
         document.getElementById("save_code_return_menu").style.setProperty("display", "inline-block");
         document.getElementById("save_code_import").style.setProperty("display", "inline-block");
         document.getElementById("save_code_type").style.setProperty("display", "none");
+        document.getElementById("save_code_txtFile").style.setProperty("display", "inline-block");
+        document.getElementById("save_code_txtImport").style.setProperty("display", "inline-block");
         displayRules("save_code_heading", ["h2", "Modifiers Save Code"], ["p", 'This save code contains your current modifiers settings. Copy this save code, then paste it in back here later if you want to restore these settings.']);
     }
     else if (screen == "Replay") {
@@ -33127,6 +33191,8 @@ function displaySaveCodeMode(screen, mode) {
         document.getElementById("save_code_return_menu").style.setProperty("display", "inline-block");
         document.getElementById("save_code_import").style.setProperty("display", "inline-block");
         document.getElementById("save_code_type").style.setProperty("display", "none");
+        document.getElementById("save_code_txtFile").style.setProperty("display", "inline-block");
+        document.getElementById("save_code_txtImport").style.setProperty("display", "none");
         displayRules("save_code_heading", ["h2", "Replay Code"], ["p", 'Copy this replay code, then if you want to watch your achievements later, click the "Resume Saved Game" button on the menu and paste the code there.']);
     }
     else if (screen == "Infused Mode") {
@@ -33135,6 +33201,8 @@ function displaySaveCodeMode(screen, mode) {
             document.getElementById("save_code_return_menu").style.setProperty("display", "inline-block");
             document.getElementById("save_code_import").style.setProperty("display", "inline-block");
             document.getElementById("save_code_type").style.setProperty("display", "none");
+            document.getElementById("save_code_txtFile").style.setProperty("display", "none");
+            document.getElementById("save_code_txtImport").style.setProperty("display", "inline-block");
             displayRules("save_code_heading", ["h2", "Import Infused Mode Save Code"], ["p", 'You may either paste an infused mode save code here to edit it, or paste a gameplay/gamemode save code to fill in parts of the infused mode rules with it.']);
         }
         else {
@@ -33392,6 +33460,8 @@ function displayViewerTile() {
         document.getElementById("viewer_WildcardText_button").style.setProperty("display", "none");
         document.getElementById("viewer_primes").style.setProperty("display", "none");
         document.getElementById("viewer_base").style.setProperty("display", "none");
+        document.getElementById("viewer_exponent").style.setProperty("display", "none");
+        document.getElementById("viewer_polygon").style.setProperty("display", "none");
         document.getElementById("viewer_hideNumber").innerHTML = "Show Number";
         document.getElementById("viewer_hideNumber").style.setProperty("background-color", "#ffe9d3");
         document.getElementById("viewer_hideNumber").style.setProperty("color", "#ffb469");
