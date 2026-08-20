@@ -1275,8 +1275,6 @@ document.getElementById("Alternate5040_base_change").addEventListener("change", 
     catch {
         if (mode_vars[0] == 4 || mode_vars[0] == 8) {
             v = new BigRational(this.value);
-            console.log(this.value);
-            console.log(v);
             if (v.lt(0)) v = v.abs();
             if (v.lt(1)) v = v.recip();
             if (v.gt(1) && v.isFinite()) {
@@ -1845,7 +1843,6 @@ document.getElementById("save_code_txtImport").addEventListener("click", functio
 });
 document.getElementById("saveCodeImportFileInput").addEventListener("change", function(e){
     let scFile = e.target.files[0];
-    console.log("Here!")
     if (!scFile || scFile.type != "text/plain") {
         document.getElementById("save_code_box").value = "A text file was not provided."
         return;
@@ -4998,6 +4995,7 @@ function loadMode(mode) {
     gameplayComponentOpacities = [];
     tileDisplayKnownLevel = 3;
     mergeResultKnownLevel = 3;
+    discoveredTilesFilter = [];
     displayGridIntervalTime = Infinity;
     displayLagReductions = [];
     document.getElementById("mode_vars_line").style.setProperty("display", "none");
@@ -17792,7 +17790,6 @@ function createGrid() {
             }
         })
         newTilep.addEventListener("click", function(){
-            console.log(this);
             if (this.innerHTML === "0" && tileDisplayKnownLevel == 0 && Array.isArray(Grid[vcoord][hcoord]) && !secretsFound[12]) {
                 secretsFound[0] = true;
                 secretsFound[12] = true;
@@ -17993,6 +17990,7 @@ function displayGrid(dgType = "Complete") {
             commonEmptyColor = he.encode(evaluateColor(tileBackground));
             document.documentElement.style.setProperty("--tile-color", commonEmptyColor);
             document.documentElement.style.setProperty("--tile-image", commonEmptyColor);
+            if (commonEmptyColor.indexOf("gradient") === -1) document.documentElement.style.setProperty("--tile-image", "none");
         }
         for (let t of GridTiles) { //Displaying the tiles on the grid
             let char = 6;
@@ -18022,7 +18020,7 @@ function displayGrid(dgType = "Complete") {
                     let currentimage = getComputedStyle(document.documentElement).getPropertyValue("--tile-image");
                     let slipperyimage = (hexagonal) ? 'url("SlipperyHexagonal.png")' : 'url("Slippery.png")';
                     if (currentimage == "none") currentimage = slipperyimage;
-                    else currentimage += ", " + slipperyimage;
+                    else currentimage = slipperyimage + ", " + currentimage;
                     tile.parentElement.style.setProperty("--this-tile-image", currentimage);
                 }
             }
@@ -19368,7 +19366,6 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
                 tile.style.setProperty("color", "black");
                 tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
             }
-            pImage.style.setProperty("opacity", effectOpacity);
         }
         if (all_factors.length > 1) {
             let subtile = document.createElement("div");
@@ -20043,7 +20040,6 @@ function displayTileSpecialColorScheme(dType, tile, vcoord, hcoord, container, l
             tile.appendChild(pImage);
             pImage.classList.add("primeImage");
             pImage.style.setProperty("background-image", "radial-gradient(#0000 0% 70%, " + evaluateColor(rotateColor(["@RGBA"].concat(RGBtoArray((exponent == 1n) ? rightColor : leftColor).map(x => Number(x)), [1]), 180, true)) + " 100%)");
-            pImage.style.setProperty("opacity", effectOpacity);
             tile.style.setProperty("color", "#000");
             tile.style.setProperty("text-shadow", "0px 0px 5px #fff");
         }
@@ -21045,7 +21041,6 @@ function loadModifiers() {
         let modifiersOverride = SCparse(infusedModeValues[37]);
         if (Array.isArray(modifiersOverride) && modifiersOverride.length > 0) {
             for (let m = 0; m < modifiersOverride.length; m++) {
-                console.log(37 + " " + m);
                 if (modifiersOverride[m][2] === true) {
                     tempVal = modifiersOverride[m][1];
                     if (tempVal[0] == "@InfusedCalcArray") tempVal = CalcArray(tempVal.slice(1), ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]]);
@@ -21060,7 +21055,6 @@ function loadModifiers() {
         settingModifiersOverride = SCparse(infusedModeValues[38]);
         if (Array.isArray(settingModifiersOverride) && settingModifiersOverride.length > 0) {
             for (let m = 0; m < settingModifiersOverride.length; m++) {
-                console.log(38 + " " + m);
                 if (settingModifiersOverride[m][2] === true && !(settingModifiersOverride[m][0] >= 8 && modifiersOverride[m][0] <= 10)) {
                     tempVal = settingModifiersOverride[m][1];
                     if (tempVal[0] == "@InfusedCalcArray") tempVal = CalcArray(tempVal.slice(1), ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)]]);
@@ -24064,7 +24058,7 @@ function loadModifiers() {
                     if (MergeRules[m][0] === "@include_gvars") mstart = 1;
                     if ((MergeRules[m]).indexOf("@end_vars") > -1) mstart = (MergeRules[m]).indexOf("@end_vars") + 1;
                     if (MergeRules[m].length > 6) addInfo = MergeRules[m][mstart + 6];
-                    let colorArray = ["@Literal", ["@CalcArray", "@Grid", "arr_elem", ["@VCoord", "+", ["@VDir", "*", [MergeRules[m][mstart], "-", 1]]], "arr_elem", ["@HCoord", "+", ["@HDir", "*", [MergeRules[m][mstart], "-", 1]]], "arr_elem", colornum], ["@CalcArray", "@This " + colornum]];
+                    let colorArray = ["@Literal", ["@CalcArray", "@Next FL", "arr_elem", (MergeRules[m][mstart] - 2), "arr_elem", colornum], ["@CalcArray", "@This " + colornum]];
                     //let colorArray = ["@Literal", ["@CalcArray", "@PermNext " + (MergeRules[m][mstart] - 1) + " " + colornum], ["@CalcArray", "@This " + colornum]];
                     for(let i = 1; i < MergeRules[m][mstart]; i++) {
                         colorArray.push(["@CalcArray", "@Next " + i + " " + colornum]);
@@ -32800,7 +32794,20 @@ function importSave(code, reloadSave = false, savescumless = false) {
                 coderesults.push(SCparse(importFunction(codebits[5]))); //coderesults[3] is customBackground
                 coderesults.push(SCparse(importFunction(codebits[6]))); //coderesults[4] is customWins
                 coderesults.push(SCparse(importFunction(codebits[7]))); //coderesults[5] is customLosses
-                coderesults.push(SCparse(importFunction(codebits[8]))); //coderesults[6] is customRulesText
+                try {
+                    coderesults.push(SCparse(importFunction(codebits[8]))); //coderesults[6] is customRulesText
+                }
+                catch (e) {
+                    // Quotation marks fix
+                    let rulesText = importFunction(codebits[8])
+                    for (let t = 2; t < rulesText.length; t++) {
+                        if (rulesText[t] == "\"" && rulesText[t-1] != "," && rulesText[t+1] != ",") {
+                            rulesText = string_splice(rulesText, t, 1, "\\\"");
+                            t++;
+                        }
+                    }
+                    coderesults.push(SCparse(rulesText)); //coderesults[6] is customRulesText
+                }
                 //If we've gotten this far, the import is a success, so it's time to do the actual importing
                 customSpawningTiles = coderesults[0];
                 if (typeof customSpawningTiles[0] != "boolean") customSpawningTiles.unshift(false);
@@ -32882,9 +32889,6 @@ function importSave(code, reloadSave = false, savescumless = false) {
         else if (codebits[0] == "@2048PowCompReplay") {
             // let importFunction = validReplayCodeVersions.indexOf(codebits[1]) > 2 ? function(s){return he.decode(window.atob(s))} : function(s){return window.atob(s)}
             let importFunction = function(s){return he.decode(window.atob(s))}
-            for (let c = 2; c < codebits.length; c++) {
-                console.log(c, importFunction(codebits[c]));
-            }
             if (validReplayCodeVersions.indexOf(codebits[1]) != -1) {
                 coderesults.push(Number(importFunction(codebits[2]))); //coderesults[0] is width
                 if (isNaN(coderesults[0]) || coderesults[0] < 1 || (coderesults[0] % 1) != 0) throw "Invalid width";
