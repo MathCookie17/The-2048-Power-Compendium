@@ -13211,7 +13211,7 @@ function gmDisplayVars() {
         else {
             document.getElementById("2058_disappearingMerges_text").innerHTML = "Tiles with a base too big cannot be created."
             document.getElementById("2058_disappearingMerges_text").style.setProperty("color", "#812c81");
-            disappearString = "that merge does not occur.";
+            disappearString = "that merge does not occur";
         }
         if (mode_vars[0] == 0) {
             document.getElementById("2058_powRequired_counter").innerHTML = "n";
