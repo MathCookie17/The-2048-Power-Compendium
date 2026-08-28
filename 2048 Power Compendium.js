@@ -2090,11 +2090,13 @@ document.getElementById("modifiers_randomUnmergingTiles_minus").addEventListener
     displayModifiers(1);
 });
 document.getElementById("modifiers_tileDestroyingClicks_plus").addEventListener("click", function(){
-    modifiers[33]++;
+    if (modifiers[33] === Infinity) modifiers[33] = 0;
+    else modifiers[33]++;
     displayModifiers(1);
 });
 document.getElementById("modifiers_tileDestroyingClicks_minus").addEventListener("click", function(){
-    modifiers[33]--;
+    if (modifiers[33] === 0) modifiers[33] = Infinity;
+    else modifiers[33]--;
     displayModifiers(1);
 });
 document.getElementById("modifiers_multiMerge_button").addEventListener("click", function(){
@@ -13211,7 +13213,7 @@ function gmDisplayVars() {
         else {
             document.getElementById("2058_disappearingMerges_text").innerHTML = "Tiles with a base too big cannot be created."
             document.getElementById("2058_disappearingMerges_text").style.setProperty("color", "#812c81");
-            disappearString = "that merge does not occur.";
+            disappearString = "that merge does not occur";
         }
         if (mode_vars[0] == 0) {
             document.getElementById("2058_powRequired_counter").innerHTML = "n";
@@ -15043,8 +15045,8 @@ function gmDisplayVars() {
                 let specialArray = [[CAM1Entry, "/", [mode_vars[4], "^", [[CAM1Entry, "/", "@This 1", "log", mode_vars[4]], "floor", 1, "-", 1]]], "floor", 1, "+B", 0n];
                 for(let i = 1; i < mode_vars[4]; i++) {
                     if(i > 1) MergeRules.push(
-                        [i, [conditional.slice(), "&&", ["@This 1", "*B", i, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile]], [], lastArray.slice()],
-                        [i, [conditional.slice(), "&&", ["@This 1", "=", 1n], "&&", ["@This 1", "*B", BigInt(i), "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", 2n, "<=", specialArray], "&&", [[[CAM1Entry, "/", [mode_vars[4], "^", [[CAM1Entry, "/", "@This 1", "log", mode_vars[4]], "floor", 1]]], "floor", 1, "+B", 0n], "=", BigInt(i)]], true, [["@This 0", ["@This 1", "*B", BigInt(i)]]], [], lastArray.slice()]
+                        [i, [conditional.slice(), "&&", ["@This 1", "*B", i, "=", CAM1Entry]], true, [[["@This 0", "+B", 1n], baseTile, "@This 2"]], [], lastArray.slice()],
+                        [i, [conditional.slice(), "&&", ["@This 1", "=", 1n], "&&", ["@This 1", "*B", BigInt(i), "<", CAM1Entry], "&&", [BigInt(mode_vars[4]), "*B", 2n, "<=", specialArray], "&&", [[[CAM1Entry, "/", [mode_vars[4], "^", [[CAM1Entry, "/", "@This 1", "log", mode_vars[4]], "floor", 1]]], "floor", 1, "+B", 0n], "=", BigInt(i)]], true, [["@This 0", ["@This 1", "*B", BigInt(i)], "@This 2"]], [], lastArray.slice()]
                     );
                     conditional.push("&&", ["@This 0", "=", "@Next " + i + " 0"], "&&", ["@This 1", "=", "@Next " + i + " 1"]);
                     lastArray.push(true);
@@ -17224,8 +17226,8 @@ function displayModifiers(page) {
         }
         if (secretsFound[12]) {
             document.getElementById("modifiers_tileDestroyingClicks").style.setProperty("display", "block");
-            document.getElementById("modifiers_tileDestroyingClicks_counter").innerHTML = modifiers[33];
-            if (modifiers[33] <= 0) document.getElementById("modifiers_tileDestroyingClicks_minus").style.setProperty("display", "none");
+            document.getElementById("modifiers_tileDestroyingClicks_counter").innerHTML = (modifiers[33] === Infinity ? "&infin;" : modifiers[33]);
+            if (modifiers[33] === Infinity) document.getElementById("modifiers_tileDestroyingClicks_minus").style.setProperty("display", "none");
             else document.getElementById("modifiers_tileDestroyingClicks_minus").style.setProperty("display", "inline-block");
             document.getElementById("modifiers_tileDestroyingClicks_plus").style.setProperty("display", "inline-block");
         }
@@ -23496,6 +23498,10 @@ function loadModifiers() {
                 if (mode_vars[0] == 2) {
                     start_game_vars[0] = start_game_vars[7];
                     start_game_vars[1] = start_game_vars[7];
+                    if (mode_vars[1]) {
+                        start_game_vars[0] = [1n].concat(start_game_vars[0])
+                        start_game_vars[1] = [1n].concat(start_game_vars[1])
+                    }
                 }
                 if (!mode_vars[6]) {
                     MergeRules[MergeRules.length - 1][1].splice(0, 2);
@@ -24311,10 +24317,10 @@ function loadModifiers() {
         }
         if (modifiers[33] > 0 && !(gamemode == -2 && !infusedModeValues[34][4])) {
             let mnum = start_modifier_vars.length;
-            start_modifier_vars.push(modifiers[33]);
+            start_modifier_vars.push((modifiers[33] === Infinity ? 0 : modifiers[33]));
             start_mvar_indices.push(34);
-            scripts.push([[0, "@if", [[("@MVar " + mnum), ">", 0], "&&", ["@This", "typeof", "=", "array"], "&&", ["@This 0", "!=", "BlackBox"]], "@replace_tile", "@VCoord", "@HCoord", "@Empty", "@edit_mvar", mnum, [("@MVar " + mnum), "-", 1], "@ScriptSignal", "@ScriptSignal_MovementOccurred", "@end-if"], "TileClick"]);
-            statBoxes.push(["Tile-Destroying Clicks Remaining", ("@MVar " + mnum)])
+            scripts.push([[0, "@if", [[("@MVar " + mnum), ">", 0, "||", (modifiers[33] === Infinity)], "&&", ["@This", "typeof", "=", "array"], "&&", ["@This 0", "!=", "BlackBox"]], "@replace_tile", "@VCoord", "@HCoord", "@Empty", "@edit_mvar", mnum, [("@MVar " + mnum), (modifiers[33] === Infinity ? "+" : "-"), 1], "@ScriptSignal", "@ScriptSignal_MovementOccurred", "@end-if"], "TileClick"]);
+            statBoxes.push([(modifiers[33] === Infinity ? "Tile-Destroying Clicks Used" : "Tile-Destroying Clicks Remaining"), ("@MVar " + mnum)])
         }
         if (modifiers[25] > 0) {
             let THSpawn = [["@Moves", "%", modifiers[26], "=", 0], "AfterSpawns", false];
