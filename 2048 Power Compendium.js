@@ -3438,12 +3438,14 @@ document.getElementById("infusedGridWidth_plus").addEventListener("click", funct
     infusedGridSizes[screenVars[0]][1]++;
     while (infusedGrids[screenVars[0]].length < infusedGridSizes[screenVars[0]][0] * infusedGridSizes[screenVars[0]][1]) infusedGrids[screenVars[0]].push(false);
     while (infusedGrids[screenVars[0]].length > infusedGridSizes[screenVars[0]][0] * infusedGridSizes[screenVars[0]][1]) infusedGrids[screenVars[0]].pop();
+    screenVars[1] = -1;
     displayCustomMode("Infused Grid Manager", screenVars);
 });
 document.getElementById("infusedGridWidth_minus").addEventListener("click", function(){
     infusedGridSizes[screenVars[0]][1]--;
     while (infusedGrids[screenVars[0]].length < infusedGridSizes[screenVars[0]][0] * infusedGridSizes[screenVars[0]][1]) infusedGrids[screenVars[0]].push(false);
     while (infusedGrids[screenVars[0]].length > infusedGridSizes[screenVars[0]][0] * infusedGridSizes[screenVars[0]][1]) infusedGrids[screenVars[0]].pop();
+    screenVars[1] = -1;
     displayCustomMode("Infused Grid Manager", screenVars);
 });
 document.getElementById("infusedGridHeight_plus").addEventListener("click", function(){
@@ -3506,10 +3508,12 @@ document.getElementById("infusedTileRemoveButton").addEventListener("click", fun
 });
 document.getElementById("infusedGrid_previous_page").addEventListener("click", function(){
     screenVars[0]--;
+    screenVars[1] = -1;
     displayCustomMode("Infused Grid Manager", screenVars);
 });
 document.getElementById("infusedGrid_next_page").addEventListener("click", function(){
     screenVars[0]++;
+    screenVars[1] = -1;
     displayCustomMode("Infused Grid Manager", screenVars);
 });
 document.getElementById("voidTilerIntro_passBy").addEventListener("click", function(){
@@ -7993,7 +7997,7 @@ function loadMode(mode) {
         [[15, 2], "-128+128i", ["@radial-gradient", "#c9edff", 0, 60, "#00ffff"], "#201806"], [[15, 3], "-128-128i", ["@radial-gradient", "#c9edff", 0, 60, "#8000ff"], "#201806"],
         [[16, 0], "256", ["@radial-gradient", "#e3e6ff", 0, 60, "#ff0000"], "#201806"], [[16, 1], "256i", ["@radial-gradient", "#e3e6ff", 0, 60, "#80ff00"], "#201806"],
         [[16, 2], "-256", ["@radial-gradient", "#e3e6ff", 0, 60, "#00ffff"], "#201806"], [[16, 3], "-256i", ["@radial-gradient", "#e3e6ff", 0, 60, "#8000ff"], "#201806"],
-        [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 0]], [[2, "^", ["@This 0", "/", 2], "defaultAbbrev"]], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
+        [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 0]], ["@TextE", [2, "^", ["@This 0", "/", 2], "defaultAbbrev"]], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
         [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 1]], ["@TextE", [2, "^", ["@This 0", "/", 2], "defaultAbbrev"], "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
         [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 2]], ["@TextE", "-", [2, "^", ["@This 0", "/", 2], "defaultAbbrev"]], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
         [[["@This 0", "%", 2, "=", 0], "&&", ["@This 0", "/", 2, "+", "@This 1", "%", 4, "=", 3]], ["@TextE", "-", [2, "^", ["@This 0", "/", 2], "defaultAbbrev"], "i"], ["@radial-gradient", ["@HSLA", ["@This 0", "*", 29, "-", 450], [0.75, "^", ["@This 0", "-", 1, "floor", 16, "/", 16], "*", 100], ["@This 0", "-", 1, "%", 16, "*", 5.75, "+", 10], 1], 0, 60, ["@HSLA", ["@This 1", "*", 90], 100, 50, 1]], ["#fff8e3", "@if", ["@This 0", "-", 1, "%", 16, ">", 7], "2nd", "#201806", "@end-if"]],
@@ -9780,7 +9784,7 @@ function loadMode(mode) {
             startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]]], modifiers[22]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", -1n]], modifiers[23]]];
             if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@GVar 13", "arr_indexOf", ["@This 0", "+B", "@Next 1 0", "absB"], "!=", -1], "||", ["@This 0", "+B", "@Next 1 0", "absB", "DIVESeedUnlock", "@GVar 7", 1, "=", 1n]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
+                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]], "&&", [["@GVar 13", "arr_indexOf", ["@This 0", "+B", "@Next 1 0", "absB"], "!=", -1], "||", ["@This 0", "+B", "@Next 1 0", "absB", "DIVESeedUnlock", "@GVar 7", 1, "=", 1n]]], false, [[["@This 0", "+B", "@Next 1 0"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
                 ];
             }
             else {
@@ -9829,7 +9833,7 @@ function loadMode(mode) {
             startTileSpawns = [[[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]]], ["@GVar 7"]], modifiers[22]], [[["@GVar 0", "arr_elem", [0, "rand_bigint", ["@GVar 0", "arr_length", "-", 1]], "*B", -1n], ["@GVar 7"]], modifiers[23]]];
             if (modifiers[13] == "Non-Interacting") {
                 MergeRules = [
-                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"]], false, [[["@This 0", "+B", "@Next 1 0"], ["@GVar 7"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
+                    [2, [["@Next 1 0", "modB", ["@This 0", "absB", "max", 1n], "=", 0n], "&&", ["@This 0", "typeof", "=", "bigint"], "&&", ["@Next 1 0", "typeof", "=", "bigint"], "&&", [["@This 0", "signB"], "=", ["@Next 1 0", "signB"]]], false, [[["@This 0", "+B", "@Next 1 0"], ["@GVar 7"]]], [["@This 0", "absB"], "min", ["@Next 1 0", "absB"]], [false, true]]
                 ];
             }
             else {
@@ -17712,6 +17716,7 @@ function createGrid() {
     document.documentElement.style.setProperty("--tile_size", tsize * 0.9 + "%");
     document.documentElement.style.setProperty("--th_dist", tsize * (1 - 0.1 * 1/(width + 1)) * Math.max(1, varHeight/width) * (hexagonal ? Math.sqrt(3)/4 : 1));
     document.documentElement.style.setProperty("--tv_dist", tsize * (1 - 0.1 * 1/(height + 1)) * Math.max(1, width/varHeight) * (hexagonal ? 3/4 : 1));
+    let stbList = [];
     for (let row = 0; row < height; row++) {
         if (makeStart && modifiers[5] != "Custom") startingGrid.push([]);
         for (let column = 0; column < width; column++) {
@@ -17726,13 +17731,11 @@ function createGrid() {
             }
             if (modifiers[5] == "Custom" && startingGrid[row][column] == "@EmptyNoSpawn") {
                 startingGrid[row][column] = "@Empty";
-                if (!Array.isArray(spawnTileBlocked)) spawnTileBlocked = [spawnTileBlocked];
-                spawnTileBlocked.push("||", ["@VCoord", "Array", "arr_push", "@HCoord", "=", ["@Literal", row, column]])
+                stbList.push([row, column]);
             }
             if (modifiers[5] == "Custom" && startingGrid[row][column] == "@BlackBoxNoSpawn") {
                 startingGrid[row][column] = "@BlackBox";
-                if (!Array.isArray(spawnTileBlocked)) spawnTileBlocked = [spawnTileBlocked];
-                spawnTileBlocked.push("||", ["@VCoord", "Array", "arr_push", "@HCoord", "=", ["@Literal", row, column]])
+                stbList.push(row, column);
             }
             if (modifiers[5] == "Custom" && startingGrid[row][column] == "@BlackBox" || (Array.isArray(startingGrid[row][column]) && startingGrid[row][column][0] == "BlackBox")) {
                 startingGrid[row][column] = compendiumStructuredClone(BlackBox);
@@ -17745,6 +17748,10 @@ function createGrid() {
                 document.getElementById("grid").appendChild(newEmpty);
             }
         }
+    }
+    if (stbList.length > 0) {
+        if (!Array.isArray(spawnTileBlocked)) spawnTileBlocked = [spawnTileBlocked];
+        spawnTileBlocked.push("||", [["@Literal"].concat(stbList), "arr_indexOf", ["@VCoord", "Array", "arr_push", "@HCoord"], "!=", -1]);
     }
     GridTiles = document.getElementById("grid").children; //An HTML collection of the empty tiles
     let Positions = [];
@@ -31693,7 +31700,7 @@ function createInfusedModeVariables() {
                     let fallback = CalcArray(modifiersList[mindex][5], ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)], v])
                     if (typeof fallback == "string") mode_vars[mindex] = fallback;
                 }
-                mode_vars = CalcArray(["@var_retain", modifiersList[mindex][5], "2nd", "@Var 0"], ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)], mode_vars[mindex]]);
+                mode_vars = CalcArray(["@var_retain", modifiersList[mindex][6], "2nd", "@Var 0"], ...[,,,,,,,], [compendiumStructuredClone(mode_vars), compendiumStructuredClone(modifiers), [compendiumStructuredClone(settingModifiers), compendiumStructuredClone(directions), compendiumStructuredClone(auto_directions)], mode_vars[mindex]]);
                 if (modifiersList[mindex][8]) loadGridSize(-2, mode_vars);
                 gmDisplayVars();
             })
@@ -32248,13 +32255,13 @@ function exportModifiersSave(reloadSave = false) {
         SaveCode += exportFunction(SCstringify(auto_directions));
         SaveCode += "|";
         if (modifiers[5] == "Custom") {
-            SaveCode += exportFunction(SCstringify(width));
+            SaveCode += exportFunction(SCstringify(customGridWidth));
             SaveCode += "|";
-            SaveCode += exportFunction(SCstringify(height));
+            SaveCode += exportFunction(SCstringify(customGridHeight));
             SaveCode += "|";
             SaveCode += exportFunction(SCstringify(hexagonal));
             SaveCode += "|";
-            SaveCode += exportFunction(SCstringify(startingGrid));
+            SaveCode += exportFunction(SCstringify(customGrid));
             SaveCode += "|";
             SaveCode += exportFunction(SCstringify(directions));
             SaveCode += "|";
@@ -32856,7 +32863,7 @@ function importSave(code, reloadSave = false, savescumless = false) {
                     coderesults.push(SCparse(importFunction(codebits[4]))); //coderesults[2] is width
                     coderesults.push(SCparse(importFunction(codebits[5]))); //coderesults[3] is height
                     coderesults.push(SCparse(importFunction(codebits[6]))); //coderesults[4] is hexagonal
-                    coderesults.push(SCparse(importFunction(codebits[7]))); //coderesults[5] is startingGrid
+                    coderesults.push(SCparse(importFunction(codebits[7]))); //coderesults[5] is customGrid
                     coderesults.push(SCparse(importFunction(codebits[8]))); //coderesults[6] is directions
                 }
                 //If we've gotten this far, the import is a success, so it's time to do the actual importing
@@ -32873,11 +32880,11 @@ function importSave(code, reloadSave = false, savescumless = false) {
                 }
                 auto_directions = coderesults[1];
                 if (modifiers[5] == "Custom") {
-                    width = coderesults[2];
-                    height = coderesults[3];
+                    customGridWidth = coderesults[2];
+                    customGridHeight = coderesults[3];
                     hexagonal = coderesults[4];
                     createCustomGrid();
-                    startingGrid = coderesults[5];
+                    customGrid = coderesults[5];
                     directions = coderesults[6];
                     // if (codebits[1] != "3.0") {
                     //     for (let d = 0; d < directions.length; d++) {
