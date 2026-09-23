@@ -3152,6 +3152,11 @@ html {
     color: #208096;
     border-color: #208096;
 }
+#guide_Infused {
+    background-color: #ecc02e;
+    color: #6f8800;
+    border-color: #6f8800;
+}
 #guide_credits {
     background-color: #f9cccc;
     color: #8b793e;
@@ -3251,7 +3256,7 @@ html {
     border: calc(var(--base_size) * 0.75) solid #ee00ff;
     text-decoration: none;
 }
-#customGuide_infusedLink {
+#guide_infusedLink, #customGuide_infusedLink {
     background-color: #755000;
     color: #ffd35c;
     width: 50%;

@@ -193,6 +193,7 @@ let replayOtherSpawns = []; // What tile spawns have occurred thanks to sources 
 let replayPaused = false; // Indicates that a replay has been paused
 let replayTimestamps = []; // What times each move occurred - used for timestamp replays
 let endReplayTimestamp = -1;
+let replayMoveIndex = 0; // This is needed because next visible tile display needs to know where in the replay we are
 
 // These arrays are used to keep track of Custom Mode things
 let customSpawningTiles = [];
@@ -3556,6 +3557,9 @@ document.getElementById("regularGuide_return").addEventListener("click", functio
 });
 document.getElementById("customGuide_return").addEventListener("click", function(){
     switchScreen("CustomMode", "Opening");
+});
+document.getElementById("guide_infusedLink").addEventListener("click", function(){
+    switchScreen("CustomMode", "Infused Opening");
 });
 document.getElementById("customGuide_infusedLink").addEventListener("click", function(){
     switchScreen("CustomMode", "Infused Opening");
@@ -7071,9 +7075,9 @@ function loadMode(mode) {
         document.documentElement.style.setProperty("--grid-color", "#82dbdb");
         document.documentElement.style.setProperty("--tile-color", "#539a9a");
         document.documentElement.style.setProperty("--text-color", "#1a2727");
-        displayRules("rules_text", ["h2", "Primorials"], ["h1", "2310"], ["p", "Tiles that are not a multiple of any square number merge with themselves. A tile that's a multiple of 4 merges with a tile that's half of it. A tile that's a multiple of 9 merges with a tile that's two-thirds of it. A tile that's a multiple of 25 merges with a tile that's two-fifths of it. A tile that's a multiple of 49 merges with two tiles that are each two-sevenths of it. This continues for each squared prime: a tile that's a multiple of a squared prime merges with two or three tiles that get it to either be the next primorial or a multiple of the next squared prime. Three-tile merges cannot include tiles that are primorials. Get to the 2310 tile to win!"],
+        displayRules("rules_text", ["h2", "Primorials"], ["h1", "2310"], ["p", "Tiles that are not a multiple of any square number merge with themselves. A tile that's a multiple of 4 merges with a tile that's half of it. A tile that's a multiple of 9 merges with a tile that's two-thirds of it. A tile that's a multiple of 25 merges with a tile that's two-fifths of it. A tile that's a multiple of 49 merges with two tiles that are each two-sevenths of it. This continues for each squared prime: a tile that's a multiple of a squared prime merges with one or two tiles that get it to either be the next primorial or a multiple of the next squared prime. Three-tile merges cannot include tiles that are primorials. Get to the 2310 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
-        displayRules("gm_rules_text", ["h2", "Primorials"], ["h1", "2310"], ["p", "Tiles that are not a multiple of any square number merge with themselves. A tile that's a multiple of 4 merges with a tile that's half of it. A tile that's a multiple of 9 merges with a tile that's two-thirds of it. A tile that's a multiple of 25 merges with a tile that's two-fifths of it. A tile that's a multiple of 49 merges with two tiles that are each two-sevenths of it. This continues for each squared prime: a tile that's a multiple of a squared prime merges with two or three tiles that get it to either be the next primorial or a multiple of the next squared prime. Three-tile merges cannot include tiles that are primorials. Get to the 2310 tile to win!"],
+        displayRules("gm_rules_text", ["h2", "Primorials"], ["h1", "2310"], ["p", "Tiles that are not a multiple of any square number merge with themselves. A tile that's a multiple of 4 merges with a tile that's half of it. A tile that's a multiple of 9 merges with a tile that's two-thirds of it. A tile that's a multiple of 25 merges with a tile that's two-fifths of it. A tile that's a multiple of 49 merges with two tiles that are each two-sevenths of it. This continues for each squared prime: a tile that's a multiple of a squared prime merges with one or two tiles that get it to either be the next primorial or a multiple of the next squared prime. Three-tile merges cannot include tiles that are primorials. Get to the 2310 tile to win!"],
         ["p", "Spawning tiles: 1 (85%), 2 (12%), 4 (3%)"]);
     }
     else if (mode == 49) { // 378
@@ -11288,6 +11292,7 @@ function gmDisplayVars() {
         let goal = mode_vars[0] + mode_vars[1] * 12;
         winRequirement = ["@GVar 0", "=", goal];
         let rulesDescription = "";
+        let spawningPrime = 0;
         if (mode_vars[2]) {
             document.getElementById("mod27_negativeOffset_text").innerHTML = "Half of the tiles are negative.";
             document.getElementById("mod27_negativeOffset_text").style.setProperty("color", "#d4fcff");
@@ -11297,7 +11302,7 @@ function gmDisplayVars() {
         else {
             document.getElementById("mod27_negativeOffset_text").innerHTML = "The tiles are nonnegative.";
             document.getElementById("mod27_negativeOffset_text").style.setProperty("color", "#002a2d");
-            let spawningPrime = 1;
+            spawningPrime = 1;
             while (mode_vars[0] % prime(spawningPrime) == 0) spawningPrime++;
             if (modifiers[13] == "None") {
                 startTileSpawns = [[[prime(spawningPrime)], 1]];
@@ -11317,9 +11322,9 @@ function gmDisplayVars() {
             document.getElementById("mod27_coprimeMergeLength_text").style.setProperty("color", "#5e1717");
         }
         displayRules("rules_text", ["h2", "Modular Supermerging"], ["h1", "mod " + goal], ["p", rulesDescription],
-        ["p", "Spawning tiles: 1 (100%)"]);
+        ["p", "Spawning tiles: " + prime(spawningPrime) + " (100%)"]);
         displayRules("gm_rules_text", ["h2", "Modular Supermerging"], ["h1", "mod " + goal], ["p", rulesDescription],
-        ["p", "Spawning tiles: 1 (100%)"]);
+        ["p", "Spawning tiles: " + prime(spawningPrime) + " (100%)"]);
     }
     else if (gamemode == 45) { // Directional Merges
         // Not only does this mode have different difficulties, it also behaves differently when the movement directions are altered by the grid modifiers
@@ -17851,9 +17856,11 @@ function createArrows() {
                 replayPaused = !replayPaused;
                 let pausePlayp = document.getElementById("Arrow_0").children[0];
                 if(replayPaused) pausePlayp.innerHTML = "▶";
-                else pausePlayp.innerHTML = "❙&emsp14;❙";
+                else pausePlayp.innerHTML = "⏸";
             }
         )
+        if(replayPaused) pausePlayp.innerHTML = "▶";
+        else pausePlayp.innerHTML = "⏸";
         let timeBetweenMoves = document.createElement("div")
         timeBetweenMoves.id = "Arrow_1";
         timeBetweenMoves.classList.add("button");
@@ -17969,6 +17976,8 @@ function createStatBoxes() {
 function defaultAbbreviate(n) { // Tiles whose text values are of type number, bigint, GaussianBigInt, or BigRational (which is currently all of them except Garbage 0s, Box Tiles, and a couple special tiles in modes like 2216.838) use this
     if (typeof n == "number") {
         if (Math.abs(n) < 10000 && Math.abs(n) >= 0.1) return abbreviateNumber(n, "Number", 3, false);
+        else if (Math.abs(n) < 0.1 && Math.abs(n) >= 0.01) return abbreviateNumber(n, "Number", 4, false);
+        else if (Math.abs(n) < 0.01 && Math.abs(n) >= 0.001) return abbreviateNumber(n, "Number", 5, false);
         else if (Math.abs(n) >= 10000 && Math.abs(n) < 1e12) return abbreviateNumber(n, "Number", 3, true);
         else return abbreviateNumber(n, "Scientific", 5, true);
     }
@@ -18037,12 +18046,25 @@ function displayGrid(dgType = "Complete") {
         }
     }
     if (dgType === "Complete" || displayLagReductions[5] === undefined || CalcArray(displayLagReductions[5], ...[,,,,,,,], [dgType]) !== true) {
+        let effectiveSpawnConveyor = spawnConveyor;
+        if (isPlayingReplay) {
+            effectiveSpawnConveyor = [];
+            let moveIndex = replayMoveIndex;
+            while (moveIndex < movesPlayed.length && effectiveSpawnConveyor.length < visibleNextTiles.length) {
+                effectiveSpawnConveyor.push(...(movesPlayed[moveIndex].slice(1).map(function(x){return x[0]})));
+                moveIndex++;
+            }
+        }
         for (let t of visibleNextTiles) { //Displaying the next spawning tiles
             let char = 9;
             let nextnum = "";
             while (char < t.length) {nextnum += t[char]; char++;}
             nextnum = Number(nextnum);
-            displayTile("NextTiles", document.getElementById(t), nextnum, "None", spawnConveyor, spawnConveyor[nextnum]);
+            if (effectiveSpawnConveyor[nextnum] === undefined) {
+                document.getElementById(t).style.setProperty("display", "none");
+                continue;
+            }
+            displayTile("NextTiles", document.getElementById(t), nextnum, "None", effectiveSpawnConveyor, effectiveSpawnConveyor[nextnum]);
             if (nextnum < randomTileAmount) document.getElementById(t).style.setProperty("border-style", "solid");
             else document.getElementById(t).style.setProperty("border-style", "none");
         }
@@ -21015,7 +21037,7 @@ function colorArrow(index, ID) { //An arrow button goes black if its direction i
         document.getElementById(ID).style.setProperty("border-color", "#ff6666");
         document.getElementById(ID).style.setProperty("background-color", "#ffff88");
     }
-    else if (!isPlayingReplay || ID != "Arrow_1") {
+    else if (!isPlayingReplay || (ID != "Arrow_0" && ID != "Arrow_1")) {
         document.getElementById(ID).style.setProperty("color", "#666666");
         document.getElementById(ID).style.setProperty("border-color", "#666666");
         document.getElementById(ID).style.setProperty("background-color", "#222222");
@@ -21715,7 +21737,7 @@ function loadModifiers() {
                 MergeRules[1][1][4][0] = "@Merges";
             }
             if (mode_vars[1] > 0) {
-                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
+                scripts.push([["@var_retain", 0, "@if", ["@var_retain", "@Var -1", "arr_elem", 0, "arr_slice", 0, 2, "=", "@GVar 0"], "@edit_gvar", 2, true, "@end-if"], "Merge"]);
                 if (mode_vars[1] == 1) {
                     scripts.push([[0, "@if", "@GVar 2", "@edit_gvar", 1, ["@var_retain", "@GVar 1", "+", 1], "@edit_gvar", 2, false, "rand_float", 1, "@if", ["@Parent -2", "<", "@GVar 3"], "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0, "+", 1], ["@CalcArray", "@GVar 0", "arr_elem", 1]], "@end-if", "@else", "@edit_gvar", 0, ["@Literal", ["@CalcArray", "@GVar 0", "arr_elem", 0], ["@CalcArray", "@GVar 0", "arr_elem", 1, "+", 1]], "@end-else", "@end-if"], "EndTurn"])
                 }
@@ -24002,7 +24024,7 @@ function loadModifiers() {
             }
         }
         if (modifiers[24] > 1) {
-            if (gamemode == 25 || (gamemode == 38 && mode_vars[0] == 4) || gamemode == 44 || (gamemode == 89 && mode_vars[3] - mode_vars[2] > 1) || (gamemode == 97 && mode_vars[1] - mode_vars[0] > 1) || (gamemode == -2 && !infusedModeValues[34][3])) {}
+            if (gamemode == 25 || (gamemode == 38 && mode_vars[0] == 4) || gamemode == 44 || (gamemode == 89 && mode_vars[3] - mode_vars[2] > 0) || (gamemode == 97 && mode_vars[1] - mode_vars[0] > 0) || (gamemode == -2 && !infusedModeValues[34][3])) {}
             else {
                 TileNumAmount++;
                 let colornum = TileNumAmount - 1;
@@ -24013,7 +24035,7 @@ function loadModifiers() {
                     let startindex = 0;
                     if (TileTypes[t][startindex] === "@include_gvars") startindex = 1;
                     if (TileTypes[t].indexOf("@end_vars") > -1) startindex = TileTypes[t].indexOf("@end_vars") + 1;
-                    if (eqPrimArrays(arrayTypes(TileTypes[t][startindex]), ["number"]) || eqPrimArrays(arrayTypes(TileTypes[t][startindex]), ["bigint"]) || eqRearrangeArrays(arrayTypes(TileTypes[t][startindex]), ["number", "bigint"]) || eqPrimArrays(arrayTypes(TileTypes[t][startindex]), ["bigrational"])) {
+                    if (eqPrimArrays(arrayTypes(TileTypes[t][startindex]), ["number"]) || eqPrimArrays(arrayTypes(TileTypes[t][startindex]), ["bigint"]) || eqRearrangeArrays(arrayTypes(TileTypes[t][startindex]), ["number", "bigint"]) || eqPrimArrays(arrayTypes(TileTypes[t][startindex]), ["bigrational"]) || (Array.isArray(TileTypes[t][startindex]) && TileTypes[t][startindex].indexOf("@Signless") !== -1)) {
                         for (let c = 0; c < modifiers[24]; c++) tileCopies[c][t][startindex].push(c);
                     }
                     else if (TileTypes[t][startindex] === true) {
@@ -24055,7 +24077,7 @@ function loadModifiers() {
                 }
                 let wlength = winConditions.length;
                 for (let w = 0; w < wlength; w++) {
-                    if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"])) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigrational"])) {
+                    if (Array.isArray(winConditions[w]) && (eqPrimArrays(arrayTypes(winConditions[w]), ["number"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigint"]) || eqPrimArrays(arrayTypes(winConditions[w]), ["number", "bigint"])) || eqPrimArrays(arrayTypes(winConditions[w]), ["bigrational"]) || (Array.isArray(winConditions[w]) && winConditions[w].indexOf("@Signless") !== -1)) {
                         
                         for (let c = 0; c < modifiers[24]; c++) winConditions.push(compendiumStructuredClone(winConditions[w]));
                         for (let c = 0; c < modifiers[24]; c++) winConditions[winConditions.length - modifiers[24] + c].push(c);
@@ -25900,6 +25922,7 @@ function operation(n1, operator, n2) {
         case "CalcArrayParent":
             if (Array.isArray(n1)) n1.unshift("@Literal");
             let nn2 = compendiumStructuredClone(n2);
+            console.log(nn2);
             let vpos = 0;
             while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
             if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
@@ -27407,7 +27430,7 @@ function rotateColor(color, degrees) { //degrees = 180 gives the complementary c
     while (calcArray_startModifiersPlus.indexOf(colorcopy[startIndex]) != -1) startIndex++;
     if (Array.isArray(color) && (color[startIndex] == "@linear-gradient" || color[startIndex] == "@radial-gradient" || color[startIndex] == "@conic-gradient" || color[startIndex] == "@repeating-linear-gradient" || color[startIndex] == "@repeating-radial-gradient" || color[startIndex] == "@repeating-conic-gradient" || color[startIndex] == "@multi-gradient")) {
         for (let i = startIndex + 1; i < color.length; i++) {
-            if (Array.isArray(colorcopy[i]) || (typeof colorcopy[i] == "string" && colorcopy[i][0] == "#")) colorcopy[i] = rotateColor(colorcopy[i], degrees, invertL, vcoord, hcoord, gri, vars, globalVarStat);
+            if ((Array.isArray(colorcopy[i]) && colorcopy[i][0] !== "@CalcArrayNumber") || (typeof colorcopy[i] == "string" && colorcopy[i][0] == "#")) colorcopy[i] = rotateColor(colorcopy[i], degrees, invertL, vcoord, hcoord, gri, vars, globalVarStat);
         }
         return colorcopy;
     }
@@ -29881,6 +29904,7 @@ async function playReplay() {
 	forcedSpawnTiles("AfterSpawns", 0, 0);
     let desynced = false;
 	for (let i = 1; i < movesPlayed.length; i++) {
+        replayMoveIndex = i;
 		if (displayGridIntervalTime == Infinity) await delay(settingModifiers[1]);
         if (!isPlayingReplay || currentScreen != "Gameplay") return;
 		while (!inputAvailable || replayPaused || (displayGridIntervalTime != Infinity && Date.now() - startGameTime < replayTimestamps[i])) {
@@ -29897,7 +29921,7 @@ async function playReplay() {
         }
 		else MoveHandler(movesPlayed[i]);
         if (!isPlayingReplay || currentScreen != "Gameplay") return;
-        if (i < movesPlayed.length - 1 && Date.now() - startGameTime > replayTimestamps[i+1] && !desynced) {
+        if (i < movesPlayed.length - 1 && Date.now() - startGameTime > replayTimestamps[i+1] && displayGridIntervalTime != Infinity && !desynced) {
             desynced = true;
             alert("This replay has desynced. You'll need to use a higher Animation Speed Multiplier to view it properly.");
             GameOver();

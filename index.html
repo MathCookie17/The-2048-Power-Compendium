@@ -2141,7 +2141,7 @@
                         </div>
                         <div class="modifiers_box_2x2_entry">
                             <p id="modifiers_multicolorTiles_text" class="modifier_text">Multicolor Tiles: 1</p>
-                            <p id="modifiers_multicolorTiles_info" class="modifier_subtext">When this modifier is above 1, tiles come in a certain number of colors. Tiles that would normally be able to merge with each other can only merge if they form a cycle of colors, and the resulting tile will be the color that is next in the cycle. This cycle of colors can start at any point and with sufficiently long merges may contain more than one instance of the colors in the cycle. This modifier does not work on certain modes, namely XXXX, mod 27, and 2496 and Pro-Add-Uct where the maximum length merge is at least two greater than the minimum.</p>
+                            <p id="modifiers_multicolorTiles_info" class="modifier_subtext">When this modifier is above 1, tiles come in a certain number of colors. Tiles that would normally be able to merge with each other can only merge if they form a cycle of colors, and the resulting tile will be the color that is next in the cycle. This cycle of colors can start at any point and with sufficiently long merges may contain more than one instance of the colors in the cycle. This modifier does not work on certain modes, namely XXXX, mod 27, and 2496 and Pro-Add-Uct where the maximum length merge is greater than the minimum.</p>
                             <div id="modifiers_multicolorTiles_numeric" class="modifiers_flexbox">
                                 <div id="modifiers_multicolorTiles_amount" class="modifiers_var_container">
                                     <p id="modifiers_multicolorTiles_title" class="gm_var_title">Amount of colors:</p>
@@ -3356,7 +3356,7 @@
                     </p>
                 </div>
                 <div id="guide_customModeTeaser" class="guide_box">
-                    <h2>Custom Mode</h2>
+                    <h2>Custom Modes</h2>
                     <img src="Guide Images/CustomMode Opening.png" style="width: calc(var(--base_size) * 80); height: auto">
                     <p class="img_caption">The screen you see before starting the Custom Game process</p>
                     <p>
@@ -3371,6 +3371,24 @@
                         screen where you can choose to create a new mode, load a Custom Mode save code you already have and re-edit it, or view the Guide for the Custom
                         Game. As with this Guide, it's recommended you read the Custom Mode Guide before making your first Custom Mode.
                     </p>
+                </div>
+                <div id="guide_Infused" class="guide_box">
+                    <h2>Infused Modes</h2>
+                    <img src="Guide Images/Infused Creation.png" style="width: calc(var(--base_size) * 80); height: auto">
+                    <p class="img_caption">The main screen for creating an Infused Mode</p>
+                    <p>
+                        The Custom Mode maker is limited in scope - it can only feasibly recreate modes in the styles of Page 1 and Page 2.
+                        If you want to make your own modes in the styles of Pages 3 or 4, or something even crazier, you'll need to mod the game.
+                        As of v3.0, the Compendium has in-built modding tools to create things called <i>Infused Modes</i>, which like Custom Modes
+                        can be shared via save codes and will respond to Modifiers and the like (and they can have mode modifiers!).
+                    </p>
+                    <p>
+                        These have a Guide too, but since these are modding tools, they're not as visible as the Custom Mode is -
+                        you'll need to understand the Compendium's code first before you can start modding it. The Infused Mode Guide has more to
+                        say about that, so for now, if you want to do anything related to Infused Modes (including viewing that Guide), you'll need
+                        to import the word "Infused" (without the quotes) into any save code textbox in the Compendium.
+                    </p>
+                    <div id="guide_infusedLink" class="hover_grow guide_button" style="display:none">Enter Infused Mode Control Unit</div>
                 </div>
                 <div id="guide_credits" class="guide_box">
                     <h2>Credits</h2>
@@ -3918,10 +3936,19 @@
                       </li>
                       <br>
                       <li>
-                        <b>
-                            v3.0.9 (Sep. 7, 2026) [Current Version]: Fixed the following bugs: infused grid selections going out-of-bounds,
+                            v3.0.9 (Sep. 7, 2026): Fixed the following bugs: infused grid selections going out-of-bounds,
                             the seventh entry of Input modifiers for infused modes not working correctly, modifiers save codes not importing the
                             custom grid correctly, and Non-Interacting Negatives acting as if it's Interacting Negatives in FIVE and Isotopic DIVE.
+                      </li>
+                      <br>
+                      <li>
+                        <b>
+                            v3.0.10 (Sep. 22, 2026) [Current Version]: Fixed the following bugs: pausing or slowing down non-timed replays
+                            causing a desync error, visible next spawned tiles not updating in a replay, 2592 random goals not being completed,
+                            infused modes that used "@CalcArrayNumber" having issues with Negative Tiles, a Multicolor Tiles bug with
+                            2496 and Pro-Add-Uct (though admittedly I "fixed" this one by just restricting the domain to disallow it),
+                            and some typos. Also, small decimal numbers now display with a bit more precision, so that 0.01 s in real time
+                            modifiers isn't in scientific notation.
                         </b>
                       </li>
                     </ul>
