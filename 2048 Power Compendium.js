@@ -17627,7 +17627,7 @@ function startGame() {
     rngIndex = 0;
     replayOtherSpawns = []
     replayTimestamps = [-1];
-    isPlayingReplay = false;
+    isPlayingReplay = (isPlayingReplay == 2) ? true : false;
 
     Grid = [];
     tsize = 0;
@@ -17661,7 +17661,7 @@ function startGame() {
     forcedSpawnTiles("BeforeSpawns", 0, 0);
     RandomTiles(startTileAmount, 0, 0);
     forcedSpawnTiles("AfterSpawns", 0, 0);
-    executeScripts("EndModeSetup");
+    if (!isPlayingReplay) executeScripts("EndModeSetup");
     firstMoveTime = false;
     moveStartTime = false;
     moveEndTime = false;
@@ -29902,6 +29902,7 @@ async function playReplay() {
 	forcedSpawnTiles("BeforeSpawns", 0, 0);
 	spawnKnownTiles(spawnedTiles);
 	forcedSpawnTiles("AfterSpawns", 0, 0);
+    executeScripts("EndModeSetup");
     let desynced = false;
 	for (let i = 1; i < movesPlayed.length; i++) {
         replayMoveIndex = i;
@@ -33102,6 +33103,7 @@ function importSave(code, reloadSave = false, savescumless = false) {
                     while (start_mvar_indices.length < start_modifier_vars.length) start_mvar_indices.push(false);
                 }
                 gamemode = 0;
+                isPlayingReplay = 2;
                 startGame(true);
                 Grid = compendiumStructuredClone(startingGrid);
                 replayStart = 39;
@@ -33123,7 +33125,6 @@ function importSave(code, reloadSave = false, savescumless = false) {
                 else {
                     replayTimestamps = [];
                 }
-				isPlayingReplay = true;
 				displayGrid();
 				playReplay();
             }
