@@ -15864,7 +15864,7 @@ function gmDisplayVars() {
                 if(MergeRules[i][3][0] == "@MergeOverflowOverwrite") outputOne = 1;
                 let output = MergeRules[i][3][outputOne];
                 if(MergeRules[i][4].length == 0) {
-                    MergeRules[i][4] = [[arrayProduct, "^", [output[0], "/B", mode_vars[1].length, "Number"]], "*", [arraySubproducts, "arr_elem", [output[0], "%", mode_vars[1].length]], "*", "@This 1", "*", output[1]];
+                    MergeRules[i][4] = [[arrayProduct, "^", [output[0], "/B", mode_vars[1].length, "Number"]], "*", [arraySubproducts, "arr_elem", [output[0], "%", mode_vars[1].length]], "*", output[1]];
                 }
             }
         }
