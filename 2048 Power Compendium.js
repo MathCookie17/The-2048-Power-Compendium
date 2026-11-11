@@ -57,13 +57,13 @@ let modifiers = [Infinity, 1, 2, false, "All", "Square", 0, 0, 0, 0, "Orthogonal
     modifiers[28] adds slippery tiles to the grid, modifiers[29] is unused, modifiers[30] is the amount of random unmoving tiles in a turn,
     modifiers[31] is the amount of random unmerging tiles in a turn, modifiers[32] is the toggle for hidden tile colors, and modifiers[33] is the amount of tile-destroying clicks.
     */
-let settingModifiers = [1, 100, false, false, false, false, false, 0, false, false, false, false, false, false, false, false, false, 3, 2]
+let settingModifiers = [1, 100, false, false, false, false, false, 0, false, false, false, false, false, false, false, false, false, 3, 2, true]
 /*
     settingModifiers[0] is the animation speed multiplier, settingModifiers[1] is the time between moves in a replay.
     [2], [3], [4], [5], and [6] are the toggles for the Discovered Tiles box, the Moves box, the Merges box, the Merges Before This Turn box, and the Moves Where a Merge Occurred Box respectively.
     settingModifiers[7] is for resuming a game on reload, settingModifiers[8] is for replacing Restart Game with End Game, settingModifiers[9] and [10] are for saving settings and modifiers on reload respectively.
     [11], [12], [13], [14], [15], and [16] are the toggles for the time-related boxes: Time Since Game Began, Time Since First Move, Time Since Previous Move Start, Time Since Previous Move End, Time It Took to Win, and Time It Took to Game Over respectively.
-    [17] is the max tileDisplayKnownLevel, [18] is the max mergeResultKnownLevel.
+    [17] is the max tileDisplayKnownLevel, [18] is the max mergeResultKnownLevel. [19] is whether replay data is kept.
 */
 let gamemode = 0; //Which mode are we in? 2048 is gamemode 1, 2187 is gamemode 2, 1024 is gamemode 3, and so on. Save codes use gamemode 0 to alert StartGame to not go through some of the starting steps.
 let mode_vars = []; //Used by a couple gamemodes
@@ -232,11 +232,11 @@ let number_operators = ["+", "-", "*", "/", "%", "mod", "^", "**", "log", "round
 let string_operators = ["str_char", "str_concat", "str_concat_front", "str_length", "str_slice", "str_substr", "str_replace", "str_indexOf", "str_lastIndexOf", "str_indexOfFrom", "str_lastIndexOfFrom", "str_includes", "str_splice", "str_toUpperCase", "str_toLowerCase", "str_split", "baseDeconvertB", "deevaluateColor"];
 let boolean_operators = ["&&", "||", "!", "&&nsc", "||nsc"];
 let array_operators = ["arr_copy", "arr_elem", "arr_edit_elem", "arr_length", "arr_push", "arr_pop", "arr_shift", "arr_unshift", "arr_concat", "arr_concat_front", "arr_flat", "arr_splice", "arr_slice", "arr_indexOf", "arr_lastIndexOf", "arr_indexOfFrom", "arr_lastIndexOfFrom", "arr_includes", "arr_reverse", "arr_sort", "arr_map", "arr_filter", "arr_reduce", "arr_reduceRight", "arr_binarySearch", "arr_binaryInsert", "arr_binarySearchCF", "arr_binaryInsertCF", "arr_eqRearrange", "CalcArray", "primeDefactorizeB", "weightedRandomArrayEntry", "multicolor"];
-let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "roundB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "primeFactorizeB", "factorAmountB", "factorListB", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "bit>>>B", "basebit&B", "basebit|B", "basebit~B", "basebit^B", "rand_bigint", "defaultAbbrevB", "perfectPowerFormB", "baseConvertB", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
+let bigint_operators = ["+B", "-B", "*B", "/B", "%B", "modB", "^B", "**B", "rootB", "logB", "roundB", "floorB", "ceilB", "ceilingB", "absB", "signB", "gcdB", "lcmB", "factorialB", "primeB", "expomodB", "primeFactorizeB", "factorAmountB", "factorListB", "bit&B", "bit|B", "bit~B", "bit^B", "bit<<B", "bit>>B", "basebit&B", "basebit|B", "basebit~B", "basebit^B", "rand_bigint", "defaultAbbrevB", "perfectPowerFormB", "baseConvertB", "DIVESeedUnlock", "ipowGB", "gaussian_prime"];
 let gaussianbigint_operators = ["reGB", "imGB", "+GB", "-GB", "*GB", "/GB", "/mGB", "modGB", "^GB", "**GB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "gcdGB", "lcmGB", "expomodGB", "defaultAbbrevGB", "phaseGB", "GaussianDIVESeedUnlock", "gaussianSort"];
 let bigrational_operators = ["numeratorBR", "denominatorBR", "+BR", "-BR", "*BR", "/BR", "modBR", "^BR", "**BR", "roundBR", "floorBR", "ceilBR", "ceilingBR", "negBR", "recipBR", "absBR", "signBR", "gcdBR", "lcmBR", "^RBR", "**RBR", "logRBR", "sinRBR", "cosRBR", "expomodBR", "defaultAbbrevBR", "perfectPowerFormBR"];
-let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "numeratorBR", "denominatorBR", "negBR", "recipBR", "absBR", "signBR", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "primeGB", "phaseGB", "factorAmountB", "factorListB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "defaultAbbrevBR", "defaultAbbrevAny", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "BigRational", "typeof", "deevaluateColor"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list. Same goes for evaluateColor and the like.
-let calcArray_startModifiers = ["@var_retain", "@var_copy", "@global_var_retain", "@global_var_copy", "@global_var_none", "@global_var_retain_inner", "@global_var_copy_inner", "@global_var_none_inner"];
+let pop_1_operators = ["abs", "absB", "sign", "signB", "reGB", "imGB", "normGB", "normGGB", "negGB", "rot90GB", "rot270GB", "conjGB", "toFirstQuadrantGB", "firstQuadrantUnitGB", "ipowGB", "numeratorBR", "denominatorBR", "negBR", "recipBR", "absBR", "signBR", "sin", "cos", "tan", "!", "factorial", "factorialB", "prime", "primeB", "gaussian_prime", "phaseGB", "factorAmountB", "factorListB", "defaultAbbrev", "defaultAbbrevB", "defaultAbbrevGB", "defaultAbbrevBR", "defaultAbbrevAny", "bit~", "bit~B", "str_length", "str_toUpperCase", "str_toLowerCase", "arr_copy", "arr_length", "arr_pop", "arr_shift", "arr_reverse", "Number", "String", "Boolean", "Array", "BigInt", "GaussianBigInt", "BigRational", "typeof", "deevaluateColor"]; //CalcArray, the operator, also only takes 1 input, but it's a special case so it's not in this list. Same goes for evaluateColor and the like.
+let calcArray_startModifiers = ["@var_retain", "@var_copy", "@var_none", "@global_var_retain", "@global_var_copy", "@global_var_none", "@global_var_retain_inner", "@global_var_copy_inner", "@global_var_none_inner"];
 let calcArray_startModifiersPlus = calcArray_startModifiers.concat(["@include_gvars"]);
 
 let textExpressionEffects = ["@TextE", "@Bold", "@Italic", "@UnBold", "@UnItalic", "@Underline", "@Overline", "@Strikethrough", "@NoLine", "@Superscript", "@Subscript", "@TextColor", "@TextShadow"]
@@ -364,7 +364,7 @@ document.getElementById("return_button").addEventListener("click", function(){
     switchScreen("Menu", 1);
 });
 document.getElementById("new_game_button").addEventListener("click", function(){
-    if (settingModifiers[8]) GameOver();
+    if (settingModifiers[8] && currentScreen == "Gameplay") GameOver();
     else PlayAgain();
 });
 document.getElementById("2048_spawn_button").addEventListener("click", function(){
@@ -1789,11 +1789,13 @@ document.getElementById("win_continue").addEventListener("click", function(){
     inputAvailable = true;
 });
 document.getElementById("view_win_replay").addEventListener("click", function(){
+    if (movesPlayed === undefined) return;
     replayTimestamps.push(endReplayTimestamp - startGameTime)
     exportReplay(1);
     switchScreen("SaveCode", "Replay");
 });
 document.getElementById("view_loss_replay").addEventListener("click", function(){
+    if (movesPlayed === undefined) return;
     replayTimestamps.push(endReplayTimestamp - startGameTime)
     exportReplay(0);
     switchScreen("SaveCode", "Replay");
@@ -1989,6 +1991,10 @@ document.getElementById("modifiers_optimemory_mergeResults_button").addEventList
 });
 document.getElementById("modifiers_restartButton_button").addEventListener("click", function(){
     settingModifiers[8] = !settingModifiers[8]
+    displayModifiers(-2);
+});
+document.getElementById("modifiers_replayDisable_button").addEventListener("click", function(){
+    settingModifiers[19] = !settingModifiers[19]
     displayModifiers(-2);
 });
 document.getElementById("modifiers_reloadResume_button").addEventListener("click", function(){
@@ -3848,11 +3854,12 @@ document.getElementById("PPPA377_enter_button").addEventListener("click", functi
 });
 
 // Load saves
-let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4", "2.1.13", "2.1.14", "2.2", "2.2.2", "2.2.3", "2.3", "3.0", "3.0.5"];
-let validReplayCodeVersions = ["2.2", "2.2.2", "2.3.1", "3.0", "3.0.5"];
+let validSaveCodeVersions = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.5.1", "2.0", "2.1", "2.1.4", "2.1.13", "2.1.14", "2.2", "2.2.2", "2.2.3", "2.3", "3.0", "3.0.5", "3.0.13"];
+let validReplayCodeVersions = ["2.2", "2.2.2", "2.3.1", "3.0", "3.0.5", "3.0.13"];
 let inputAvailable = false;
 if (localStorage.getItem("settingsReloadSave")) {
-    settingModifiers = SCparse(localStorage.getItem("settingsReloadSave"));
+    let settingsImport = SCparse(localStorage.getItem("settingsReloadSave"));
+    settingModifiers = settingsImport.concat(settingModifiers.slice(settingsImport.length));
     settingModifiers[9] = true;
 }
 if (localStorage.getItem("modifiersReloadSave")) {
@@ -4302,7 +4309,7 @@ function expomodGaussian(n, m) { //Same as expomod, but for GaussianBigInts
     catch {
         return -1n;
     }
-    if (n.eq([0n, 0n]) || m.norm().eq(1n)) return -1n;
+    if (n.eq([0n, 0n]) || m.norm() == 1n) return -1n;
     let result = 0n;
     while (n.mod(m).eq([0n, 0n])) {
         n = n.div(m);
@@ -17143,6 +17150,14 @@ function displayModifiers(page) {
             document.getElementById("modifiers_restartButton_text").innerHTML = "The Restart Game button instantly restarts the game.";
             document.getElementById("modifiers_restartButton_text").style.setProperty("color", "#81775a");
         }
+        if (settingModifiers[19]) {
+            document.getElementById("modifiers_replayDisable_text").innerHTML = "The data needed to generate a replay is kept. (This setting locks in at the start of a game.)";
+            document.getElementById("modifiers_replayDisable_text").style.setProperty("color", "#B81FFF");
+        }
+        else {
+            document.getElementById("modifiers_replayDisable_text").innerHTML = "You can't get a replay, but in-progress game savecodes are shorter. (This setting locks in at the start of a game.)";
+            document.getElementById("modifiers_replayDisable_text").style.setProperty("color", "#5D0089");
+        }
     }
     else if (page == -3) {
         if (settingModifiers[7] == 0) {
@@ -17627,6 +17642,13 @@ function startGame() {
     rngIndex = 0;
     replayOtherSpawns = []
     replayTimestamps = [-1];
+    if (!settingModifiers[19]) {
+        movesPlayed = undefined;
+        currentMovePlayed = undefined;
+        otherRandomEvents = undefined;
+        replayOtherSpawns = undefined;
+        replayTimestamps = undefined;
+    }
     isPlayingReplay = (isPlayingReplay == 2) ? true : false;
 
     Grid = [];
@@ -17796,7 +17818,7 @@ function createGrid() {
                 let actionTime = Date.now();
                 executeScripts("TileClick", vcoord, hcoord);
                 displayGrid("TileClick");
-                if (!isPlayingReplay) {
+                if (!isPlayingReplay && movesPlayed !== undefined) {
                     movesPlayed.push(compendiumStructuredClone(currentMovePlayed));
                     currentMovePlayed = ["@TileClick", vcoord, hcoord];
                     replayTimestamps.push(actionTime - startGameTime);
@@ -17958,7 +17980,7 @@ function createStatBoxes() {
                     let actionTime = Date.now();
                     CalcArray(statBoxes[b][7]);
                     displayGrid("StatBoxClick");
-                    if (!isPlayingReplay) {
+                    if (!isPlayingReplay && movesPlayed !== undefined) {
                         movesPlayed.push(compendiumStructuredClone(currentMovePlayed));
                         currentMovePlayed = ["@StatBoxClick", b];
                         replayTimestamps.push(actionTime - startGameTime);
@@ -23914,6 +23936,7 @@ function loadModifiers() {
                 else if (typeof negativeTiles[t][startindex + 1] == "bigint") negativeTiles[t][startindex + 1] *= -1n;
                 else if (typeof negativeTiles[t][startindex + 1] == "string" && negativeTiles[t][startindex + 1][0] != "@") negativeTiles[t][startindex + 1] = "-" + negativeTiles[t][startindex + 1];
                 else if (typeof negativeTiles[t][startindex + 1] instanceof BigRational || typeof negativeTiles[t][startindex + 1] instanceof GaussianBigInt) negativeTiles[t][startindex + 1]  = negativeTiles[t][startindex + 1].neg();
+                else if ((Array.isArray(negativeTiles[t][startindex + 1]) && negativeTiles[t][startindex + 1][0] === "@TextE")) negativeTiles[t][startindex + 1] = ["@TextE", "-", negativeTiles[t][startindex + 1]];
                 else if ((Array.isArray(negativeTiles[t][startindex + 1]) || (typeof negativeTiles[t][startindex + 1] == "string" && negativeTiles[t][startindex + 1][0] == "@")) && negativeTiles[t][startindex + 1].indexOf("@no-negative-sign") == -1) negativeTiles[t][startindex + 1] = ["@var_retain", negativeTiles[t][startindex + 1], "defaultAbbrevAny", "str_concat_front", "-"];
                 if (negativeTiles[t][startindex + 2] == "@ColorScheme") {
                     let mult = "*B";
@@ -24606,7 +24629,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             chosen = getRndInteger(0, availableTiles.length - 1);
             if (Grid[availableTiles[chosen][0]][availableTiles[chosen][1]] == "@Empty") {
                 Grid[availableTiles[chosen][0]][availableTiles[chosen][1]] = "@Void";
-                currentMovePlayed.push(["@Void"].concat(availableTiles[chosen]));
+                if (movesPlayed !== undefined) currentMovePlayed.push(["@Void"].concat(availableTiles[chosen]));
                 voidboxes++;
             }
             availableTiles.splice(chosen, 1);
@@ -24616,7 +24639,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             chosen = getRndInteger(0, availableTiles.length - 1);
             if (Grid[availableTiles[chosen][0]][availableTiles[chosen][1]] == "@Empty") {
                 Grid[availableTiles[chosen][0]][availableTiles[chosen][1]] = BlackBox;
-                currentMovePlayed.push([BlackBox].concat(availableTiles[chosen]));
+                if (movesPlayed !== undefined) currentMovePlayed.push([BlackBox].concat(availableTiles[chosen]));
                 voidboxes++;
             }
             availableTiles.splice(chosen, 1);
@@ -24626,7 +24649,7 @@ function loadResettingModifiers() { //Randomly-Placed Holes and Randomly-Placed 
             chosen = getRndInteger(0, availableTiles.length - 1);
             if (Grid[availableTiles[chosen][0]][availableTiles[chosen][1]] == "@Empty") {
                 Grid[availableTiles[chosen][0]][availableTiles[chosen][1]] = "@Slippery";
-                currentMovePlayed.push(["@Slippery"].concat(availableTiles[chosen]));
+                if (movesPlayed !== undefined) currentMovePlayed.push(["@Slippery"].concat(availableTiles[chosen]));
                 voidboxes++;
             }
             availableTiles.splice(chosen, 1);
@@ -25391,7 +25414,6 @@ function operation(n1, operator, n2) {
             result = n1 >> n2;
         break;
         case "bit>>>":
-        case "bit>>>B":
             result = n1 >>> n2;
         break;
         case "rand_int":
@@ -25401,6 +25423,7 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = getRndInteger(Math.ceil(n1), Math.floor(n2));
+                if (movesPlayed === undefined) break;
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -25413,6 +25436,7 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = getRndFloat(n1, n2);
+                if (movesPlayed === undefined) break;
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -25585,76 +25609,86 @@ function operation(n1, operator, n2) {
             result = n1.reverse();
         break;
         case "arr_sort":
+            additional.push(additional[0][7]);
             result = n1.sort(
                 function(a, b) {
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(a)) a = ["@Literal"].concat(a);
                     if (Array.isArray(b)) b = ["@Literal"].concat(b);
                     nn2.splice(vpos, 0, a, b);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }
             )
         break;
         case "arr_map":
+            additional.push(additional[0][7]);
             result = n1.map(
                 function(value, index) {
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos, 0, index, value);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }
             )
         break;
         case "arr_filter":
+            additional.push(additional[0][7]);
             result = n1.filter(
                 function(value, index) {
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos, 0, index, value);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }
             )
         break;
         case "arr_reduce":
+            additional.push(additional[0][7]);
             result = n1.reduce(
                 function(total, value, index) {
                     if (Array.isArray(total)) total.unshift("@Literal");
                     if (Array.isArray(value)) value.unshift("@Literal");
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos + 1, 0, total);
                     nn2.splice(vpos, 0, index, value);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }, additional[1]
             )
         break;
         case "arr_reduceRight":
+            additional.push(additional[0][7]);
             result = n1.reduceRight(
                 function(total, value, index) {
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(value)) value = ["@Literal"].concat(value);
                     nn2.splice(vpos + 1, 0, total);
                     nn2.splice(vpos, 0, index, value);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }, additional[1]
             )
@@ -25666,31 +25700,35 @@ function operation(n1, operator, n2) {
             result = binaryInsert(n1, n2);
         break;
         case "arr_binarySearchCF":
+            additional.push(additional[0][7]);
             result = binarySearch(n1, additional[1],
                 function(val1, val2) {
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(val1)) val1 = ["@Literal"].concat(val1);
                     if (Array.isArray(val2)) val2 = ["@Literal"].concat(val2);
                     nn2.splice(vpos, 0, val1, val2);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }
             )
         break;
         case "arr_binaryInsertCF":
+            additional.push(additional[0][7]);
             result = binaryInsert(n1, additional[1],
                 function(val1, val2) {
                     let nn2 = compendiumStructuredClone(n2);
                     let vpos = 0;
-                    while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+                    while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
                     if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
                     vpos = nn2.indexOf("@end_vars");
                     if (Array.isArray(val1)) val1 = ["@Literal"].concat(val1);
                     if (Array.isArray(val2)) val2 = ["@Literal"].concat(val2);
                     nn2.splice(vpos, 0, val1, val2);
+                    additional[0][7] = compendiumStructuredClone(additional.at(-1));
                     return CalcArray(nn2, ...additional[0]);
                 }
             )
@@ -25705,6 +25743,7 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = weightedRandomArrayEntry(n1, n2);
+                if (movesPlayed === undefined) break;
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -25745,6 +25784,7 @@ function operation(n1, operator, n2) {
             }
             else {
                 result = getRndBigInt(n1, n2);
+                if (movesPlayed === undefined) break;
                 otherRandomEvents[rngIndex] = result;
                 rngIndex++;
                 if (rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
@@ -25924,7 +25964,7 @@ function operation(n1, operator, n2) {
             let nn2 = compendiumStructuredClone(n2);
             console.log(nn2);
             let vpos = 0;
-            while (nn2[vpos] === "@var_retain" || nn2[vpos] === "@var_copy" || nn2[vpos] === "@global_var_retain" || nn2[vpos] === "@global_var_copy" || nn2[vpos] === "@global_var_none" || nn2[vpos] === "@global_var_retain_inner" || nn2[vpos] === "@global_var_copy_inner" || nn2[vpos] === "@global_var_none_inner") vpos++;
+            while (calcArray_startModifiers.indexOf(nn2[vpos]) !== -1) vpos++;
             if (nn2.indexOf("@end_vars") == -1) nn2.splice(vpos, 0, "@end_vars");
             vpos = nn2.indexOf("@end_vars");
             nn2.splice(vpos + 1, 0, n1);
@@ -26103,8 +26143,14 @@ function CalcArray(arr) {
     if (arr[0] == "@global_var_retain") globalVarStat = 1;
     else if (arr[0] == "@global_var_copy") globalVarStat = -1;
     else if (arr[0] == "@global_var_none") globalVarStat = 0;
-    if ((arguments.length > 8 && arguments[8] !== undefined && arr[0] === "@var_retain") || globalVarStat == 1) vars = arguments[8]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray
-    else if ((arguments.length > 8 && arguments[8] !== undefined && arr[0] === "@var_copy") || globalVarStat == -1) vars = compendiumStructuredClone(arguments[8]);
+    if (arguments.length > 8 && arguments[8] !== undefined) {
+        if (arr[0] === "@var_retain") vars = arguments[8]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray
+        else if (arr[0] === "@var_copy") vars = compendiumStructuredClone(arguments[8]);
+        else if (!(arr[0] === "@var_none")) {
+            if (globalVarStat == 1) vars = arguments[8];
+            if (globalVarStat == -1) vars = compendiumStructuredClone(arguments[8]);
+        }
+    }
     if (vars === undefined) vars = [];
     if (typeof arr[0] == "string" && arr[0][0] == "@") {
         if (arr[0] == "@global_var_retain_inner") globalVarStat = 1;
@@ -26145,19 +26191,21 @@ function CalcArray(arr) {
     let operator = "";
     let to_pop = 2; // How many entries (starting from the 1st, since the 0th is where the result is) should be removed after an operation?
     let if_skipped = false; // Is set to true only right after an if or else_if's condition is false; this is used so the CalcArray knows when to look at elses and else_ifs.
-    while (carr.length > 1) {
-        if (Array.isArray(carr[1])) carr[1] = CalcArray(carr[1], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false);
-        operator = carr[1];
-        n1 = CalcArrayConvert(carr[0], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+    let runningPosition = 0;
+    let runningValue = carr[0];
+    while (carr.length - runningPosition > 1) {
+        if (Array.isArray(carr[runningPosition+1])) carr[runningPosition+1] = CalcArray(carr[runningPosition+1], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false);
+        operator = carr[runningPosition+1];
+        n1 = CalcArrayConvert(runningValue, operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
         if (Array.isArray(n1)) n1.unshift("@Literal");
         parents[parents.length - 1] = compendiumStructuredClone(n1);
         if (Array.isArray(n1)) n1.shift("@Literal");
         additional_args = [];
         if (typeof operator == "string" && operator[0] == "@" && operator != "@add_score" && operator != "@primesUpdate" && operator != "@ScriptSignal") {
             if (operator == "@repeat") { // Repeats the operations between the entry after "@repeat" and "@end-repeat". If the entry after "@repeat" is a number, that's how many times those operations are repeated (like a for loop); otherwise, it should be a CalcArray expression, and the repetition continues as long as that expression evaluates to true (like a while loop)
-                if (typeof CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) == "number") carr[2] = CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false);
+                if (typeof CalcArray(carr[runningPosition+2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) == "number") carr[runningPosition+2] = CalcArray(carr[runningPosition+2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false);
                 let nesting = 1;
-                let position = 3;
+                let position = runningPosition+3;
                 let nestarray = [];
                 while (nesting > 0 && position < carr.length) {
                     let entry = carr[position];
@@ -26168,18 +26216,18 @@ function CalcArray(arr) {
                     if (nesting == 0) nestarray.pop();
                     else position++;
                 }
-                while ((typeof carr[2] == "number" && carr[2] > 0) || (typeof carr[2] == "object" && CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) === true)) {
+                while ((typeof carr[runningPosition+2] == "number" && carr[runningPosition+2] > 0) || (typeof carr[runningPosition+2] == "object" && CalcArray(carr[runningPosition+2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) === true)) {
                     let nestarray1 = compendiumStructuredClone(nestarray);
                     if (Array.isArray(n1)) n1.unshift("@Literal");
                     nestarray1.unshift("@var_retain", n1);
                     n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, false, false);
-                    if (typeof carr[2] == "number") carr[2] -= 1;
+                    if (typeof carr[runningPosition+2] == "number") carr[runningPosition+2] -= 1;
                 }
-                to_pop = position;
+                to_pop = position-runningPosition;
             }
             else if (operator == "@if") { // The operations between the entry after "@if" and "@end-if" only occur if the entry after "@if" evaluates to true
                 let nesting = 1;
-                let position = 3;
+                let position = runningPosition+3;
                 let nestarray = [];
                 while (nesting > 0 && position < carr.length) {
                     let entry = carr[position];
@@ -26190,7 +26238,7 @@ function CalcArray(arr) {
                     if (nesting == 0) nestarray.pop();
                     else position++;
                 }
-                if (CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) === true) {
+                if (CalcArray(carr[runningPosition+2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) === true) {
                     if_skipped = false;
                     let nestarray1 = compendiumStructuredClone(nestarray);
                     if (Array.isArray(n1)) n1.unshift("@Literal");
@@ -26198,11 +26246,11 @@ function CalcArray(arr) {
                     n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, false, false);
                 }
                 else if_skipped = true;
-                to_pop = position;
+                to_pop = position-runningPosition;
             }
             else if (operator == "@else") { // The operations between "@else" and "@end-else" only occur if an "@if" or an "@else-if" was just skipped
                 let nesting = 1;
-                let position = 2;
+                let position = runningPosition+2;
                 let nestarray = [];
                 while (nesting > 0 && position < carr.length) {
                     let entry = carr[position];
@@ -26220,11 +26268,11 @@ function CalcArray(arr) {
                     n1 = CalcArray(nestarray1, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, false, false);
                 }
                 if_skipped = false;
-                to_pop = position;
+                to_pop = position-runningPosition;
             }
             else if (operator == "@else-if") { // You can probably guess how this one works
                 let nesting = 1;
-                let position = 3;
+                let position = runningPosition+3;
                 let nestarray = [];
                 while (nesting > 0 && position < carr.length) {
                     let entry = carr[position];
@@ -26236,7 +26284,7 @@ function CalcArray(arr) {
                     else position++;
                 }
                 if (if_skipped) {
-                    if (CalcArray(carr[2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) === true) {
+                    if (CalcArray(carr[runningPosition+2], vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat, true, false) === true) {
                         if_skipped = false;
                         let nestarray1 = compendiumStructuredClone(nestarray);
                         if (Array.isArray(n1)) n1.unshift("@Literal");
@@ -26245,155 +26293,155 @@ function CalcArray(arr) {
                     }
                     else if_skipped = true;
                 }
-                to_pop = position;
+                to_pop = position-runningPosition;
             }
             else if (operator == "@edit_var") { // The entry after "@edit_var" is which variable to edit, the entry after that is what to change that variable to
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (Array.isArray(n2)) n2.unshift("@Literal");
                 if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < vars.length) vars[vlocation] = n2;
                 else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= vars.length * -1) vars[vars.length + vlocation] = n2;
                 to_pop = 3;
             }
             else if (operator == "@add_var") { // Adds a new variable at the end of the variables array
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (Array.isArray(n2)) n2.unshift("@Literal");
                 vars.push(n2);
                 to_pop = 2;
             }
             else if (operator == "@insert_var") { // The entry after "@insert_var" is where to insert the new variable, the entry after that is the value of the new variable
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (Array.isArray(n2)) n2.unshift("@Literal");
                 vars.splice(vlocation, 0, n2);
                 to_pop = 3;
             }
             else if (operator == "@remove_var") { // Removes the variable at the given position of the variables array
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 vars.splice(vlocation, 1);
                 to_pop = 2;
             }
             else if (operator == "@edit_gvar") { // These next four do the same thing as the previous four, but on game_vars instead of the internal variables
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < game_vars.length) game_vars[vlocation] = n2;
                 else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= game_vars.length * -1) game_vars[game_vars.length + vlocation] = n2;
                 to_pop = 3;
             }
             else if (operator == "@add_gvar") {
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 game_vars.push(n2);
                 to_pop = 2;
             }
             else if (operator == "@insert_gvar") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 game_vars.splice(vlocation, 0, n2);
                 to_pop = 3;
             }
             else if (operator == "@remove_gvar") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 game_vars.splice(vlocation, 1);
                 to_pop = 2;
             }
             else if (operator == "@edit_mvar") { // These four alter modifier_vars
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < modifier_vars.length) modifier_vars[vlocation] = n2;
                 else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= modifier_vars.length * -1) modifier_vars[modifier_vars.length + vlocation] = n2;
                 to_pop = 3;
             }
             else if (operator == "@add_mvar") {
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 modifier_vars.push(n2);
                 mvar_indices.push(false);
                 to_pop = 2;
             }
             else if (operator == "@insert_mvar") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 modifier_vars.splice(vlocation, 0, n2);
                 mvar_indices.splice(vlocation, 0, false);
                 to_pop = 3;
             }
             else if (operator == "@remove_mvar") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 modifier_vars.splice(vlocation, 1);
                 mvar_indices.splice(vlocation, 1);
                 to_pop = 2;
             }
             else if (operator == "@edit_spawn") { // These four alter the spawning tiles
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < TileSpawns.length) TileSpawns[vlocation] = n2;
                 else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= TileSpawns.length * -1) TileSpawns[TileSpawns.length + vlocation] = n2;
                 to_pop = 3;
             }
             else if (operator == "@add_spawn") {
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 TileSpawns.push(n2);
                 to_pop = 2;
             }
             else if (operator == "@insert_spawn") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 TileSpawns.splice(vlocation, 0, n2);
                 to_pop = 3;
             }
             else if (operator == "@remove_spawn") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 TileSpawns.splice(vlocation, 1);
                 to_pop = 2;
             }
             else if (operator == "@edit_forced_spawn") { // These four alter the forced spawns
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 if (vlocation % 1 == 0 && vlocation >= 0 && vlocation < forcedSpawns.length) forcedSpawns[vlocation] = n2;
                 else if (vlocation % 1 == 0 && vlocation < 0 && vlocation >= forcedSpawns.length * -1) forcedSpawns[forcedSpawns.length + vlocation] = n2;
                 to_pop = 3;
             }
             else if (operator == "@add_forced_spawn") {
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 forcedSpawns.push(n2);
                 to_pop = 2;
             }
             else if (operator == "@insert_forced_spawn") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                n2 = CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 forcedSpawns.splice(vlocation, 0, n2);
                 to_pop = 3;
             }
             else if (operator == "@remove_forced_spawn") {
                 let vlocation = 0;
-                vlocation = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                vlocation = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 forcedSpawns.splice(vlocation, 1);
                 to_pop = 2;
             }
             else if (operator == "@replace_tile") { // Changes a tile on the grid; the first two arguments are the coordinates of the tile, the third is the new value. The third argument can be any type so Empty and Void are accessible
                 if (currentScreen == "Gameplay") {
-                    let rvcoord = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                    let rhcoord = CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                    n2 = CalcArrayConvert(carr[4], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                    let rvcoord = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                    let rhcoord = CalcArrayConvert(carr[runningPosition+3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                    n2 = CalcArrayConvert(carr[runningPosition+4], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                     Grid[rvcoord][rhcoord] = n2;
                 }
                 to_pop = 4;
             }
             else if (operator == "@run_script") {
-                n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 CalcArray(scripts[n2][0], vcoord, hcoord, vdir, hdir, addInfo, gri, [], compendiumStructuredClone(vars), 0, true, false);
                 to_pop = 2;
             }
@@ -26409,77 +26457,84 @@ function CalcArray(arr) {
             }
             else if (operator == "str_char" || operator == "arr_elem" || operator == "@add_score" || operator == "primeFactorizeB" || operator == "primeDefactorizeB") {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
             }
             else if (operator == "str_slice" || operator == "str_substr" || operator == "str_splice" || operator == "arr_splice" || operator == "arr_slice") {
                 to_pop = 3;
-                n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
                 if (operator == "str_splice" || operator == "arr_splice") {
                     to_pop = 4;
-                    additional_args.push(CalcArrayConvert(carr[4], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                    additional_args.push(CalcArrayConvert(carr[runningPosition+4], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
                 }
             }
+            else if (operator == "str_replace") {
+                to_pop = 3;
+                n2 = CalcArrayConvert(carr[runningPosition+2], "str_concat", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "str_concat", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+            }
             else if (operator == "str_indexOfFrom" || operator == "str_lastIndexOfFrom" || operator == "arr_indexOfFrom" || operator == "arr_lastIndexOfFrom" || operator == "announce") {
-                to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                to_pop = 3;
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
             else if (operator == "arr_edit_elem") {
                 to_pop = 3;
-                n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
             else if (operator == "arr_push" || operator == "arr_unshift" || operator == "str_indexOf" || operator == "str_lastIndexOf" || operator == "arr_indexOf" || operator == "arr_lastIndexOf" || operator == "arr_binarySearch" || operator == "arr_binaryInsert") {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
             }
             else if (operator == "arr_sort" || operator == "arr_map" || operator == "arr_filter" || operator == "CalcArrayParent") {
                 to_pop = 2;
-                n2 = carr[2]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
+                n2 = carr[runningPosition+2]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
+                if (!Array.isArray(n2) || n2[0] === "@CalcArray") n2 = CalcArrayConvert(carr[runningPosition+2], "=", gameArgs, parents, vars, globalVarStat); // ...unless you TELL it to convert
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, compendiumStructuredClone(vars), globalVarStat]); //The CalcArray in operation will need these
             }
             else if (operator == "arr_reduce" || operator == "arr_reduceRight" || operator == "arr_binarySearchCF" || operator == "arr_binaryInsertCF") {
                 to_pop = 3;
-                n2 = carr[3]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
+                n2 = carr[runningPosition+3]; //n2 is supposed to be a valid CalcArray expression which will be evaluated by the operation, so no conversion yet
+                if (!Array.isArray(n2) || n2[0] === "@CalcArray") n2 = CalcArrayConvert(carr[runningPosition+2], "=", gameArgs, parents, vars, globalVarStat); // ...unless you TELL it to convert
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, compendiumStructuredClone(vars), globalVarStat]); //The CalcArray in operation will need these
-                additional_args.push(CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat)); //Initial value for reduce/reduceRight, value to find/insert for binarySearchCF/binaryInsertCF
+                additional_args.push(CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat)); //Initial value for reduce/reduceRight, value to find/insert for binarySearchCF/binaryInsertCF
             }
             else if (operator == "@primesUpdate" || operator == "**GB" || operator == "^GB" || operator == "**BR" || operator == "^BR" || operator == "perfectPowerFormBR") {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
             }
             else if (operator == "baseConvertB"  || operator == "baseDeconvertB") {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                if (n2.length == 1 && typeof n2[0] != "string") n2 = CalcArrayConvert(carr[2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                if (n2.length == 1 && typeof n2[0] != "string") n2 = CalcArrayConvert(carr[runningPosition+2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
             }
             else if (operator == "basebit&B" || operator == "basebit|B" || operator == "basebit^B") {
                 to_pop = 3;
-                n2 = CalcArrayConvert(carr[2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+B", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
             else if (operator == "**RBR" || operator == "^RBR" || operator == "logRBR") {
                 to_pop = 3;
-                n2 = CalcArrayConvert(carr[2], "+BR", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+BR", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+BR", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+BR", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
             else if (operator == "DIVESeedUnlock") {
                 to_pop = 3;
-                n2 = CalcArrayConvert(carr[2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                n2 = CalcArrayConvert(carr[runningPosition+2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
             else if (operator == "GaussianDIVESeedUnlock") {
                 to_pop = 4;
-                n2 = CalcArrayConvert(carr[2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
-                additional_args.push(CalcArrayConvert(carr[4], "&&", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                n2 = CalcArrayConvert(carr[runningPosition+2], "arr_elem", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                additional_args.push(CalcArrayConvert(carr[runningPosition+4], "&&", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
             }
             else if (operator == "customDIVESeedUnlock") {
                 to_pop = 11;
-                n2 = CalcArrayConvert(carr[2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-                additional_args.push(CalcArrayConvert(carr[3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
-                additional_args.push(carr[4], carr[5], carr[6], carr[7], carr[8], CalcArray(carr[9], vcoord, hcoord, vdir, hdir, addInfo, gri, [], vars, globalVarStat), carr[10], carr[11]); // Multiplication, division, modZero, sortFunc, coprime, one, valid, isOne
+                n2 = CalcArrayConvert(carr[runningPosition+2], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                additional_args.push(CalcArrayConvert(carr[runningPosition+3], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat));
+                additional_args.push(carr[runningPosition+4], carr[runningPosition+5], carr[runningPosition+6], carr[runningPosition+7], carr[runningPosition+8], CalcArray(carr[runningPosition+9], vcoord, hcoord, vdir, hdir, addInfo, gri, [], vars, globalVarStat), carr[runningPosition+10], carr[runningPosition+11]); // Multiplication, division, modZero, sortFunc, coprime, one, valid, isOne
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri, parents, compendiumStructuredClone(vars), globalVarStat]); //The CalcArrays in operation will need these
             }
             else if (operator == "CalcArray" || operator == "discoveredTilesFilter") {
@@ -26492,23 +26547,23 @@ function CalcArray(arr) {
             }
             else if (operator == "mergeRuleApplies" || operator == "mergeRuleApplies_nonRecursive" || operator == "tileValue") {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], "+", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
                 additional_args.push([vcoord, hcoord, vdir, hdir, addInfo, gri]); //The CalcArray in operation will need these
             }
             else {
                 to_pop = 2;
-                n2 = CalcArrayConvert(carr[2], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+                n2 = CalcArrayConvert(carr[runningPosition+2], operator, vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
             }
             n1 = operation(n1, operator, n2, additional_args);
         }
         if (Array.isArray(n1)) n1.unshift("@Literal");
-        carr[0] = n1;
+        runningValue = n1;
         parents[parents.length - 1] = n1;
-        carr.splice(1, to_pop);
+        runningPosition += to_pop;
     }
-    carr[0] = CalcArrayConvert(carr[0], "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
-    if (outermost) carr[0] = removeMultiAt(carr[0]);
-    return carr[0];
+    runningValue = CalcArrayConvert(runningValue, "=", vcoord, hcoord, vdir, hdir, addInfo, gri, parents, vars, globalVarStat);
+    if (outermost) runningValue = removeMultiAt(runningValue);
+    return runningValue;
 }
 
 function CalcArrayConvert(input, operator) { // Converts the input into a type based on the operator
@@ -27089,8 +27144,14 @@ function evaluateColor(color) {
     if (color[0] == "@global_var_retain") globalVarStat = 1;
     else if (color[0] == "@global_var_copy") globalVarStat = -1;
     else if (color[0] == "@global_var_none") globalVarStat = 0;
-    if ((arguments.length > 4 && arguments[4] !== undefined && color[0] === "@var_retain") || globalVarStat == 1) vars = arguments[4];
-    else if ((arguments.length > 4 && arguments[4] !== undefined && color[0] === "@var_copy") || globalVarStat == -1) vars = compendiumStructuredClone(arguments[4]);
+    if (arguments.length > 4 && arguments[4] !== undefined) {
+        if (color[0] === "@var_retain") vars = arguments[4]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray
+        else if (color[0] === "@var_copy") vars = compendiumStructuredClone(arguments[4]);
+        else if (!(color[0] === "@var_none")) {
+            if (globalVarStat == 1) vars = arguments[4];
+            if (globalVarStat == -1) vars = compendiumStructuredClone(arguments[4]);
+        }
+    }
     if (vars === undefined) vars = [];
     if (color[0] == "@global_var_retain_inner") globalVarStat = 1;
     else if (color[0] == "@global_var_copy_inner") globalVarStat = -1;
@@ -27583,8 +27644,14 @@ function evaluateTextExpression(arr, heEncode = true, defaultAbb = true) {
     if (arr[0] == "@global_var_retain") globalVarStat = 1;
     else if (arr[0] == "@global_var_copy") globalVarStat = -1;
     else if (arr[0] == "@global_var_none") globalVarStat = 0;
-    if ((arguments.length > 7 && arguments[7] !== undefined && arr[0] === "@var_retain") || globalVarStat == 1) vars = arguments[7];
-    else if ((arguments.length > 7 && arguments[7] !== undefined && arr[0] === "@var_copy") || globalVarStat == -1) vars = compendiumStructuredClone(arguments[7]);
+    if (arguments.length > 7 && arguments[7] !== undefined) {
+        if (arr[0] === "@var_retain") vars = arguments[7]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray
+        else if (arr[0] === "@var_copy") vars = compendiumStructuredClone(arguments[7]);
+        else if (!(arr[0] === "@var_none")) {
+            if (globalVarStat == 1) vars = arguments[7];
+            if (globalVarStat == -1) vars = compendiumStructuredClone(arguments[7]);
+        }
+    }
     if (vars === undefined) vars = [];
     if (arr[0] == "@global_var_retain_inner") globalVarStat = 1;
     else if (arr[0] == "@global_var_copy_inner") globalVarStat = -1;
@@ -27740,8 +27807,14 @@ function evaluateMergeRule(rule) { // This does not actually evaluate whether a 
     if (rule[0] == "@global_var_retain") globalVarStat = 1;
     else if (rule[0] == "@global_var_copy") globalVarStat = -1;
     else if (rule[0] == "@global_var_none") globalVarStat = 0;
-    if ((arguments.length > 7 && arguments[7] !== undefined && rule[0] === "@var_retain") || globalVarStat == 1) vars = arguments[7];
-    else if ((arguments.length > 7 && arguments[7] !== undefined && rule[0] === "@var_copy") || globalVarStat == -1) vars = compendiumStructuredClone(arguments[7]);
+    if (arguments.length > 7 && arguments[7] !== undefined) {
+        if (rule[0] === "@var_retain") vars = arguments[7]; // CalcArray expressions can store and manipulate internal variables. @var_retain tells the CalcArray to use the exact same variables (by reference, which works since they're stored in an array) as the parent CalcArray, @var_copy tells the CalcArray to use the same variables (by value) as the parent CalcArray
+        else if (rule[0] === "@var_copy") vars = compendiumStructuredClone(arguments[7]);
+        else if (!(rule[0] === "@var_none")) {
+            if (globalVarStat == 1) vars = arguments[7];
+            if (globalVarStat == -1) vars = compendiumStructuredClone(arguments[7]);
+        }
+    }
     if (vars === undefined) vars = [];
     if (rule[0] == "@global_var_retain_inner") globalVarStat = 1;
     else if (rule[0] == "@global_var_copy_inner") globalVarStat = -1;
@@ -28971,7 +29044,7 @@ function RandomTiles(amount, vdir, hdir) { // This is what spawns the random til
             spawnedtile = spawnConveyorSelect();
             //Do the spawning
             Grid[row][column] = compendiumStructuredClone(spawnedtile);
-            if (!isPlayingReplay) (arguments[4] ? replayOtherSpawns[replayOtherSpawns.length - 1] : currentMovePlayed).push([compendiumStructuredClone(spawnedtile), row, column]);
+            if (!isPlayingReplay && movesPlayed !== undefined) (arguments[4] ? replayOtherSpawns[replayOtherSpawns.length - 1] : currentMovePlayed).push([compendiumStructuredClone(spawnedtile), row, column]);
             spawnedTiles.push(compendiumStructuredClone(spawnedtile))
             executeScripts("TileSpawn", row, column, vdir, hdir, addInfo, Grid, [], [compendiumStructuredClone(spawnedtile), false]);
             displayGrid("Spawning");
@@ -29133,7 +29206,7 @@ function forcedSpawnTiles(timing, vdir, hdir) {
             //Do the spawning
             Grid[row][column] = compendiumStructuredClone(tilesToSpawn[0]);
             spawnedTiles.push(compendiumStructuredClone(tilesToSpawn[0]));
-            if (!isPlayingReplay) (arguments[4] ? replayOtherSpawns[replayOtherSpawns.length - 1] : currentMovePlayed).push([compendiumStructuredClone(tilesToSpawn[0]), row, column]);
+            if (!isPlayingReplay && movesPlayed !== undefined) (arguments[4] ? replayOtherSpawns[replayOtherSpawns.length - 1] : currentMovePlayed).push([compendiumStructuredClone(tilesToSpawn[0]), row, column]);
             TileChoices.splice(choice, 1);
             executeScripts("TileSpawn", row, column, vdir, hdir, addInfo, Grid, [], [compendiumStructuredClone(tilesToSpawn[0]), true]);
             displayGrid("Spawning");
@@ -29328,9 +29401,11 @@ async function MoveHandler(direction_num) {
         	rngIndex++;
         } else {
         	occured = Math.random() * 100;
-        	otherRandomEvents[rngIndex] = occured;
-        	rngIndex++;
-        	if(rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
+            if (movesPlayed !== undefined) {
+                otherRandomEvents[rngIndex] = occured;
+                rngIndex++;
+                if(rngIndex == otherRandomEvents.length) otherRandomEvents.push(0);
+            }
         }
         if (occured > probability) return false;
     }
@@ -29651,7 +29726,7 @@ async function MoveHandler(direction_num) {
         if (scriptSignals.indexOf("@ScriptSignal_MovementOccurred") != -1) movementOccurred = true;
     }
     if (movementOccurred) {
-        if (!isPlayingReplay && manual) {
+        if (!isPlayingReplay && manual && movesPlayed !== undefined) {
             movesPlayed.push(compendiumStructuredClone(currentMovePlayed));
             currentMovePlayed = [direction_num];
             replayTimestamps.push(moveStartTime - startGameTime);
@@ -29761,7 +29836,7 @@ async function MoveHandler(direction_num) {
             if (manualStrength[0] > -1) moves_where_merged++;
             merges_before_now += mergeCount;
         }
-        if (manualStrength[0] == 0 && !isPlayingReplay) {
+        if (manualStrength[0] == 0 && !isPlayingReplay && movesPlayed !== undefined) {
             replayOtherSpawns.push([]);
         }
         if (tilesSpawned.length > 0 && manualStrength[0] > -1) {
@@ -29907,10 +29982,14 @@ async function playReplay() {
 	for (let i = 1; i < movesPlayed.length; i++) {
         replayMoveIndex = i;
 		if (displayGridIntervalTime == Infinity) await delay(settingModifiers[1]);
-        if (!isPlayingReplay || currentScreen != "Gameplay") return;
+        if (!isPlayingReplay || currentScreen != "Gameplay") {
+            return;
+        }
 		while (!inputAvailable || replayPaused || (displayGridIntervalTime != Infinity && Date.now() - startGameTime < replayTimestamps[i])) {
 			await delay(2)
-            if (!isPlayingReplay || currentScreen != "Gameplay") return;
+            if (!isPlayingReplay || currentScreen != "Gameplay") {
+                return;
+            }
 		}
         if (movesPlayed[i][0] == "@StatBoxClick") {
             CalcArray(statBoxes[movesPlayed[i][1]][7]);
@@ -29920,8 +29999,11 @@ async function playReplay() {
             executeScripts("TileClick", movesPlayed[i][1], movesPlayed[i][2])
             displayGrid("TileClick");
         }
-		else MoveHandler(movesPlayed[i]);
-        if (!isPlayingReplay || currentScreen != "Gameplay") return;
+		else await MoveHandler(movesPlayed[i]);
+        if (!isPlayingReplay || currentScreen != "Gameplay") {
+            if (currentScreen == "Gameplay") PlayAgain();
+            return;
+        }
         if (i < movesPlayed.length - 1 && Date.now() - startGameTime > replayTimestamps[i+1] && displayGridIntervalTime != Infinity && !desynced) {
             desynced = true;
             alert("This replay has desynced. You'll need to use a higher Animation Speed Multiplier to view it properly.");
@@ -29932,11 +30014,15 @@ async function playReplay() {
     if (displayGridIntervalTime != Infinity) {
         while (Date.now() - startGameTime < replayTimestamps[replayTimestamps.length - 1]) {
 			await delay(2)
-            if (!isPlayingReplay || currentScreen != "Gameplay") return;
+            if (!isPlayingReplay || currentScreen != "Gameplay") {
+                return;
+            }
 		}
     }
 	else await delay(1000);
-    if (!isPlayingReplay || currentScreen != "Gameplay") return;
+    if (!isPlayingReplay || currentScreen != "Gameplay") {
+        return;
+    }
 	if (gameWon) {
 		winScreen();
 	} else {
@@ -30124,7 +30210,7 @@ async function GameOver() {
     currentScreen = "Game Over";
     document.getElementById("game_over_screen").style.setProperty("opacity", 0);
     document.getElementById("game_over_screen").style.setProperty("display", "flex");
-    if (isPlayingReplay) {
+    if (isPlayingReplay || movesPlayed === undefined) {
     	// document.getElementById("go_again").style.setProperty("left", "calc(50% - calc(var(--grid_width) / 6))")
         document.getElementById("view_loss_replay").style.setProperty("display", "none");;
     } else {
@@ -30171,14 +30257,14 @@ async function winScreen() {
     else if (postgameAllowed) {
         document.getElementById("win_again").style.setProperty("display", "flex");
         document.getElementById("win_continue").style.setProperty("display", "flex");
-        document.getElementById("view_win_replay").style.setProperty("display", "flex");
+        document.getElementById("view_win_replay").style.setProperty("display", (movesPlayed === undefined ? "none" : "flex"));
         document.getElementById("lone_win_again").style.setProperty("display", "none");
     }
     else {
         document.getElementById("win_again").style.setProperty("display", "none");
         document.getElementById("win_continue").style.setProperty("display", "none");
         document.getElementById("lone_win_again").style.setProperty("display", "flex");
-        document.getElementById("view_win_replay").style.setProperty("display", "flex");
+        document.getElementById("view_win_replay").style.setProperty("display", (movesPlayed === undefined ? "none" : "flex"));
     }
     if (!otherSecretStats[6] && gamemode > 0 && !secretsFound[9]) { // Unlocking MCSOZ modifiers
         secretsFound[9] = true;
@@ -30226,6 +30312,13 @@ async function PlayAgain() {
     rngIndex = 0;
     replayOtherSpawns = [];
     replayTimestamps = [-1];
+    if (!settingModifiers[19]) {
+        movesPlayed = undefined;
+        currentMovePlayed = undefined;
+        otherRandomEvents = undefined;
+        replayOtherSpawns = undefined;
+        replayTimestamps = undefined;
+    }
     let wasPlayingReplay = isPlayingReplay;
     isPlayingReplay = false;
     if (wasPlayingReplay) createArrows();
@@ -31062,8 +31155,19 @@ async function displayCustomMode(subscreen, vars) {
         else document.getElementById("infusedGrid_previous_page").style.setProperty("display", "inline-block");
         let cleaned = cleanInfusedGrids(infusedGrids, infusedGridSizes);
         if (cleaned[0].length > 0) {
-            localStorage.setItem("infusedGrids", SCstringify(cleaned[0]));
-            localStorage.setItem("infusedGridSizes", SCstringify(cleaned[1]));
+            try {
+                localStorage.setItem("infusedGrids", SCstringify(cleaned[0]));
+                localStorage.setItem("infusedGridSizes", SCstringify(cleaned[1]));
+            }
+            catch {
+                if (e.name === 'QuotaExceededError') {
+                    infusedGrids = SCparse(localStorage.getItem("infusedGrids"));
+                    infusedGridSizes = SCparse(localStorage.getItem("infusedGridSizes")) ?? [];
+                    while (infusedGridSizes.length < infusedGrids.length) infusedGridSizes.push([5, 5]);
+                    alert("With this change, the combined size of the save codes infused to the grid is too big to save in your browser. The infused grid has not been modified.");
+                }
+                else throw e;
+            }
         }
         else {
             localStorage.removeItem("infusedGrids")
@@ -31959,7 +32063,7 @@ function exportSave(midgame, reloadSave = false) { // A save code where midgame 
         let exportFunction = function(s){return window.btoa(he.encode(s, {'allowUnsafeSymbols': true}))}
         if (midgame) SaveCode = "@2048PowCompGame|";
         else SaveCode = "@2048PowCompMode|";
-        SaveCode += "3.0.5|"
+        SaveCode += "3.0.13|"
         SaveCode += exportFunction(String(width));
         SaveCode += "|";
         SaveCode += exportFunction(String(height));
@@ -32120,7 +32224,28 @@ function exportSave(midgame, reloadSave = false) { // A save code where midgame 
             SaveCode += exportFunction(SCstringify(mvar_indices));
             SaveCode += "|";
         }
-        if (reloadSave) localStorage.setItem("gameplayReloadSave", SaveCode);
+        if (reloadSave) {
+            try {
+                localStorage.setItem("gameplayReloadSave", SaveCode);
+            }
+            catch (e) {
+                if (e.name === 'QuotaExceededError' && movesPlayed !== undefined) {
+                    movesPlayed = undefined;
+                    currentMovePlayed = undefined;
+                    otherRandomEvents = undefined;
+                    replayOtherSpawns = undefined;
+                    replayTimestamps = undefined;
+                    exportSave(true, true);
+                    alert("The save code for this game has grown too big to store in your browser, but it can be saved without replay data, so replay data has been forcibly disabled for this game.");
+                }
+                else if (e.name === 'QuotaExceededError') {
+                    settingModifiers[7] = 0;
+                    localStorage.removeItem("gameplayReloadSave");
+                    alert("The save code for this game has grown too big to store in your browser. The setting to save the game on reload has been forcibly disabled. You'll have to export the save code for this game manually from now on.");
+                }
+                else throw e;
+            }
+        }
         else document.getElementById("save_code_box").value = SaveCode;
     }
     catch (error) {
@@ -32131,7 +32256,7 @@ function exportSave(midgame, reloadSave = false) { // A save code where midgame 
 
 function exportReplay(gameWon) {
     try {
-        let SaveCode = "@2048PowCompReplay|3.0.5|"
+        let SaveCode = "@2048PowCompReplay|3.0.13|"
         let exportFunction = function(s){return window.btoa(he.encode(s, {'allowUnsafeSymbols': true}))}
         SaveCode += exportFunction(String(width));
         SaveCode += "|";
@@ -32302,7 +32427,7 @@ function exportModifiersSave(reloadSave = false) {
 
 function exportInfusedSave() {
     try {
-        let SaveCode = "@2048PowCompInfused|3.0.5|";
+        let SaveCode = "@2048PowCompInfused|3.0.13|";
         let exportFunction = function(s){return window.btoa(he.encode(s, {'allowUnsafeSymbols': true}))}
         SaveCode += exportFunction(SCstringify(infusedModeValues));
         SaveCode += "|";
@@ -33132,7 +33257,7 @@ function importSave(code, reloadSave = false, savescumless = false) {
         }
         else if (codebits[0] == "@2048PowCompInfused") {
             let importFunction = function(s){return he.decode(window.atob(s))}
-            if (codebits[1] == "3.0" || codebits[1] == "3.0.5") {
+            if (codebits[1] == "3.0" || codebits[1] == "3.0.5" || codebits[1] == "3.0.13") {
                 infusedModeValues = SCparse(importFunction(codebits[2]));
                 if (infusedModeValues.length < 34) throw "Infused mode values too short"
                 if (infusedModeValues.length == 34) infusedModeValues.push([true, true, true, true, true])

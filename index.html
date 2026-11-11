@@ -264,7 +264,7 @@
             <div id="menu_import" class="hover_grow menu_button">Resume From Save Code</div>
             <div id="menu_to_modifiers" class="hover_grow menu_button">Settings and Modifiers</div>
             <div id="menu_to_guide" class="hover_grow menu_button"><p>Go to Guide<br><span id="guide_attraction">(If this is your first time here, click this button first!)</span></p></div>
-            <div id="menu_to_custom" class="hover_grow menu_button">Make a Custom Mode</div>
+            <div id="menu_to_custom" class="hover_grow menu_button">Custom Modes</div>
             <div id="menu_to_homepage" class="hover_grow menu_button">Return to Main Webpage</div>
         </div>
 
@@ -1873,25 +1873,35 @@
                     </div>
                 </div>
                 <div id="modifiers_page_-2" class="modifiers_page">
-                    <p id="modifiers_optimemoryInfo_text" class="modifier_text">Memory Optimizations</p>
-                    <p id="modifiers_optimemoryInfo_subtext" class="modifier_subtext">
-                        To speed up computations, the game remembers the visual appearances of previously-seen tiles, and the merge results (or lack thereof) of tile collisions.
-                        Level 1 means it only remembers them during the current turn, Level 2 means it remembers results using only tiles currently on the board,
-                        and Level 3 means it remembers all results seen this game. You may change the (maximum, as some modes have to lower this due to their mechanics) level of
-                        each of these memories here.
-                    </p>
                     <div class="modifiers_flexbox">
-                        <div id="modifiers_optimemory_buttonLine" class="modifiers_propertiesLine">
-                            <div id="modifiers_optimemory_tileDisplays" class="modifiers_var_container_stretchHV">
-                                <div id="modifiers_optimemory_tileDisplays_button" class="hover_grow SwitchModifierLong">Tile Displays: <span>Level 3</span></div>
+                        <div class="modifiers_flexbox modifiers_box_columnHalf">
+                            <p id="modifiers_optimemoryInfo_text" class="modifier_text">Memory Optimizations</p>
+                            <p id="modifiers_optimemoryInfo_subtext" class="modifier_subtext">
+                                To speed up computations, the game remembers the visual appearances of previously-seen tiles, and the merge results (or lack thereof) of tile collisions.
+                                Level 1 means it only remembers them during the current turn, Level 2 means it remembers results using only tiles currently on the board,
+                                and Level 3 means it remembers all results seen this game. You may change the (maximum, as some modes have to lower this due to their mechanics) level of
+                                each of these memories here.
+                            </p>
+                            <div id="modifiers_optimemory_buttonLine" class="modifiers_propertiesLine">
+                                <div id="modifiers_optimemory_tileDisplays" class="modifiers_var_container_stretchHV">
+                                    <div id="modifiers_optimemory_tileDisplays_button" class="hover_grow SwitchModifierLong">Tile Displays: <span>Level 3</span></div>
+                                </div>
+                                <div id="modifiers_optimemory_mergeResults" class="modifiers_var_container_stretchHV">
+                                    <div id="modifiers_optimemory_mergeResults_button" class="hover_grow SwitchModifierLong">Merge Rules: <span>Level 2</span></div>
+                                </div>
                             </div>
-                            <div id="modifiers_optimemory_mergeResults" class="modifiers_var_container_stretchHV">
-                                <div id="modifiers_optimemory_mergeResults_button" class="hover_grow SwitchModifierLong">Merge Rules: <span>Level 2</span></div>
+                        </div>
+                        <div class="modifiers_flexbox modifiers_box_columnHalf">
+                            <div class="modifiers_box_rowHalf">
+                                <p id="modifiers_restartButton_text" class="modifier_text">The Restart Game button instantly restarts the game.</p>
+                                <div id="modifiers_restartButton_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
+                            </div>
+                            <div class="modifiers_box_rowHalf">
+                                <p id="modifiers_replayDisable_text" class="modifier_text">The data needed to generate a replay is kept.</p>
+                                <div id="modifiers_replayDisable_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
                             </div>
                         </div>
                     </div>
-                    <p id="modifiers_restartButton_text" class="modifier_text">The Restart Game button instantly restarts the game.</p>
-                    <div id="modifiers_restartButton_button" class="hover_grow SwitchModifier">Switch This Modifier!</div>
                 </div>
                 <div id="modifiers_page_-3" class="modifiers_page">
                     <p id="modifiers_settingsReloadSave_text" class="modifier_text">The previous settings are not saved on page reload.</p>
@@ -2346,13 +2356,14 @@
                     Page 1 and most of Page 2. Customize the types of merges, the colors of each tile, and more!
                     <br>
                     Do you wish to create a new mode, import a save code of one that's already been made, or do you need to
-                    look over the guide to using this mode maker?
+                    look over the guide to using this mode maker - or would you rather just try out modes that others have made?
                 </p>
                 <div id="customOpeningButtons">
                     <div id="customMode_start" class="hover_grow customOpeningButton">Create a New Mode</div>
                     <div id="customMode_import" class="hover_grow customOpeningButton">Load From a Save Code</div>
                     <div id="customMode_guide" class="hover_grow customOpeningButton">Go to Custom Mode Guide</div>
                 </div>
+                <a href="moreCustomModeExamples.html" target="_self" id="customMode_examples" class="hover_grow customOpeningButton">View List of Examples</a>
             </div>
             <div id="customModeSpawningTiles">
                 <p id="customSpawningHeading" class="customHeading">
@@ -2909,6 +2920,7 @@
                     <div id="infusedMode_manageGrid" class="hover_grow customOpeningButton infusedOpeningButton">Open the Infused Grid Manager</div>
                     <div id="infusedMode_guide" class="hover_grow customOpeningButton infusedOpeningButton">Go to Infused Mode Guide</div>
                 </div>
+                <a href="moreCustomModeExamples.html" target="_self" id="infusedMode_examples" class="hover_grow customOpeningButton infusedOpeningButton">View List of Examples</a>
             </div>
             <div id="infusedModeCreation">
                 <div class="infusedCreationBox">
@@ -3956,8 +3968,17 @@
                       </li>
                       <br>
                       <li>
+                            v3.0.12 (Oct. 10, 2026): Fixed Multicolor Tiles occasionally having the wrong output color(s).
+                      </li>
+                      <br>
+                      <li>
                         <b>
-                            v3.0.12 (Oct. 10, 2026) [Current Version]: Fixed Multicolor Tiles occasionally having the wrong output color(s).
+                            v3.0.13 (Nov. 10, 2026) [Current Version]: Added a setting to disable replay saving (and detection to force this if the browser storage
+                            refuses to hold a game for resuming because the save code has gotten too big, since replay data is most likely the culprit if this occurs).
+                            Adjusted the Custom Mode and Infused Mode opening screens to make the list of examples easier to access.
+                            Fixed a bug where restarting game while a fast replay is running could cause an extra move to be squeezed in at the start, a bug where
+                            the Restart Game causing a Game Over setting would allow the Game Over screen to be re-triggered by re-clicking the Restart Game button,
+                            and a few internal bugs.
                         </b>
                       </li>
                     </ul>

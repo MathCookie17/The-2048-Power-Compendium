@@ -1152,6 +1152,13 @@ html {
     width: 50%;
     height: 50%;
 }
+.modifiers_box_columnHalf {
+    width: 50%;
+}
+.modifiers_box_rowHalf {
+    width: 100%;
+    height: 50%;
+}
 #modifiers_negativetiles_SpawnRatios {
     display: flex;
     justify-content: space-around;
@@ -1604,7 +1611,7 @@ html {
     #modifiers {
         --modifiers_base_size: 1vw;
     }
-    #modifiers_customGridAndSize, .modifiers_box_2x2_entry {
+    #modifiers_customGridAndSize, .modifiers_box_2x2_entry, .modifiers_box_columnHalf, .modifiers_box_rowHalf {
         all: revert;
     }
     #modifiers_customGrid {
@@ -2342,6 +2349,16 @@ html {
     width: calc(var(--base_size) * 45);
     font-size: calc(var(--base_size) * 6);
 }
+#customMode_examples {
+    background-color: #6d008e;
+    color: #ee00ff;
+    order: 2;
+    margin: auto;
+    width: calc(var(--base_size) * 100);
+    height: calc(var(--base_size) * 15);
+    font-size: calc(var(--base_size) * 6);
+    text-decoration: none;
+}
 .customSpawningLine * {
     display: inline-block;
 }
@@ -2741,7 +2758,7 @@ html {
 }
 .infusedOpeningButton {
     width: calc(var(--base_size) * 36);
-    height: calc(var(--base_size) * 36);
+    height: calc(var(--base_size) * 32);
     border-width: calc(var(--base_size) * 1.5);
     font-size: calc(var(--base_size) * 6);
     padding: calc(var(--base_size) * 1.5);
@@ -2769,6 +2786,16 @@ html {
     background-color: #007d5e;
     border-color: #5cffe9;
     order: 2;
+}
+#infusedMode_examples {
+    background-color: #6d008e;
+    color: #ee00ff;
+    border-color: #ee00ff;
+    margin-left: auto; margin-right: auto;
+    width: calc(var(--base_size) * 80);
+    height: calc(var(--base_size) * 12);
+    font-size: calc(var(--base_size) * 6);
+    text-decoration: none;
 }
 #infusedMode_quit {
     color: #df3400;
@@ -2989,13 +3016,16 @@ html {
         width: 42%;
         font-size: calc(var(--base_size) * 5.25);
     }
-    .infusedOpeningButton {
+    .infusedOpeningButton, #infusedMode_examples {
         width: calc(var(--base_size) * 100);
         height: calc(var(--base_size) * 10);
         border-width: calc(var(--base_size) * 1);
         font-size: calc(var(--base_size) * 6);
         padding: calc(var(--base_size) * 1);
         margin-bottom: calc(var(--base_size) * 2);
+    }
+    #infusedMode_examples {
+        width: calc(var(--base_size) * 80);
     }
 }
 @media screen and (max-aspect-ratio: 1/1) {
@@ -3021,8 +3051,8 @@ html {
     .customOpeningButton {
         height: calc(var(--base_size) * 15);
     }
-    .infusedOpeningButton {
-        height: calc(var(--base_size) * 12);
+    .infusedOpeningButton, #infusedMode_examples {
+        height: calc(var(--base_size) * 10);
         font-size: calc(var(--base_size) * 5);
     }
     #customMode_start {
@@ -3032,7 +3062,13 @@ html {
     }
     #customMode_import, #customMode_guide {
         width: 70%;
-        font-size: calc(var(--base_size) * 6);
+        height: calc(var(--base_size) * 10);
+        font-size: calc(var(--base_size) * 5);
+    }
+    #customMode_examples {
+        width: 80%;
+        height: calc(var(--base_size) * 10);
+        font-size: calc(var(--base_size) * 5);
     }
 }
 @media screen and (max-aspect-ratio: 3/5) {
@@ -3046,6 +3082,13 @@ html {
     #customMode_import, #customMode_guide {
         width: 70%;
         font-size: calc(var(--base_size) * 4);
+    }
+    #customMode_examples {
+        width: 80%;
+        font-size: calc(var(--base_size) * 4);
+    }
+    #infusedMode_examples {
+        width: calc(var(--base_size) * 60);
     }
     #infusedGridSizeLine > .modifiers_var_container {
         width: 100%;
